@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Additional Information - Abroad Vision Carrerz</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html, body { min-height: 100vh; margin: 0; }
+
+        body {
+            background-image: none; /* removed navyblue.JPEG per request */
+            background-color: #eaf6fb; /* full-screen light blue background */
+        }
+                /* Custom checkbox styling for declaration */
+                .custom-checkbox {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.6rem;
+                    margin-top: 0.5rem;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            accent-color: #22c55e; /* green tick */
+        }
+
+        .custom-checkbox label {
+            margin: 0;
+            line-height: 1.2;
+            cursor: pointer;
+        }
+
+        .form-section-header {
+            text-align: center;
+            margin-top: 12px; /* small gap under navbar */
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .form-section-header h1 {
+            color: #ffffff;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Ensure all main form h1 titles are white for readability */
+        .next-form-card h1 {
+            color: #ffffff;
+            margin-top: 0;
+        }
+
+        .form-section-header p {
+            color: #7F8C8D;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            max-width: 400px;
+            margin: 2rem auto;
+            height: 6px;
+            background: #E0E0E0;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none; /* hide the half-filled blue progress line */
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg,  #002147,  #002147);
+            animation: fillProgress 1s ease-out;
+        }
+
+        @keyframes fillProgress {
+            from {
+                width: 0;
+            }
+            to {
+                width: 50%;
+            }
+        }
+
+        /* Outer card wrapper to match the design */
+        .next-form-page {
+            background: transparent; /* allow body light-blue to show full-screen */
+        }
+
+        .next-form-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, #00152e 0%, #002147 100%); /* navy gradient */
+            color: #ffffff; /* white text inside the box */
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 18px 34px rgba(2, 24, 45, 0.12);
+            position: relative;
+        }
+
+        /* vertical accent stripe (make it white to contrast) */
+        .next-form-wrapper::before {
+            content: "";
+            position: absolute;
+            left: 12px;
+            top: 16px;
+            bottom: 16px;
+            width: 8px;
+            background: #ffffff;
+            border-radius: 8px;
+            opacity: 0.95;
+        }
+
+        /* ensure page content sits below fixed top-bar + header */
+        .next-form-page {
+            padding-top: 100px; /* reduced so title is closer to navbar */
+        }
+
+        .next-form-card {
+            background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)); /* subtle overlay on navy */
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(2,24,45,0.12);
+            animation: fadeInUp 0.6s ease-out;
+            position: relative;
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Stack document upload fields one per row */
+        .uploads-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .support-checkbox-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .support-checkbox-row .form-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 0;
+        }
+        .support-checkbox-row label {
+            margin-left: 0.5em;
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+        
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / span 3;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.7rem;
+            color: rgba(255,255,255,0.95);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.12); /* translucent white to contrast on orange */
+            border: 2px solid rgba(255,255,255,0.18);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            color: #ffffff; /* input text white */
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            background: #EAF4FF;
+            border-color:#4A90E2;
+            box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder,
+        .form-group select::placeholder {
+            color: rgba(255,255,255,0.85); /* light placeholder on orange */
+            opacity: 1;
+        }
+
+        /* Filled fields style (matches other inputs) */
+        .form-group input.filled,
+        .form-group textarea.filled,
+        .form-group select.filled {
+            background: #EAF4FF;
+            border-color: #F9A825; /* orange */
+            color: #0b1220; /* dark text */
+            box-shadow: 0 6px 18px rgba(249, 168, 37, 0.06);
+        }
+
+        /* Select behavior: show selected value white when closed; options black when opened/focused */
+        select#gender { color: #ffffff; }
+        select#gender option { color: #0b1220; }
+        select#gender:focus { color: #0b1220; }
+
+        select#city { color: #ffffff; }
+        select#city option { color: #0b1220; }
+        select#city:focus { color: #0b1220; }
+
+        select#passportStatus { color: #ffffff; }
+        select#passportStatus option { color: #0b1220; }
+        select#passportStatus:focus { color: #0b1220; }
+
+        select#highestQualification { color: #ffffff; }
+        select#highestQualification option { color: #0b1220; }
+        select#highestQualification:focus { color: #0b1220; }
+
+        select#yearOfPassing { color: #ffffff; }
+        select#yearOfPassing option { color: #0b1220; }
+        select#yearOfPassing:focus { color: #0b1220; }
+
+        /* Study Abroad Preferences: ensure dropdown list items are black for readability */
+        select#preferredCountry option,
+        select#visaType option,
+        select#levelOfStudy option,
+        select#coaching option,
+        select#budgetRange option,
+        select#fundingSource option,
+        select#loanStatus option {
+            color: #0b1220;
+        }
+
+        select#preferredCountry:focus,
+        select#visaType:focus,
+        select#levelOfStudy:focus,
+        select#coaching:focus,
+        select#budgetRange:focus,
+        select#fundingSource:focus,
+        select#loanStatus:focus {
+            color: #0b1220;
+        }
+
+        /* Ensure entered/selected values are displayed in black for readability */
+        .form-group input.filled,
+        .form-group textarea.filled,
+        .form-group select.filled,
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            color: #002147 !important;
+        }
+
+        /* Ensure select options are black */
+        .form-group select option { color: #0b1220; }
+
+        
+
+        h2.personal-info-title {
+            background: linear-gradient(90deg, #2C5F8D, #4A90E2);
+            color: #002147 !important;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 15px rgba(44, 95, 141, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* File input row with remove (trash) button */
+        .file-input-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .file-input-row input[type="file"] {
+            flex: 1 1 auto;
+            color: #ffffff;
+        }
+
+        .file-remove {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.95);
+            padding: 0.45rem 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-remove i { font-size: 0.95rem; }
+
+        .submit-btn, .btn-primary {
+            display: block;
+            width: 260px;
+            max-width: 100%;
+            padding: 0.95rem 1.6rem;
+            margin: 1.5rem auto 0;
+            background: linear-gradient(90deg, #F57C00, #F9A825);
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            box-shadow: 0 10px 20px rgba(245,124,0,0.12);
+            text-align: center;
+        }
+
+        .submit-btn:hover, .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(245,124,0,0.18);
+        }
+
+        .submit-btn:active, .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .form-info {
+            background: #F0F4FF;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #4A90E2;
+            margin-bottom: 1.5rem;
+            color: #2C5F8D;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .next-form-card {
+                padding: 1.5rem;
+            }
+
+            .form-section-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="top-left">
+            <span class="contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                abroadvisioncarrerz@gmail.com
+            </span>
+        </div>
+        <div class="top-right">
+            <span class="contact-item">
+                <i class="fa-solid fa-phone"></i>
+                9876XXXXXX
+            </span>
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-link" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+        </div>
+    </div>
+       <!-- Header & Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                        <img src="images/logo1.png" alt="Abroad Vision Carrerz Logo" class="navbar-logo-img">
+                    <div class="logo-text">
+                        <span class="logo-name">Abroad Vision </span>
+                        <span class="logo-tagline">Guiding Futures Beyond Borders</span>
+                    </div>
+                </div>
+                
+                <div class="nav-toggle" id="navToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li class="nav-dropdown">
+                        <a href="#study">Study</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="usa.html">Study in USA</a></li>
+                            <li><a href="uk.html">Study in UK</a></li>
+                            <li><a href="canada.html">Study in Canada</a></li>
+                            <li><a href="australia.html">Study in Australia</a></li>
+                            <li><a href="germany.html">Study in Germany</a></li>
+                            <li><a href="newzealand.html">Study in New Zealand</a></li>
+                            <li><a href="italy.html">Study in Italy</a></li>
+                            <li><a href="turkey.html">Study in Turkey</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="visa-services.html">Visa Services</a></li>
+                    <li><a href="#coaching">Coaching</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#registration-section" class="nav-link register-scroll">Register Here</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+   
+
+
+    <!-- Next Form Page -->
+    <section class="next-form-page">
+        <div class="container">
+            <div class="form-section-header">
+               
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="next-form-wrapper">
+                <div class="next-form-card">
+                    <div class="form-info">
+                        <i class="fas fa-info-circle"></i> Complete this form to proceed with your application
+                    </div>
+
+                    <form id="academicForm">
+                        <!-- Only the new comprehensive student information form remains below -->
+                        <h1>Personal Information</h1>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName">Full Name (as per passport) <span class="required">*</span></label>
+                                <input type="text" id="fullName" name="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth <span class="required">*</span></label>
+                                <input type="date" id="dob" name="dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender <span class="required">*</span></label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="nationality">Nationality <span class="required">*</span></label>
+                                <input type="text" id="nationality" name="nationality" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City/State <span class="required">*</span></label>
+                                <select id="city" name="city" required>
+                                    <option value="">Select City</option>
+                                    <optgroup label="Andhra Pradesh">
+                                        <option value="Visakhapatnam">Visakhapatnam</option>
+                                        <option value="Vijayawada">Vijayawada</option>
+                                        <option value="Guntur">Guntur</option>
+                                        <option value="Nellore">Nellore</option>
+                                        <option value="Kurnool">Kurnool</option>
+                                        <option value="Rajahmundry">Rajahmundry</option>
+                                        <option value="Tirupati">Tirupati</option>
+                                        <option value="Anantapur">Anantapur</option>
+                                        <option value="Kadapa">Kadapa</option>
+                                        <option value="Eluru">Eluru</option>
+                                    </optgroup>
+                                    <optgroup label="Telangana">
+                                        <option value="Hyderabad">Hyderabad</option>
+                                        <option value="Warangal">Warangal</option>
+                                        <option value="Nizamabad">Nizamabad</option>
+                                        <option value="Karimnagar">Karimnagar</option>
+                                        <option value="Khammam">Khammam</option>
+                                        <option value="Ramagundam">Ramagundam</option>
+                                        <option value="Mahbubnagar">Mahbubnagar</option>
+                                        <option value="Adilabad">Adilabad</option>
+                                        <option value="Suryapet">Suryapet</option>
+                                        <option value="Miryalaguda">Miryalaguda</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="passportStatus">Passport Status <span class="required">*</span></label>
+                                <select id="passportStatus" name="passportStatus" required>
+                                    <option value="">Select Status</option>
+                                    <option value="Valid">Valid</option>
+                                    <option value="Applied">Applied</option>
+                                    <option value="Not Applied">Not Applied</option>
+                                </select>
+                            </div>
+                                <div class="form-group">
+                                    <label for="passport_id">Passport Number <span class="required">*</span></label>
+                                    <input type="text" id="passport_id" name="passport_id" required placeholder="Enter Passport Number">
+                                </div>
+                        </div>
+
+                        <h1>Academic Details</h1>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="highestQualification">Highest Qualification <span class="required">*</span></label>
+                                <select id="highestQualification" name="highestQualification" required>
+                                    <option value="">Select Qualification</option>
+                                    <option value="B.Tech">B.Tech</option>
+                                    <option value="M.Tech">M.Tech</option>
+                                    <option value="MBA">MBA</option>
+                                    <option value="B.Sc">B.Sc</option>
+                                    <option value="M.Sc">M.Sc</option>
+                                    <option value="B.Com">B.Com</option>
+                                    <option value="M.Com">M.Com</option>
+                                    <option value="Diploma">Diploma</option>
+                                    <option value="PhD">PhD</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="currentCourse">Current Course</label>
+                                <input type="text" id="currentCourse" name="currentCourse">
+                            </div>
+                            <div class="form-group">
+                                <label for="specialization">Specialization</label>
+                                <input type="text" id="specialization" name="specialization" placeholder="e.g., Computer Science, Mechanical, ECE">
+                            </div>
+                            <div class="form-group">
+                                <label for="collegeName">College/University Name <span class="required">*</span></label>
+                                <input type="text" id="collegeName" name="collegeName" required autocomplete="off" list="collegeList">
+                                <datalist id="collegeList">
+                                    <option value="IIT Hyderabad">
+                                    <option value="NIT Warangal">
+                                    <option value="JNTU Hyderabad">
+                                    <option value="Osmania University">
+                                    <option value="Andhra University">
+                                    <option value="SV University Tirupati">
+                                    <option value="KL University">
+                                    <option value="Vignan University">
+                                    <option value="GITAM University">
+                                    <option value="BITS Pilani Hyderabad">
+                                    <option value="University of Hyderabad">
+                                    <option value="Kakatiya University">
+                                    <option value="SR University">
+                                    <option value="Mahindra University">
+                                    <option value="Other">
+                                </datalist>
+                            </div>
+                            <div class="form-group">
+                                <label for="yearOfPassing">Year of Passing <span class="required">*</span></label>
+                                <select id="yearOfPassing" name="yearOfPassing" required>
+                                    <option value="">Select Year</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2015">2015</option>
+                                    <option value="2014">2014</option>
+                                    <option value="2013">2013</option>
+                                    <option value="2012">2012</option>
+                                    <option value="2011">2011</option>
+                                    <option value="2010">2010</option>
+                                    <option value="2009">2009</option>
+                                    <option value="2008">2008</option>
+                                    <option value="2007">2007</option>
+                                    <option value="2006">2006</option>
+                                    <option value="2005">2005</option>
+                                    <option value="2004">2004</option>
+                                    <option value="2003">2003</option>
+                                    <option value="2002">2002</option>
+                                    <option value="2001">2001</option>
+                                    <option value="2000">2000</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cgpa">CGPA/Percentage <span class="required">*</span></label>
+                                <input type="text" id="cgpa" name="cgpa" required>
+                            </div>
+                        </div>
+
+                        <h1>Study Abroad Preferences</h1>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="preferredCountry">Preferred Country <span class="required">*</span></label>
+                                <select id="preferredCountry" name="preferredCountry" required>
+                                    <option value="">Select Country</option>
+                                    <option value="UK">UK</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="USA">USA</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="New Zealand">New Zealand</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="visaType">Visa Type <span class="required">*</span></label>
+                                <select id="visaType" name="visaType" required>
+                                    <option value="">Select Visa Type</option>
+                                    <option value="Student">Student Visa</option>
+                                    <option value="Tourist">Tourist Visa</option>
+                                    <option value="Work">Work Visa</option>
+                                    <option value="Dependent">Dependent Visa</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="visaNumber">Visa Number</label>
+                                <input type="text" id="visaNumber" name="visaNumber" placeholder="Enter Visa Number (if available)">
+                            </div>
+                            <div class="form-group">
+                                <label for="levelOfStudy">Intended Level of Study <span class="required">*</span></label>
+                                <select id="levelOfStudy" name="levelOfStudy" required>
+                                    <option value="">Select Level</option>
+                                    <option value="Undergraduate">Undergraduate</option>
+                                    <option value="Postgraduate">Postgraduate</option>
+                                    <option value="PhD">PhD</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="coaching">Coaching Interested In</label>
+                                <select id="coaching" name="coaching">
+                                    <option value="">Select Coaching</option>
+                                    <option value="None">None</option>
+                                    <option value="IELTS Coaching">IELTS Coaching</option>
+                                    <option value="TOEFL Coaching">TOEFL Coaching</option>
+                                    <option value="OET Coaching">OET Coaching</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="preferredIntake">Preferred Intake & Year <span class="required">*</span></label>
+                                <input type="text" id="preferredIntake" name="preferredIntake" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="desiredCourse">Desired Course/Field <span class="required">*</span></label>
+                                <input type="text" id="desiredCourse" name="desiredCourse" required placeholder="e.g., MS in Computer Science, MBA, MBBS, etc.">
+                            </div>
+                            <div class="form-group">
+                                <label for="budgetRange">Budget Range (in INR/USD)</label>
+                                <select id="budgetRange" name="budgetRange">
+                                    <option value="">Select Budget Range</option>
+                                    <option value="Below 10 Lakhs">Below 10 Lakhs</option>
+                                    <option value="10-20 Lakhs">10-20 Lakhs</option>
+                                    <option value="20-30 Lakhs">20-30 Lakhs</option>
+                                    <option value="30-40 Lakhs">30-40 Lakhs</option>
+                                    <option value="Above 40 Lakhs">Above 40 Lakhs</option>
+                                    <option value="Below $15,000">Below $15,000</option>
+                                    <option value="$15,000-$30,000">$15,000-$30,000</option>
+                                    <option value="$30,000-$50,000">$30,000-$50,000</option>
+                                    <option value="Above $50,000">Above $50,000</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fundingSource">Source of Funding <span class="required">*</span></label>
+                                <select id="fundingSource" name="fundingSource" required>
+                                    <option value="">Select Source</option>
+                                    <option value="Self">Self</option>
+                                    <option value="Family">Family</option>
+                                    <option value="Education Loan">Education Loan</option>
+                                    <option value="Scholarship">Scholarship</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="loanStatus">Education Loan Status</label>
+                                <select id="loanStatus" name="loanStatus">
+                                    <option value="">Select Status</option>
+                                    <option value="Not Applied">Not Applied</option>
+                                    <option value="Applied">Applied</option>
+                                    <option value="Sanctioned">Sanctioned</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <h1>Document Uploads</h1>
+                        <div class="form-grid uploads-grid">
+                            <div class="form-group">
+                                <label for="resume">Resume</label>
+                                <div class="file-input-row">
+                                    <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx">
+                                    <button type="button" class="file-remove" data-target="resume" aria-label="Remove file"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="transcripts">Academic Transcripts</label>
+                                <div class="file-input-row">
+                                    <input type="file" id="transcripts" name="transcripts" accept=".pdf,.jpg,.jpeg,.png">
+                                    <button type="button" class="file-remove" data-target="transcripts" aria-label="Remove file"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="passportCopy">Passport Copy</label>
+                                <div class="file-input-row">
+                                    <input type="file" id="passportCopy" name="passportCopy" accept=".pdf,.jpg,.jpeg,.png">
+                                    <button type="button" class="file-remove" data-target="passportCopy" aria-label="Remove file"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="testScoreCard">Test Score Card</label>
+                                <div class="file-input-row">
+                                    <input type="file" id="testScoreCard" name="testScoreCard" accept=".pdf,.jpg,.jpeg,.png">
+                                    <button type="button" class="file-remove" data-target="testScoreCard" aria-label="Remove file"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="custom-checkbox">
+                                <input type="checkbox" id="declaration" name="declaration" required>
+                                <label for="declaration">I confirm that the information provided is accurate and complete.</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                                Submit
+                            </button>
+                    </form>
+                    <div id="successMessage" style="display:none; margin-top:2rem; color:#22c55e; font-size:1.2rem; font-weight:600; text-align:center;"></div>
+   <br>
+   <br>
+   <br>
+   
+   <script>
+    const academicForm = document.getElementById('academicForm');
+    const successMessage = document.getElementById('successMessage');
+    academicForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(academicForm);
+
+        // Save a readable copy (non-file fields) for the Profile modal
+        try {
+            const nextFormData = {};
+            for (const [key, value] of formData.entries()) {
+                if (value instanceof File) continue;
+                const asText = String(value ?? '').trim();
+                if (asText) nextFormData[key] = asText;
+            }
+            sessionStorage.setItem('nextFormData', JSON.stringify(nextFormData));
+            try {
+                localStorage.setItem('nextFormData', JSON.stringify(nextFormData));
+            } catch {
+                // ignore
+            }
+        } catch (err) {
+            console.warn('Could not cache next form data:', err);
+        }
+
+        // Show loading state
+        const submitBtn = academicForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        submitBtn.disabled = true;
+
+        try {
+            // Send data to Node.js backend as FormData (for file uploads)
+            const response = await fetch('https://abroad-vision-carrerz-1.onrender.com/api/abroad-registration', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = 'congrats.html';
+                } else {
+                    successMessage.textContent = result.error || 'There was a problem submitting your registration. Please try again.';
+                    successMessage.style.display = 'block';
+                }
+            } else {
+                successMessage.textContent = 'There was a problem submitting your registration. Please try again.';
+                successMessage.style.display = 'block';
+            }
+        } catch (err) {
+            successMessage.textContent = 'Unable to connect to server. Please try again later.';
+            successMessage.style.display = 'block';
+        }
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+    </script>
+    <script>
+        // Toggle .filled class when inputs/selects/textareas have values
+        (function(){
+            const fields = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
+
+            function update(el){
+                if(!el) return;
+                const val = el.value;
+                if(val && String(val).trim() !== '') el.classList.add('filled');
+                else el.classList.remove('filled');
+            }
+
+            fields.forEach(f => {
+                // initialize
+                update(f);
+                // update on input/change
+                f.addEventListener('input', () => update(f));
+                f.addEventListener('change', () => update(f));
+            });
+
+            // also observe DOM changes for dynamically added values
+            const observer = new MutationObserver(() => fields.forEach(update));
+            observer.observe(document.body, { childList: true, subtree: true });
+        })();
+    </script>
+    <script>
+        // File remove (trash) buttons for uploads
+        (function(){
+            function clearFileInput(id){
+                const el = document.getElementById(id);
+                if(!el) return;
+                try {
+                    el.value = '';
+                    // trigger change so any UI reacts
+                    el.dispatchEvent(new Event('change'));
+                } catch(e){
+                    // fallback for older browsers
+                    const form = document.createElement('form');
+                    const parent = el.parentNode;
+                    parent.replaceChild(el.cloneNode(true), el);
+                }
+            }
+
+            document.querySelectorAll('.file-remove').forEach(btn => {
+                btn.addEventListener('click', function(){
+                    const target = this.getAttribute('data-target');
+                    if(target) clearFileInput(target);
+                });
+            });
+        })();
+    </script>
+    <script src="script.js?v=20260204"></script>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+   

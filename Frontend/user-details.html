@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Registration Details - Abroad Vision Carrerz</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .details-page {
+            padding-top: 120px;
+            padding-bottom: 60px;
+            background: linear-gradient(135deg, #F8F9FA, #E8F4F8);
+            min-height: 100vh;
+        }
+
+        .details-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .details-header h1 {
+            color: #2C5F8D;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .details-header p {
+            color: #7F8C8D;
+            font-size: 1.1rem;
+        }
+
+        .details-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .card h2 {
+            color: #2C5F8D;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card h2 i {
+            color: #4A90E2;
+        }
+
+        .info-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #E0E0E0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #2C5F8D;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #7F8C8D;
+        }
+
+        .requirement {
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            background: #F0F4FF;
+            border-left: 4px solid #4A90E2;
+            border-radius: 6px;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .requirement i {
+            color: #4A90E2;
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+
+        .requirement-text {
+            color: #2C5F8D;
+            font-size: 0.95rem;
+        }
+
+        .requirement-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .requirement-desc {
+            font-size: 0.85rem;
+            color: #7F8C8D;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #4A90E2, #2C5F8D);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        .btn-back {
+            background: white;
+            color: #4A90E2;
+            border: 2px solid #4A90E2;
+        }
+
+        .btn-back:hover {
+            background: #F0F4FF;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .details-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .details-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <h1>Abroad Vision Carrerz</h1>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html">Back to Home</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Details Page -->
+    <section class="details-page">
+        <div class="container">
+            <div class="details-header">
+                <h1>Your Registration Details</h1>
+                <p>Review your information and requirements for studying abroad</p>
+            </div>
+
+            <div class="details-wrapper">
+                <!-- Header & Navbar -->
+                <header>
+                        <nav class="navbar">
+                    <div class="container">
+                        <a href="index.html" class="logo" style="text-decoration: none;">
+                            <img src="images/logo1.png" alt="Abroad Vision Carrerz Logo" class="navbar-logo-img">
+                            <div class="logo-text">
+                                <span class="logo-name">Abroad Vision </span>
+                                <span class="logo-tagline">Guiding Futures Beyond Borders</span>
+                            </div>
+                        </a>
+                        <div class="nav-toggle" id="navToggle">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <ul class="nav-menu" id="navMenu">
+                            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                            <li><a href="#about">About Us</a></li>
+                            <li class="nav-dropdown">
+                                <a href="#study">Study</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="usa.html">Study in USA</a></li>
+                                    <li><a href="uk.html">Study in UK</a></li>
+                                    <li><a href="canada.html">Study in Canada</a></li>
+                                    <li><a href="australia.html">Study in Australia</a></li>
+                                    <li><a href="germany.html">Study in Germany</a></li>
+                                    <li><a href="newzealand.html">Study in New Zealand</a></li>
+                                    <li><a href="italy.html">Study in Italy</a></li>
+                                    <li><a href="turkey.html">Study in Turkey</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="visa-services.html">Visa - Services</a></li>
+                            <li><a href="#coaching">Coaching</a></li>
+                            <li><a href="#contact">Contact Us</a></li>
+                            <li><a href="#registration-section" class="nav-link register-scroll">Register Here</a></li>
+                        </ul>
+                    </div>
+                </nav>
+                </header>
+                        <div class="requirement-text">
+                            <div class="requirement-title">Valid Passport</div>
+                            <div class="requirement-desc">Minimum 6 months validity</div>
+                        </div>
+                    </div>
+
+                    <div class="requirement">
+                        <i class="fas fa-graduation-cap"></i>
+                        <div class="requirement-text">
+                            <div class="requirement-title">Academic Documents</div>
+                            <div class="requirement-desc">Degree certificates & transcripts</div>
+                        </div>
+                    </div>
+
+                    <div class="requirement">
+                        <i class="fas fa-language"></i>
+                        <div class="requirement-text">
+                            <div class="requirement-title">English Proficiency</div>
+                            <div class="requirement-desc">IELTS/TOEFL score</div>
+                        </div>
+                    </div>
+
+                    <div class="requirement">
+                        <i class="fas fa-money-bill"></i>
+                        <div class="requirement-text">
+                            <div class="requirement-title">Financial Proof</div>
+                            <div class="requirement-desc">Bank statements & sponsor documents</div>
+                        </div>
+                    </div>
+
+                    <div class="requirement">
+                        <i class="fas fa-file-alt"></i>
+                        <div class="requirement-text">
+                            <div class="requirement-title">Statement of Purpose</div>
+                            <div class="requirement-desc">Your motivation & career goals</div>
+                        </div>
+                    </div>
+
+                    <div class="requirement">
+                        <i class="fas fa-user-tie"></i>
+                        <div class="requirement-text">
+                            <div class="requirement-title">Recommendation Letters</div>
+                            <div class="requirement-desc">From professors or employers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card full-width">
+                    <h2>
+                        <i class="fas fa-check-circle"></i>
+                        Confirm & Submit
+                    </h2>
+                    <p style="color: #7F8C8D; margin-bottom: 1.5rem;">
+                        By submitting this form, you confirm that all the information provided is accurate and complete. Our team will review your application and contact you within 24 hours.
+                    </p>
+                    <div class="action-buttons">
+                        <button class="btn btn-back" onclick="window.location.href='index.html#registration-section'">
+                            <i class="fas fa-edit"></i> Edit Information
+                        </button>
+                        <button class="btn btn-submit" id="submitBtn">
+                            <i class="fas fa-check"></i> Confirm & Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Load user data from sessionStorage
+        window.addEventListener('load', () => {
+            const registrationData = sessionStorage.getItem('registrationData');
+            if (registrationData) {
+                const data = JSON.parse(registrationData);
+                document.getElementById('userName').textContent = data.fullName || '-';
+                document.getElementById('userEmail').textContent = data.email || '-';
+                document.getElementById('userPhone').textContent = data.phone || '-';
+                document.getElementById('userVisa').textContent = data.visaType || '-';
+                document.getElementById('userCity').textContent = data.city || '-';
+                document.getElementById('userCountry').textContent = data.country || '-';
+            }
+        });
+
+        // Handle submit button
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+
+            // Show success message after 1 second
+            setTimeout(() => {
+                showSuccessPage();
+            }, 1000);
+        });
+
+        function showSuccessPage() {
+            document.body.innerHTML = `
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 100vh;
+                    background: linear-gradient(135deg, rgba(44, 95, 141, 0.75), rgba(74, 144, 226, 0.65)),
+                                url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=2400&h=1600&fit=crop&q=90&auto=format&sat=-15');
+                    background-size: cover;
+                    background-position: center;
+                ">
+                    <div style="
+                        background: white;
+                        border-radius: 20px;
+                        padding: 3rem;
+                        max-width: 500px;
+                        text-align: center;
+                        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+                        animation: slideUp 0.6s ease-out;
+                    ">
+                        <div style="
+                            width: 100px;
+                            height: 100px;
+                            background: linear-gradient(135deg, #4A90E2, #2C5F8D);
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto 1.5rem;
+                            animation: scaleIn 0.5s ease-out;
+                        ">
+                            <i class="fas fa-check" style="color: white; font-size: 3rem;"></i>
+                        </div>
+                        
+                        <h1 style="color: #2C5F8D; font-size: 2rem; margin-bottom: 0.5rem;">
+                            Successfully Registered!
+                        </h1>
+                        <p style="color: #7F8C8D; font-size: 1.1rem; margin-bottom: 2rem;">
+                            Your registration has been confirmed. Our team will review your application and contact you within 24 hours.
+                        </p>
+                        
+                        <button onclick="window.location.href='index.html'" style="
+                            padding: 1rem 2rem;
+                            background: linear-gradient(135deg, #4A90E2, #2C5F8D);
+                            color: white;
+                            border: none;
+                            border-radius: 6px;
+                            font-size: 1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(74, 144, 226, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="fas fa-home"></i> Go to Home
+                        </button>
+                    </div>
+                </div>
+
+                <style>
+                    @keyframes slideUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(40px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    
+                    @keyframes scaleIn {
+                        from {
+                            transform: scale(0);
+                        }
+                        to {
+                            transform: scale(1);
+                        }
+                    }
+                </style>
+            `;
+        }
+    </script>
+
+    <script src="script.js?v=20260204"></script>
+</body>
+</html>

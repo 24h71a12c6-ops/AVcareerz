@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Visa - Detailed Information</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header & Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="index.html" class="logo" style="text-decoration: none;">
+                    <img src="images/logo1.png" alt="Abroad Vision Carrerz Logo" class="navbar-logo-img">
+                    <div class="logo-text">
+                        <span class="logo-name">Abroad Vision </span>
+                        <span class="logo-tagline">Guiding Futures Beyond Borders</span>
+                    </div>
+                </a>
+                <div class="nav-toggle" id="navToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html#about">About Us</a></li>
+                    <li class="nav-dropdown">
+                        <a href="index.html#study">Study</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="usa.html">Study in USA</a></li>
+                            <li><a href="uk.html">Study in UK</a></li>
+                            <li><a href="canada.html">Study in Canada</a></li>
+                            <li><a href="australia.html">Study in Australia</a></li>
+                            <li><a href="germany.html">Study in Germany</a></li>
+                            <li><a href="newzealand.html">Study in New Zealand</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="visa-services.html">Visa Services</a></li>
+                    <li><a href="index.html#contact">Contact Us</a></li>
+                    <li><a href="index.html#registration-section" class="register-btn">Register Here</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Hero Section -->
+    <section class="country-hero">
+        <div class="hero-content">
+            <h1>
+                <span
+                    style="display:inline-block; opacity:0; transform:translateY(28px); animation: heroWord 0.7s ease-out forwards; animation-delay:0.05s;">Work</span>
+                <span
+                    style="display:inline-block; opacity:0; transform:translateY(28px); animation: heroWord 0.7s ease-out forwards; animation-delay:0.15s;">Visa</span>
+            </h1>
+            <p style="color:#fff; font-size:1.3rem; margin-top:1rem;">Advance Your Career on the Global Stage</p>
+        </div>
+    </section>
+    <style>
+        .country-hero {
+            position: relative;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .country-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('images/visa.JPEG') center center / cover no-repeat;
+            z-index: 1;
+        }
+
+        .country-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 33, 71, 0.6);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+        }
+
+        .country-hero h1 {
+            position: relative;
+            z-index: 3;
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-flex;
+            gap: 0.5rem;
+        }
+
+        @keyframes heroWord {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <!-- Main Content -->
+    <section class="visa-detail-content">
+        <div class="container">
+            <!-- Header & Navbar -->
+            <header>
+                    <nav class="navbar">
+                <div class="container">
+                    <a href="index.html" class="logo" style="text-decoration: none;">
+                        <img src="images/logo1.png" alt="Abroad Vision Carrerz Logo" class="navbar-logo-img">
+                        <div class="logo-text">
+                            <span class="logo-name">Abroad Vision </span>
+                            <span class="logo-tagline">Guiding Futures Beyond Borders</span>
+                        </div>
+                    </a>
+                    <div class="nav-toggle" id="navToggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li class="nav-dropdown">
+                            <a href="#study">Study</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="usa.html">Study in USA</a></li>
+                                <li><a href="uk.html">Study in UK</a></li>
+                                <li><a href="canada.html">Study in Canada</a></li>
+                                <li><a href="australia.html">Study in Australia</a></li>
+                                <li><a href="germany.html">Study in Germany</a></li>
+                                <li><a href="newzealand.html">Study in New Zealand</a></li>
+                                <li><a href="italy.html">Study in Italy</a></li>
+                                <li><a href="turkey.html">Study in Turkey</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="visa-services.html">Visa - Services</a></li>
+                        <li><a href="#coaching">Coaching</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#registration-section" class="nav-link register-scroll">Register Here</a></li>
+                    </ul>
+                </div>
+            </nav>
+            </header>
+                    margin-bottom: 1.2rem;
+                    text-align: center;
+                    font-weight: 800;
+                }
+
+                .overview-desc {
+                    color: #4a4a4a;
+                    font-size: 1.15rem;
+                    text-align: center;
+                    margin-bottom: 2.2rem;
+                }
+
+                .overview-features-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                    gap: 2rem;
+                    margin-top: 1.5rem;
+                }
+
+                .overview-feature-card {
+                    background: #fff;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+                    padding: 2rem 1.2rem 1.2rem 1.2rem;
+                    text-align: center;
+                    transition: box-shadow 0.3s;
+                }
+
+                .overview-feature-card i {
+                    font-size: 2.2rem;
+                    color: #2563EB;
+                    margin-bottom: 0.7rem;
+                }
+
+                .overview-feature-card h4 {
+                    color: #002147;
+                    font-size: 1.15rem;
+                    font-weight: 700;
+                    margin-bottom: 0.5rem;
+                }
+
+                .overview-feature-card p {
+                    color: #4a4a4a;
+                    font-size: 1rem;
+                }
+
+                .overview-feature-card:hover {
+                    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.13);
+                }
+            </style>
+
+            <!-- Eligibility Section -->
+            <div class="detail-section">
+                <h2>Who is Eligible for Work Visa?</h2>
+                <div class="eligibility-grid">
+                    <div class="eligibility-card">
+                        <div class="card-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4>Educational Qualifications</h4>
+                        <ul>
+                            <li>Bachelor's Degree (minimum for most positions)</li>
+                            <li>Professional Certifications</li>
+                            <li>Specialized Training & Skills</li>
+                            <li>Industry-Specific Credentials</li>
+                        </ul>
+                    </div>
+                    <div class="eligibility-card">
+                        <div class="card-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h4>Professional Experience</h4>
+                        <ul>
+                            <li>Minimum 2-5 years work experience</li>
+                            <li>Relevant Industry Background</li>
+                            <li>Proven Track Record</li>
+                            <li>Reference Letters</li>
+                        </ul>
+                    </div>
+                    <div class="eligibility-card">
+                        <div class="card-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4>Employment Requirements</h4>
+                        <ul>
+                            <li>Valid Job Offer from Employer</li>
+                            <li>Labor Market Certification</li>
+                            <li>Proof of Salary Package</li>
+                            <li>Employment Contract</li>
+                        </ul>
+                    </div>
+                    <div class="eligibility-card">
+                        <div class="card-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h4>Documentation</h4>
+                        <ul>
+                            <li>Valid Passport</li>
+                            <li>Job Offer Letter</li>
+                            <li>Educational Certificates</li>
+                            <li>Police Clearance Certificate</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Types of Work Visas -->
+            <div class="detail-section">
+                <h2>Types of Work Visas Available</h2>
+                <div class="visa-types-compare">
+                    <div class="compare-card">
+                        <h4>Skilled Worker Visa (H-1B, UK Visa, etc.)</h4>
+                        <p>For professionals in specialized fields requiring specific expertise</p>
+                        <ul>
+                            <li>Duration: 3-6 years</li>
+                            <li>Sponsorship required</li>
+                            <li>Path to permanent residency</li>
+                        </ul>
+                    </div>
+                    <div class="compare-card">
+                        <h4>Intra-Company Transfer Visa</h4>
+                        <p>For employees transferring within multinational companies</p>
+                        <ul>
+                            <li>Duration: 2-4 years</li>
+                            <li>Company sponsorship</li>
+                            <li>Faster processing</li>
+                        </ul>
+                    </div>
+                    <div class="compare-card">
+                        <h4>Start-up/Entrepreneur Visa</h4>
+                        <p>For business owners and entrepreneurs</p>
+                        <ul>
+                            <li>Duration: 2-3 years (renewable)</li>
+                            <li>Business plan required</li>
+                            <li>Investment criteria applies</li>
+                        </ul>
+                    </div>
+                    <div class="compare-card">
+                        <h4>Freelance/Contractor Visa</h4>
+                        <p>For self-employed professionals and contractors</p>
+                        <ul>
+                            <li>Duration: 1-2 years</li>
+                            <li>Self-sponsorship</li>
+                            <li>Proof of income required</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Benefits -->
+            <div class="detail-section benefits-section">
+                <h2>Key Benefits of Work Visa</h2>
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-number">1</div>
+                        <div class="benefit-text">
+                            <h4>International Career Opportunities</h4>
+                            <p>Access world-class companies and prestigious organizations across the globe</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-number">2</div>
+                        <div class="benefit-text">
+                            <h4>Competitive Salary & Benefits</h4>
+                            <p>Earn competitive international salaries with excellent benefits packages</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-number">3</div>
+                        <div class="benefit-text">
+                            <h4>Professional Growth</h4>
+                            <p>Gain valuable experience and expand your professional network globally</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-number">4</div>
+                        <div class="benefit-text">
+                            <h4>Path to PR</h4>
+                            <p>Many work visas offer a clear pathway to permanent residency</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-number">5</div>
+                        <div class="benefit-text">
+                            <h4>Family Support</h4>
+                            <p>Bring your spouse and dependent children to live with you abroad</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-number">6</div>
+                        <div class="benefit-text">
+                            <h4>Healthcare & Education</h4>
+                            <p>Access to quality healthcare and education systems in developed countries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Process -->
+            <div class="detail-section">
+                <h2>Work Visa Application Process</h2>
+                <div class="process-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-number">1</div>
+                        <h4>Secure Job Offer</h4>
+                        <p>Get a job offer from a company willing to sponsor your work visa</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">2</div>
+                        <h4>Employer Sponsorship</h4>
+                        <p>Employer initiates sponsorship and files required applications</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">3</div>
+                        <h4>Labor Certification</h4>
+                        <p>Obtain labor market certification (if required by destination country)</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">4</div>
+                        <h4>Prepare Documents</h4>
+                        <p>Gather credentials, certificates, employment history, and financial documents</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">5</div>
+                        <h4>Submit Application</h4>
+                        <p>Submit complete visa application through official immigration channels</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">6</div>
+                        <h4>Medical & Police Check</h4>
+                        <p>Complete medical examination and police clearance certificate</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">7</div>
+                        <h4>Visa Interview</h4>
+                        <p>Attend visa interview at embassy/consulate if required</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">8</div>
+                        <h4>Receive Visa & Travel</h4>
+                        <p>Collect your work visa and prepare for relocation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Points -->
+            <div class="detail-section important-section">
+                <h2>Important Points to Know</h2>
+                <div class="important-grid">
+                    <div class="important-box">
+                        <i class="fas fa-clock"></i>
+                        <h4>Processing Time</h4>
+                        <p>6-12 weeks depending on country and complexity</p>
+                    </div>
+                    <div class="important-box">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h4>Visa Fees</h4>
+                        <p>Typically $150-$500, costs may be covered by employer</p>
+                    </div>
+                    <div class="important-box">
+                        <i class="fas fa-calendar"></i>
+                        <h4>Validity Period</h4>
+                        <p>Usually valid for 3-5 years, renewable based on employment</p>
+                    </div>
+                    <div class="important-box">
+                        <i class="fas fa-briefcase"></i>
+                        <h4>Job Restriction</h4>
+                        <p>Usually limited to sponsored employer; changing jobs requires new sponsorship</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="detail-cta">
+                <h2>Ready to Advance Your Career Globally?</h2>
+                <p>Let our experts help you secure your work visa and international employment</p>
+                <a href="index.html#registration-section" class="cta-button">Register Now for Consultation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Abroad Vision Carrerz</h3>
+                    <p>Your trusted partner for studying abroad and visa services.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="visa-services.html">Visa Services</a></li>
+                        <li><a href="index.html#registration-section">Register</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-envelope"></i> info@abroadvisioncarrerz.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Abroad Vision Carrerz. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=20260204"></script>
+</body>
+
+</html>

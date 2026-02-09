@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Application - Abroad Vision Carrerz</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            padding-top: 100px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2C5F8D, #4A90E2);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: white;
+        }
+
+        .form-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2C5F8D;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #4A90E2;
+        }
+
+        .section-title i {
+            font-size: 1.3rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group label .required {
+            color: #e74c3c;
+            margin-left: 0.2rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+            background-color: #f8fafb;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+        }
+
+        .form-info i {
+            color: #2196F3;
+            font-size: 1.1rem;
+            margin-top: 0.2rem;
+        }
+
+        .form-info span {
+            color: #1976D2;
+            font-size: 0.9rem;
+        }
+
+        .submit-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .btn {
+            padding: 1.1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #4A90E2, #2C5F8D);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .optional-label {
+            font-size: 0.8rem;
+            color: #999;
+            font-weight: normal;
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .form-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .submit-section {
+                flex-direction: column;
+            }
+
+            .btn-submit {
+                flex: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Header & Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>Abroad Vision Carrerz</h1>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Back to Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Form -->
+    <div class="container">
+        <div class="form-header">
+            <h1>Complete Your Profile</h1>
+            <p>Help us understand your study abroad requirements better</p>
+        </div>
+
+        <div class="form-card">
+            <div class="form-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Please fill all fields marked with <span style="color: #e74c3c;">*</span>. Your information is secure and confidential.</span>
+            </div>
+
+            <form id="detailedInfoForm">
+                <!-- Personal Details Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-user"></i> Personal Details
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" name="fullName" placeholder="e.g., Rajesh Kumar" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email ID <span class="required">*</span></label>
+                            <input type="email" id="emailId" name="emailId" placeholder="e.g., rajesh@gmail.com" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mobile Number <span class="required">*</span></label>
+                            <input type="tel" id="mobileNumber" name="mobileNumber" placeholder="10-digit mobile number" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth <span class="required">*</span></label>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Gender <span class="required">*</span></label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nationality <span class="required">*</span></label>
+                            <input type="text" id="nationality" name="nationality" placeholder="e.g., Indian" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Visa Services <span class="required">*</span></label>
+                            <select id="visaServices" name="visaServices" required>
+                                <option value="">Select Visa Type</option>
+                                <option value="Student Visa">Student Visa</option>
+                                <option value="Tourist Visa">Tourist Visa</option>
+                                <option value="Work Visa">Work Visa</option>
+                                <option value="Business Visa">Business Visa</option>
+                                <option value="PR Visa">PR Visa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Complete Address <span class="required">*</span></label>
+                            <textarea id="completeAddress" name="completeAddress" placeholder="City, State, Country" required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Educational Details Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-graduation-cap"></i> Educational Details
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Highest Qualification <span class="required">*</span></label>
+                            <select id="qualification" name="qualification" required>
+                                <option value="">Select Qualification</option>
+                                <option value="Inter">Inter</option>
+                                <option value="Diploma">Diploma</option>
+                                <option value="Degree">Degree</option>
+                                <option value="B.Tech">B.Tech</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Course / Branch <span class="required">*</span></label>
+                            <input type="text" id="courseBranch" name="courseBranch" placeholder="e.g., Computer Science" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>College or University Name <span class="required">*</span></label>
+                            <input type="text" id="collegeName" name="collegeName" placeholder="e.g., IIT Delhi" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Year of Passing <span class="required">*</span></label>
+                            <input type="number" id="yearOfPassing" name="yearOfPassing" placeholder="e.g., 2024" min="2020" max="2028" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Percentage / CGPA <span class="required">*</span></label>
+                            <input type="number" id="percentageCGPA" name="percentageCGPA" placeholder="e.g., 8.5" step="0.01" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Backlogs <span class="required">*</span></label>
+                            <select id="backlogs" name="backlogs" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Preferences Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-plane"></i> Study Preferences
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Preferred Country <span class="required">*</span></label>
+                            <select id="preferredCountry" name="preferredCountry" required>
+                                <option value="">Select Country</option>
+                                <option value="USA">United States</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Germany">Germany</option>
+                                <option value="New Zealand">New Zealand</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Study Level <span class="required">*</span></label>
+                            <select id="studyLevel" name="studyLevel" required>
+                                <option value="">Select Level</option>
+                                <option value="Diploma">Diploma</option>
+                                <option value="UG">UG (Bachelor's)</option>
+                                <option value="PG">PG (Master's)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Preferred Course <span class="required">*</span></label>
+                            <input type="text" id="preferredCourse" name="preferredCourse" placeholder="e.g., MS in Computer Science" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Intake <span class="required">*</span></label>
+                            <select id="intake" name="intake" required>
+                                <option value="">Select Intake</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Spring">Spring</option>
+                                <option value="Summer">Summer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Intake Year <span class="required">*</span></label>
+                            <select id="intakeYear" name="intakeYear" required>
+                                <option value="">Select Year</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exam Details Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-file-alt"></i> Exam Details
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>English Proficiency Test Score <span class="optional-label">(optional)</span></label>
+                            <input type="text" id="englishTestScore" name="englishTestScore" placeholder="e.g., IELTS 7.0 / TOEFL 100">
+                        </div>
+                        <div class="form-group">
+                            <label>GRE / GMAT Score <span class="optional-label">(optional)</span></label>
+                            <input type="text" id="greGmatScore" name="greGmatScore" placeholder="e.g., GRE 320 / GMAT 700">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Passport Availability <span class="required">*</span></label>
+                            <select id="passportAvailability" name="passportAvailability" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Passport Number <span class="optional-label">(if available)</span></label>
+                            <input type="text" id="passportNumber" name="passportNumber" placeholder="e.g., A12345678">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Details Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-money-bill"></i> Financial Details
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Budget Range (in USD) <span class="required">*</span></label>
+                            <select id="budgetRange" name="budgetRange" required>
+                                <option value="">Select Budget</option>
+                                <option value="Below 10000">Below $10,000</option>
+                                <option value="10000-20000">$10,000 - $20,000</option>
+                                <option value="20000-40000">$20,000 - $40,000</option>
+                                <option value="40000-60000">$40,000 - $60,000</option>
+                                <option value="Above 60000">Above $60,000</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Education Loan Required <span class="required">*</span></label>
+                            <select id="educationLoan" name="educationLoan" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sponsor <span class="required">*</span></label>
+                            <select id="sponsor" name="sponsor" required>
+                                <option value="">Select</option>
+                                <option value="Parents">Parents</option>
+                                <option value="Self">Self</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Details Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-briefcase"></i> Experience Details <span class="optional-label">(Optional)</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Work Experience</label>
+                            <select id="workExperience" name="workExperience">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="yearsGroup" style="display: none;">
+                            <label>Years of Experience</label>
+                            <input type="number" id="yearsOfExperience" name="yearsOfExperience" placeholder="e.g., 2" min="0" max="50">
+                        </div>
+                    </div>
+
+                    <div class="form-row full" id="companyGroup" style="display: none;">
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" id="companyName" name="companyName" placeholder="e.g., TCS, Infosys">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="submit-section">
+                    <button type="submit" class="btn btn-submit" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get email from localStorage
+        const userEmail = localStorage.getItem('userEmail');
+        
+        if (!userEmail) {
+            alert('Please complete the initial registration first');
+            window.location.href = 'index.html#registration-section';
+        } else {
+            // Set email field as readonly
+            document.getElementById('emailId').value = userEmail;
+        }
+
+        // Show/hide experience fields based on selection
+        document.getElementById('workExperience').addEventListener('change', function() {
+            if (this.value === 'Yes') {
+                document.getElementById('yearsGroup').style.display = 'grid';
+                document.getElementById('companyGroup').style.display = 'grid';
+            } else {
+                document.getElementById('yearsGroup').style.display = 'none';
+                document.getElementById('companyGroup').style.display = 'none';
+            }
+        });
+
+        // Form submission
+        document.getElementById('detailedInfoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            const formData = {
+                email: userEmail,
+                fullName: document.getElementById('fullName').value,
+                mobileNumber: document.getElementById('mobileNumber').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                gender: document.getElementById('gender').value,
+                nationality: document.getElementById('nationality').value,
+                visaServices: document.getElementById('visaServices').value,
+                completeAddress: document.getElementById('completeAddress').value,
+                qualification: document.getElementById('qualification').value,
+                courseBranch: document.getElementById('courseBranch').value,
+                collegeName: document.getElementById('collegeName').value,
+                yearOfPassing: document.getElementById('yearOfPassing').value,
+                percentageCGPA: document.getElementById('percentageCGPA').value,
+                backlogs: document.getElementById('backlogs').value,
+                preferredCountry: document.getElementById('preferredCountry').value,
+                studyLevel: document.getElementById('studyLevel').value,
+                preferredCourse: document.getElementById('preferredCourse').value,
+                intake: document.getElementById('intake').value,
+                intakeYear: document.getElementById('intakeYear').value,
+                englishTestScore: document.getElementById('englishTestScore').value || null,
+                greGmatScore: document.getElementById('greGmatScore').value || null,
+                passportAvailability: document.getElementById('passportAvailability').value,
+                passportNumber: document.getElementById('passportNumber').value || null,
+                budgetRange: document.getElementById('budgetRange').value,
+                educationLoan: document.getElementById('educationLoan').value,
+                sponsor: document.getElementById('sponsor').value,
+                workExperience: document.getElementById('workExperience').value,
+                yearsOfExperience: document.getElementById('yearsOfExperience').value || null,
+                companyName: document.getElementById('companyName').value || null
+            };
+
+            try {
+                const response = await fetch('https://abroad-vision-carrerz-1.onrender.com/api/additional-info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    localStorage.removeItem('userEmail');
+                    
+                    setTimeout(() => {
+                        showSuccessPage(formData);
+                    }, 800);
+                } else {
+                    throw new Error(data.error || 'Failed to submit form');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error submitting application. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function showSuccessPage(data) {
+            document.body.innerHTML = `
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 100vh;
+                    background: linear-gradient(135deg, rgba(44, 95, 141, 0.85), rgba(74, 144, 226, 0.75)),
+                                url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=2400&h=1600&fit=crop&q=90&auto=format&sat=-10');
+                    background-size: cover;
+                    background-position: center;
+                    padding: 2rem;
+                ">
+                    <div style="
+                        background: white;
+                        border-radius: 20px;
+                        padding: 3rem 2.5rem;
+                        max-width: 650px;
+                        width: 100%;
+                        text-align: center;
+                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                        animation: slideUp 0.6s ease-out;
+                    ">
+                        <div style="
+                            width: 100px;
+                            height: 100px;
+                            background: linear-gradient(135deg, #4A90E2, #2C5F8D);
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto 1.5rem;
+                            animation: scaleIn 0.5s ease-out;
+                            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+                        ">
+                            <i class="fas fa-check-circle" style="color: white; font-size: 3rem;"></i>
+                        </div>
+                        
+                        <h1 style="color: #2C5F8D; font-size: 2.2rem; margin-bottom: 0.8rem; font-weight: 700;">
+                            🎉 Congratulations!
+                        </h1>
+                        <h2 style="color: #4A90E2; font-size: 1.3rem; margin-bottom: 1rem; font-weight: 600;">
+                            Application Submitted Successfully
+                        </h2>
+                        <div style="
+                            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+                            padding: 1.5rem;
+                            border-radius: 12px;
+                            margin-bottom: 1.5rem;
+                            border-left: 4px solid #4A90E2;
+                        ">
+                            <p style="color: #34495e; font-size: 1rem; line-height: 1.8; margin: 0;">
+                                <strong>${data.fullName}</strong>, your application for <strong>${data.preferredCourse}</strong> in 
+                                <strong>${data.preferredCountry}</strong> has been received successfully!
+                            </p>
+                        </div>
+                        
+                        <p style="color: #7F8C8D; font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6;">
+                            <i class="fas fa-headset" style="color: #4A90E2;"></i> Our expert counselors will contact you on <strong>${data.mobileNumber}</strong> within <strong>24 hours</strong> to guide you further.
+                        </p>
+                        
+                        <button onclick="window.location.href='index.html'" style="
+                            padding: 1.1rem 2.5rem;
+                            background: linear-gradient(135deg, #4A90E2, #2C5F8D);
+                            color: white;
+                            border: none;
+                            border-radius: 10px;
+                            font-size: 1.05rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(74, 144, 226, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(74, 144, 226, 0.3)'">
+                            <i class="fas fa-home"></i> Return to Home
+                        </button>
+                    </div>
+                </div>
+
+                <style>
+                    @keyframes slideUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(50px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    
+                    @keyframes scaleIn {
+                        from {
+                            transform: scale(0) rotate(-180deg);
+                        }
+                        to {
+                            transform: scale(1) rotate(0deg);
+                        }
+                    }
+                </style>
+            `;
+        }
+    </script>
+
+    <script src="script.js?v=20260204"></script>
+</body>
+</html>

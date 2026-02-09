@@ -1,0 +1,12 @@
+# Ignore environment files anywhere
+**/.env
+**/.env.*
+
+# But allow example templates
+!**/.env.example
+
+# Node
+**/node_modules/
+
+# Logs
+**/*.log

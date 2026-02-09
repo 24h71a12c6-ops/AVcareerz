@@ -1,0 +1,103 @@
+/* Motham section background mariyu padding */
+.testimonial-stats-section {
+    padding: 80px 10%;
+    background-color: #f8faff;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Flexbox vaadi testimonial left ki, stats right ki pattachu */
+
+/* Container ni side-by-side pettadaniki */
+.testimonial-stats-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    padding: 60px 5%;
+    flex-wrap: wrap; /* Mobile lo automatic ga okadani kinda okati vasthundi */
+}
+
+/* Testimonial Block (Left Side) */
+
+/* Left Side Testimonial */
+.testimonial-block {
+    flex: 1;
+    min-width: 300px;
+}
+
+.testimonial-avatars {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.testimonial-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-right: -10px; /* Overlap effect kosam */
+    background: #ccc;
+}
+
+.testimonial-stars {
+    color: #ffb400; /* Gold color */
+    margin-bottom: 15px;
+}
+
+.testimonial-text {
+    font-style: italic;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.author-name {
+    font-weight: bold;
+    color: #000;
+}
+
+/* Stats Block (Right Side) */
+
+/* Right Side Stats Group */
+.stats-block {
+    display: flex;
+    gap: 20px;
+    flex: 1.5;
+}
+
+
+/* Single Stat Card Style - Screenshot lo unna white card look kosam */
+.stat-item {
+    background: #ffffff;
+    padding: 30px 20px;
+    border-radius: 15px;
+    text-align: center;
+    flex: 1;
+    /* Soft Shadow effect - Idhe aa professional look isthundi */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px); /* Mouse pedithe card koncham paiki lesthundi */
+}
+
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: #007bff; /* Blue color icons */
+    margin-bottom: 15px;
+}
+
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.2;
+}
