@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "postinstall": "npm --prefix backend install",
     "start": "npm --prefix backend start",
     "backend": "npm --prefix backend start",
     "backend:dev": "npm --prefix backend run dev"
