@@ -6867,6 +6867,15 @@ footer {
     box-sizing: border-box !important;
 }
 
+/* Explore Study Destinations - full-width continuous train */
+.destinations .destinations-layout .destinations-grid {
+    grid-column: 1 / -1;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 24px 5vw 70px;
+    overflow: hidden;
+}
+
 .destinations .destinations-grid .flag-wrap,
 .destinations-grid .flag-wrap {
     height: 200px !important; /* image area */

@@ -669,6 +669,7 @@
     (function() {
       const container = document.querySelector('.destinations-side .countries-grid');
       if (!container) return;
+      const section = document.querySelector('.destinations');
       const items = Array.from(container.querySelectorAll('.country-item'));
       const count = items.length;
 
@@ -677,6 +678,7 @@
       const baseAngles = items.map((_, i) => (-90 + (360 / count) * i) * (Math.PI / 180));
 
       let start = null;
+      let rafId = null;
       const rotationPeriod = 20000; // ms per full rotation (20s)
 
       function recalc() {
@@ -699,12 +701,44 @@
 
         // no decorative planes
 
-        requestAnimationFrame(render);
+        rafId = requestAnimationFrame(render);
+      }
+
+      function startLoop() {
+        if (rafId != null) return;
+        start = null;
+        rafId = requestAnimationFrame(render);
+      }
+
+      function stopLoop() {
+        if (rafId == null) return;
+        cancelAnimationFrame(rafId);
+        rafId = null;
       }
 
       window.addEventListener('resize', recalc);
       recalc();
-      requestAnimationFrame(render);
+
+      if ('IntersectionObserver' in window && section) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            const entry = entries && entries[0];
+            if (!entry) return;
+            if (document.hidden) return stopLoop();
+            if (entry.isIntersecting) startLoop();
+            else stopLoop();
+          },
+          { root: null, threshold: 0.05 }
+        );
+        io.observe(section);
+      } else {
+        startLoop();
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopLoop();
+        else startLoop();
+      });
     })();
   </script>
 </body>

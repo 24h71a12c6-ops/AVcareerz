@@ -3,6 +3,33 @@ document.addEventListener("DOMContentLoaded", function () {
     const isRegisteredUser = () => !!localStorage.getItem('userEmail');
     const isHomePagePath = () => window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
+    // 0) Performance: hint browsers to lazy-load below-the-fold images.
+    // (Windows may hide case issues; Render/Linux won't. This is purely perf.)
+    (function initImageLoadingHints() {
+        try {
+            const imgs = Array.from(document.images || []);
+            imgs.forEach((img) => {
+                if (!img) return;
+                if (!img.getAttribute('decoding')) img.setAttribute('decoding', 'async');
+
+                // Keep hero + navbar/logo eager; everything else can be lazy.
+                const inHero = !!img.closest('.hero');
+                const inNavbar = !!img.closest('.navbar');
+                const hasLoading = img.hasAttribute('loading');
+                if (!hasLoading) {
+                    img.setAttribute('loading', (inHero || inNavbar) ? 'eager' : 'lazy');
+                }
+
+                // First hero slide image should be high priority.
+                if (inHero && img.closest('.hero-slide')?.classList.contains('active')) {
+                    if (!img.getAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'high');
+                }
+            });
+        } catch (err) {
+            // non-fatal
+        }
+    })();
+
     // 1. HERO SLIDER
     const slides = document.querySelectorAll('.hero-slide');
     if (slides.length > 0) {
@@ -1225,6 +1252,19 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
     let lastTime = performance.now();
     const CLICK_THRESHOLD = 6;
 
+    // Stop the animation loop when not visible to avoid page-wide jank.
+    let rafId = null;
+    const startLoop = () => {
+        if (rafId != null) return;
+        lastTime = performance.now();
+        rafId = requestAnimationFrame(step);
+    };
+    const stopLoop = () => {
+        if (rafId == null) return;
+        cancelAnimationFrame(rafId);
+        rafId = null;
+    };
+
     function recalcContainer() {
         return track.getBoundingClientRect();
     }
@@ -1233,6 +1273,12 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
         try {
             const dt = Math.min(0.04, (now - lastTime) / 1000); // clamp dt
             lastTime = now;
+
+            // If the tab is hidden, keep it stopped.
+            if (document.hidden) {
+                stopLoop();
+                return;
+            }
 
             if (!paused && !dragging) {
                 x += velocity * dt;
@@ -1291,10 +1337,29 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
             paused = true;
         }
 
-        requestAnimationFrame(step);
+        rafId = requestAnimationFrame(step);
     }
 
-    requestAnimationFrame(step);
+    // Pause/resume based on viewport visibility
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+            (entries) => {
+                const entry = entries && entries[0];
+                if (!entry) return;
+                if (entry.isIntersecting) startLoop();
+                else stopLoop();
+            },
+            { root: null, threshold: 0.05 }
+        );
+        io.observe(section);
+    } else {
+        startLoop();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopLoop();
+        else startLoop();
+    });
 
     // Pause on hover/focus
     track.addEventListener('mouseenter', () => { paused = true; });

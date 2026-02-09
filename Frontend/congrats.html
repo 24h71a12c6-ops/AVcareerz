@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            background: linear-gradient(135deg, #F8F9FA, #E8F4F8);
+            margin: 0;
+            background: #002147;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -20,6 +21,17 @@
             padding: 3rem 2.5rem;
             max-width: 420px;
             text-align: center;
+            animation: congrats-float 3.2s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        @keyframes congrats-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .congrats-card { animation: none; }
         }
         .congrats-card h1 {
             color: #22c55e;
