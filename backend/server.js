@@ -249,14 +249,27 @@ const createTables = async () => {
 // Database connect ayyaka deenini call chey
 // Note: we will await this during startup so routes don't hit missing tables.
 
-const corsAllowlist = [
-  // Primary: set this in Render Dashboard Environment as your frontend URL
-  process.env.FRONTEND_URL,
-  // Explicit fallback (your current Render frontend URL)
-  'https://abroad-vision-carrerz.onrender.com',
-  // Keep older deployed frontend URL if still in use
-  'https://abroad-vision-carrerz-1.onrender.com'
-].filter(Boolean);
+const corsAllowlist = new Set(
+  [
+    // Primary: set this in Render Dashboard Environment as your frontend URL
+    process.env.FRONTEND_URL,
+    // Optional: additional comma-separated origins
+    ...(process.env.CORS_EXTRA_ORIGINS ? process.env.CORS_EXTRA_ORIGINS.split(',') : []),
+    // Current Render URL
+    'https://abroad-vision-carrerz-consultancy.onrender.com',
+    // Older Render URLs (keep if still in use)
+    'https://abroad-vision-carrerz.onrender.com',
+    'https://abroad-vision-carrerz-1.onrender.com'
+  ]
+    .map((v) => String(v || '').trim())
+    .filter(Boolean)
+);
+
+// Local development origins (any port)
+const corsDevOriginPatterns = [
+  /^http:\/\/localhost:\d+$/,
+  /^http:\/\/127\.0\.0\.1:\d+$/
+];
 
 // When opening HTML directly from disk (file://), browsers send Origin: "null".
 // For local testing only, you can opt-in to allow this by setting ALLOW_NULL_ORIGIN=1.
@@ -269,7 +282,8 @@ app.use(
       if (!origin) return callback(null, true);
       // Optional dev-mode support for file:// pages (Origin: "null").
       if (allowNullOrigin && origin === 'null') return callback(null, true);
-      if (corsAllowlist.includes(origin)) return callback(null, true);
+      if (corsAllowlist.has(origin)) return callback(null, true);
+      if (corsDevOriginPatterns.some((re) => re.test(origin))) return callback(null, true);
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     credentials: true
