@@ -249,43 +249,24 @@ const createTables = async () => {
 // Database connect ayyaka deenini call chey
 // Note: we will await this during startup so routes don't hit missing tables.
 
-const corsAllowlist = new Set(
-  [
-    // Primary: set this in Render Dashboard Environment as your frontend URL
-    process.env.FRONTEND_URL,
-    // Optional: additional comma-separated origins
-    ...(process.env.CORS_EXTRA_ORIGINS ? process.env.CORS_EXTRA_ORIGINS.split(',') : []),
-    // Current Render URL
-    'https://abroad-vision-carrerz-consultancy.onrender.com',
-    // Older Render URLs (keep if still in use)
-    'https://abroad-vision-carrerz.onrender.com',
-    'https://abroad-vision-carrerz-1.onrender.com'
-  ]
-    .map((v) => String(v || '').trim())
-    .filter(Boolean)
-);
-
-// Local development origins (any port)
-const corsDevOriginPatterns = [
-  /^http:\/\/localhost:\d+$/,
-  /^http:\/\/127\.0\.0\.1:\d+$/
+const allowedOrigins = [
+  'http://127.0.0.1:5501',
+  'http://localhost:5501',
+  'https://abroad-vision-carrerz-consultancy.onrender.com'
 ];
-
-// When opening HTML directly from disk (file://), browsers send Origin: "null".
-// For local testing only, you can opt-in to allow this by setting ALLOW_NULL_ORIGIN=1.
-const allowNullOrigin = process.env.ALLOW_NULL_ORIGIN === '1';
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow non-browser clients (no Origin header) like curl/postman
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-      // Optional dev-mode support for file:// pages (Origin: "null").
-      if (allowNullOrigin && origin === 'null') return callback(null, true);
-      if (corsAllowlist.has(origin)) return callback(null, true);
-      if (corsDevOriginPatterns.some((re) => re.test(origin))) return callback(null, true);
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
+      if (allowedOrigins.indexOf(origin) === -1) {
+        var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
     },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
   })
 );
