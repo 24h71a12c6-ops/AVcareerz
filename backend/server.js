@@ -26,7 +26,7 @@ const { sendAdminWhatsApp, sendAdminWhatsAppTemplate, getWhatsAppSenderInfo } = 
 const pool = require('./config/db');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 10000;
 const upload = multer({ storage: multer.memoryStorage() });
 
 const findListeningPid = (port) =>
@@ -234,13 +234,13 @@ const createTables = async () => {
     // Helpful indexes (safe even if already present)
     try {
       await pool.query('CREATE INDEX idx_email ON registrations(email)');
-    } catch {}
+    } catch { }
     try {
       await pool.query('CREATE INDEX idx_next_form_email ON next_form(email)');
-    } catch {}
+    } catch { }
     try {
       await pool.query('CREATE INDEX idx_additional_info_email ON additional_info(email)');
-    } catch {}
+    } catch { }
   } catch (err) {
     console.error('Table creation failed:', err?.message || err);
   }
@@ -939,8 +939,8 @@ const startServer = async () => {
   }
 
   server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n✓ Server is listening on port ${PORT}`);
-    console.log('✓ Ready to receive registrations');
+    console.log(`Server is listening on port ${PORT}`);
+    console.log(`✓ Ready to receive registrations`);
   });
 
   server.on('error', (err) => {

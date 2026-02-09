@@ -710,12 +710,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             try {
-                google.accounts.id.initialize({
-                    client_id: "197244342804-86t5fr3u2eqg44b9gbck58omfegnjlcl.apps.googleusercontent.com",
-                    callback: handleCredentialResponse,
-                    auto_select: false,
-                    cancel_on_tap_outside: true
-                });
+                // google.accounts.id.initialize is now handled by HTML (g_id_onload)
 
                 google.accounts.id.renderButton(
                     googleBtnContainer,
@@ -782,9 +777,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (email) {
                 localStorage.setItem('userEmail', email);
                 // User is signed in again; don't keep showing the login card on reopen.
-                try { localStorage.removeItem('showLoginAfterLogout'); } catch {}
-                try { localStorage.setItem('lastUserEmail', email); } catch {}
-                try { localStorage.setItem('hasSignedUp', '1'); } catch {}
+                try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
+                try { localStorage.setItem('lastUserEmail', email); } catch { }
+                try { localStorage.setItem('hasSignedUp', '1'); } catch { }
                 const registrationPayload = { fullName, email, phone: '' };
                 sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
                 localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
@@ -795,21 +790,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 } catch {
                     // ignore
                 }
+
+                // Close the registration modal if open and keep user on the website
+                try {
+                    document.body.classList.remove('reg-modal-open');
+                    const overlay = document.getElementById('regModalOverlay');
+                    if (overlay) overlay.hidden = true;
+                    if (window.location.hash === '#registration-section') {
+                        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                    }
+                } catch {
+                    // ignore
+                }
             }
         } catch {
             // ignore decoding issues
-        }
-
-        // Close the registration modal if open and keep user on the website
-        try {
-            document.body.classList.remove('reg-modal-open');
-            const overlay = document.getElementById('regModalOverlay');
-            if (overlay) overlay.hidden = true;
-            if (window.location.hash === '#registration-section') {
-                window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-            }
-        } catch {
-            // ignore
         }
     }
 
@@ -1392,7 +1387,7 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
     let wheelTimeout = null;
     track.addEventListener('wheel', (e) => {
         // allow immediate carousel movement and stop the page from scrolling while over the track
-        try { e.preventDefault(); } catch (err) {}
+        try { e.preventDefault(); } catch (err) { }
         const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
         if (delta === 0) return;
         // apply a modest multiplier so wheel movement feels responsive
@@ -1419,7 +1414,7 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
         startTranslate = x;
         moved = 0;
         downCard = e.target.closest('.destination-card');
-        try { track.setPointerCapture(e.pointerId); } catch (err) {}
+        try { track.setPointerCapture(e.pointerId); } catch (err) { }
     });
 
     track.addEventListener('pointermove', (e) => {
@@ -1439,7 +1434,7 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
             if (href) window.location.href = href;
         }
         downCard = null;
-        try { if (e && e.pointerId) track.releasePointerCapture(e.pointerId); } catch (err) {}
+        try { if (e && e.pointerId) track.releasePointerCapture(e.pointerId); } catch (err) { }
     }
 
     track.addEventListener('pointerup', endPointer);
@@ -1895,8 +1890,8 @@ if (registrationForm) {
 
                 // Store email in localStorage for additional-info form
                 localStorage.setItem('userEmail', email);
-                try { localStorage.setItem('lastUserEmail', email); } catch {}
-                try { localStorage.setItem('hasSignedUp', '1'); } catch {}
+                try { localStorage.setItem('lastUserEmail', email); } catch { }
+                try { localStorage.setItem('hasSignedUp', '1'); } catch { }
 
                 // Mark this session as "just registered" so we don't auto-redirect on #registration-section
                 // (User should be able to explore the website normally after signup.)
@@ -2017,9 +2012,9 @@ if (loginForm) {
                 showNotification('Login successful!', 'success');
                 localStorage.setItem('userEmail', email);
                 // User is signed in again; don't keep showing the login card on reopen.
-                try { localStorage.removeItem('showLoginAfterLogout'); } catch {}
-                try { localStorage.setItem('lastUserEmail', email); } catch {}
-                try { localStorage.setItem('hasSignedUp', '1'); } catch {}
+                try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
+                try { localStorage.setItem('lastUserEmail', email); } catch { }
+                try { localStorage.setItem('hasSignedUp', '1'); } catch { }
 
                 try {
                     const fullName = data?.data?.fullName || '';
