@@ -26,7 +26,7 @@ const { sendAdminWhatsApp, sendAdminWhatsAppTemplate, getWhatsAppSenderInfo } = 
 const pool = require('./config/db');
 
 const app = express();
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 4000;
 const upload = multer({ storage: multer.memoryStorage() });
 
 const findListeningPid = (port) =>
@@ -939,8 +939,8 @@ const startServer = async () => {
   }
 
   server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is listening on port ${PORT}`);
-    console.log(`✓ Ready to receive registrations`);
+    console.log(`\n✓ Server is listening on port ${PORT}`);
+    console.log('✓ Ready to receive registrations');
   });
 
   server.on('error', (err) => {

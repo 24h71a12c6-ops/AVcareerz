@@ -710,7 +710,12 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             try {
-                // google.accounts.id.initialize is now handled by HTML (g_id_onload) in index.html
+                google.accounts.id.initialize({
+                    client_id: "197244342804-86t5fr3u2eqg44b9gbck58omfegnjlcl.apps.googleusercontent.com",
+                    callback: handleCredentialResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: true
+                });
 
                 google.accounts.id.renderButton(
                     googleBtnContainer,
@@ -807,9 +812,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // ignore
         }
     }
-
-    // Expose to window for the Google Identity Services HTML API
-    window.handleCredentialResponse = handleCredentialResponse;
 
     // 8. REGISTRATION POPUP AFTER 4 SECONDS (with blurred background)
     const regSection = document.getElementById('registration-section');
@@ -2281,5 +2283,4 @@ function playSuccessSound() {
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
 }
-});
 
