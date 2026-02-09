@@ -7,10 +7,10 @@ const { loadEnv } = require('../utils/loadEnv');
 loadEnv(path.join(__dirname, '..', '.env'), { override: true });
 
 const dbPort = parseInt(process.env.DB_PORT || '4000', 10);
+// backend/config/db.js
+// path.join(process.cwd(), 'ca.pem') badulu kinda line pettu:
 
-// Render lo path issues rakunda absolute path teeskuntunnam
-const caPath = path.join(process.cwd(), 'ca.pem'); 
-
+const caPath = path.resolve(__dirname, '../../ca.pem');
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
