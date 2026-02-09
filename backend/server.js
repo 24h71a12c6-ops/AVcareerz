@@ -442,13 +442,7 @@ app.post(
 );
 
 app.get('/api', (req, res) => {
-  res.json({
-    message: 'Abroad Vision Carrerz Backend is running!',
-    version: '1.0.0',
-    timestamp: new Date(),
-    renderCommit: process.env.RENDER_GIT_COMMIT || null,
-    node: process.version
-  });
+  res.json({ message: 'Abroad Vision Carrerz Backend is running!', version: '1.0.0', timestamp: new Date() });
 });
 
 app.get('/health', (req, res) => {

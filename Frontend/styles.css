@@ -5471,7 +5471,7 @@ footer {
     position: relative;
     margin-top: 80px;
     padding: 120px 0 90px;
-    background: linear-gradient(120deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/images/visa.JPEG') center/cover no-repeat;
+    background: linear-gradient(120deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('images/visa.JPEG') center/cover no-repeat;
     text-align: center;
     overflow: hidden;
 }
@@ -5781,7 +5781,7 @@ footer {
     position: relative;
     padding: 60px 0;
     text-align: center;
-    background-image: url('/images/world.JPEG');
+    background-image: url('images/world.JPEG');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
