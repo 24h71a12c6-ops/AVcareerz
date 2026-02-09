@@ -278,15 +278,16 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve the Frontend (HTML/CSS/JS/images) from the same server.
-// This prevents broken <img src="images/..."> when the site is opened via the backend URL.
+// --- Static Frontend + Images ---
+// Serve frontend HTML/CSS/JS from the backend URL.
 const FRONTEND_DIR = path.join(__dirname, '..', 'Frontend');
-app.use(express.static(FRONTEND_DIR));
 
-// Explicit images route (useful for deployments like Render).
-// Supports both Frontend/images (current project layout) and a root-level /images folder.
+// 1) Images route: supports both Frontend/images (current layout) and a root-level /images folder.
 app.use('/images', express.static(path.join(__dirname, '..', 'Frontend', 'images')));
-app.use('/images', express.static(path.join(__dirname, '../images')));
+app.use('/images', express.static(path.join(__dirname, '..', 'images')));
+
+// 2) Frontend files (index.html, styles.css, other pages)
+app.use(express.static(FRONTEND_DIR));
 
 app.post(
   '/api/abroad-registration',
@@ -440,7 +441,7 @@ app.post(
   }
 );
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({ message: 'Abroad Vision Carrerz Backend is running!', version: '1.0.0', timestamp: new Date() });
 });
 
@@ -913,6 +914,15 @@ app.post('/api/additional-info', async (req, res) => {
     console.error('Additional info error:', error);
     res.status(500).json({ success: false, error: 'Failed to submit application', message: error.message });
   }
+});
+
+// 3) Fallback: for non-API GET routes, always return Frontend/index.html
+// (keeps /api/* working, and lets direct URL refresh work in deployments)
+app.get('*', (req, res, next) => {
+  if (req.method !== 'GET') return next();
+  if (req.path.startsWith('/api') || req.path === '/health') return next();
+  if (path.extname(req.path)) return next();
+  return res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 
 app.use((req, res) => {
