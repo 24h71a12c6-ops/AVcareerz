@@ -278,6 +278,16 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve the Frontend (HTML/CSS/JS/images) from the same server.
+// This prevents broken <img src="images/..."> when the site is opened via the backend URL.
+const FRONTEND_DIR = path.join(__dirname, '..', 'Frontend');
+app.use(express.static(FRONTEND_DIR));
+
+// Explicit images route (useful for deployments like Render).
+// Supports both Frontend/images (current project layout) and a root-level /images folder.
+app.use('/images', express.static(path.join(__dirname, '..', 'Frontend', 'images')));
+app.use('/images', express.static(path.join(__dirname, '../images')));
+
 app.post(
   '/api/abroad-registration',
   upload.fields([
