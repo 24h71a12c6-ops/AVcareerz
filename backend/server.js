@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const crypto = require('crypto');
@@ -26,7 +27,7 @@ const { sendAdminWhatsApp, sendAdminWhatsAppTemplate, getWhatsAppSenderInfo } = 
 const pool = require('./config/db');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 10000;
 const upload = multer({ storage: multer.memoryStorage() });
 
 const findListeningPid = (port) =>
@@ -274,15 +275,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // --- Static Frontend + Images ---
-// Serve frontend HTML/CSS/JS from the backend URL.
-const FRONTEND_DIR = path.join(__dirname, '..', 'Frontend');
+// Dynamically resolve the Frontend folder location
+const frontendPath = fs.existsSync(path.join(__dirname, 'Frontend')) 
+  ? path.join(__dirname, 'Frontend') 
+  : path.join(__dirname, '..', 'Frontend');
 
-// 1) Images route: supports both Frontend/images (current layout) and a root-level /images folder.
-app.use('/images', express.static(path.join(__dirname, '..', 'Frontend', 'images')));
-app.use('/images', express.static(path.join(__dirname, '..', 'images')));
+// Serve all static files from Frontend
+app.use(express.static(frontendPath));
 
-// 2) Frontend files (index.html, styles.css, other pages)
-app.use(express.static(FRONTEND_DIR));
+// Serve images specifically from Frontend/images
+app.use('/images', express.static(path.join(frontendPath, 'images')));
 
 app.post(
   '/api/abroad-registration',
@@ -939,8 +941,8 @@ const startServer = async () => {
   }
 
   server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n✓ Server is listening on port ${PORT}`);
-    console.log('✓ Ready to receive registrations');
+    console.log(`Server is listening on port ${PORT}`);
+    console.log(`✓ Ready to receive registrations`);
   });
 
   server.on('error', (err) => {
