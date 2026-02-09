@@ -613,6 +613,24 @@
         document.getElementById('detailedInfoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            const API_BASE_URL = (() => {
+                try {
+                    const { hostname, port } = window.location;
+                    if (String(hostname || '').endsWith('onrender.com')) return '';
+                    if (String(port || '') === '10000') return '';
+                    if (String(port || '') === '5501') return 'https://abroad-vision-carrerz-consultancy.onrender.com';
+                    return '';
+                } catch {
+                    return '';
+                }
+            })();
+
+            const apiUrl = (path) => {
+                const p = String(path || '');
+                if (!API_BASE_URL) return p;
+                return `${API_BASE_URL}${p.startsWith('/') ? p : `/${p}`}`;
+            };
+
             const submitBtn = document.getElementById('submitBtn');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
@@ -651,7 +669,7 @@
             };
 
             try {
-                const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/additional-info', {
+                const response = await fetch(apiUrl('/api/additional-info'), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -3,6 +3,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const isRegisteredUser = () => !!localStorage.getItem('userEmail');
     const isHomePagePath = () => window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
+    // --- API Base URL ---
+    // Production (Render): use same-origin (relative URLs).
+    // Local Live Server (5501): use Render URL so the static site can still talk to the backend.
+    const API_BASE_URL = (() => {
+        try {
+            const { hostname, port } = window.location;
+            if (String(hostname || '').endsWith('onrender.com')) return '';
+            if (String(port || '') === '10000') return '';
+            if (String(port || '') === '5501') return 'https://abroad-vision-carrerz-consultancy.onrender.com';
+            return '';
+        } catch {
+            return '';
+        }
+    })();
+
+    const apiUrl = (path) => {
+        const p = String(path || '');
+        if (!API_BASE_URL) return p;
+        return `${API_BASE_URL}${p.startsWith('/') ? p : `/${p}`}`;
+    };
+
     // 0) Performance: hint browsers to lazy-load below-the-fold images.
     // (Windows may hide case issues; Render/Linux won't. This is purely perf.)
     (function initImageLoadingHints() {
@@ -1575,7 +1596,7 @@ if (forgotSendCodeBtn) {
         forgotSendCodeBtn.disabled = true;
 
         try {
-            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/forgot-password', {
+            const response = await fetch(apiUrl('/api/forgot-password'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
@@ -1617,7 +1638,7 @@ if (forgotCodeInput) {
         verifyInFlight = true;
 
         try {
-            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/verify-reset-code', {
+            const response = await fetch(apiUrl('/api/verify-reset-code'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, code })
@@ -1695,7 +1716,7 @@ if (forgotPasswordForm) {
         }
 
         try {
-            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/reset-password', {
+            const response = await fetch(apiUrl('/api/reset-password'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, code, newPassword })
@@ -1853,7 +1874,7 @@ if (registrationForm) {
             const editMode = sessionStorage.getItem('editRegistration') === '1';
 
             // Send data to backend
-            const response = await fetch(editMode ? 'https://abroad-vision-carrerz-consultancy.onrender.com/api/update-registration' : 'https://abroad-vision-carrerz-consultancy.onrender.com/api/register', {
+            const response = await fetch(apiUrl(editMode ? '/api/update-registration' : '/api/register'), {
                 method: editMode ? 'PUT' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1984,7 +2005,7 @@ if (loginForm) {
         }
 
         try {
-            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/login', {
+            const response = await fetch(apiUrl('/api/login'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })

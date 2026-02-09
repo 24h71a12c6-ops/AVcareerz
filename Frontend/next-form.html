@@ -783,6 +783,24 @@
    <br>
    
    <script>
+    const API_BASE_URL = (() => {
+        try {
+            const { hostname, port } = window.location;
+            if (String(hostname || '').endsWith('onrender.com')) return '';
+            if (String(port || '') === '10000') return '';
+            if (String(port || '') === '5501') return 'https://abroad-vision-carrerz-consultancy.onrender.com';
+            return '';
+        } catch {
+            return '';
+        }
+    })();
+
+    const apiUrl = (path) => {
+        const p = String(path || '');
+        if (!API_BASE_URL) return p;
+        return `${API_BASE_URL}${p.startsWith('/') ? p : `/${p}`}`;
+    };
+
     const academicForm = document.getElementById('academicForm');
     const successMessage = document.getElementById('successMessage');
     academicForm.addEventListener('submit', async function(e) {
@@ -815,7 +833,7 @@
 
         try {
             // Send data to Node.js backend as FormData (for file uploads)
-            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/abroad-registration', {
+            const response = await fetch(apiUrl('/api/abroad-registration'), {
                 method: 'POST',
                 body: formData
             });
