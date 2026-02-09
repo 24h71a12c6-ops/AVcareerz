@@ -687,7 +687,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const rendered = !!googleBtnContainer.querySelector('iframe, div[role="button"]');
                     setFallbackVisible(!rendered);
                     if (!rendered) {
-                        showNotification('Google sign-in is not available on this site/origin. If testing locally, use http://localhost (not file://) and add your domain to Google OAuth “Authorized JavaScript origins”.', 'info');
+                        showNotification('Google sign-in is not available on this site/origin. If testing locally, use https://abroad-vision-carrerz-consultancy.onrender.com (not file://) and add your domain to Google OAuth “Authorized JavaScript origins”.', 'info');
                     }
                 }, 500);
 
@@ -1510,7 +1510,7 @@ if (forgotSendCodeBtn) {
         forgotSendCodeBtn.disabled = true;
 
         try {
-            const response = await fetch('https://abroad-vision-carrerz-1.onrender.com/api/forgot-password', {
+            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
@@ -1552,7 +1552,7 @@ if (forgotCodeInput) {
         verifyInFlight = true;
 
         try {
-            const response = await fetch('https://abroad-vision-carrerz-1.onrender.com/api/verify-reset-code', {
+            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/verify-reset-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, code })
@@ -1630,7 +1630,7 @@ if (forgotPasswordForm) {
         }
 
         try {
-            const response = await fetch('https://abroad-vision-carrerz-1.onrender.com/api/reset-password', {
+            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, code, newPassword })
@@ -1788,7 +1788,7 @@ if (registrationForm) {
             const editMode = sessionStorage.getItem('editRegistration') === '1';
 
             // Send data to backend
-            const response = await fetch(editMode ? 'https://abroad-vision-carrerz-1.onrender.com/api/update-registration' : 'https://abroad-vision-carrerz-1.onrender.com/api/register', {
+            const response = await fetch(editMode ? 'https://abroad-vision-carrerz-consultancy.onrender.com/api/update-registration' : 'https://abroad-vision-carrerz-consultancy.onrender.com/api/register', {
                 method: editMode ? 'PUT' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1919,7 +1919,7 @@ if (loginForm) {
         }
 
         try {
-            const response = await fetch('https://abroad-vision-carrerz-1.onrender.com/api/login', {
+            const response = await fetch('https://abroad-vision-carrerz-consultancy.onrender.com/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
