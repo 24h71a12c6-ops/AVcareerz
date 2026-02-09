@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 const path = require('path');
+const fs = require('fs'); // <--- Idi add cheyali
 const { loadEnv } = require('../utils/loadEnv');
 
 // Load environment variables
@@ -13,9 +14,11 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME || 'test',
     port: dbPort,
-    // CRITICAL FOR TiDB CLOUD:
+    // TiDB CLOUD kosam SSL update:
     ssl: {
-        rejectUnauthorized: false
+        // '../ca.pem' endukante: ee file 'config' folder lo undi, 'ca.pem' bayata undi.
+        ca: fs.readFileSync(path.join(__dirname, '..', 'ca.pem')), 
+        rejectUnauthorized: true
     },
     waitForConnections: true,
     connectionLimit: 10,
