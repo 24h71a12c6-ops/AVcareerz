@@ -711,7 +711,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             try {
                 google.accounts.id.initialize({
-                    client_id: "197244342804-4i8vb9527m266qp1tn98v48755tsc78o.apps.googleusercontent.com",
+                    client_id: "197244342804-86t5fr3u2eqg44b9gbck58omfegnjlcl.apps.googleusercontent.com",
                     callback: handleCredentialResponse,
                     auto_select: false,
                     cancel_on_tap_outside: true
