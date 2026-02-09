@@ -710,7 +710,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             try {
-                // google.accounts.id.initialize is now handled by HTML (g_id_onload)
+                // google.accounts.id.initialize is now handled by HTML (g_id_onload) in index.html
 
                 google.accounts.id.renderButton(
                     googleBtnContainer,
@@ -790,23 +790,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 } catch {
                     // ignore
                 }
-
-                // Close the registration modal if open and keep user on the website
-                try {
-                    document.body.classList.remove('reg-modal-open');
-                    const overlay = document.getElementById('regModalOverlay');
-                    if (overlay) overlay.hidden = true;
-                    if (window.location.hash === '#registration-section') {
-                        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-                    }
-                } catch {
-                    // ignore
-                }
             }
         } catch {
             // ignore decoding issues
         }
+
+        // Close the registration modal if open and keep user on the website
+        try {
+            document.body.classList.remove('reg-modal-open');
+            const overlay = document.getElementById('regModalOverlay');
+            if (overlay) overlay.hidden = true;
+            if (window.location.hash === '#registration-section') {
+                window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+            }
+        } catch {
+            // ignore
+        }
     }
+
+    // Expose to window for the Google Identity Services HTML API
+    window.handleCredentialResponse = handleCredentialResponse;
 
     // 8. REGISTRATION POPUP AFTER 4 SECONDS (with blurred background)
     const regSection = document.getElementById('registration-section');
@@ -2278,4 +2281,5 @@ function playSuccessSound() {
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
 }
+});
 
