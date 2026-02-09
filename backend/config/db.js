@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise');
 const path = require('path');
-const fs = require('fs'); // <--- Idi add cheyali
+const fs = require('fs');
 const { loadEnv } = require('../utils/loadEnv');
 
 // Load environment variables
@@ -8,16 +8,18 @@ loadEnv(path.join(__dirname, '..', '.env'), { override: true });
 
 const dbPort = parseInt(process.env.DB_PORT || '4000', 10);
 
+// Render lo path issues rakunda absolute path teeskuntunnam
+const caPath = path.join(process.cwd(), 'ca.pem'); 
+
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME || 'test',
     port: dbPort,
-    // TiDB CLOUD kosam SSL update:
     ssl: {
-        // '../ca.pem' endukante: ee file 'config' folder lo undi, 'ca.pem' bayata undi.
-        ca: fs.readFileSync(path.join(__dirname, '..', 'ca.pem')), 
+        // Direct ga root folder lo unna ca.pem ni chaduvuthundi
+        ca: fs.readFileSync(caPath),
         rejectUnauthorized: true
     },
     waitForConnections: true,
