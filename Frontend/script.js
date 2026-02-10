@@ -3,15 +3,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const isRegisteredUser = () => !!localStorage.getItem('userEmail');
     const isHomePagePath = () => window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
+    const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-consultancy.onrender.com';
     // --- API Base URL ---
-    // Production (Render): use same-origin (relative URLs).
-    // Local Live Server (5501): use Render URL so the static site can still talk to the backend.
+    // Use the full backend URL when the frontend is hosted separately on Render.
     const API_BASE_URL = (() => {
         try {
             const { hostname, port } = window.location;
+            if (hostname === 'abroad-vision-carrerz-consultancy.onrender.com') return BACKEND_SERVICE_URL;
             if (String(hostname || '').endsWith('onrender.com')) return '';
             if (String(port || '') === '10000') return '';
-            if (String(port || '') === '5501') return 'https://abroad-vision-carrerz-consultancy.onrender.com';
+            if (String(port || '') === '5501') return BACKEND_SERVICE_URL;
             return '';
         } catch {
             return '';
