@@ -1,17 +1,32 @@
-// --- REFACTORED AND OPTIMIZED SCRIPT ---
+
+// --- API Configuration (Global Scope) ---
+// Define the backend service URL for connection
+const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-consultancy.onrender.com';
+const API_BASE_URL = BACKEND_SERVICE_URL;
+
+/**
+ * Helper function to construct full API URLs
+ * @param {string} path - The endpoint path (e.g., '/api/register')
+ * @returns {string} - The full URL to the backend
+ */
+const apiUrl = (path) => {
+    const p = String(path || '');
+    const cleanPath = p.startsWith('/') ? p : `/${p}`;
+    return `${API_BASE_URL}${cleanPath}`;
+};
+
+// --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
+    // Check if the user is already logged in
     const isRegisteredUser = () => !!localStorage.getItem('userEmail');
-    const isHomePagePath = () => window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
+    
+    // Check if current page is the Home Page
+    const isHomePagePath = () => 
+        window.location.pathname.endsWith('index.html') || 
+        window.location.pathname === '/' || 
+        window.location.pathname === '/index.html';
 
-    const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-consultancy.onrender.com';
-    const API_BASE_URL = BACKEND_SERVICE_URL;
-
-    const apiUrl = (path) => {
-        const p = String(path || '');
-        const cleanPath = p.startsWith('/') ? p : `/${p}`;
-        return `${API_BASE_URL}${cleanPath}`;
-    };
-
+    // ... Rest of your logic continues here ...
    
     (function initImageLoadingHints() {
         try {
