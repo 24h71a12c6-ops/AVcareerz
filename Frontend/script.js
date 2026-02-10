@@ -4,29 +4,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const isHomePagePath = () => window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
     const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-consultancy.onrender.com';
-    // --- API Base URL ---
-    // Use the full backend URL when the frontend is hosted separately on Render.
-    const API_BASE_URL = (() => {
-        try {
-            const { hostname, port } = window.location;
-            if (hostname === 'abroad-vision-carrerz-consultancy.onrender.com') return BACKEND_SERVICE_URL;
-            if (String(hostname || '').endsWith('onrender.com')) return '';
-            if (String(port || '') === '10000') return '';
-            if (String(port || '') === '5501') return BACKEND_SERVICE_URL;
-            return '';
-        } catch {
-            return '';
-        }
-    })();
+    const API_BASE_URL = BACKEND_SERVICE_URL;
 
     const apiUrl = (path) => {
         const p = String(path || '');
-        if (!API_BASE_URL) return p;
-        return `${API_BASE_URL}${p.startsWith('/') ? p : `/${p}`}`;
+        const cleanPath = p.startsWith('/') ? p : `/${p}`;
+        return `${API_BASE_URL}${cleanPath}`;
     };
 
-    // 0) Performance: hint browsers to lazy-load below-the-fold images.
-    // (Windows may hide case issues; Render/Linux won't. This is purely perf.)
+   
     (function initImageLoadingHints() {
         try {
             const imgs = Array.from(document.images || []);

@@ -833,7 +833,7 @@
 
         try {
             // Send data to Node.js backend as FormData (for file uploads)
-            const response = await fetch(apiUrl('/api/abroad-registration'), {
+            const response = await fetch(apiUrl('/api/register'), {
                 method: 'POST',
                 body: formData
             });

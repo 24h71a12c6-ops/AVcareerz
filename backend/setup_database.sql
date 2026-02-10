@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `logins` (
     FOREIGN KEY (user_id) REFERENCES registrations(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Create next form table (used by /api/abroad-registration from next-form.html)
+-- Create next form table (used by /api/registerfrom next-form.html)
 CREATE TABLE IF NOT EXISTS `next_form` (
     id INT AUTO_INCREMENT PRIMARY KEY,
     fullName VARCHAR(100) NOT NULL,
