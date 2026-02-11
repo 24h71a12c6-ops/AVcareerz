@@ -62,10 +62,131 @@ app.post('/api/register', async (req, res) => {
             [fullName, email, phone, hashedPassword]
         );
 
-        res.status(201).json({ success: true, message: 'Registration successful!' });
+        const userId = result.insertId;
+        res.status(201).json({ success: true, message: 'Registration successful!', userId });
     } catch (error) {
         console.error('Reg Error:', error);
         res.status(500).json({ success: false, error: 'Registration failed' });
+    }
+});
+
+// Step 2: Additional academic data + uploads
+app.post('/api/register-step2', upload.fields([
+    { name: 'resume', maxCount: 1 },
+    { name: 'transcripts', maxCount: 1 },
+    { name: 'passportCopy', maxCount: 1 },
+    { name: 'testScoreCard', maxCount: 1 }
+]), async (req, res) => {
+    try {
+        const {
+            userId,
+            fullName,
+            dob,
+            gender,
+            nationality,
+            phone,
+            email,
+            city,
+            passportStatus,
+            passport_id,
+            highestQualification,
+            currentCourse,
+            specialization,
+            collegeName,
+            yearOfPassing,
+            cgpa,
+            preferredCountry,
+            levelOfStudy,
+            coaching,
+            preferredIntake,
+            desiredCourse,
+            budgetRange,
+            fundingSource,
+            loanStatus,
+            declaration
+        } = req.body || {};
+
+        if (!userId || !fullName || !dob || !gender || !nationality || !phone || !email || !city || !passportStatus || !passport_id || !highestQualification || !preferredCountry || !levelOfStudy || !preferredIntake || !desiredCourse || !declaration) {
+            return res.status(400).json({ success: false, error: 'Missing required academic details' });
+        }
+
+        const files = req.files || {};
+        const mapFile = (field) => (files[field] && files[field][0] ? files[field][0].buffer : null);
+        const resumeBuffer = mapFile('resume');
+        const transcriptsBuffer = mapFile('transcripts');
+        const passportCopyBuffer = mapFile('passportCopy');
+        const testScoreCardBuffer = mapFile('testScoreCard');
+        const declarationFlag = ['1', 'true', 'on', 'yes'].includes(String(declaration).toLowerCase()) ? 1 : 0;
+
+        await pool.query(
+            `INSERT INTO next_form (
+                registration_id,
+                fullName,
+                dob,
+                gender,
+                nationality,
+                phone,
+                email,
+                city,
+                passportStatus,
+                passport_id,
+                highestQualification,
+                currentCourse,
+                specialization,
+                collegeName,
+                yearOfPassing,
+                cgpa,
+                preferredCountry,
+                levelOfStudy,
+                coaching,
+                preferredIntake,
+                desiredCourse,
+                budgetRange,
+                fundingSource,
+                loanStatus,
+                declaration,
+                resume,
+                transcripts,
+                passportCopy,
+                testScoreCard
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                userId,
+                fullName,
+                dob,
+                gender,
+                nationality,
+                phone,
+                email,
+                city,
+                passportStatus,
+                passport_id,
+                highestQualification,
+                currentCourse || null,
+                specialization || null,
+                collegeName || null,
+                yearOfPassing || null,
+                cgpa || null,
+                preferredCountry,
+                levelOfStudy,
+                coaching || null,
+                preferredIntake,
+                desiredCourse,
+                budgetRange || null,
+                fundingSource || null,
+                loanStatus || null,
+                declarationFlag,
+                resumeBuffer,
+                transcriptsBuffer,
+                passportCopyBuffer,
+                testScoreCardBuffer
+            ]
+        );
+
+        res.status(200).json({ success: true, message: 'Step 2 completed' });
+    } catch (error) {
+        console.error('Step 2 Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to process step 2 data' });
     }
 });
 

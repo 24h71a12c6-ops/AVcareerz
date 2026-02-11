@@ -3,6 +3,7 @@ USE `abroad_vision_carrerz`;
 
 CREATE TABLE IF NOT EXISTS `next_form` (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    registration_id INT NULL,
     fullName VARCHAR(100) NOT NULL,
     dob DATE NOT NULL,
     gender VARCHAR(20) NOT NULL,
@@ -37,8 +38,10 @@ CREATE TABLE IF NOT EXISTS `next_form` (
     passportCopy LONGBLOB,
     testScoreCard LONGBLOB,
     declaration TINYINT(1) DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (registration_id) REFERENCES registrations(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE INDEX idx_next_form_email ON next_form(email);
 CREATE INDEX idx_next_form_created_at ON next_form(created_at);
+CREATE INDEX idx_next_form_registration_id ON next_form(registration_id);

@@ -385,8 +385,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem('userEmail');
                 localStorage.removeItem('registrationData');
                 localStorage.removeItem('nextFormData');
+                localStorage.removeItem('currentUserId');
                 sessionStorage.removeItem('registrationData');
                 sessionStorage.removeItem('nextFormData');
+                sessionStorage.removeItem('currentUserId');
                 safeNotify('Logged out successfully.', 'success');
             } catch {
                 // ignore
@@ -897,6 +899,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     passwordEl.placeholder = 'Create Password';
                 }
             }
+            // Add this below the code you just sent
+const registrationForm = document.getElementById('registrationForm');
+if (registrationForm) {
+    registrationForm.addEventListener('submit', function(e) {
+        // This hides the signup panel when the user clicks Submit
+        const signupPanel = document.getElementById('signupPanel');
+        if (signupPanel) {
+            signupPanel.style.display = 'none';
+            console.log("Registration box hidden!");
+        }
+    });
+}
 
             // Consume the force flag once opened
             if (sessionStorage.getItem('forceOpenRegistration') === '1') {

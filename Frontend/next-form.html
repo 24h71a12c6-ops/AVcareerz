@@ -807,6 +807,11 @@
         e.preventDefault();
         const formData = new FormData(academicForm);
 
+        const userId = sessionStorage.getItem('currentUserId');
+        if (userId) {
+            formData.append('userId', userId);
+        }
+
         // Save a readable copy (non-file fields) for the Profile modal
         try {
             const nextFormData = {};
@@ -833,7 +838,7 @@
 
         try {
             // Send data to Node.js backend as FormData (for file uploads)
-            const response = await fetch(apiUrl('/api/register'), {
+            const response = await fetch(apiUrl('/api/register-step2'), {
                 method: 'POST',
                 body: formData
             });
