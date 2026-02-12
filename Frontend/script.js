@@ -2019,11 +2019,8 @@ if (registrationForm) {
                     if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
                 } catch {}
 
-                // 4. Redirect to Next Form (as requested)
-                showNotification('Registration successful! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'next-form.html';
-                }, 1000);
+                // 4. Stay on page (User requested normal browsing flow)
+                showNotification('Registration successful! You are now logged in.', 'success');
 
                 // Do NOT open the login form automatically.
             } else {
