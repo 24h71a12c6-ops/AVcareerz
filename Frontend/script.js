@@ -1966,6 +1966,27 @@ if (registrationForm) {
                     // ignore
                 }
 
+                // --- Clear and Switch Logic ---
+                // 1. Wipe registration fields clean
+                const signupFields = ['fullName', 'email', 'phone', 'password'];
+                signupFields.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
+
+                // 2. Switch the view to Login
+                if (typeof setAuthMode === 'function') {
+                    setAuthMode('login');
+                }
+
+                // 3. Set up the Login card (Prefill Email only)
+                const loginEmailInput = document.getElementById('loginEmail');
+                const loginPasswordInput = document.getElementById('loginPassword');
+                if (loginEmailInput) loginEmailInput.value = email; // 'email' from your registration data
+                if (loginPasswordInput) {
+                    loginPasswordInput.value = '';
+                    loginPasswordInput.focus();
+                }
                 // Do NOT auto-open the next form. User can explore the site and open it via Register/CTA buttons.
             } else {
                 // Show error message from backend
