@@ -1,0 +1,14 @@
+{
+  "name": "abroad-vision-deployment",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root package.json for Render deployment",
+  "scripts": {
+    "postinstall": "npm install --prefix backend",
+    "build": "echo 'Build complete'",
+    "start": "npm start --prefix backend"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
