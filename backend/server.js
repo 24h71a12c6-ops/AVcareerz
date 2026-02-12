@@ -153,10 +153,14 @@ app.post('/api/forgot-password', async (req, res) => {
             [email, codeHash, expiresAt]
         );
 
-        const sent = await sendPasswordResetCodeEmail(email, code);
-        if (sent) return res.json({ success: true, message: 'If your email exists, a code has been sent.' });
-        console.error('Email sending returned false');
-        return res.status(500).json({ success: false, error: 'Email service failed to send code.' });
+        const sentResult = await sendPasswordResetCodeEmail(email, code);
+        if (sentResult && sentResult.success) {
+            return res.json({ success: true, message: 'If your email exists, a code has been sent.' });
+        }
+        
+        console.error('Email sending result:', sentResult);
+        const errorMsg = sentResult?.error || 'Unknown email service error';
+        return res.status(500).json({ success: false, error: 'Email service failed: ' + errorMsg });
     } catch (error) {
         console.error('Forgot password error details:', error.message, error.stack);
         return res.status(500).json({ success: false, error: 'Server error during password reset: ' + error.message });
