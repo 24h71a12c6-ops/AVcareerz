@@ -325,6 +325,7 @@ app.post('/api/login', async (req, res) => {
 
         res.json({ 
             success: true, 
+            userId: rows[0].id,
             data: { 
                 fullName: rows[0].full_name, 
                 email: rows[0].email,
