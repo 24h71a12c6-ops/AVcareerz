@@ -1995,28 +1995,37 @@ if (registrationForm) {
                     // ignore
                 }
 
-                // --- Clear and Switch Logic ---
-                // 1. Wipe registration fields clean
-                const signupFields = ['fullName', 'email', 'phone', 'password'];
-                signupFields.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.value = '';
-                });
+                // --- Auto-Login & Redirect Logic ---
+                // 1. Store user session immediately so they are "Logged In"
+                localStorage.setItem('userEmail', email); 
+                localStorage.setItem('hasSignedUp', '1');
+                
+                // Store registration data for the next form
+                const regData = { fullName, email, phone };
+                sessionStorage.setItem('registrationData', JSON.stringify(regData));
+                localStorage.setItem('registrationData', JSON.stringify(regData));
 
-                // 2. Switch the view to Login
-                if (typeof setAuthMode === 'function') {
-                    setAuthMode('login');
+                // 2. Hide the registration modal
+                if (typeof closeRegModal === 'function') {
+                    closeRegModal();
+                } else {
+                    const signupPanel = document.getElementById('signupPanel');
+                    if (signupPanel) signupPanel.style.display = 'none';
+                    document.body.classList.remove('reg-modal-open');
                 }
 
-                // 3. Ensure login card is blank after registration (no email prefill)
-                const loginEmailInput = document.getElementById('loginEmail');
-                const loginPasswordInput = document.getElementById('loginPassword');
-                if (loginEmailInput) loginEmailInput.value = '';
-                if (loginPasswordInput) {
-                    loginPasswordInput.value = '';
-                    loginPasswordInput.focus();
-                }
-                // Do NOT auto-open the next form. User can explore the site and open it via Register/CTA buttons.
+                // 3. Update UI (Profile Badge)
+                try {
+                    if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
+                } catch {}
+
+                // 4. Redirect to Next Form (as requested)
+                showNotification('Registration successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'next-form.html';
+                }, 1000);
+
+                // Do NOT open the login form automatically.
             } else {
                 // Show error message from backend
                 showNotification(data.error || 'Registration failed. Please try again.', 'error');
