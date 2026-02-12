@@ -21,6 +21,63 @@ const PORT = process.env.PORT || 10000;
 const upload = multer({ storage: multer.memoryStorage() });
 
 
+// --- DATABASE INITIALIZATION ---
+async function initializeDatabase() {
+    try {
+        const createRegistrationsTable = `
+            CREATE TABLE IF NOT EXISTS registrations (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                full_name VARCHAR(100) NOT NULL,
+                email VARCHAR(100) NOT NULL UNIQUE,
+                phone VARCHAR(15) NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_email (email),
+                INDEX idx_created_at (created_at)
+            );
+        `;
+        await pool.query(createRegistrationsTable);
+
+        const createLoginsTable = `
+            CREATE TABLE IF NOT EXISTS logins (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NULL,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                username VARCHAR(150) DEFAULT NULL,
+                password VARCHAR(255) NOT NULL,
+                last_login TIMESTAMP NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES registrations(id) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        `;
+        await pool.query(createLoginsTable);
+
+        const createResetTable = `
+            CREATE TABLE IF NOT EXISTS password_reset_codes (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                email VARCHAR(255) NOT NULL,
+                code_hash CHAR(64) NOT NULL,
+                expires_at DATETIME NOT NULL,
+                used_at DATETIME NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_prc_email (email),
+                INDEX idx_prc_expires_at (expires_at)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        `;
+        await pool.query(createResetTable);
+
+        console.log('✅ Database tables initialized successfully');
+    } catch (error) {
+        console.error('❌ Database initialization failed:', error);
+    }
+}
+
+// Initialize DB immediately
+initializeDatabase();
+
+
 // --- MIDDLEWARES ---
 app.use(cors());
 app.use(express.json());
