@@ -1,4 +1,3 @@
-
 // --- API Configuration (Global Scope) ---
 // Define the backend service URL for connection
 const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-consultancy.onrender.com';
@@ -1519,15 +1518,21 @@ function setAuthMode(mode) {
     if (authFooterText) authFooterText.textContent = isLogin ? "New here?" : "Already have an account?";
     if (authFooterAction) authFooterAction.textContent = isLogin ? "Sign up" : "Log in";
 
-    // Login card: only email prefill, never password.
+    // Login card: only email prefill after logout, never after registration.
     if (isLogin) {
         try {
-            const lastUserEmail = (localStorage.getItem('lastUserEmail') || '').trim();
             const loginEmailInput = document.getElementById('loginEmail');
             const loginPasswordInput = document.getElementById('loginPassword');
+            // Only prefill email if user logged out previously
+            const showLoginAfterLogout = localStorage.getItem('showLoginAfterLogout') === '1';
+            const lastUserEmail = (localStorage.getItem('lastUserEmail') || '').trim();
             if (loginPasswordInput) loginPasswordInput.value = '';
-            if (loginEmailInput && lastUserEmail && !String(loginEmailInput.value || '').trim()) {
-                loginEmailInput.value = lastUserEmail;
+            if (loginEmailInput) {
+                if (showLoginAfterLogout && lastUserEmail) {
+                    loginEmailInput.value = lastUserEmail;
+                } else {
+                    loginEmailInput.value = '';
+                }
             }
         } catch {
             // ignore
@@ -1979,10 +1984,10 @@ if (registrationForm) {
                     setAuthMode('login');
                 }
 
-                // 3. Set up the Login card (Prefill Email only)
+                // 3. Ensure login card is blank after registration (no email prefill)
                 const loginEmailInput = document.getElementById('loginEmail');
                 const loginPasswordInput = document.getElementById('loginPassword');
-                if (loginEmailInput) loginEmailInput.value = email; // 'email' from your registration data
+                if (loginEmailInput) loginEmailInput.value = '';
                 if (loginPasswordInput) {
                     loginPasswordInput.value = '';
                     loginPasswordInput.focus();
