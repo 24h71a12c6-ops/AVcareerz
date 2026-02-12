@@ -63,7 +63,13 @@ app.post('/api/register', async (req, res) => {
         );
 
         const userId = result.insertId;
-        res.status(201).json({ success: true, message: 'Registration successful!', userId });
+            // WhatsApp admin notification
+            try {
+                await sendAdminWhatsApp(`New registration: ${fullName} (${email}, ${phone})`);
+            } catch (err) {
+                console.warn('WhatsApp admin notification failed:', err);
+            }
+            res.status(201).json({ success: true, message: 'Registration successful!', userId });
     } catch (error) {
         console.error('Reg Error:', error);
         res.status(500).json({ success: false, error: 'Registration failed' });
@@ -183,7 +189,13 @@ app.post('/api/register-step2', upload.fields([
             ]
         );
 
-        res.status(200).json({ success: true, message: 'Step 2 completed' });
+            // WhatsApp admin notification
+            try {
+                await sendAdminWhatsApp(`Step 2 completed for: ${fullName} (${email}, ${phone})`);
+            } catch (err) {
+                console.warn('WhatsApp admin notification failed:', err);
+            }
+            res.status(200).json({ success: true, message: 'Step 2 completed' });
     } catch (error) {
         console.error('Step 2 Error:', error);
         res.status(500).json({ success: false, error: 'Failed to process step 2 data' });
