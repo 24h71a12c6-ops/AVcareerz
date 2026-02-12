@@ -11,76 +11,15 @@ const { loadEnv } = require('./utils/loadEnv');
 
 // Env loading logic
 loadEnv(path.join(__dirname, '.env'), { override: true });
-
 const pool = require('./config/db');
 const { sendConfirmationEmail, sendAdminEmail, sendPasswordResetCodeEmail, sendPasswordChangedEmail } = require('./services/emailService');
 const { sendAdminWhatsApp } = require('./services/whatsappService');
 
 const app = express();
-// Forgot Password API
-app.post('/api/forgot-password', async (req, res) => {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
 
-    // Generate 6-digit code
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Hash the code (for security)
-    const codeHash = require('crypto').createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
-
-    try {
-        // Store in DB (replace with your table/ORM logic)
-        await pool.query(
-            'INSERT INTO password_reset_codes (email, code_hash, expires_at) VALUES (?, ?, ?)',
-            [email, codeHash, expiresAt]
-        );
-
-        // Send email
-        const sent = await sendPasswordResetCodeEmail(email, code);
-        if (sent) {
-            res.json({ success: true, message: 'If your email exists, a code has been sent.' });
-        } else {
-            res.status(500).json({ success: false, error: 'Unable to send code. Please try again.' });
-        }
-    } catch (error) {
-        console.error('Forgot password error:', error);
-        res.status(500).json({ success: false, error: 'Unable to send code. Please try again.' });
-    }
-});
-// Forgot Password API
-app.post('/api/forgot-password', async (req, res) => {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
-
-    // Generate 6-digit code
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Hash the code (for security)
-    const codeHash = require('crypto').createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
-
-    try {
-        // Store in DB (replace with your table/ORM logic)
-        await pool.query(
-            'INSERT INTO password_reset_codes (email, code_hash, expires_at) VALUES (?, ?, ?)',
-            [email, codeHash, expiresAt]
-        );
-
-        // Send email
-        const sent = await sendPasswordResetCodeEmail(email, code);
-        if (sent) {
-            res.json({ success: true, message: 'If your email exists, a code has been sent.' });
-        } else {
-            res.status(500).json({ success: false, error: 'Unable to send code. Please try again.' });
-        }
-    } catch (error) {
-        console.error('Forgot password error:', error);
-        res.status(500).json({ success: false, error: 'Unable to send code. Please try again.' });
-    }
-});
 const PORT = process.env.PORT || 10000;
 const upload = multer({ storage: multer.memoryStorage() });
+
 
 // --- MIDDLEWARES ---
 app.use(cors());
@@ -137,7 +76,29 @@ app.post('/api/register', async (req, res) => {
         res.status(500).json({ success: false, error: 'Registration failed' });
     }
 });
+// Forgot Password API
+app.post('/api/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
 
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const codeHash = crypto.createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    try {
+        await pool.query(
+            'INSERT INTO password_reset_codes (email, code_hash, expires_at) VALUES (?, ?, ?)',
+            [email, codeHash, expiresAt]
+        );
+
+        const sent = await sendPasswordResetCodeEmail(email, code);
+        if (sent) return res.json({ success: true, message: 'If your email exists, a code has been sent.' });
+        return res.status(500).json({ success: false, error: 'Unable to send code. Please try again.' });
+    } catch (error) {
+        console.error('Forgot password error:', error);
+        return res.status(500).json({ success: false, error: 'Unable to send code. Please try again.' });
+    }
+});
 // Step 2: Additional academic data + uploads
 app.post('/api/register-step2', upload.fields([
     { name: 'resume', maxCount: 1 },
