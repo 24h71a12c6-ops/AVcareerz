@@ -1,3 +1,22 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
+const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const crypto = require('crypto');
+const { exec } = require('child_process');
+
+const { loadEnv } = require('./utils/loadEnv');
+
+// Env loading logic
+loadEnv(path.join(__dirname, '.env'), { override: true });
+
+const pool = require('./config/db');
+const { sendConfirmationEmail, sendAdminEmail, sendPasswordResetCodeEmail, sendPasswordChangedEmail } = require('./services/emailService');
+const { sendAdminWhatsApp } = require('./services/whatsappService');
+
+const app = express();
 // Forgot Password API
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
@@ -29,25 +48,6 @@ app.post('/api/forgot-password', async (req, res) => {
         res.status(500).json({ success: false, error: 'Unable to send code. Please try again.' });
     }
 });
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
-const bcrypt = require('bcryptjs');
-const multer = require('multer');
-const crypto = require('crypto');
-const { exec } = require('child_process');
-
-const { loadEnv } = require('./utils/loadEnv');
-
-// Env loading logic
-loadEnv(path.join(__dirname, '.env'), { override: true });
-
-const pool = require('./config/db');
-const { sendConfirmationEmail, sendAdminEmail, sendPasswordResetCodeEmail, sendPasswordChangedEmail } = require('./services/emailService');
-const { sendAdminWhatsApp } = require('./services/whatsappService');
-
-const app = express();
 // Forgot Password API
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
