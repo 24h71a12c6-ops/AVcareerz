@@ -300,16 +300,32 @@ app.post('/api/register-step2', upload.fields([
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ success: false, error: 'Email and password are required' });
+        }
+
         const [rows] = await pool.query('SELECT * FROM registrations WHERE email = ?', [email]);
         
-        if (rows.length === 0) return res.status(401).json({ success: false, error: 'User not found' });
+        if (rows.length === 0) {
+            return res.status(401).json({ success: false, error: 'Account not found. Please register first.' });
+        }
 
         const isMatch = await bcrypt.compare(password, rows[0].password);
-        if (!isMatch) return res.status(401).json({ success: false, error: 'Wrong password' });
+        if (!isMatch) {
+            return res.status(401).json({ success: false, error: 'Invalid password' });
+        }
 
-        res.json({ success: true, user: { fullName: rows[0].full_name, email: rows[0].email } });
+        res.json({ 
+            success: true, 
+            data: { 
+                fullName: rows[0].full_name, 
+                email: rows[0].email,
+                phone: rows[0].phone
+            } 
+        });
     } catch (error) {
-        res.status(500).json({ success: false, error: 'Login failed' });
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, error: 'Login failed due to server error' });
     }
 });
 
