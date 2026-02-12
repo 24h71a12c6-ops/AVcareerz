@@ -1630,6 +1630,8 @@ const setForgotPasswordVerifiedUI = (verified) => {
 setForgotPasswordVerifiedUI(false);
 
 if (forgotSendCodeBtn) {
+    let timerInterval = null;
+
     forgotSendCodeBtn.addEventListener('click', async () => {
         const email = document.getElementById('forgotEmail')?.value?.trim();
         if (!email) {
@@ -1638,12 +1640,13 @@ if (forgotSendCodeBtn) {
         }
 
         setForgotPasswordVerifiedUI(false);
-
         showNotification('Sending code...', 'info');
 
-        const originalText = forgotSendCodeBtn.textContent;
+        const originalText = 'Send Code';
         forgotSendCodeBtn.textContent = 'Sending...';
         forgotSendCodeBtn.disabled = true;
+
+        let success = false;
 
         try {
             const response = await fetch(apiUrl('/api/forgot-password'), {
@@ -1653,9 +1656,41 @@ if (forgotSendCodeBtn) {
             });
 
             const data = await response.json().catch(() => ({}));
+            
             if (response.ok && data.success) {
+                success = true;
                 __resetCodeSent = true;
                 showNotification(data.message || 'If your email exists, a code has been sent.', 'success');
+
+                // Start 60s Timer
+                const timerEl = document.getElementById('forgotTimer');
+                if (timerEl) {
+                    timerEl.style.display = 'block';
+                    let timeLeft = 60;
+                    
+                    // Initial state
+                    timerEl.textContent = `Code expires in: ${timeLeft}s`;
+                    timerEl.style.color = '#555';
+                    forgotSendCodeBtn.textContent = 'Code Sent'; 
+                    forgotSendCodeBtn.disabled = true;
+
+                    if (timerInterval) clearInterval(timerInterval);
+                    
+                    timerInterval = setInterval(() => {
+                        timeLeft--;
+                        if (timeLeft > 0) {
+                            timerEl.textContent = `Code expires in: ${timeLeft}s`;
+                        } else {
+                            clearInterval(timerInterval);
+                            timerEl.textContent = 'Code expired. Please try sending again.';
+                            timerEl.style.color = '#ef4444'; // Red for expired
+                            
+                            // Re-enable button
+                            forgotSendCodeBtn.disabled = false;
+                            forgotSendCodeBtn.textContent = 'Resend Code';
+                        }
+                    }, 1000);
+                }
             } else {
                 showNotification(data.error || 'Unable to send code. Please try again.', 'error');
             }
@@ -1663,8 +1698,10 @@ if (forgotSendCodeBtn) {
             console.error('Forgot password send code error:', err);
             showNotification('Unable to connect to server. Please check if the backend is running.', 'error');
         } finally {
-            forgotSendCodeBtn.textContent = originalText;
-            forgotSendCodeBtn.disabled = false;
+            if (!success) {
+                forgotSendCodeBtn.textContent = originalText;
+                forgotSendCodeBtn.disabled = false;
+            }
         }
     });
 }
