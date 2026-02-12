@@ -1727,6 +1727,7 @@ if (forgotCodeInput) {
 
     setupPasswordToggle('toggleForgotNewPassword', 'forgotNewPassword');
     setupPasswordToggle('toggleForgotConfirmPassword', 'forgotConfirmPassword');
+    setupPasswordToggle('toggleForgotCode', 'forgotCode'); // Added toggle for code
     // New Toggles
     setupPasswordToggle('toggleRegPassword', 'password');
     setupPasswordToggle('toggleLoginPassword', 'loginPassword');
