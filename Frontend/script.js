@@ -1669,6 +1669,45 @@ const forgotCodeInput = document.getElementById('forgotCode');
 if (forgotCodeInput) {
     let verifyInFlight = false;
 
+    // Password Toggle Logic
+    const setupPasswordToggle = (toggleId, inputId) => {
+        const toggleBtn = document.getElementById(toggleId);
+        const inputField = document.getElementById(inputId);
+        if (toggleBtn && inputField) {
+            toggleBtn.addEventListener('click', () => {
+                const type = inputField.getAttribute('type') === 'password' ? 'text' : 'password';
+                inputField.setAttribute('type', type);
+                toggleBtn.classList.toggle('fa-eye');
+                toggleBtn.classList.toggle('fa-eye-slash');
+            });
+        }
+    };
+
+    setupPasswordToggle('toggleForgotNewPassword', 'forgotNewPassword');
+    setupPasswordToggle('toggleForgotConfirmPassword', 'forgotConfirmPassword');
+
+    // Password Rules Validation
+    const forgotNewPasswordInput = document.getElementById('forgotNewPassword');
+    if (forgotNewPasswordInput) {
+        forgotNewPasswordInput.addEventListener('input', () => {
+            const password = forgotNewPasswordInput.value;
+            
+            const updateRule = (id, condition) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.color = condition ? '#10b981' : '#ef4444'; // Green or Red
+                    el.style.textDecoration = condition ? 'line-through' : 'none';
+                }
+            };
+
+            updateRule('ruleLength', password.length >= 8);
+            updateRule('ruleUpper', /[A-Z]/.test(password));
+            updateRule('ruleLower', /[a-z]/.test(password));
+            updateRule('ruleNumber', /[0-9]/.test(password));
+            updateRule('ruleSpecial', /[!@#$%^&*]/.test(password));
+        });
+    }
+
     const tryVerifyCode = async () => {
         const email = document.getElementById('forgotEmail')?.value?.trim();
         const code = forgotCodeInput.value?.trim();

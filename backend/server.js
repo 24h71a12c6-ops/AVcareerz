@@ -151,7 +151,7 @@ app.post('/api/forgot-password', async (req, res) => {
     console.log(`🔑 DEBUG: Password reset code for ${email}: ${code}`); // Log code to console for debugging
 
     const codeHash = crypto.createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 minute
 
     try {
         await pool.query(

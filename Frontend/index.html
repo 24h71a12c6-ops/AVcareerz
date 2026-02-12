@@ -594,16 +594,28 @@
             </div>
 
             <div id="forgotPasswordFields" hidden>
-              <div class="reg-input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="forgotNewPassword" name="forgotNewPassword" placeholder="New Password"
-                  required disabled>
+              <!-- Password Rules -->
+              <div id="passwordRules" style="font-size: 0.85rem; color: #666; margin-bottom: 12px; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 8px;">
+                <p style="margin: 0 0 5px 0; font-weight: 600;">Password must contain:</p>
+                <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+                  <li id="ruleLength" class="password-rule">At least 8 characters</li>
+                  <li id="ruleUpper" class="password-rule">One uppercase letter</li>
+                  <li id="ruleLower" class="password-rule">One lowercase letter</li>
+                  <li id="ruleNumber" class="password-rule">One number</li>
+                  <li id="ruleSpecial" class="password-rule">One special character (!@#$%^&*)</li>
+                </ul>
               </div>
 
               <div class="reg-input-group">
                 <i class="fas fa-lock"></i>
-                <input type="password" id="forgotConfirmPassword" name="forgotConfirmPassword"
-                  placeholder="Confirm New Password" required disabled>
+                <input type="password" id="forgotNewPassword" name="forgotNewPassword" placeholder="New Password" required disabled>
+                <i class="fas fa-eye toggle-password" id="toggleForgotNewPassword" style="left: auto; right: 15px; cursor: pointer; color: #666;"></i>
+              </div>
+
+              <div class="reg-input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="forgotConfirmPassword" name="forgotConfirmPassword" placeholder="Confirm New Password" required disabled>
+                <i class="fas fa-eye toggle-password" id="toggleForgotConfirmPassword" style="left: auto; right: 15px; cursor: pointer; color: #666;"></i>
               </div>
             </div>
 
