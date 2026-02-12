@@ -906,6 +906,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     passwordEl.required = true;
                     passwordEl.placeholder = 'Create Password';
                 }
+
+                // Delayed clear to fight browser autofill
+                setTimeout(() => {
+                    if (fullNameEl) fullNameEl.value = '';
+                    if (emailEl) emailEl.value = '';
+                    if (phoneEl) phoneEl.value = '';
+                    if (passwordEl) passwordEl.value = '';
+                }, 100);
+
                 // Reset submit button text
                 const submitBtn = regSection.querySelector('#registrationForm button[type="submit"]');
                 if (submitBtn) submitBtn.textContent = 'Submit';
@@ -1548,6 +1557,21 @@ function setAuthMode(mode) {
             }
         } catch {
             // ignore
+        }
+    } else if (!isForgot) {
+        // Signup card: Clear all fields to prevent pre-fill
+        try {
+             const regInputs = ['fullName', 'email', 'phone', 'password'];
+             const clearInputs = () => {
+                 regInputs.forEach(id => {
+                     const el = document.getElementById(id);
+                     if (el) el.value = '';
+                 });
+             };
+             clearInputs();
+             setTimeout(clearInputs, 100);
+        } catch {
+             // ignore
         }
     }
 }

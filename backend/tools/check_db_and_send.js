@@ -3,10 +3,13 @@ const { Resend } = require('resend');
 const path = require('path');
 const dotenv = require('dotenv');
 
-// Load environment variables from backend/.env
-const envPath = path.resolve(__dirname, '../backend/.env');
+// Load environment variables from .env
+const envPath = path.resolve(__dirname, '../../.env');
 console.log('Loading .env from:', envPath);
 dotenv.config({ path: envPath });
+
+// Debug: print keys loaded
+console.log('Loaded keys:', Object.keys(process.env).filter(k => !k.startsWith('npm_')));
 
 async function main() {
   console.log('--- Checking Database ---');
@@ -46,7 +49,8 @@ async function main() {
     // Send to the admin email defined in .env, or a hardcoded one if missing
     // Since we used onboarding@resend.dev, we MUST send to the resend account email.
     // We'll try sending to the ADMIN_EMAIL from .env as a best guess for the verified email.
-    const toEmail = process.env.ADMIN_EMAIL || 'buddymic28@gmail.com'; 
+    // Also try the email from the screenshot to see if it's allowed.
+    const toEmail = '24h71a12c6@gmail.com'; 
     console.log(`Attempting to send test email to: ${toEmail} using onboarding@resend.dev`);
 
     const { data, error } = await resend.emails.send({
