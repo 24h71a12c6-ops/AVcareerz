@@ -147,13 +147,19 @@ app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
 
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log(`🔑 DEBUG: Password reset code for ${email}: ${code}`); // Log code to console for debugging
-
-    const codeHash = crypto.createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
-    const expiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 minute
-
     try {
+        // Check if user exists before sending code
+        const [users] = await pool.query('SELECT * FROM registrations WHERE email = ?', [email]);
+        if (users.length === 0) {
+            return res.status(404).json({ success: false, error: 'Email not registered. Please sign up first.' });
+        }
+
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log(`🔑 DEBUG: Password reset code for ${email}: ${code}`); // Log code to console for debugging
+
+        const codeHash = crypto.createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
+        const expiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 minute
+
         await pool.query(
             'INSERT INTO password_reset_codes (email, code_hash, expires_at) VALUES (?, ?, ?)',
             [email, codeHash, expiresAt]
@@ -161,7 +167,7 @@ app.post('/api/forgot-password', async (req, res) => {
 
         const sentResult = await sendPasswordResetCodeEmail(email, code);
         if (sentResult && sentResult.success) {
-            return res.json({ success: true, message: 'If your email exists, a code has been sent.' });
+            return res.json({ success: true, message: 'Code sent successfully.' });
         }
         
         console.error('Email sending result:', sentResult);
