@@ -2026,6 +2026,7 @@ if (registrationForm) {
 
                 if (data.userId) {
                     sessionStorage.setItem('currentUserId', data.userId);
+                    localStorage.setItem('currentUserId', data.userId);
                 }
 
                 // Store email in localStorage for additional-info form
@@ -2200,6 +2201,7 @@ if (loginForm) {
                 showNotification('Login successful!', 'success');
                 if (data.userId) {
                     sessionStorage.setItem('currentUserId', data.userId);
+                    localStorage.setItem('currentUserId', data.userId);
                 }
                 localStorage.setItem('userEmail', email);
                 // User is signed in again; don't keep showing the login card on reopen.
