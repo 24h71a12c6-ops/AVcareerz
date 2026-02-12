@@ -919,18 +919,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const submitBtn = regSection.querySelector('#registrationForm button[type="submit"]');
                 if (submitBtn) submitBtn.textContent = 'Submit';
             }
-            // Add this below the code you just sent
-const registrationForm = document.getElementById('registrationForm');
-if (registrationForm) {
-    registrationForm.addEventListener('submit', function(e) {
-        // This hides the signup panel when the user clicks Submit
-        const signupPanel = document.getElementById('signupPanel');
-        if (signupPanel) {
-            signupPanel.style.display = 'none';
-            console.log("Registration box hidden!");
-        }
-    });
-}
 
             // Consume the force flag once opened
             if (sessionStorage.getItem('forceOpenRegistration') === '1') {
