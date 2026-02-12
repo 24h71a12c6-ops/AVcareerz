@@ -2024,6 +2024,10 @@ if (registrationForm) {
                 // Success message
                 showNotification(editMode ? 'Details updated successfully!' : 'Registration successful!', 'success');
 
+                if (data.userId) {
+                    sessionStorage.setItem('currentUserId', data.userId);
+                }
+
                 // Store email in localStorage for additional-info form
                 localStorage.setItem('userEmail', email);
                 try { localStorage.setItem('lastUserEmail', email); } catch { }
@@ -2194,6 +2198,9 @@ if (loginForm) {
 
             if (response.ok && data.success) {
                 showNotification('Login successful!', 'success');
+                if (data.userId) {
+                    sessionStorage.setItem('currentUserId', data.userId);
+                }
                 localStorage.setItem('userEmail', email);
                 // User is signed in again; don't keep showing the login card on reopen.
                 try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
