@@ -4,9 +4,19 @@
   "private": true,
   "description": "Root package.json for Render deployment",
   "scripts": {
-    "postinstall": "npm install --prefix backend",
-    "build": "echo 'Build complete'",
-    "start": "npm start --prefix backend"
+    "start": "node backend/server.js"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.3",
+    "nodemailer": "^6.9.1",
+    "twilio": "^4.0.0",
+    "resend": "^6.9.2"
   },
   "engines": {
     "node": ">=18.0.0"
