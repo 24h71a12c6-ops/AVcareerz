@@ -135,6 +135,10 @@ app.post('/api/register', async (req, res) => {
             res.status(201).json({ success: true, message: 'Registration successful!', userId });
     } catch (error) {
         console.error('Reg Error:', error);
+        // Handle duplicate email error
+        if (error.code === 'ER_DUP_ENTRY' || error.message.includes('Duplicate entry')) {
+            return res.status(409).json({ success: false, error: 'This email is already registered. Please log in.' });
+        }
         res.status(500).json({ success: false, error: 'Registration failed: ' + error.message });
     }
 });
