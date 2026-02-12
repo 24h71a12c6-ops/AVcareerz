@@ -7,8 +7,6 @@ const { loadEnv } = require('../utils/loadEnv');
 loadEnv(path.join(__dirname, '..', '.env'), { override: true });
 
 const dbPort = parseInt(process.env.DB_PORT || '4000', 10);
-// backend/config/db.js
-// path.join(process.cwd(), 'ca.pem') badulu kinda line pettu:
 
 const caPath = path.join(__dirname, '..', 'ca.pem');
 const pool = mysql.createPool({
@@ -18,7 +16,6 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME || 'test',
     port: dbPort,
     ssl: {
-        // Direct ga root folder lo unna ca.pem ni chaduvuthundi
         ca: fs.readFileSync(caPath),
         rejectUnauthorized: true
     },
