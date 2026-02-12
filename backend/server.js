@@ -102,8 +102,13 @@ app.use(express.static(frontendPath));
 // --- API ROUTES ---
 
 // Health Check
-app.get('/health', (req, res) => {
-    res.json({ ok: true, status: 'Live', timestamp: new Date() });
+app.get('/health', async (req, res) => {
+    try {
+        await pool.query('SELECT 1');
+        res.json({ ok: true, status: 'Live', db: 'Connected', timestamp: new Date() });
+    } catch (err) {
+        res.status(500).json({ ok: false, status: 'Live', db: 'Disconnected', error: err.message, timestamp: new Date() });
+    }
 });
 
 // Registration API
@@ -130,7 +135,7 @@ app.post('/api/register', async (req, res) => {
             res.status(201).json({ success: true, message: 'Registration successful!', userId });
     } catch (error) {
         console.error('Reg Error:', error);
-        res.status(500).json({ success: false, error: 'Registration failed' });
+        res.status(500).json({ success: false, error: 'Registration failed: ' + error.message });
     }
 });
 // Forgot Password API
