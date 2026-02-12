@@ -1611,12 +1611,17 @@ if (forgotBackToLogin) {
 
 const setForgotPasswordVerifiedUI = (verified) => {
     __resetCodeVerified = !!verified;
-    const fields = document.getElementById('forgotPasswordFields');
+    const step1 = document.getElementById('forgotStep1');
+    const step2 = document.getElementById('forgotPasswordFields');
     const resetBtn = document.getElementById('forgotResetBtn');
     const newPass = document.getElementById('forgotNewPassword');
     const confirmPass = document.getElementById('forgotConfirmPassword');
 
-    if (fields) fields.hidden = !__resetCodeVerified;
+    // Toggle steps
+    if (step1) step1.hidden = __resetCodeVerified; // Hide Step 1 if verified
+    if (step2) step2.hidden = !__resetCodeVerified; // Show Step 2 if verified
+
+    // Enable/Disable fields
     if (resetBtn) resetBtn.disabled = !__resetCodeVerified;
     if (newPass) newPass.disabled = !__resetCodeVerified;
     if (confirmPass) confirmPass.disabled = !__resetCodeVerified;
@@ -1685,6 +1690,9 @@ if (forgotCodeInput) {
 
     setupPasswordToggle('toggleForgotNewPassword', 'forgotNewPassword');
     setupPasswordToggle('toggleForgotConfirmPassword', 'forgotConfirmPassword');
+    // New Toggles
+    setupPasswordToggle('toggleRegPassword', 'password');
+    setupPasswordToggle('toggleLoginPassword', 'loginPassword');
 
     // Password Rules Validation
     const forgotNewPasswordInput = document.getElementById('forgotNewPassword');
