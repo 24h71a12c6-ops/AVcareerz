@@ -2025,7 +2025,28 @@ if (registrationForm) {
                 // Do NOT open the login form automatically.
             } else {
                 // Show error message from backend
-                showNotification(data.error || 'Registration failed. Please try again.', 'error');
+                const errorMsg = data.error || 'Registration failed.';
+                
+                // Smart handling for duplicate accounts
+                if (errorMsg.includes('Duplicate entry') || errorMsg.includes('already registered')) {
+                    showNotification('You are already registered! Switching to Login...', 'info');
+                    
+                    // Switch to login tab
+                    if (typeof setAuthMode === 'function') {
+                        setAuthMode('login');
+                    }
+                    
+                    // Prefill email for convenience
+                    const loginEmail = document.getElementById('loginEmail');
+                    if (loginEmail) loginEmail.value = email;
+                    
+                    // Focus password
+                    const loginPass = document.getElementById('loginPassword');
+                    if (loginPass) loginPass.focus();
+                } else {
+                    showNotification(errorMsg, 'error');
+                }
+                
                 submitButton.textContent = originalButtonText;
                 submitButton.disabled = false;
             }
