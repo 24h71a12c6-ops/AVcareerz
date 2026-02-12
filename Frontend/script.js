@@ -886,6 +886,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     // ignore
                 }
             } else {
+                // Remove stored registration data so fields don't autofill
+                sessionStorage.removeItem('registrationData');
+                localStorage.removeItem('registrationData');
                 // Always clear registration fields when modal opens (not edit mode)
                 const fullNameEl = document.getElementById('fullName');
                 const emailEl = document.getElementById('email');
