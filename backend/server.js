@@ -329,6 +329,67 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// Verify Reset Code
+app.post('/api/verify-reset-code', async (req, res) => {
+    try {
+        const { email, code } = req.body;
+        const codeHash = crypto.createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
+                        
+        // Check if code exists and is valid (not expired)
+        const [rows] = await pool.query(
+            'SELECT * FROM password_reset_codes WHERE email = ? AND code_hash = ? AND expires_at > NOW() AND used_at IS NULL', 
+            [email, codeHash]
+        );
+
+        if (rows.length === 0) {
+            return res.status(400).json({ success: false, error: 'Invalid or expired code' });
+        }
+
+        res.json({ success: true, message: 'Code verified' });
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: 'Verification failed' });
+    }
+});
+
+// Reset Password
+app.post('/api/reset-password', async (req, res) => {
+    try {
+        const { email, code, newPassword } = req.body;
+        const codeHash = crypto.createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
+
+        // 1. Verify code again
+        const [codes] = await pool.query(
+            'SELECT * FROM password_reset_codes WHERE email = ? AND code_hash = ? AND expires_at > NOW() AND used_at IS NULL', 
+            [email, codeHash]
+        );
+        if (codes.length === 0) return res.status(400).json({ success: false, error: 'Invalid code' });
+
+        // 2. Check if user exists
+        const [users] = await pool.query('SELECT * FROM registrations WHERE email = ?', [email]);
+        if (users.length === 0) {
+             return res.status(404).json({ success: false, error: 'No account found for this email' });
+        }
+
+        // 3. Update password
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+        await pool.query('UPDATE registrations SET password = ? WHERE email = ?', [hashedPassword, email]);
+
+        // 4. Mark code as used
+        await pool.query('UPDATE password_reset_codes SET used_at = NOW() WHERE id = ?', [codes[0].id]);
+
+        // 5. Send confirmation email (optional)
+        try {
+             await sendPasswordChangedEmail(email, users[0].full_name);
+        } catch(e) { console.warn('Pwd change email failed', e); }
+
+        res.json({ success: true, message: 'Password reset successful' });
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: 'Reset failed' });
+    }
+});
+
 // --- CATCH-ALL ROUTE (Mothaniki kindha undali idi) ---
 app.get('*', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
