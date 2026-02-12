@@ -886,17 +886,26 @@ document.addEventListener("DOMContentLoaded", function () {
                     // ignore
                 }
             } else {
-                const submitBtn = regSection.querySelector('#registrationForm button[type="submit"]');
-                if (submitBtn) submitBtn.textContent = 'Submit';
+                // Always clear registration fields when modal opens (not edit mode)
+                const fullNameEl = document.getElementById('fullName');
                 const emailEl = document.getElementById('email');
-                if (emailEl) emailEl.readOnly = false;
-
-                // In normal signup mode password is required
+                const phoneEl = document.getElementById('phone');
                 const passwordEl = document.getElementById('password');
+                if (fullNameEl) fullNameEl.value = '';
+                if (emailEl) {
+                    emailEl.value = '';
+                    emailEl.readOnly = false;
+                    emailEl.classList.remove('filled');
+                }
+                if (phoneEl) phoneEl.value = '';
                 if (passwordEl) {
+                    passwordEl.value = '';
                     passwordEl.required = true;
                     passwordEl.placeholder = 'Create Password';
                 }
+                // Reset submit button text
+                const submitBtn = regSection.querySelector('#registrationForm button[type="submit"]');
+                if (submitBtn) submitBtn.textContent = 'Submit';
             }
             // Add this below the code you just sent
 const registrationForm = document.getElementById('registrationForm');
