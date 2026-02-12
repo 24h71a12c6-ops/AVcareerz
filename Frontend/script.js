@@ -1704,7 +1704,8 @@ if (forgotCodeInput) {
                 const el = document.getElementById(id);
                 if (el) {
                     el.style.color = condition ? '#10b981' : '#ef4444'; // Green or Red
-                    el.style.textDecoration = condition ? 'line-through' : 'none';
+                    // User requested no strike-through, just color change
+                    el.style.textDecoration = 'none'; 
                 }
             };
 
@@ -1754,16 +1755,16 @@ if (forgotCodeInput) {
     };
 
     forgotCodeInput.addEventListener('input', () => {
-        // Only attempt when the user has typed 6 digits.
-        const code = forgotCodeInput.value?.trim() || '';
-        if (code.length === 6) tryVerifyCode();
-        else setForgotPasswordVerifiedUI(false);
+        setForgotPasswordVerifiedUI(false);
     });
 
-    forgotCodeInput.addEventListener('blur', () => {
-        // If user pasted code and tabbed away.
-        tryVerifyCode();
-    });
+    // Manual Verify Button
+    const verifyBtn = document.getElementById('forgotVerifyCodeBtn');
+    if (verifyBtn) {
+        verifyBtn.addEventListener('click', () => {
+             tryVerifyCode();
+        });
+    }
 }
 
 if (forgotPasswordForm) {
