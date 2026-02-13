@@ -1634,8 +1634,14 @@ if (forgotSendCodeBtn) {
 
     forgotSendCodeBtn.addEventListener('click', async () => {
         const email = document.getElementById('forgotEmail')?.value?.trim();
+        const phone = document.getElementById('forgotPhone')?.value?.trim();
+
         if (!email) {
             showNotification('Please enter your email', 'error');
+            return;
+        }
+        if (!phone) {
+            showNotification('Please enter your WhatsApp number (used during signup)', 'error');
             return;
         }
 
@@ -1652,11 +1658,11 @@ if (forgotSendCodeBtn) {
             const response = await fetch(apiUrl('/api/forgot-password'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ email, phone })
             });
 
             const data = await response.json().catch(() => ({}));
-            
+
             if (response.ok && data.success) {
                 success = true;
                 __resetCodeSent = true;
@@ -1667,15 +1673,15 @@ if (forgotSendCodeBtn) {
                 if (timerEl) {
                     timerEl.style.display = 'block';
                     let timeLeft = 60;
-                    
+
                     // Initial state
                     timerEl.textContent = `Code expires in: ${timeLeft}s`;
                     timerEl.style.color = '#555';
-                    forgotSendCodeBtn.textContent = 'Code Sent'; 
+                    forgotSendCodeBtn.textContent = 'Code Sent';
                     forgotSendCodeBtn.disabled = true;
 
                     if (timerInterval) clearInterval(timerInterval);
-                    
+
                     timerInterval = setInterval(() => {
                         timeLeft--;
                         if (timeLeft > 0) {
@@ -1684,7 +1690,7 @@ if (forgotSendCodeBtn) {
                             clearInterval(timerInterval);
                             timerEl.textContent = 'Code expired. Please try sending again.';
                             timerEl.style.color = '#ef4444'; // Red for expired
-                            
+
                             // Re-enable button
                             forgotSendCodeBtn.disabled = false;
                             forgotSendCodeBtn.textContent = 'Resend Code';

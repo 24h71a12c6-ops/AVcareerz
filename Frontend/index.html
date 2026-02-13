@@ -584,11 +584,22 @@
           <form id="forgotPasswordForm" class="reg-form-logic">
             <div id="forgotStep1">
                 <div class="reg-input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="forgotEmail" name="forgotEmail" placeholder="Enter your Email" required>
-                </div>
+  <i class="fas fa-envelope"></i>
+  <input type="email" id="forgotEmail" name="forgotEmail" placeholder="Enter your Email" required>
+</div>
 
-                <button type="button" class="reg-btn-orange" id="forgotSendCodeBtn">Send Code</button>
+<div class="reg-input-group">
+  <i class="fas fa-phone"></i>
+  <input
+    type="tel"
+    id="forgotPhone"
+    name="forgotPhone"
+    placeholder="Enter your WhatsApp number used at signup"
+    required
+  >
+</div>
+
+<button type="button" class="reg-btn-orange" id="forgotSendCodeBtn">Send Code</button>
                 
                 <div id="forgotTimer" style="text-align: center; margin-top: 8px; font-size: 0.9rem; color: #555; display: none;"></div>
 
