@@ -12,7 +12,7 @@ const { loadEnv } = require('./utils/loadEnv');
 // Env loading logic
 loadEnv(path.join(__dirname, '.env'), { override: true });
 const pool = require('./config/db');
-const { sendConfirmationEmail, sendAdminEmail, sendPasswordResetCodeEmail, sendPasswordChangedEmail } = require('./services/emailService');
+//const { sendConfirmationEmail, sendAdminEmail, sendPasswordResetCodeEmail, sendPasswordChangedEmail } = require('./services/emailService');
 const { sendAdminWhatsApp, sendUserWhatsApp } = require('./services/whatsappService');
 
 const app = express();
@@ -110,7 +110,6 @@ app.get('/health', async (req, res) => {
         res.status(500).json({ ok: false, status: 'Live', db: 'Disconnected', error: err.message, timestamp: new Date() });
     }
 });
-
 // Registration API
 app.post('/api/register', async (req, res) => {
     try {
@@ -126,13 +125,15 @@ app.post('/api/register', async (req, res) => {
         );
 
         const userId = result.insertId;
-            // WhatsApp admin notification
-            try {
-                await sendAdminWhatsApp(`New registration: ${fullName} (${email}, ${phone})`);
-            } catch (err) {
-                console.warn('WhatsApp admin notification failed:', err);
-            }
-            res.status(201).json({ success: true, message: 'Registration successful!', userId });
+
+        // WhatsApp admin notification
+        try {
+            await sendAdminWhatsApp(`New registration: ${fullName} (${email}, ${phone})`);
+        } catch (err) {
+            console.warn('WhatsApp admin notification failed:', err);
+        }
+
+        res.status(201).json({ success: true, message: 'Registration successful!', userId });
     } catch (error) {
         console.error('Reg Error:', error);
         // Handle duplicate email error
@@ -142,6 +143,7 @@ app.post('/api/register', async (req, res) => {
         res.status(500).json({ success: false, error: 'Registration failed: ' + error.message });
     }
 });
+ 
 // Forgot Password API
 app.post('/api/forgot-password', async (req, res) => {
     const { email } = req.body;
@@ -165,21 +167,26 @@ app.post('/api/forgot-password', async (req, res) => {
             [email, codeHash, expiresAt]
         );
 
-        const sentResult = await sendPasswordResetCodeEmail(email, code);
-        if (sentResult && sentResult.success) {
-            return res.json({ success: true, message: 'Code sent successfully.' });
+        // Send the code via WhatsApp only
+        try {
+            const { phone, full_name } = users[0];
+            const otpMessage =
+                `Hi ${full_name || ''},\n\n` +
+                `Your Abroad Vision Carrerz password reset code is: ${code}\n` +
+                `This code is valid for 5 minutes. Do not share it with anyone.`;
+
+            await sendUserWhatsApp(phone, otpMessage);
+        } catch (err) {
+            console.warn('WhatsApp reset code send failed:', err);
         }
-        
-        console.error('Email sending result:', sentResult);
-        const errorMsg = sentResult?.error || 'Unknown email service error';
-        return res.status(500).json({ success: false, error: 'Email service failed: ' + errorMsg });
+
+        return res.json({ success: true, message: 'Code sent successfully via WhatsApp.' });
     } catch (error) {
         console.error('Forgot password error details:', error.message, error.stack);
         return res.status(500).json({ success: false, error: 'Server error during password reset: ' + error.message });
     }
 });
 
-   
                // Step 2: Additional academic data + uploads
 app.post(
     '/api/register-step2',
@@ -326,33 +333,7 @@ app.post(
                 ]
             );
 
-            // Email notifications
-            try {
-                // 1) Success email to the user
-                await sendConfirmationEmail(
-                    email,
-                    fullName,
-                    null, // default success message
-                    {
-                        preferredCountry,
-                        desiredCourse
-                    }
-                );
-
-                // 2) Detailed lead email to admins
-                await sendAdminEmail({
-                    fullName,
-                    email,
-                    phone,
-                    country: nationality, // map nationality as country
-                    preferredCountry,
-                    desiredCourse,
-                    levelOfStudy,
-                    city
-                });
-            } catch (err) {
-                console.warn('Email notification failed:', err);
-            }
+            
 
             // WhatsApp admin notification
             try {
@@ -491,10 +472,7 @@ app.post('/api/reset-password', async (req, res) => {
         // 4. Mark code as used
         await pool.query('UPDATE password_reset_codes SET used_at = NOW() WHERE id = ?', [codes[0].id]);
 
-        // 5. Send confirmation email (optional)
-        try {
-             await sendPasswordChangedEmail(email, users[0].full_name);
-        } catch(e) { console.warn('Pwd change email failed', e); }
+     
 
         res.json({ success: true, message: 'Password reset successful' });
     } catch(err) {
