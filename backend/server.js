@@ -235,7 +235,7 @@ app.post('/api/register-step2', upload.fields([
        
         const declarationFlag = ['1', 'true', 'on', 'yes'].includes(String(declaration).toLowerCase()) ? 1 : 0;
 
-        await pool.query(
+               await pool.query(
             `INSERT INTO next_form (
                 fullName,
                 dob,
@@ -292,20 +292,49 @@ app.post('/api/register-step2', upload.fields([
             ]
         );
 
-// ...existing code...
-            // WhatsApp admin notification
-            try {
-                await sendAdminWhatsApp(`Step 2 completed for: ${fullName} (${email}, ${phone})`);
-            } catch (err) {
-                console.warn('WhatsApp admin notification failed:', err);
-            }
-            res.status(200).json({ success: true, message: 'Step 2 completed' });
-    } catch (error) {
-        console.error('Step 2 Error:', error);
-        res.status(500).json({ success: false, error: 'Failed to process step 2 data' });
-    }
-});
+        // Email notifications
+        try {
+            // 1) Success email to the user
+            await sendConfirmationEmail(
+                email,
+                fullName,
+                null, // use default success message
+                {
+                    preferredCountry,
+                    desiredCourse
+                }
+            );
 
+            // 2) Detailed lead email to admins
+            await sendAdminEmail({
+                fullName,
+                email,
+                phone,
+                country: nationality,       // map nationality as country
+                preferredCountry,
+                desiredCourse,
+                levelOfStudy,
+                city
+            });
+        } catch (err) {
+            console.warn('Email notification failed:', err);
+        }
+
+        // WhatsApp admin notification
+        try {
+            await sendAdminWhatsApp(
+                `Step 2 completed:\n` +
+                `Name: ${fullName}\n` +
+                `Email: ${email}\n` +
+                `Phone: ${phone}\n` +
+                `Preferred Country: ${preferredCountry || 'N/A'}\n` +
+                `Desired Course: ${desiredCourse || 'N/A'}`
+            );
+        } catch (err) {
+            console.warn('WhatsApp admin notification failed:', err);
+        }
+
+        res.status(200).json({ success: true, message: 'Step 2 completed' });
 // Login API
 app.post('/api/login', async (req, res) => {
     try {
