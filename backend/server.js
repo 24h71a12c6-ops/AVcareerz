@@ -350,21 +350,27 @@ app.post(
             } catch (err) {
                 console.warn('Email notification failed:', err);
             }
-
-            // WhatsApp admin notification
-            try {
-                await sendAdminWhatsApp(
-                    `Step 2 completed:\n` +
-                        `Name: ${fullName}\n` +
-                        `Email: ${email}\n` +
-                        `Phone: ${phone}\n` +
-                        `Preferred Country: ${preferredCountry || 'N/A'}\n` +
-                        `Desired Course: ${desiredCourse || 'N/A'}`
-                );
-            } catch (err) {
-                console.warn('WhatsApp admin notification failed:', err);
-            }
-
+// WhatsApp admin notification
+try {
+    await sendAdminWhatsApp(
+        `New Abroad Registration ✅\n` +
+        `Name: ${fullName}\n` +
+        `Email: ${email}\n` +
+        `Phone: ${phone}\n` +
+        `City: ${city}\n` +
+        `Nationality: ${nationality}\n` +
+        `Preferred Country: ${preferredCountry}\n` +
+        `Level Of Study: ${levelOfStudy}\n` +
+        `Desired Course: ${desiredCourse}\n` +
+        `Preferred Intake: ${preferredIntake}\n` +
+        `Budget Range: ${budgetRange || 'N/A'}\n` +
+        `Passport Status: ${passportStatus}\n` +
+        `Highest Qualification: ${highestQualification}`
+    );
+} catch (err) {
+    console.warn('WhatsApp admin notification failed:', err);
+}
+           
             res.status(200).json({
                 success: true,
                 message: 'Step 2 completed'
