@@ -234,7 +234,7 @@ app.post('/api/register-step2', upload.fields([
         const testScoreCardBuffer = mapFile('testScoreCard');
         const declarationFlag = ['1', 'true', 'on', 'yes'].includes(String(declaration).toLowerCase()) ? 1 : 0;
 
-              await pool.query(
+                    await pool.query(
             `INSERT INTO next_form (
                 fullName,
                 dob,
@@ -259,12 +259,8 @@ app.post('/api/register-step2', upload.fields([
                 budgetRange,
                 fundingSource,
                 loanStatus,
-                declaration,
-                resume,
-                transcripts,
-                passportCopy,
-                testScoreCard
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                declaration
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 fullName,
                 dob,
@@ -289,13 +285,10 @@ app.post('/api/register-step2', upload.fields([
                 budgetRange || null,
                 fundingSource || null,
                 loanStatus || null,
-                declarationFlag,
-                resumeBuffer,
-                transcriptsBuffer,
-                passportCopyBuffer,
-                testScoreCardBuffer
+                declarationFlag
             ]
-        ); 
+        );
+    
             // WhatsApp admin notification
             try {
                 await sendAdminWhatsApp(`Step 2 completed for: ${fullName} (${email}, ${phone})`);
