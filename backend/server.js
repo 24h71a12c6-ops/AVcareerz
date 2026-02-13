@@ -185,8 +185,8 @@ app.post('/api/register-step2', upload.fields([
     { name: 'passportCopy', maxCount: 1 },
     { name: 'testScoreCard', maxCount: 1 }
 ]), async (req, res) => {
-    try {
-        const {
+       try {
+        let {
             userId,
             fullName,
             dob,
@@ -213,6 +213,14 @@ app.post('/api/register-step2', upload.fields([
             loanStatus,
             declaration
         } = req.body || {};
+
+        // If userId is missing but email is provided, look up userId
+        if (!userId && email) {
+            const [users] = await pool.query('SELECT id FROM registrations WHERE email = ?', [email]);
+            if (users.length > 0) {
+                userId = users[0].id;
+            }
+        }
 
         if (!userId || !fullName || !dob || !gender || !nationality || !phone || !email || !city || !passportStatus || !passport_id || !highestQualification || !preferredCountry || !levelOfStudy || !preferredIntake || !desiredCourse || !declaration) {
             return res.status(400).json({ success: false, error: 'Missing required academic details' });

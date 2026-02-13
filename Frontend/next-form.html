@@ -807,11 +807,16 @@
         e.preventDefault();
         const formData = new FormData(academicForm);
 
-        const userId = sessionStorage.getItem('currentUserId') || localStorage.getItem('currentUserId'); // Check both
+            // Try userId first, fallback to email if userId not found
+        const userId = sessionStorage.getItem('currentUserId') || localStorage.getItem('currentUserId');
+        const userEmail = localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail');
+        
         if (userId) {
             formData.append('userId', userId);
+        } else if (userEmail) {
+            // Fallback: use email to find userId on backend
+            formData.append('email', userEmail);
         } else {
-            // If strictly required, stop here
             successMessage.textContent = 'User session not found. Please log in again to continue.';
             successMessage.style.display = 'block';
             return;
