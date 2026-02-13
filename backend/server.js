@@ -13,7 +13,7 @@ const { loadEnv } = require('./utils/loadEnv');
 loadEnv(path.join(__dirname, '.env'), { override: true });
 const pool = require('./config/db');
 const { sendConfirmationEmail, sendAdminEmail, sendPasswordResetCodeEmail, sendPasswordChangedEmail } = require('./services/emailService');
-const { sendAdminWhatsApp } = require('./services/whatsappService');
+const { sendAdminWhatsApp, sendUserWhatsApp } = require('./services/whatsappService');
 
 const app = express();
 
@@ -178,7 +178,9 @@ app.post('/api/forgot-password', async (req, res) => {
         return res.status(500).json({ success: false, error: 'Server error during password reset: ' + error.message });
     }
 });
-// Step 2: Additional academic data + uploads
+
+   
+               // Step 2: Additional academic data + uploads
 app.post(
     '/api/register-step2',
     upload.fields([
@@ -259,6 +261,7 @@ app.post(
             const transcriptsBuffer = mapFile('transcripts');
             const passportCopyBuffer = mapFile('passportCopy');
             const testScoreCardBuffer = mapFile('testScoreCard');
+            // (currently not stored in DB, but fine to keep for future)
 
             const declarationFlag = ['1', 'true', 'on', 'yes'].includes(
                 String(declaration).toLowerCase()
@@ -350,27 +353,41 @@ app.post(
             } catch (err) {
                 console.warn('Email notification failed:', err);
             }
-// WhatsApp admin notification
-try {
-    await sendAdminWhatsApp(
-        `New Abroad Registration ✅\n` +
-        `Name: ${fullName}\n` +
-        `Email: ${email}\n` +
-        `Phone: ${phone}\n` +
-        `City: ${city}\n` +
-        `Nationality: ${nationality}\n` +
-        `Preferred Country: ${preferredCountry}\n` +
-        `Level Of Study: ${levelOfStudy}\n` +
-        `Desired Course: ${desiredCourse}\n` +
-        `Preferred Intake: ${preferredIntake}\n` +
-        `Budget Range: ${budgetRange || 'N/A'}\n` +
-        `Passport Status: ${passportStatus}\n` +
-        `Highest Qualification: ${highestQualification}`
-    );
-} catch (err) {
-    console.warn('WhatsApp admin notification failed:', err);
-}
-           
+
+            // WhatsApp admin notification
+            try {
+                await sendAdminWhatsApp(
+                    `New Abroad Registration ✅\n` +
+                    `Name: ${fullName}\n` +
+                    `Email: ${email}\n` +
+                    `Phone: ${phone}\n` +
+                    `City: ${city}\n` +
+                    `Nationality: ${nationality}\n` +
+                    `Preferred Country: ${preferredCountry}\n` +
+                    `Level Of Study: ${levelOfStudy}\n` +
+                    `Desired Course: ${desiredCourse}\n` +
+                    `Preferred Intake: ${preferredIntake}\n` +
+                    `Budget Range: ${budgetRange || 'N/A'}\n` +
+                    `Passport Status: ${passportStatus}\n` +
+                    `Highest Qualification: ${highestQualification}`
+                );
+            } catch (err) {
+                console.warn('WhatsApp admin notification failed:', err);
+            }
+
+            // WhatsApp user confirmation
+            try {
+                const userMessage =
+                    `Hi ${fullName},\n\n` +
+                    `Thank you for submitting your details to Abroad Vision Carrerz.\n` +
+                    `Your application has been received successfully. Our team will contact you soon.\n\n` +
+                    `Regards,\nAbroad Vision Carrerz`;
+
+                await sendUserWhatsApp(phone, userMessage);
+            } catch (err) {
+                console.warn('WhatsApp user notification failed:', err);
+            }
+
             res.status(200).json({
                 success: true,
                 message: 'Step 2 completed'
