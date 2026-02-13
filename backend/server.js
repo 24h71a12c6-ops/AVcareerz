@@ -179,64 +179,18 @@ app.post('/api/forgot-password', async (req, res) => {
     }
 });
 // Step 2: Additional academic data + uploads
-app.post('/api/register-step2', upload.fields([
-    { name: 'resume', maxCount: 1 },
-    { name: 'transcripts', maxCount: 1 },
-    { name: 'passportCopy', maxCount: 1 },
-    { name: 'testScoreCard', maxCount: 1 }
-]), async (req, res) => {
-       try {
-        let {
-            userId,
-            fullName,
-            dob,
-            gender,
-            nationality,
-            phone,
-            email,
-            city,
-            passportStatus,
-            passport_id,
-            highestQualification,
-            currentCourse,
-            specialization,
-            collegeName,
-            yearOfPassing,
-            cgpa,
-            preferredCountry,
-            levelOfStudy,
-            coaching,
-            preferredIntake,
-            desiredCourse,
-            budgetRange,
-            fundingSource,
-            loanStatus,
-            declaration
-        } = req.body || {};
-
-        // If userId is missing but email is provided, look up userId
-        if (!userId && email) {
-            const [users] = await pool.query('SELECT id FROM registrations WHERE email = ?', [email]);
-            if (users.length > 0) {
-                userId = users[0].id;
-            }
-        }
-
-        if (!userId || !fullName || !dob || !gender || !nationality || !phone || !email || !city || !passportStatus || !passport_id || !highestQualification || !preferredCountry || !levelOfStudy || !preferredIntake || !desiredCourse || !declaration) {
-            return res.status(400).json({ success: false, error: 'Missing required academic details' });
-        }
-
-        const files = req.files || {};
-        const mapFile = (field) => (files[field] && files[field][0] ? files[field][0].buffer : null);
-        const resumeBuffer = mapFile('resume');
-        const transcriptsBuffer = mapFile('transcripts');
-        const passportCopyBuffer = mapFile('passportCopy');
-        const testScoreCardBuffer = mapFile('testScoreCard');
-       
-        const declarationFlag = ['1', 'true', 'on', 'yes'].includes(String(declaration).toLowerCase()) ? 1 : 0;
-
-               await pool.query(
-            `INSERT INTO next_form (
+app.post(
+    '/api/register-step2',
+    upload.fields([
+        { name: 'resume', maxCount: 1 },
+        { name: 'transcripts', maxCount: 1 },
+        { name: 'passportCopy', maxCount: 1 },
+        { name: 'testScoreCard', maxCount: 1 }
+    ]),
+    async (req, res) => {
+        try {
+            let {
+                userId,
                 fullName,
                 dob,
                 gender,
@@ -261,80 +215,169 @@ app.post('/api/register-step2', upload.fields([
                 fundingSource,
                 loanStatus,
                 declaration
-            ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-            )`,
-            [
-                fullName,
-                dob,
-                gender,
-                nationality,
-                phone,
-                email,
-                city,
-                passportStatus,
-                passport_id,
-                highestQualification,
-                currentCourse || null,
-                specialization || null,
-                collegeName || null,
-                yearOfPassing || null,
-                cgpa || null,
-                preferredCountry,
-                levelOfStudy,
-                coaching || null,
-                preferredIntake,
-                desiredCourse,
-                budgetRange || null,
-                fundingSource || null,
-                loanStatus || null,
-                declarationFlag
-            ]
-        );
+            } = req.body || {};
 
-        // Email notifications
-        try {
-            // 1) Success email to the user
-            await sendConfirmationEmail(
-                email,
-                fullName,
-                null, // use default success message
-                {
-                    preferredCountry,
-                    desiredCourse
+            // If userId is missing but email is provided, look up userId
+            if (!userId && email) {
+                const [users] = await pool.query(
+                    'SELECT id FROM registrations WHERE email = ?',
+                    [email]
+                );
+                if (users.length > 0) {
+                    userId = users[0].id;
                 }
+            }
+
+            if (
+                !userId ||
+                !fullName ||
+                !dob ||
+                !gender ||
+                !nationality ||
+                !phone ||
+                !email ||
+                !city ||
+                !passportStatus ||
+                !passport_id ||
+                !highestQualification ||
+                !preferredCountry ||
+                !levelOfStudy ||
+                !preferredIntake ||
+                !desiredCourse ||
+                !declaration
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Missing required academic details'
+                });
+            }
+
+            const files = req.files || {};
+            const mapFile = (field) =>
+                files[field] && files[field][0] ? files[field][0].buffer : null;
+            const resumeBuffer = mapFile('resume');
+            const transcriptsBuffer = mapFile('transcripts');
+            const passportCopyBuffer = mapFile('passportCopy');
+            const testScoreCardBuffer = mapFile('testScoreCard');
+
+            const declarationFlag = ['1', 'true', 'on', 'yes'].includes(
+                String(declaration).toLowerCase()
+            )
+                ? 1
+                : 0;
+
+            await pool.query(
+                `INSERT INTO next_form (
+                    fullName,
+                    dob,
+                    gender,
+                    nationality,
+                    phone,
+                    email,
+                    city,
+                    passportStatus,
+                    passport_id,
+                    highestQualification,
+                    currentCourse,
+                    specialization,
+                    collegeName,
+                    yearOfPassing,
+                    cgpa,
+                    preferredCountry,
+                    levelOfStudy,
+                    coaching,
+                    preferredIntake,
+                    desiredCourse,
+                    budgetRange,
+                    fundingSource,
+                    loanStatus,
+                    declaration
+                ) VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )`,
+                [
+                    fullName,
+                    dob,
+                    gender,
+                    nationality,
+                    phone,
+                    email,
+                    city,
+                    passportStatus,
+                    passport_id,
+                    highestQualification,
+                    currentCourse || null,
+                    specialization || null,
+                    collegeName || null,
+                    yearOfPassing || null,
+                    cgpa || null,
+                    preferredCountry,
+                    levelOfStudy,
+                    coaching || null,
+                    preferredIntake,
+                    desiredCourse,
+                    budgetRange || null,
+                    fundingSource || null,
+                    loanStatus || null,
+                    declarationFlag
+                ]
             );
 
-            // 2) Detailed lead email to admins
-            await sendAdminEmail({
-                fullName,
-                email,
-                phone,
-                country: nationality,       // map nationality as country
-                preferredCountry,
-                desiredCourse,
-                levelOfStudy,
-                city
+            // Email notifications
+            try {
+                // 1) Success email to the user
+                await sendConfirmationEmail(
+                    email,
+                    fullName,
+                    null, // default success message
+                    {
+                        preferredCountry,
+                        desiredCourse
+                    }
+                );
+
+                // 2) Detailed lead email to admins
+                await sendAdminEmail({
+                    fullName,
+                    email,
+                    phone,
+                    country: nationality, // map nationality as country
+                    preferredCountry,
+                    desiredCourse,
+                    levelOfStudy,
+                    city
+                });
+            } catch (err) {
+                console.warn('Email notification failed:', err);
+            }
+
+            // WhatsApp admin notification
+            try {
+                await sendAdminWhatsApp(
+                    `Step 2 completed:\n` +
+                        `Name: ${fullName}\n` +
+                        `Email: ${email}\n` +
+                        `Phone: ${phone}\n` +
+                        `Preferred Country: ${preferredCountry || 'N/A'}\n` +
+                        `Desired Course: ${desiredCourse || 'N/A'}`
+                );
+            } catch (err) {
+                console.warn('WhatsApp admin notification failed:', err);
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'Step 2 completed'
             });
-        } catch (err) {
-            console.warn('Email notification failed:', err);
+        } catch (error) {
+            console.error('Step 2 Error:', error);
+            res.status(500).json({
+                success: false,
+                error: 'Failed to process step 2 data'
+            });
         }
-
-        // WhatsApp admin notification
-        try {
-            await sendAdminWhatsApp(
-                `Step 2 completed:\n` +
-                `Name: ${fullName}\n` +
-                `Email: ${email}\n` +
-                `Phone: ${phone}\n` +
-                `Preferred Country: ${preferredCountry || 'N/A'}\n` +
-                `Desired Course: ${desiredCourse || 'N/A'}`
-            );
-        } catch (err) {
-            console.warn('WhatsApp admin notification failed:', err);
-        }
-
-        res.status(200).json({ success: true, message: 'Step 2 completed' });
+    }
+);
 // Login API
 app.post('/api/login', async (req, res) => {
     try {
