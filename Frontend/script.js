@@ -1640,10 +1640,7 @@ if (forgotSendCodeBtn) {
             showNotification('Please enter your email', 'error');
             return;
         }
-        if (!phone) {
-            showNotification('Please enter your WhatsApp number (used during signup)', 'error');
-            return;
-        }
+        // No longer require WhatsApp number for forgot password
 
         setForgotPasswordVerifiedUI(false);
         showNotification('Sending code...', 'info');

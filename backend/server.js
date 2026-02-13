@@ -13,7 +13,7 @@ const { loadEnv } = require('./utils/loadEnv');
 loadEnv(path.join(__dirname, '.env'), { override: true });
 const pool = require('./config/db');
 //const { sendConfirmationEmail, sendAdminEmail, sendPasswordResetCodeEmail, sendPasswordChangedEmail } = require('./services/emailService');
-const { sendAdminWhatsApp, sendUserWhatsApp } = require('./services/whatsappService');
+// const { sendAdminWhatsApp, sendUserWhatsApp } = require('./services/whatsappService');
 
 const app = express();
 
@@ -126,12 +126,7 @@ app.post('/api/register', async (req, res) => {
 
         const userId = result.insertId;
 
-        // WhatsApp admin notification
-        try {
-            await sendAdminWhatsApp(`New registration: ${fullName} (${email}, ${phone})`);
-        } catch (err) {
-            console.warn('WhatsApp admin notification failed:', err);
-        }
+        // Optionally: send admin email notification here
 
         res.status(201).json({ success: true, message: 'Registration successful!', userId });
     } catch (error) {
@@ -167,20 +162,10 @@ app.post('/api/forgot-password', async (req, res) => {
             [email, codeHash, expiresAt]
         );
 
-        // Send the code via WhatsApp only
-        try {
-            const { phone, full_name } = users[0];
-            const otpMessage =
-                `Hi ${full_name || ''},\n\n` +
-                `Your Abroad Vision Carrerz password reset code is: ${code}\n` +
-                `This code is valid for 5 minutes. Do not share it with anyone.`;
-
-            await sendUserWhatsApp(phone, otpMessage);
-        } catch (err) {
-            console.warn('WhatsApp reset code send failed:', err);
-        }
-
-        return res.json({ success: true, message: 'Code sent successfully via WhatsApp.' });
+        // Send the code via email (already implemented)
+        const { sendLoginCodeEmail } = require('./services/emailService');
+        await sendLoginCodeEmail(email, code);
+        return res.json({ success: true, message: 'Code sent successfully via email.' });
     } catch (error) {
         console.error('Forgot password error details:', error.message, error.stack);
         return res.status(500).json({ success: false, error: 'Server error during password reset: ' + error.message });
@@ -335,39 +320,7 @@ app.post(
 
             
 
-            // WhatsApp admin notification
-            try {
-                await sendAdminWhatsApp(
-                    `New Abroad Registration ✅\n` +
-                    `Name: ${fullName}\n` +
-                    `Email: ${email}\n` +
-                    `Phone: ${phone}\n` +
-                    `City: ${city}\n` +
-                    `Nationality: ${nationality}\n` +
-                    `Preferred Country: ${preferredCountry}\n` +
-                    `Level Of Study: ${levelOfStudy}\n` +
-                    `Desired Course: ${desiredCourse}\n` +
-                    `Preferred Intake: ${preferredIntake}\n` +
-                    `Budget Range: ${budgetRange || 'N/A'}\n` +
-                    `Passport Status: ${passportStatus}\n` +
-                    `Highest Qualification: ${highestQualification}`
-                );
-            } catch (err) {
-                console.warn('WhatsApp admin notification failed:', err);
-            }
-
-            // WhatsApp user confirmation
-            try {
-                const userMessage =
-                    `Hi ${fullName},\n\n` +
-                    `Thank you for submitting your details to Abroad Vision Carrerz.\n` +
-                    `Your application has been received successfully. Our team will contact you soon.\n\n` +
-                    `Regards,\nAbroad Vision Carrerz`;
-
-                await sendUserWhatsApp(phone, userMessage);
-            } catch (err) {
-                console.warn('WhatsApp user notification failed:', err);
-            }
+            // Optionally: send admin/user email notification here
 
             res.status(200).json({
                 success: true,

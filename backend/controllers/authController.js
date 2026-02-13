@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const { sendAdminWhatsApp, sendUserWhatsApp } = require('../services/whatsappService');
+// const { sendAdminWhatsApp, sendUserWhatsApp } = require('../services/whatsappService');
 const { sendConfirmationEmail, sendAdminEmail } = require('../services/emailService');
 
 // Step 1 - Initial Registration
@@ -26,25 +26,14 @@ const registerStep1 = async (req, res) => {
       country
     });
 
-    // Send WhatsApp to admin
-    const adminMessage = `
-🎯 New Registration - Step 1 ✨
-Name: ${fullName}
-Email: ${email}
-Phone: ${phone}
-Country: ${country}
-
-Awaiting Step 2 details...
-    `;
-    await sendAdminWhatsApp(adminMessage);
-
-    // Send WhatsApp to user
-    const userMessage = `
-Welcome to Abroad Vision Carrerz! 🌍
-Thank you for registering. Please fill the next form to complete your registration.
-We'll get back to you soon!
-    `;
-    await sendUserWhatsApp(`+${phone.replace(/\D/g, '')}`, userMessage);
+    // Send admin notification email instead of WhatsApp
+    const adminMessage = {
+      fullName,
+      email,
+      phone,
+      country
+    };
+    await sendAdminEmail(adminMessage);
 
     res.status(201).json({
       message: 'Step 1 registered successfully',
@@ -84,33 +73,21 @@ const registerStep2 = async (req, res) => {
     // Fetch updated user for notifications
     const updatedUser = await User.findById(userId);
 
-    // Send complete details to admin via WhatsApp
-    const adminCompleteMessage = `
-✅ Registration Complete - ${updatedUser.full_name}
+    // Send admin notification email instead of WhatsApp
+    const adminCompleteMessage = {
+      fullName: updatedUser.full_name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      country: updatedUser.country,
+      qualification: updatedUser.qualification,
+      preferredCountry: updatedUser.preferred_country,
+      budget: updatedUser.budget,
+      workExperience: updatedUser.work_experience
+    };
+    await sendAdminEmail(adminCompleteMessage);
 
-📋 Basic Details:
-• Name: ${updatedUser.full_name}
-• Email: ${updatedUser.email}
-• Phone: ${updatedUser.phone}
-• Country: ${updatedUser.country}
-
-🎓 Additional Details:
-• Qualification: ${qualification || 'N/A'}
-• Preferred Country: ${preferredCountry || 'N/A'}
-• Budget: ${budget || 'N/A'}
-• Experience: ${workExperience || 'N/A'}
-
-👉 Please contact student for consultation.
-    `;
-    await sendAdminWhatsApp(adminCompleteMessage);
-
-    // Send confirmation to user
-    const userCompleteMessage = `
-🎉 You're all set!
-Thank you for completing your registration with Abroad Vision Carrerz.
-Our team will contact you shortly.
-    `;
-    await sendUserWhatsApp(`+${updatedUser.phone.replace(/\D/g, '')}`, userCompleteMessage);
+    // Send confirmation email to user
+    await sendConfirmationEmail(updatedUser.email, updatedUser.full_name);
 
     // Send confirmation email
     await sendConfirmationEmail(updatedUser.email, updatedUser.full_name);
