@@ -1652,7 +1652,9 @@ if (forgotSendCodeBtn) {
         let success = false;
 
         try {
-            const response = await fetch(apiUrl('/api/forgot-password'), {
+           
+// Correct:
+const response = await fetch('https://abroad-vision-carrerz-heg3.onrender.com/api/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, phone })
