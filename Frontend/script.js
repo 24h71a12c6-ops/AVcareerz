@@ -1,3 +1,16 @@
+// Hamburger menu functionality for mobile navigation
+document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.querySelector("#navToggle");
+    const navMenu = document.querySelector("#navMenu");
+    if (hamburger && navMenu) {
+        hamburger.addEventListener("click", () => {
+            navMenu.classList.toggle("active");
+        });
+        document.querySelectorAll(".nav-menu a").forEach(n => n.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+        }));
+    }
+});
 // --- API Configuration (Global Scope) ---
 // Define the backend service URL for connection
 

@@ -1,3 +1,86 @@
+/* --- Professional Responsive Styles --- */
+@media screen and (max-width: 768px) {
+    .container, .navbar .container, .footer .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 20px !important;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+    .about-content, 
+    .coaching-cards, 
+    .why-choose-grid, 
+    .footer-content,
+    .info-cards-container,
+    .login-container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 25px !important;
+        text-align: center;
+    }
+    .card, .coaching-card, .training-card, .info-box, .form-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 15px 0 !important;
+    }
+    .destination-circle-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px;
+        transform: scale(0.9);
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    /* Hamburger menu styles */
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: #fff;
+        width: 100%;
+        border-radius: 10px;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+    }
+    .nav-menu.active {
+        left: 0;
+    }
+    .nav-toggle {
+        display: block !important;
+        cursor: pointer;
+        z-index: 1100;
+    }
+    .nav-toggle span {
+        display: block;
+        width: 30px;
+        height: 4px;
+        margin: 6px auto;
+        background: #333;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+}
+@media screen and (min-width: 769px) {
+    .nav-toggle {
+        display: none !important;
+    }
+    .nav-menu {
+        position: static;
+        flex-direction: row;
+        background: none;
+        box-shadow: none;
+        left: 0;
+        top: 0;
+        width: auto;
+        border-radius: 0;
+    }
+}
 /* --- MOBILE RESPONSIVENESS IMPROVEMENTS --- */
 @media (max-width: 768px) {
     .navbar .container {
