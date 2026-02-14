@@ -6,7 +6,7 @@ console.log('Target:', envPath);
 
 const content = `# Server Configuration
 PORT=10000
-FRONTEND_URL=https://abroad-vision-carrerz.onrender.com
+FRONTEND_URL=https://abroad-vision-carrerz-frontend.onrender.com
 ALLOW_NULL_ORIGIN=0
 
 # Database (TiDB Cloud)

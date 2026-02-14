@@ -51,7 +51,7 @@ Updated `additional_info` table schema:
 ## How to Use the Updated System?
 
 ### Step 1: Update Database
-1. Open **phpMyAdmin** (http://localhost/phpmyadmin)
+1. Open **phpMyAdmin** (https://abroad-vision-carrerz-frontend.onrender.com/phpmyadmin)
 2. Select `path_career` database
 3. Go to **SQL** tab
 4. Copy and run the SQL from `backend/update_database.sql`
@@ -63,7 +63,7 @@ npm start
 ```
 
 ### Step 3: Test Registration Flow
-1. Go to http://localhost/1st%20project/index.html
+1. Go to https://abroad-vision-carrerz-frontend.onrender.com/index.html
 2. Click "Register Here" button
 3. Fill basic registration form → Submit
 4. Fill the new compact additional info form → Submit
