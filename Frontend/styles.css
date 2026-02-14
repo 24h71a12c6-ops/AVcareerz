@@ -1,3 +1,88 @@
+/* Center hero text and animate for country pages (Visa Services) */
+.country-hero .hero-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.country-hero .hero-line {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0;
+    animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
+}
+/* Center hero text and animate for country pages (Germany) */
+.country-hero .hero-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.country-hero .hero-line {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0;
+    animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
+}
+/* Center hero text and animate for country pages (Italy) */
+.country-hero .hero-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.country-hero .hero-line {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0;
+    animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
+}
+/* Center hero text and animate for country pages (New Zealand) */
+.country-hero .hero-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.country-hero .hero-line {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0;
+    animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
+}
+/* Center hero text and animate for country pages */
+.country-hero .hero-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.country-hero .hero-line {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0;
+    animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
+}
 /* Motion effect for hero text */
 @keyframes fadeInUp {
     0% {
@@ -326,7 +411,7 @@
     align-items: center;
     width: 100%;
     margin: 0 auto;
-    padding: 0 50px;
+    padding: 0 90px 0 90px;
     max-width: 100%;
     gap: 40px;
 }
@@ -338,7 +423,7 @@
     gap: 12px;
     text-decoration: none;
     color: inherit;
-    margin-left: 0;
+    margin-left: 32px;
 }
 
 @media (max-width: 900px) {
