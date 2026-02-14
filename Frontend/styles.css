@@ -2870,6 +2870,7 @@ header {
     padding: 80px 0 !important;
     background-color: #ffffff !important;
     text-align: center;
+    margin-bottom: 2rem;
 }
 
 .destinations-section h2 {
@@ -3172,6 +3173,8 @@ footer {
 .form-group select:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+    background-color: var(--white);
 }
 
 .submit-button {
@@ -3406,7 +3409,7 @@ footer {
 }
 
 .modal-content {
-    background-color: var(--white);
+    background: var(--white);
     margin: 5% auto;
     padding: 2rem;
     border-radius: 12px;
@@ -3510,6 +3513,7 @@ footer {
 
 .modal .required {
     color: #e74c3c;
+    font-weight: bold;
 }
 
 @media (max-width: 600px) {
@@ -3997,6 +4001,7 @@ footer {
 
     .register-card h1 {
         font-size: 1.5rem;
+        margin-bottom: 0.3rem;
     }
 
     .register-form .form-group input {
@@ -4007,6 +4012,8 @@ footer {
     .submit-button {
         padding: 11px;
         font-size: 0.9rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
     }
 
     .social-buttons {
@@ -4291,7 +4298,7 @@ footer {
 /* SECTION STYLING */
 .destinations {
     padding: 80px 0;
-    background-color: #e6f0fa;
+    background: #e6f0fa;
 }
 
 .section-title {
@@ -4359,24 +4366,6 @@ footer {
 }
 
 /* increase promo-card width to make the box larger */
-.promo-card {
-    max-width: 100%;
-    width: 100%;
-}
-
-/* Orbit plane markers (small airplane icons) */
-/* orbit-plane removed */
-
-@media (max-width: 1000px) {
-    .destinations-layout { grid-template-columns: 420px 1fr; }
-    .description-box { margin-left: 20px; }
-}
-
-/* Promo card matching provided design (updated) */
-.destinations-right {
-    flex: 0 0 350px; /* reduced to 350px as requested */
-}
-
 .promo-card {
     display: flex;
     background: #fff;
@@ -4585,7 +4574,7 @@ footer {
     align-items: center;
     gap: 0.7rem;
     padding: 1rem;
-    background-color: #FEF3C7;
+    background: #FEF3C7;
     border-left: 4px solid #F59E0B;
     border-radius: 6px;
     color: #92400E;
@@ -5567,12 +5556,6 @@ footer {
     width: 100%;
     height: 200px; /* reduced image height to shorten cards */
     overflow: hidden;
-}
-
-.visa-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 /* CONTENT */
