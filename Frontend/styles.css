@@ -1,3 +1,81 @@
+/* Visa Cards Section */
+.visa-types-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 320px);
+    gap: 50px 50px;
+    justify-content: center;
+    margin-top: 1.2rem;
+    padding-bottom: 12px;
+}
+
+.visa-type-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    max-width: 320px;
+    min-height: 380px;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.visa-type-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+}
+
+.visa-card-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.visa-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.visa-card-content {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.visa-card-content h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #22335a;
+    margin-bottom: 10px;
+}
+
+.visa-card-content p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #6c7a89;
+    min-height: 60px;
+    margin-bottom: 12px;
+}
+
+.get-assistance-btn {
+    margin-top: auto;
+    align-self: center;
+    padding: 12px 26px;
+    background: #002147;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 30px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.get-assistance-btn:hover {
+    background: orange;
+    color: white;
+}
 .top-bar {
     position: fixed;
     top: 0;

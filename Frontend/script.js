@@ -1,5 +1,6 @@
 // --- API Configuration (Global Scope) ---
 // Define the backend service URL for connection
+
 const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-heg3.onrender.com';
 const API_BASE_URL = BACKEND_SERVICE_URL;
 
