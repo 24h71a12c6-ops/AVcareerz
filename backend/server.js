@@ -16,6 +16,8 @@ const pool = require('./config/db');
 // const { sendAdminWhatsApp, sendUserWhatsApp } = require('./services/whatsappService');
 
 const app = express();
+app.use(cors()); // Ee okka line add cheyyi bro
+app.use(express.json()); // Idi kuda undo ledho chusko
 
 const PORT = process.env.PORT || 10000;
 const upload = multer({ storage: multer.memoryStorage() });
