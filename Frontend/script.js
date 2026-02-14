@@ -59,12 +59,34 @@ document.addEventListener("DOMContentLoaded", function () {
         let currentSlide = 0;
         slides[0].classList.add('active');
 
+        // Get hero text elements
+        const heroLine = document.querySelector('.hero-line');
+        const heroDesc = document.querySelector('.hero-description');
+
+        function triggerHeroTextAnimation() {
+            if (heroLine) {
+                heroLine.classList.remove('animate-hero-text');
+                // Force reflow to restart animation
+                void heroLine.offsetWidth;
+                heroLine.classList.add('animate-hero-text');
+            }
+            if (heroDesc) {
+                heroDesc.classList.remove('animate-hero-text');
+                void heroDesc.offsetWidth;
+                heroDesc.classList.add('animate-hero-text');
+            }
+        }
+
+        // Add animation class on first load
+        triggerHeroTextAnimation();
+
         function nextSlide() {
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + 1) % slides.length;
             slides[currentSlide].classList.add('active');
+            triggerHeroTextAnimation();
         }
-        setInterval(nextSlide, 5000); // Unified to 5 seconds
+        setInterval(nextSlide, 5000);
     }
 
     // 2. NAV TOGGLE
