@@ -82,6 +82,109 @@
     }
 }
 /* --- MOBILE RESPONSIVENESS IMPROVEMENTS --- */
+html, body {
+    /* ...existing code... */
+}
+@media (max-width: 768px) {
+    body, html {
+        width: 100vw;
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    .navbar .container {
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .logo {
+        max-width: 140px;
+    }
+    .nav-menu {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0;
+    }
+    .nav-menu li a {
+        padding: 12px 0;
+        width: 100%;
+    }
+    .top-bar {
+        padding: 0 10px;
+    }
+    .hero-glass {
+        width: 100vw;
+        left: 0;
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: 0;
+        padding: 24px 0;
+        box-sizing: border-box;
+    }
+    .hero-content-inner, .hero-content {
+        width: 100%;
+        max-width: 100vw;
+        padding: 0 10px;
+        box-sizing: border-box;
+        text-align: left;
+    }
+    .hero-line, .country-hero .hero-line {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+    .hero-description, .country-hero .hero-description {
+        font-size: 1rem;
+        padding-left: 10px;
+        max-width: 100vw;
+        border-left: 3px solid #f39c12;
+    }
+    .visa-types-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .visa-type-card {
+        max-width: 100%;
+        min-width: 0;
+        margin: 0 auto;
+    }
+    .cards-container {
+        flex-direction: column;
+        gap: 24px;
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .card {
+        max-width: 100%;
+        min-width: 0;
+        margin: 0 auto;
+    }
+    .universities-section, .country-info {
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .university-card {
+        max-width: 100%;
+        min-width: 0;
+        margin: 0 auto;
+    }
+    .section-title {
+        font-size: 1.5rem;
+        text-align: left;
+    }
+    .register-section, .why-section, .why-germany, .why-canada, .why-usa, .why-italy, .why-newzealand {
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+}
+/* --- MOBILE RESPONSIVENESS IMPROVEMENTS --- */
 @media (max-width: 768px) {
     .navbar .container {
         padding: 0 10px;
