@@ -1,3 +1,86 @@
+/* --- MOBILE RESPONSIVENESS IMPROVEMENTS --- */
+@media (max-width: 768px) {
+    .navbar .container {
+        padding: 0 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+    }
+    .logo {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+    .nav-menu {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+        align-items: flex-start;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        border-radius: 0 0 12px 12px;
+        padding: 10px 0;
+    }
+    .nav-menu li a {
+        padding: 12px 20px;
+        width: 100%;
+        font-size: 1.1rem;
+    }
+    .top-bar {
+        padding: 0 10px;
+        font-size: 13px;
+    }
+    .hero-glass, .hero-content-inner, .hero-content {
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .hero-line, .country-hero .hero-line {
+        font-size: 2rem !important;
+        padding: 0 10px;
+    }
+    .hero-description, .country-hero .hero-description {
+        font-size: 1rem !important;
+        padding-left: 10px !important;
+        max-width: 95vw !important;
+    }
+    .visa-types-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px 0 !important;
+    }
+    .visa-type-card {
+        max-width: 98vw !important;
+        min-width: 0 !important;
+    }
+    .cards-container {
+        flex-direction: column !important;
+        gap: 18px !important;
+        align-items: stretch !important;
+    }
+    .card {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        padding: 18px 10px !important;
+    }
+    .universities-section, .country-info {
+        padding-left: 0 !important;
+        flex-direction: column !important;
+        gap: 18px !important;
+    }
+    .university-card {
+        padding: 18px 10px !important;
+        margin-bottom: 18px !important;
+    }
+    .section-title {
+        font-size: 1.5rem !important;
+        padding: 0 10px !important;
+    }
+    .register-section, .why-section, .why-germany, .why-canada, .why-usa, .why-italy, .why-newzealand {
+        padding: 30px 5px !important;
+    }
+}
 /* Center hero text and animate for country pages (Visa Services) */
 .country-hero .hero-content {
     width: 100%;
