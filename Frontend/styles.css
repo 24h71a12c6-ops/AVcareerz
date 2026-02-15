@@ -1,3 +1,83 @@
+/* FINAL HIGH-PRIORITY MOBILE FIX */
+@media screen and (max-width: 768px) {
+    /* 1. NAVBAR ALIGNMENT: Logo Left, Icons Right */
+    .navbar .container {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 10px 15px !important;
+        width: 100% !important;
+    }
+
+    /* Hide the Title text completely */
+    .brand-title, .brand-text, .logo-container span {
+        display: none !important;
+    }
+
+    .logo-container {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* Right side icons grouping */
+    .nav-right {
+        display: flex !important;
+        gap: 15px !important;
+        align-items: center !important;
+    }
+
+    /* 2. NAVBAR BUTTONS: Dropdown Menu */
+    .nav-links {
+        display: none !important;
+        flex-direction: column !important;
+        position: absolute !important;
+        top: 60px !important;
+        left: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        z-index: 999999 !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+    }
+
+    /* Shows when 3-bars are clicked */
+    .nav-links.active {
+        display: flex !important;
+    }
+
+    /* 3. DESTINATIONS: Small Card & Full Scroll */
+    .explore-destinations {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        overflow: hidden !important;
+    }
+
+    /* Shrink the Blue/White Info Card */
+    .destinations-info-box {
+        position: static !important;
+        width: 85% !important;
+        max-width: 320px !important;
+        margin: 0 auto 20px auto !important;
+        padding: 15px !important;
+        font-size: 13px !important;
+    }
+
+    /* Ensure Country Cards scroll across the whole screen */
+    .country-cards-container {
+        display: flex !important;
+        flex-direction: row !important;
+        width: 100vw !important;
+        overflow-x: auto !important;
+        padding: 10px 20px !important;
+        gap: 15px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .country-card {
+        flex: 0 0 260px !important;
+        width: 260px !important;
+    }
+}
 /* FINAL CONSOLIDATED MOBILE FIX */
 @media screen and (max-width: 768px) {
     /* --- 1. TOP BAR & NAVBAR --- */
