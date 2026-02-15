@@ -776,6 +776,21 @@
       });
     })();
   </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Find the 3-bars icon (adjust selector if needed)
+    const menuIcon = document.querySelector('.fa-bars, .hamburger-icon, .navbar-toggler');
+    // Find the navbar menu container
+    const navMenu = document.querySelector('.nav-links');
+
+    if (menuIcon && navMenu) {
+      menuIcon.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        console.log("Navbar dropdown toggled!");
+      });
+    }
+  });
+  </script>
 </body>
 
 </html>
