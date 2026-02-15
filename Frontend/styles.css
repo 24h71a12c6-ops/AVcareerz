@@ -1,3 +1,9 @@
+@media screen and (max-width: 768px) {
+    .top-bar {
+        font-size: 10px !important;
+        padding: 4px 0 !important;
+    }
+}
 /* FINAL HIGH-PRIORITY MOBILE FIX */
 @media screen and (max-width: 768px) {
     /* 1. NAVBAR ALIGNMENT: Logo Left, Icons Right */
