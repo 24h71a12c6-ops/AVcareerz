@@ -1,3 +1,86 @@
+/* FINAL CONSOLIDATED MOBILE & MINIMIZED FIX */
+@media screen and (max-width: 768px) {
+    /* NAVBAR: Logo Left, Menu Right */
+    .navbar .container {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 5px 15px !important;
+    }
+
+    .logo-container {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .brand-title {
+        font-size: 14px !important;
+        white-space: nowrap;
+    }
+
+    /* NAV LINKS: Mobile Menu Style */
+    .nav-links {
+        position: absolute;
+        top: 60px;
+        right: -100%;
+        width: 100%;
+        background: #ffffff;
+        flex-direction: column !important;
+        gap: 10px;
+        padding: 20px 0;
+        transition: 0.4s;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+    .nav-links.active {
+        right: 0;
+    }
+
+    /* DESTINATIONS: Box -> Circle -> Slider */
+    .explore-destinations {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .destinations-info-box {
+        width: 95% !important;
+        position: static !important;
+        margin-bottom: 20px !important;
+    }
+
+    .destination-circle-container {
+        width: 300px !important;
+        height: 300px !important;
+        transform: scale(0.8) !important;
+        margin: 0 auto !important;
+        position: relative !important;
+    }
+
+    /* CARDS: Motion Effect & Horizontal Scroll */
+    .country-cards-container, .why-choose-grid {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        gap: 15px !important;
+        padding: 10px !important;
+    }
+
+    .motion-track {
+        display: flex !important;
+        flex-direction: row !important;
+        width: max-content !important;
+    }
+
+    .country-card, .why-choose-card {
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        margin: 0 !important;
+        display: inline-block !important;
+    }
+}
 /* --- Vertical Stack Fix for Mobile --- */
 @media screen and (max-width: 768px) {
     /* 1. Entire Section: Stack elements vertically */
