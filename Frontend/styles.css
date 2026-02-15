@@ -1,3 +1,45 @@
+@media screen and (max-width: 768px) {
+    .explore-destinations {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        overflow: hidden !important;
+        width: 100% !important;
+    }
+    .destinations-info-box {
+        position: static !important;
+        width: 90% !important;
+        max-width: 380px !important;
+        margin: 0 auto 30px auto !important;
+        padding: 20px !important;
+        font-size: 13px !important;
+    }
+    .destination-circle-container {
+        position: relative !important;
+        width: 280px !important;
+        height: 280px !important;
+        margin: 0 auto 40px auto !important;
+        display: block !important;
+        transform: scale(0.9);
+    }
+    .circle-item {
+        position: absolute !important;
+    }
+    .country-cards-container {
+        display: flex !important;
+        flex-direction: row !important;
+        width: 100vw !important;
+        overflow-x: auto !important;
+        padding: 10px 20px !important;
+        gap: 15px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    .country-card {
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        display: block !important;
+    }
+}
 /* OPTIMIZED MOBILE LAYOUT FIX */
 @media screen and (max-width: 768px) {
     /* Top Bar */
