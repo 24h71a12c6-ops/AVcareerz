@@ -1,3 +1,108 @@
+/* FINAL CONSOLIDATED MOBILE FIX */
+@media screen and (max-width: 768px) {
+    /* --- 1. TOP BAR & NAVBAR --- */
+    .top-bar {
+        font-size: 10px !important;
+        padding: 4px 0 !important;
+    }
+
+    .navbar .container {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 10px 15px !important;
+    }
+
+    /* Remove text title on mobile to prevent overlapping */
+    .brand-title, .brand-text, .guiding-text {
+        display: none !important;
+    }
+
+    .logo-container img {
+        width: 45px !important;
+        height: auto !important;
+    }
+
+    .nav-right {
+        display: flex !important;
+        gap: 15px !important;
+        align-items: center !important;
+    }
+
+    /* --- 2. THE DROPDOWN MENU --- */
+    .nav-links {
+        display: none !important;
+        flex-direction: column !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        z-index: 99999 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        padding: 15px 0 !important;
+    }
+
+    .nav-links.active {
+        display: flex !important;
+    }
+
+    .nav-links li a {
+        color: #003366 !important;
+        padding: 12px 25px !important;
+        display: block !important;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* --- 3. DESTINATIONS SECTION --- */
+    .explore-destinations, .explore-study-destinations {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+
+    /* Blue/White Info Box: Shrunk and placed at top */
+    .destinations-info-box {
+        position: static !important; 
+        width: 90% !important;
+        max-width: 380px !important;
+        margin: 0 auto 30px auto !important;
+        padding: 20px !important;
+    }
+
+    /* The Flag Circle: Restored shape and scaled down */
+    .destination-circle-container {
+        position: relative !important;
+        width: 280px !important; 
+        height: 280px !important;
+        margin: 0 auto 40px auto !important;
+        display: block !important;
+        transform: scale(0.9);
+    }
+
+    .circle-item {
+        position: absolute !important;
+    }
+
+    /* Country Cards: Left-to-Right Full Screen Scroll */
+    .country-cards-container {
+        display: flex !important;
+        flex-direction: row !important;
+        width: 100vw !important;
+        overflow-x: auto !important;
+        padding: 0 20px 30px 20px !important;
+        gap: 20px !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .country-card {
+        flex: 0 0 280px !important;
+        scroll-snap-align: center !important;
+        margin: 0 !important;
+    }
+}
 /* --- Precise Mobile Navbar & Destinations Fix --- */
 @media screen and (max-width: 768px) {
     /* NAVBAR: Logo/Title Left, Icons Right */
