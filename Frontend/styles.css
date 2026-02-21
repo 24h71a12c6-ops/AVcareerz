@@ -1,6 +1,6 @@
 @media screen and (max-width: 768px) {
-<<<<<<< HEAD
-=======
+
+
     /* Navbar: logo and title left, icons right */
     .navbar .container {
         display: flex !important;
@@ -230,7 +230,7 @@
     }
 }
 @media screen and (max-width: 768px) {
->>>>>>> fea6f52cf6fe042b17c59739bc7a01e391347b4a
+ fea6f52cf6fe042b17c59739bc7a01e391347b4a
     .top-bar {
         font-size: 10px !important;
         padding: 4px 0 !important;
@@ -779,8 +779,14 @@
     }
 }
 /* --- MOBILE RESPONSIVENESS IMPROVEMENTS --- */
-html, body {
-    /* ...existing code... */
+html body {
+  @media (max-width: 600px) {
+  body {
+    font-size: 16px;
+    padding: 10px;
+    /* Add more mobile styles here */
+  }
+}
 }
 @media (max-width: 768px) {
     body, html {
