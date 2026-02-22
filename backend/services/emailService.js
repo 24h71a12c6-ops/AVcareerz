@@ -1,10 +1,27 @@
-require('dotenv').config();
-const SibApiV3Sdk = require('sib-api-v3-sdk');
 
-// Configure Brevo API key
-const brevoApiKey = process.env.BREVO_API_KEY;
-SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = brevoApiKey;
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+require('dotenv').config();
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('Transporter error:', error);
+  } else {
+    console.log('Server is ready to send emails!');
+  }
+});
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -12,18 +29,18 @@ function escapeHtml(value) {
 
 
 const sendLoginCodeEmail = async (userEmail, code) => {
-  const sendSmtpEmail = {
-    to: [{ email: userEmail }],
-    sender: { email: 'abroadvisioncarrerz@gmail.com', name: 'Abroad Vision Carrerz' },
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: userEmail,
     subject: 'Your Login Verification Code',
-    htmlContent: `<h2>Login Code: ${escapeHtml(code)}</h2><p>Expires in 10 mins.</p>`
+    html: `<h2>Login Code: ${escapeHtml(code)}</h2><p>Expires in 10 mins.</p>`
   };
   try {
-    const info = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log('✅ Brevo Email sent:', info);
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Email sent:', info.response);
     return info;
   } catch (error) {
-    console.error('❌ Brevo Email Error:', error);
+    console.error('❌ Email Error:', error);
     throw error;
   }
 };
