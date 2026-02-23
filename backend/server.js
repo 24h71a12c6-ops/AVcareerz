@@ -11,7 +11,10 @@ const { exec } = require('child_process');
 const { loadEnv } = require('./utils/loadEnv');
 
 // Env loading logic
-loadEnv(path.join(__dirname, '.env'), { override: true });
+// Do not override Render/production env vars with local .env values.
+const isRender = Boolean(process.env.RENDER);
+const isProduction = process.env.NODE_ENV === 'production';
+loadEnv(path.join(__dirname, '.env'), { override: !(isRender || isProduction) });
 const supabase = require('./config/supabaseClient');
 
 const app = express();
@@ -95,6 +98,18 @@ app.post('/api/register', async (req, res) => {
         return res.status(409).json({ success: false, error: 'This email is already registered. Please log in.' });
       }
       throw error;
+    }
+
+    try {
+      const { sendAdminEmail } = require('./services/emailService');
+      await sendAdminEmail({
+        userId: data?.[0]?.id,
+        fullName,
+        email,
+        phone
+      });
+    } catch (emailError) {
+      console.error('Admin email error (signup):', emailError);
     }
 
     res.status(201).json({ success: true, message: 'Registration successful!', userId: data[0].id });
