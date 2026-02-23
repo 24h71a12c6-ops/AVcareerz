@@ -1,140 +1,105 @@
-const User = require('../models/User');
-// const { sendAdminWhatsApp, sendUserWhatsApp } = require('../services/whatsappService');
-const { sendConfirmationEmail, sendAdminEmail } = require('../services/emailService');
+const supabase = require('../config/supabaseClient');
+const crypto = require('crypto');
 
-// Step 1 - Initial Registration
-const registerStep1 = async (req, res) => {
+const healthCheck = async (req, res) => {
   try {
-    const { fullName, email, phone, country } = req.body;
-
-    // Validation
-    if (!fullName || !email || !phone || !country) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    // Check if user already exists
-    const existingUser = await User.findByEmail(email);
-    if (existingUser) {
-      return res.status(400).json({ error: 'Email already registered' });
-    }
-
-    // Create new user
-    const newUser = await User.create({
-      fullName,
-      email,
-      phone,
-      country
+    const { error } = await supabase.from('registrations').select('count', { count: 'exact', head: true });
+    if (error) throw error;
+    res.json({ ok: true, status: 'Live', db: 'Connected', timestamp: new Date() });
+  } catch (err) {
+    res.status(500).json({
+      ok: false,
+      status: 'Live',
+      db: 'Disconnected',
+      error: err.message,
+      timestamp: new Date()
     });
-
-    // Send admin notification email instead of WhatsApp
-    const adminMessage = {
-      fullName,
-      email,
-      phone,
-      country
-    };
-    await sendAdminEmail(adminMessage);
-
-    res.status(201).json({
-      message: 'Step 1 registered successfully',
-      userId: newUser.id,
-      user: newUser
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ error: 'Registration failed', details: error.message });
   }
 };
 
-// Step 2 - Complete Registration
-const registerStep2 = async (req, res) => {
+const register = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const { qualification, preferredCountry, budget, workExperience } = req.body;
-
-    // Find user
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+    const { fullName, email, phone, password } = req.body;
+    if (!fullName || !email || !phone || !password) {
+      return res.status(400).json({ success: false, error: 'All fields are required' });
     }
 
-    // Update user with step 2 details
-    const success = await User.update(userId, {
-      qualification,
-      preferredCountry,
-      budget,
-      workExperience
-    });
+    const { data, error } = await supabase
+      .from('registrations')
+      .insert([{
+        full_name: fullName,
+        email,
+        phone,
+        password
+      }])
+      .select();
 
-    if (!success) {
-      throw new Error('Failed to update user details in database');
+    if (error) {
+      if (error.message.includes('duplicate') || error.code === '23505') {
+        return res.status(409).json({
+          success: false,
+          error: 'This email is already registered. Please log in.'
+        });
+      }
+      throw error;
     }
 
-    // Fetch updated user for notifications
-    const updatedUser = await User.findById(userId);
-
-    // Send admin notification email instead of WhatsApp
-    const adminCompleteMessage = {
-      fullName: updatedUser.full_name,
-      email: updatedUser.email,
-      phone: updatedUser.phone,
-      country: updatedUser.country,
-      qualification: updatedUser.qualification,
-      preferredCountry: updatedUser.preferred_country,
-      budget: updatedUser.budget,
-      workExperience: updatedUser.work_experience
-    };
-    await sendAdminEmail(adminCompleteMessage);
-
-    // Send confirmation email to user
-    await sendConfirmationEmail(updatedUser.email, updatedUser.full_name);
-
-    // Send confirmation email
-    await sendConfirmationEmail(updatedUser.email, updatedUser.full_name);
-
-    // Send admin notification email
-    // Mapping MySQL row keys to expected object keys for email service if needed,
-    // assuming email service expects camelCase keys similar to old model
-    const emailUserObj = {
-      fullName: updatedUser.full_name,
-      email: updatedUser.email,
-      phone: updatedUser.phone,
-      country: updatedUser.country,
-      qualification: updatedUser.qualification,
-      preferredCountry: updatedUser.preferred_country,
-      budget: updatedUser.budget,
-      workExperience: updatedUser.work_experience
-    };
-    await sendAdminEmail(emailUserObj);
-
-    res.json({
-      message: 'Registration completed successfully',
-      user: updatedUser
-    });
+    res.status(201).json({ success: true, message: 'Registration successful!', userId: data[0].id });
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ error: 'Registration update failed', details: error.message });
+    console.error('Reg Error:', error);
+    res.status(500).json({ success: false, error: 'Registration failed: ' + error.message });
   }
 };
 
-// Get user details
-const getUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const user = await User.findById(userId);
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
 
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+  try {
+    const { data: users, error: findError } = await supabase
+      .from('registrations')
+      .select('*')
+      .eq('email', email)
+      .limit(1);
+
+    if (findError || !users || users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Email not registered. Please sign up first.'
+      });
     }
 
-    res.json(user);
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`🔑 DEBUG: Password reset code for ${email}: ${code}`);
+
+    const codeHash = crypto.createHash('sha256').update(code + process.env.RESET_PASSWORD_PEPPER).digest('hex');
+    const expiresAt = new Date(Date.now() + 1 * 60 * 1000).toISOString();
+
+    const { error: insertError } = await supabase
+      .from('password_reset_codes')
+      .insert([{
+        email,
+        code_hash: codeHash,
+        expires_at: expiresAt
+      }]);
+
+    if (insertError) throw insertError;
+
+    const { sendLoginCodeEmail } = require('../services/emailService');
+    await sendLoginCodeEmail(email, code);
+
+    return res.json({ success: true, message: 'Code sent successfully via email.' });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch user' });
+    console.error('Forgot password error details:', error.message, error.stack);
+    return res.status(500).json({
+      success: false,
+      error: 'Server error during password reset: ' + error.message
+    });
   }
 };
 
 module.exports = {
-  registerStep1,
-  registerStep2,
-  getUser
+  healthCheck,
+  register,
+  forgotPassword
 };

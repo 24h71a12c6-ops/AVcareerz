@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-transporter.verify((error, success) => {
+transporter.verify((error) => {
   if (error) {
     console.error('Transporter error:', error);
   } else {
@@ -24,16 +24,20 @@ transporter.verify((error, success) => {
 });
 
 function escapeHtml(value) {
-  return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
-
-const sendLoginCodeEmail = async (userEmail, code) => {
+const sendEmail = async ({ to, subject, html }) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: userEmail,
-    subject: 'Your Login Verification Code',
-    html: `<h2>Login Code: ${escapeHtml(code)}</h2><p>Expires in 10 mins.</p>`
+    to,
+    subject,
+    html
   };
   try {
     const info = await transporter.sendMail(mailOptions);
@@ -45,10 +49,14 @@ const sendLoginCodeEmail = async (userEmail, code) => {
   }
 };
 
-module.exports = { sendLoginCodeEmail };
-
-// Line 43 daggara 
-const sendEmail = transporter.sendMail.bind(transporter);
+const sendLoginCodeEmail = async (userEmail, code) => {
+  const html = `<h2>Login Code: ${escapeHtml(code)}</h2><p>Expires in 10 mins.</p>`;
+  return sendEmail({
+    to: userEmail,
+    subject: 'Your Login Verification Code',
+    html
+  });
+};
 
 // User confirmation email
 const sendConfirmationEmail = async (userEmail, userName, customMessage, extra = {}) => {
@@ -88,21 +96,12 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
       <p style="color: #666; font-size: 12px;">Guiding Futures Beyond Borders</p>
     `;
 
-    // Send via Brevo
-    const sendSmtpEmail = {
-      to: [{ email: userEmail }],
-      sender: { email: 'your_verified_sender@abroadvisioncarrerzdomain.com', name: 'Abroad Vision Carrerz' },
+    await sendEmail({
+      to: userEmail,
       subject: 'Abroad Vision Carrerz - Registration Successful',
-      htmlContent: html
-    };
-    try {
-      const info = await apiInstance.sendTransacEmail(sendSmtpEmail);
-      console.log('✅ Brevo Confirmation Email sent:', info);
-      return info;
-    } catch (error) {
-      console.error('❌ Brevo Confirmation Email Error:', error);
-      return false;
-    }
+      html
+    });
+    return true;
   } catch (error) {
     console.error('Confirmation email error:', error);
     return false;
@@ -113,23 +112,30 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
 const sendAdminEmail = async (user) => {
   try {
     const rows = [];
+    const titleize = (key) => String(key || '')
+      .replace(/_/g, ' ')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/^./, (c) => c.toUpperCase());
+
     const addRow = (label, value) => {
       const v = String(value ?? '').trim();
       if (!v) return;
       rows.push(`<p><strong>${escapeHtml(label)}:</strong> ${escapeHtml(v)}</p>`);
     };
 
-    addRow('Name', user?.fullName);
-    addRow('Email', user?.email);
-    addRow('Phone', user?.phone);
-    addRow('Country', user?.country);
-    addRow('Preferred Country', user?.preferredCountry);
-    addRow('Desired Course', user?.desiredCourse);
-    addRow('Level Of Study', user?.levelOfStudy);
-    addRow('City', user?.city);
+    Object.entries(user || {}).forEach(([key, value]) => {
+      if (!key) return;
+      const keyLower = String(key).toLowerCase();
+      if (keyLower.includes('password')) return;
+      if (value === null || value === undefined) return;
+      if (typeof value === 'object' && value?.type === 'Buffer') return;
+      addRow(titleize(key), value);
+    });
 
     const html = `
-      <h2>New User Registration</h2>
+      <h2>New Student Submission</h2>
       ${rows.length ? rows.join('\n') : '<p>(No details provided)</p>'}
       <hr>
       <p>Please follow up with this student.</p>
@@ -139,21 +145,12 @@ const sendAdminEmail = async (user) => {
       process.env.ADMIN_EMAILS?.split(',').map(e => e.trim()).filter(Boolean) ||
       ['admin@example.com'];
 
-    // Send via Brevo
-    const sendSmtpEmail = {
-      to: adminList.map(email => ({ email })),
-      sender: { email: 'your_verified_sender@abroadvisioncarrerzdomain.com', name: 'Abroad Vision Carrerz' },
+    await sendEmail({
+      to: adminList.join(', '),
       subject: `New Registration: ${user?.fullName || user?.email || 'New Lead'}`,
-      htmlContent: html
-    };
-    try {
-      const info = await apiInstance.sendTransacEmail(sendSmtpEmail);
-      console.log('✅ Brevo Admin Email sent:', info);
-      return info;
-    } catch (error) {
-      console.error('❌ Brevo Admin Email Error:', error);
-      return false;
-    }
+      html
+    });
+    return true;
   } catch (error) {
     console.error('Admin email error:', error);
     return false;
@@ -170,19 +167,15 @@ const sendPasswordResetCodeEmail = async (userEmail, code) => {
     <p style="color: #777; font-size: 12px;">If you did not request a password reset, ignore this email.</p>
   `;
 
-  // Send via Brevo
-  const sendSmtpEmail = {
-    to: [{ email: userEmail }],
-    sender: { email: 'your_verified_sender@abroadvisioncarrerzdomain.com', name: 'Abroad Vision Carrerz' },
-    subject: 'Abroad Vision Carrerz - Password Reset Code',
-    htmlContent: html
-  };
   try {
-    const info = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log('✅ Brevo Password Reset Email sent:', info);
-    return info;
+    await sendEmail({
+      to: userEmail,
+      subject: 'Abroad Vision Carrerz - Password Reset Code',
+      html
+    });
+    return true;
   } catch (error) {
-    console.error('❌ Brevo Password Reset Email Error:', error);
+    console.error('Password reset email error:', error);
     return false;
   }
 };
@@ -201,19 +194,15 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
     <p style="color: #666; font-size: 12px;">Guiding Futures Beyond Borders</p>
   `;
 
-  // Send via Brevo
-  const sendSmtpEmail = {
-    to: [{ email: userEmail }],
-    sender: { email: 'your_verified_sender@abroadvisioncarrerzdomain.com', name: 'Abroad Vision Carrerz' },
-    subject: 'Abroad Vision Carrerz - Password Changed',
-    htmlContent: html
-  };
   try {
-    const info = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log('✅ Brevo Password Changed Email sent:', info);
-    return info;
+    await sendEmail({
+      to: userEmail,
+      subject: 'Abroad Vision Carrerz - Password Changed',
+      html
+    });
+    return true;
   } catch (error) {
-    console.error('❌ Brevo Password Changed Email Error:', error);
+    console.error('Password changed email error:', error);
     return false;
   }
 };

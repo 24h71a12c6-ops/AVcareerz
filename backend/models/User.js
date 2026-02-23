@@ -1,15 +1,23 @@
-const pool = require('../config/db');
+const supabase = require('../config/supabaseClient');
 
 class User {
   static async create(userData) {
     const { fullName, email, phone, country } = userData;
     try {
-      const [result] = await pool.query(
-        `INSERT INTO users (full_name, email, phone, country, registration_status)
-                 VALUES (?, ?, ?, ?, ?)`,
-        [fullName, email, phone, country, 'step1_complete']
-      );
-      return { id: result.insertId, ...userData };
+      const { data, error } = await supabase
+        .from('users')
+        .insert([{
+          full_name: fullName,
+          email: email,
+          phone: phone,
+          country: country,
+          registration_status: 'step1_complete'
+        }])
+        .select();
+
+      if (error) throw error;
+      
+      return { id: data[0].id, ...userData };
     } catch (error) {
       throw error;
     }
@@ -17,8 +25,15 @@ class User {
 
   static async findByEmail(email) {
     try {
-      const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-      return rows[0];
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows found
+      
+      return data;
     } catch (error) {
       throw error;
     }
@@ -26,8 +41,15 @@ class User {
 
   static async findById(id) {
     try {
-      const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
-      return rows[0];
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      
+      return data;
     } catch (error) {
       throw error;
     }
@@ -36,13 +58,21 @@ class User {
   static async update(id, updateData) {
     const { qualification, preferredCountry, budget, workExperience } = updateData;
     try {
-      const [result] = await pool.query(
-        `UPDATE users 
-                 SET qualification = ?, preferred_country = ?, budget = ?, work_experience = ?, registration_status = 'fully_registered'
-                 WHERE id = ?`,
-        [qualification, preferredCountry, budget, workExperience, id]
-      );
-      return result.affectedRows > 0;
+      const { data, error } = await supabase
+        .from('users')
+        .update({
+          qualification: qualification,
+          preferred_country: preferredCountry,
+          budget: budget,
+          work_experience: workExperience,
+          registration_status: 'fully_registered'
+        })
+        .eq('id', id)
+        .select();
+
+      if (error) throw error;
+      
+      return data && data.length > 0;
     } catch (error) {
       throw error;
     }
