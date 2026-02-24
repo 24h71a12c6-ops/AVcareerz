@@ -1,27 +1,6 @@
 
 require('dotenv').config();
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
-
-transporter.verify((error) => {
-  if (error) {
-    console.error('Transporter error:', error);
-  } else {
-    console.log('Server is ready to send emails!');
-  }
-});
+const axios = require('axios');
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -32,26 +11,39 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-const sendEmail = async ({ to, subject, html }) => {
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to,
-    subject,
-    html
-  };
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent:', info.response);
-    return info;
-  } catch (error) {
-    console.error('❌ Email Error:', error);
-    throw error;
+const sendBrevoEmail = async ({ to, subject, html }) => {
+  const apiKey = process.env.BREVO_API_KEY;
+  const senderEmail = process.env.BREVO_SENDER_EMAIL;
+  const senderName = process.env.BREVO_SENDER_NAME || 'Abroad Vision Carrerz';
+
+  if (!apiKey || !senderEmail) {
+    throw new Error('Missing BREVO_API_KEY or BREVO_SENDER_EMAIL');
   }
+
+  const payload = {
+    sender: { email: senderEmail, name: senderName },
+    to: Array.isArray(to)
+      ? to.map((email) => ({ email }))
+      : [{ email: to }],
+    subject,
+    htmlContent: html
+  };
+
+  const response = await axios.post('https://api.brevo.com/v3/smtp/email', payload, {
+    headers: {
+      'api-key': apiKey,
+      'content-type': 'application/json',
+      accept: 'application/json'
+    },
+    timeout: 15000
+  });
+
+  return response.data;
 };
 
 const sendLoginCodeEmail = async (userEmail, code) => {
   const html = `<h2>Login Code: ${escapeHtml(code)}</h2><p>Expires in 10 mins.</p>`;
-  return sendEmail({
+  return sendBrevoEmail({
     to: userEmail,
     subject: 'Your Login Verification Code',
     html
@@ -96,7 +88,7 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
       <p style="color: #666; font-size: 12px;">Guiding Futures Beyond Borders</p>
     `;
 
-    await sendEmail({
+    await sendBrevoEmail({
       to: userEmail,
       subject: 'Abroad Vision Carrerz - Registration Successful',
       html
@@ -145,8 +137,8 @@ const sendAdminEmail = async (user) => {
       process.env.ADMIN_EMAILS?.split(',').map(e => e.trim()).filter(Boolean) ||
       ['admin@example.com'];
 
-    await sendEmail({
-      to: adminList.join(', '),
+    await sendBrevoEmail({
+      to: adminList,
       subject: `New Registration: ${user?.fullName || user?.email || 'New Lead'}`,
       html
     });
@@ -168,7 +160,7 @@ const sendPasswordResetCodeEmail = async (userEmail, code) => {
   `;
 
   try {
-    await sendEmail({
+    await sendBrevoEmail({
       to: userEmail,
       subject: 'Abroad Vision Carrerz - Password Reset Code',
       html
@@ -195,7 +187,7 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
   `;
 
   try {
-    await sendEmail({
+    await sendBrevoEmail({
       to: userEmail,
       subject: 'Abroad Vision Carrerz - Password Changed',
       html

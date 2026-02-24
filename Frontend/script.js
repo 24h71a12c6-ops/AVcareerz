@@ -17,6 +17,13 @@ document.addEventListener("DOMContentLoaded", function () {
 const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-heg3.onrender.com';
 const API_BASE_URL = BACKEND_SERVICE_URL;
 
+// --- Supabase Auth (for password reset only) ---
+const SUPABASE_URL = 'https://qokwtutsouipqkkijbdo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFva3d0dXRzb3VpcHFra2lqYmRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3NDQ2OTIsImV4cCI6MjA4NzMyMDY5Mn0.oBn1lAFRhfy2vG_dmIt-AvA4S8lq-j3cRUzxcl-F5so';
+const supabaseClient = (window.supabase && window.supabase.createClient)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+
 /**
  * Helper function to construct full API URLs
  * @param {string} path - The endpoint path (e.g., '/api/register')
@@ -1634,6 +1641,11 @@ if (forgotPasswordLink) {
         const confirmPass = document.getElementById('forgotConfirmPassword');
         if (newPass) newPass.disabled = true;
         if (confirmPass) confirmPass.disabled = true;
+
+        const codeInput = document.getElementById('forgotCode');
+        const codeVerifyBtn = document.getElementById('forgotVerifyCodeBtn');
+        if (codeInput) codeInput.closest('.reg-input-group').style.display = 'none';
+        if (codeVerifyBtn) codeVerifyBtn.style.display = 'none';
     });
 }
 
@@ -1688,56 +1700,32 @@ if (forgotSendCodeBtn) {
         let success = false;
 
         try {
-           
-// Correct:
-const response = await fetch('https://abroad-vision-carrerz-heg3.onrender.com/api/forgot-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, phone })
-            });
+            if (!supabaseClient) {
+                showNotification('Supabase client not available. Please refresh and try again.', 'error');
+            } else {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/reset-password.html`
+                });
 
-            const data = await response.json().catch(() => ({}));
+                if (error) throw error;
 
-            if (response.ok && data.success) {
                 success = true;
                 __resetCodeSent = true;
-                showNotification(data.message || 'If your email exists, a code has been sent.', 'success');
+                showNotification('Reset link sent. Please check your email.', 'success');
 
-                // Start 60s Timer
+                // Hide code/timer UI since Supabase uses email link
                 const timerEl = document.getElementById('forgotTimer');
                 if (timerEl) {
                     timerEl.style.display = 'block';
-                    let timeLeft = 60;
-
-                    // Initial state
-                    timerEl.textContent = `Code expires in: ${timeLeft}s`;
-                    timerEl.style.color = '#555';
-                    forgotSendCodeBtn.textContent = 'Code Sent';
-                    forgotSendCodeBtn.disabled = true;
-
-                    if (timerInterval) clearInterval(timerInterval);
-
-                    timerInterval = setInterval(() => {
-                        timeLeft--;
-                        if (timeLeft > 0) {
-                            timerEl.textContent = `Code expires in: ${timeLeft}s`;
-                        } else {
-                            clearInterval(timerInterval);
-                            timerEl.textContent = 'Code expired. Please try sending again.';
-                            timerEl.style.color = '#ef4444'; // Red for expired
-
-                            // Re-enable button
-                            forgotSendCodeBtn.disabled = false;
-                            forgotSendCodeBtn.textContent = 'Resend Code';
-                        }
-                    }, 1000);
+                    timerEl.textContent = 'Check your email for the reset link.';
+                    timerEl.style.color = '#10b981';
                 }
-            } else {
-                showNotification(data.error || 'Unable to send code. Please try again.', 'error');
+                forgotSendCodeBtn.textContent = 'Email Sent';
+                forgotSendCodeBtn.disabled = true;
             }
         } catch (err) {
             console.error('Forgot password send code error:', err);
-            showNotification('Unable to connect to server. Please check if the backend is running.', 'error');
+            showNotification('Unable to send reset email. Please try again later.', 'error');
         } finally {
             if (!success) {
                 forgotSendCodeBtn.textContent = originalText;
@@ -1809,28 +1797,9 @@ if (forgotCodeInput) {
         if (verifyInFlight) return;
         verifyInFlight = true;
 
-        try {
-            const response = await fetch(apiUrl('/api/verify-reset-code'), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, code })
-            });
-
-            const data = await response.json().catch(() => ({}));
-            if (response.ok && data.success) {
-                setForgotPasswordVerifiedUI(true);
-                showNotification(data.message || 'Code verified. Please set a new password.', 'success');
-            } else {
-                setForgotPasswordVerifiedUI(false);
-                if (code) showNotification(data.error || 'Invalid or expired code.', 'error');
-            }
-        } catch (err) {
-            console.error('Verify reset code error:', err);
-            setForgotPasswordVerifiedUI(false);
-            showNotification('Unable to verify code. Please check if the backend is running.', 'error');
-        } finally {
-            verifyInFlight = false;
-        }
+        setForgotPasswordVerifiedUI(false);
+        showNotification('Please use the reset link sent to your email.', 'info');
+        verifyInFlight = false;
     };
 
     forgotCodeInput.addEventListener('input', () => {
@@ -1849,75 +1818,7 @@ if (forgotCodeInput) {
 if (forgotPasswordForm) {
     forgotPasswordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
-        const email = document.getElementById('forgotEmail')?.value?.trim();
-        const code = document.getElementById('forgotCode')?.value?.trim();
-        const newPassword = document.getElementById('forgotNewPassword')?.value || '';
-        const confirmPassword = document.getElementById('forgotConfirmPassword')?.value || '';
-
-        if (!email || !code || !newPassword || !confirmPassword) {
-            showNotification('Please fill all fields', 'error');
-            return;
-        }
-
-        if (!__resetCodeSent) {
-            showNotification('Please click "Send Code" first', 'error');
-            return;
-        }
-
-        if (!__resetCodeVerified) {
-            showNotification('Please verify the 6-digit code first', 'error');
-            return;
-        }
-
-        if (newPassword.length < 8) {
-            showNotification('Password must be at least 8 characters', 'error');
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            showNotification('Passwords do not match', 'error');
-            return;
-        }
-
-        const submitBtn = forgotPasswordForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn ? submitBtn.textContent : 'Reset Password';
-        if (submitBtn) {
-            submitBtn.textContent = 'Resetting...';
-            submitBtn.disabled = true;
-        }
-
-        try {
-            const response = await fetch(apiUrl('/api/reset-password'), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, code, newPassword })
-            });
-
-            const data = await response.json().catch(() => ({}));
-            if (response.ok && data.success) {
-                showNotification(data.message || 'Password reset successful! Please log in.', 'success');
-                __resetCodeSent = false;
-                __resetCodeVerified = false;
-                setForgotPasswordVerifiedUI(false);
-                setAuthMode('login');
-                const loginEmailInput = document.getElementById('loginEmail');
-                if (loginEmailInput) loginEmailInput.value = email;
-                const loginPassInput = document.getElementById('loginPassword');
-                if (loginPassInput) loginPassInput.value = '';
-                forgotPasswordForm.reset();
-            } else {
-                showNotification(data.error || 'Password reset failed. Please try again.', 'error');
-            }
-        } catch (err) {
-            console.error('Reset password error:', err);
-            showNotification('Unable to connect to server. Please check if the backend is running.', 'error');
-        } finally {
-            if (submitBtn) {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }
-        }
+        showNotification('Please use the reset link sent to your email.', 'info');
     });
 }
 
