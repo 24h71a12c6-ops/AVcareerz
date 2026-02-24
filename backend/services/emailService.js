@@ -12,9 +12,9 @@ function escapeHtml(value) {
 }
 
 const sendBrevoEmail = async ({ to, subject, html }) => {
-  const apiKey = process.env.BREVO_API_KEY;
-  const senderEmail = process.env.BREVO_SENDER_EMAIL;
-  const senderName = process.env.BREVO_SENDER_NAME || 'Abroad Vision Carrerz';
+  const apiKey = String(process.env.BREVO_API_KEY || '').trim();
+  const senderEmail = String(process.env.BREVO_SENDER_EMAIL || '').trim();
+  const senderName = String(process.env.BREVO_SENDER_NAME || 'Abroad Vision Carrerz').trim();
 
   if (!apiKey || !senderEmail) {
     throw new Error('Missing BREVO_API_KEY or BREVO_SENDER_EMAIL');
@@ -29,16 +29,28 @@ const sendBrevoEmail = async ({ to, subject, html }) => {
     htmlContent: html
   };
 
-  const response = await axios.post('https://api.brevo.com/v3/smtp/email', payload, {
-    headers: {
-      'api-key': apiKey,
-      'content-type': 'application/json',
-      accept: 'application/json'
-    },
-    timeout: 15000
-  });
+  try {
+    const response = await axios.post('https://api.brevo.com/v3/smtp/email', payload, {
+      headers: {
+        'api-key': apiKey,
+        'content-type': 'application/json',
+        accept: 'application/json'
+      },
+      timeout: 15000
+    });
 
-  return response.data;
+    return response.data;
+  } catch (err) {
+    const status = err?.response?.status;
+    const data = err?.response?.data;
+    // Log the real Brevo response so we can diagnose sender verification, invalid key, etc.
+    console.error('Brevo send error:', {
+      status,
+      data,
+      message: err?.message
+    });
+    throw err;
+  }
 };
 
 const sendLoginCodeEmail = async (userEmail, code) => {
