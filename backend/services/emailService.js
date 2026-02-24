@@ -150,12 +150,12 @@ const sendAdminEmail = async (user) => {
 };
 
 // Password reset code
-const sendPasswordResetCodeEmail = async (userEmail, code) => {
+const sendPasswordResetCodeEmail = async (userEmail, code, expiresMinutes = 5) => {
   const html = `
     <h2>Password Reset</h2>
     <p>Use this code to reset your password:</p>
     <div style="font-size: 28px; font-weight: 800; letter-spacing: 4px; padding: 12px 16px; background: #f3f4f6; display: inline-block; border-radius: 10px;">${escapeHtml(code)}</div>
-    <p style="margin-top: 16px; color: #555;">This code will expire in 10 minutes.</p>
+    <p style="margin-top: 16px; color: #555;">This code will expire in ${escapeHtml(expiresMinutes)} minutes.</p>
     <p style="color: #777; font-size: 12px;">If you did not request a password reset, ignore this email.</p>
   `;
 

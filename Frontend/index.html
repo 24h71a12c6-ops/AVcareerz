@@ -587,7 +587,7 @@
                 <input type="email" id="forgotEmail" name="forgotEmail" placeholder="Enter your Email" required>
               </div>
 
-              <button type="button" class="reg-btn-orange" id="forgotSendCodeBtn">Send Reset Link</button>
+              <button type="button" class="reg-btn-orange" id="forgotSendCodeBtn">Send Code</button>
               
               <div id="forgotTimer" style="text-align: center; margin-top: 8px; font-size: 0.9rem; color: #555; display: none;"></div>
 
@@ -636,17 +636,19 @@
           <button type="button" class="forgot-back-link" id="forgotBackToLogin">Back to Log in</button>
         </div>
 
-        <div class="reg-social-divider">
-          <span>Or continue with</span>
-        </div>
-        <div class="reg-social-row">
-          <!-- Official Google Sign-In Button Container -->
-          <div id="googleBtn" style="width: 100%;"></div>
-          <!-- Fallback button (shown if Google button can't render, e.g. wrong origin) -->
-          <button type="button" id="googleFallbackBtn" class="social-box" aria-label="Sign in with Google">
-            <i class="fa-brands fa-google"></i>
-            Sign in with Google
-          </button>
+        <div id="authSocialBlock">
+          <div class="reg-social-divider">
+            <span>Or continue with</span>
+          </div>
+          <div class="reg-social-row">
+            <!-- Official Google Sign-In Button Container -->
+            <div id="googleBtn" style="width: 100%;"></div>
+            <!-- Fallback button (shown if Google button can't render, e.g. wrong origin) -->
+            <button type="button" id="googleFallbackBtn" class="social-box" aria-label="Sign in with Google">
+              <i class="fa-brands fa-google"></i>
+              Sign in with Google
+            </button>
+          </div>
         </div>
 
         <div class="auth-footer">

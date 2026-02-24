@@ -24,6 +24,20 @@ app.use(express.json());
 const PORT = process.env.PORT || 10000;
 const upload = multer({ storage: multer.memoryStorage() });
 
+const RESET_CODE_TTL_MINUTES = Number(process.env.RESET_CODE_TTL_MINUTES || 5);
+const RESET_PASSWORD_PEPPER = process.env.RESET_PASSWORD_PEPPER || 'dev-pepper-change-me';
+
+const isStrongPassword = (password) => {
+  const p = String(password || '');
+  return (
+    p.length >= 8 &&
+    /[A-Z]/.test(p) &&
+    /[a-z]/.test(p) &&
+    /[0-9]/.test(p) &&
+    /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(p)
+  );
+};
+
 // --- DATABASE INITIALIZATION ---
 async function initializeDatabase() {
   try {
@@ -122,10 +136,46 @@ app.post('/api/register', async (req, res) => {
 
 // Forgot Password API
 app.post('/api/forgot-password', async (req, res) => {
-  return res.status(410).json({
-    success: false,
-    error: 'Password reset is handled by Supabase Auth. Please use the reset link from your email.'
-  });
+  try {
+    const email = String(req.body?.email || '').trim().toLowerCase();
+    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
+
+    const { data: users, error: findError } = await supabase
+      .from('registrations')
+      .select('email, full_name')
+      .eq('email', email)
+      .limit(1);
+
+    if (findError) throw findError;
+    if (!users || users.length === 0) {
+      return res.status(404).json({ success: false, error: 'Email not registered. Please sign up first.' });
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const codeHash = crypto
+      .createHash('sha256')
+      .update(`${code}:${RESET_PASSWORD_PEPPER}`)
+      .digest('hex');
+
+    const expiresAt = new Date(Date.now() + RESET_CODE_TTL_MINUTES * 60 * 1000).toISOString();
+
+    const { error: insertError } = await supabase
+      .from('password_reset_codes')
+      .insert([{ email, code_hash: codeHash, expires_at: expiresAt }]);
+
+    if (insertError) throw insertError;
+
+    const { sendPasswordResetCodeEmail } = require('./services/emailService');
+    const ok = await sendPasswordResetCodeEmail(email, code, RESET_CODE_TTL_MINUTES);
+    if (!ok) {
+      return res.status(502).json({ success: false, error: 'Unable to send reset code email right now. Please try again.' });
+    }
+
+    return res.json({ success: true, message: 'Code sent successfully via email.' });
+  } catch (error) {
+    console.error('Forgot password error:', error?.message || error);
+    return res.status(500).json({ success: false, error: 'Server error during password reset.' });
+  }
 });
 
 // Step 2: Additional academic data + uploads
@@ -330,18 +380,116 @@ app.post('/api/login', async (req, res) => {
 
 // Verify Reset Code
 app.post('/api/verify-reset-code', async (req, res) => {
-  return res.status(410).json({
-    success: false,
-    error: 'Password reset is handled by Supabase Auth. Please use the reset link from your email.'
-  });
+  try {
+    const email = String(req.body?.email || '').trim().toLowerCase();
+    const code = String(req.body?.code || '').trim();
+
+    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
+    if (!/^\d{6}$/.test(code)) return res.status(400).json({ success: false, error: 'Invalid code' });
+
+    const nowIso = new Date().toISOString();
+    const { data: rows, error } = await supabase
+      .from('password_reset_codes')
+      .select('id, code_hash, expires_at, used_at, created_at')
+      .eq('email', email)
+      .is('used_at', null)
+      .gt('expires_at', nowIso)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (error) throw error;
+
+    const candidateHash = crypto
+      .createHash('sha256')
+      .update(`${code}:${RESET_PASSWORD_PEPPER}`)
+      .digest('hex');
+
+    const match = (rows || []).find(r => r.code_hash === candidateHash);
+    if (!match) {
+      return res.status(400).json({ success: false, error: 'Code is invalid or expired' });
+    }
+
+    return res.json({ success: true, message: 'Code verified' });
+  } catch (error) {
+    console.error('Verify reset code error:', error?.message || error);
+    return res.status(500).json({ success: false, error: 'Server error verifying code.' });
+  }
 });
 
 // Reset Password
 app.post('/api/reset-password', async (req, res) => {
-  return res.status(410).json({
-    success: false,
-    error: 'Password reset is handled by Supabase Auth. Please use the reset link from your email.'
-  });
+  try {
+    const email = String(req.body?.email || '').trim().toLowerCase();
+    const code = String(req.body?.code || '').trim();
+    const newPassword = String(req.body?.newPassword || '').trim();
+
+    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
+    if (!/^\d{6}$/.test(code)) return res.status(400).json({ success: false, error: 'Invalid code' });
+    if (!newPassword) return res.status(400).json({ success: false, error: 'New password is required' });
+    if (!isStrongPassword(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.'
+      });
+    }
+
+    const nowIso = new Date().toISOString();
+    const { data: rows, error } = await supabase
+      .from('password_reset_codes')
+      .select('id, code_hash, expires_at, used_at, created_at')
+      .eq('email', email)
+      .is('used_at', null)
+      .gt('expires_at', nowIso)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (error) throw error;
+
+    const candidateHash = crypto
+      .createHash('sha256')
+      .update(`${code}:${RESET_PASSWORD_PEPPER}`)
+      .digest('hex');
+
+    const match = (rows || []).find(r => r.code_hash === candidateHash);
+    if (!match) {
+      return res.status(400).json({ success: false, error: 'Code is invalid or expired' });
+    }
+
+    const { data: userRows, error: userErr } = await supabase
+      .from('registrations')
+      .select('full_name')
+      .eq('email', email)
+      .limit(1);
+
+    if (userErr) throw userErr;
+    if (!userRows || userRows.length === 0) {
+      return res.status(404).json({ success: false, error: 'Account not found. Please register first.' });
+    }
+
+    const { error: updateErr } = await supabase
+      .from('registrations')
+      .update({ password: newPassword })
+      .eq('email', email);
+    if (updateErr) throw updateErr;
+
+    const { error: markUsedErr } = await supabase
+      .from('password_reset_codes')
+      .update({ used_at: nowIso })
+      .eq('id', match.id);
+    if (markUsedErr) throw markUsedErr;
+
+    try {
+      const { sendPasswordChangedEmail } = require('./services/emailService');
+      await sendPasswordChangedEmail(email, userRows?.[0]?.full_name || '');
+    } catch (mailErr) {
+      console.error('Password changed email error:', mailErr?.message || mailErr);
+    }
+
+    return res.json({ success: true, message: 'Password reset successful. Please log in.' });
+  } catch (error) {
+    console.error('Reset password error:', error?.message || error);
+    return res.status(500).json({ success: false, error: 'Server error resetting password.' });
+  }
 });
 
 // --- CATCH-ALL ROUTE ---

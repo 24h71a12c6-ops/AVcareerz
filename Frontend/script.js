@@ -1551,6 +1551,7 @@ const forgotBackToLogin = document.getElementById('forgotBackToLogin');
 function setAuthMode(mode) {
     const isLogin = mode === 'login';
     const isForgot = mode === 'forgot';
+    const isSignup = !isLogin && !isForgot;
 
     if (signupPanel) signupPanel.hidden = isLogin || isForgot;
     if (loginPanel) loginPanel.hidden = !isLogin;
@@ -1566,6 +1567,10 @@ function setAuthMode(mode) {
     }
 
     if (authFooter) authFooter.hidden = isForgot;
+
+    // Social login buttons should appear only on the Sign up card
+    const socialBlock = document.getElementById('authSocialBlock');
+    if (socialBlock) socialBlock.hidden = !isSignup;
 
     if (authFooterText) authFooterText.textContent = isLogin ? "New here?" : "Already have an account?";
     if (authFooterAction) authFooterAction.textContent = isLogin ? "Sign up" : "Log in";
@@ -1644,6 +1649,18 @@ if (forgotPasswordLink) {
 
         const codeBlock = document.getElementById('forgotCodeBlock');
         if (codeBlock) codeBlock.style.display = 'none';
+
+        const timerEl = document.getElementById('forgotTimer');
+        if (timerEl) {
+            timerEl.style.display = 'none';
+            timerEl.textContent = '';
+            timerEl.style.color = '#555';
+        }
+
+        if (forgotSendCodeBtn) {
+            forgotSendCodeBtn.textContent = 'Send Code';
+            forgotSendCodeBtn.disabled = false;
+        }
     });
 }
 
@@ -1677,10 +1694,50 @@ setForgotPasswordVerifiedUI(false);
 
 if (forgotSendCodeBtn) {
     let timerInterval = null;
+    let expiresAtMs = null;
+
+    const stopTimer = () => {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    };
+
+    const startTimer = (minutes) => {
+        const timerEl = document.getElementById('forgotTimer');
+        if (!timerEl) return;
+
+        stopTimer();
+        expiresAtMs = Date.now() + minutes * 60 * 1000;
+        timerEl.style.display = 'block';
+        timerEl.style.color = '#555';
+
+        const tick = () => {
+            const msLeft = Math.max(0, expiresAtMs - Date.now());
+            const totalSec = Math.floor(msLeft / 1000);
+            const mm = String(Math.floor(totalSec / 60)).padStart(2, '0');
+            const ss = String(totalSec % 60).padStart(2, '0');
+            timerEl.textContent = `Code expires in ${mm}:${ss}`;
+            if (msLeft <= 0) {
+                stopTimer();
+                __resetCodeSent = false;
+                timerEl.textContent = 'Code expired. Please resend the code.';
+                timerEl.style.color = '#ef4444';
+                const codeBlock = document.getElementById('forgotCodeBlock');
+                if (codeBlock) codeBlock.style.display = 'none';
+                if (forgotSendCodeBtn) {
+                    forgotSendCodeBtn.textContent = 'Resend Code';
+                    forgotSendCodeBtn.disabled = false;
+                }
+            }
+        };
+
+        tick();
+        timerInterval = setInterval(tick, 1000);
+    };
 
     forgotSendCodeBtn.addEventListener('click', async () => {
         const email = document.getElementById('forgotEmail')?.value?.trim();
-        const phone = document.getElementById('forgotPhone')?.value?.trim();
 
         if (!email) {
             showNotification('Please enter your email', 'error');
@@ -1691,39 +1748,39 @@ if (forgotSendCodeBtn) {
         setForgotPasswordVerifiedUI(false);
         showNotification('Sending code...', 'info');
 
-        const originalText = 'Send Reset Link';
+        const originalText = forgotSendCodeBtn.textContent || 'Send Code';
         forgotSendCodeBtn.textContent = 'Sending...';
         forgotSendCodeBtn.disabled = true;
 
         let success = false;
 
         try {
-            if (!supabaseClient) {
-                showNotification('Supabase client not available. Please refresh and try again.', 'error');
-            } else {
-                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                    redirectTo: `${window.location.origin}/reset-password.html`
-                });
+            const resp = await fetch(`${API_BASE_URL}/api/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
 
-                if (error) throw error;
-
-                success = true;
-                __resetCodeSent = true;
-                showNotification('Reset link sent. Please check your email.', 'success');
-
-                // Hide code/timer UI since Supabase uses email link
-                const timerEl = document.getElementById('forgotTimer');
-                if (timerEl) {
-                    timerEl.style.display = 'block';
-                    timerEl.textContent = 'Check your email for the reset link.';
-                    timerEl.style.color = '#10b981';
-                }
-                forgotSendCodeBtn.textContent = 'Email Sent';
-                forgotSendCodeBtn.disabled = true;
+            const payload = await resp.json().catch(() => ({}));
+            if (!resp.ok || !payload?.success) {
+                throw new Error(payload?.error || 'Unable to send code');
             }
+
+            success = true;
+            __resetCodeSent = true;
+            showNotification('Code sent to your email. Please enter it below.', 'success');
+
+            const codeBlock = document.getElementById('forgotCodeBlock');
+            if (codeBlock) codeBlock.style.display = 'block';
+
+            forgotSendCodeBtn.textContent = 'Resend Code';
+            forgotSendCodeBtn.disabled = false;
+
+            // Start 5 minute expiry timer (matches backend default)
+            startTimer(5);
         } catch (err) {
             console.error('Forgot password send code error:', err);
-            showNotification('Unable to send reset email. Please try again later.', 'error');
+            showNotification(err?.message || 'Unable to send code. Please try again later.', 'error');
         } finally {
             if (!success) {
                 forgotSendCodeBtn.textContent = originalText;
@@ -1795,9 +1852,25 @@ if (forgotCodeInput) {
         if (verifyInFlight) return;
         verifyInFlight = true;
 
-        setForgotPasswordVerifiedUI(false);
-        showNotification('Please use the reset link sent to your email.', 'info');
-        verifyInFlight = false;
+        try {
+            const resp = await fetch(`${API_BASE_URL}/api/verify-reset-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, code })
+            });
+            const payload = await resp.json().catch(() => ({}));
+            if (!resp.ok || !payload?.success) {
+                throw new Error(payload?.error || 'Invalid code');
+            }
+
+            setForgotPasswordVerifiedUI(true);
+            showNotification('Code verified. Please set your new password.', 'success');
+        } catch (err) {
+            setForgotPasswordVerifiedUI(false);
+            showNotification(err?.message || 'Invalid or expired code.', 'error');
+        } finally {
+            verifyInFlight = false;
+        }
     };
 
     forgotCodeInput.addEventListener('input', () => {
@@ -1816,7 +1889,65 @@ if (forgotCodeInput) {
 if (forgotPasswordForm) {
     forgotPasswordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        showNotification('Please use the reset link sent to your email.', 'info');
+
+        const email = document.getElementById('forgotEmail')?.value?.trim();
+        const code = document.getElementById('forgotCode')?.value?.trim();
+        const newPassword = document.getElementById('forgotNewPassword')?.value || '';
+        const confirmPassword = document.getElementById('forgotConfirmPassword')?.value || '';
+
+        if (!email) return showNotification('Please enter your email', 'error');
+        if (!/^\d{6}$/.test(String(code || ''))) return showNotification('Please enter the 6-digit code', 'error');
+        if (!newPassword) return showNotification('Please enter a new password', 'error');
+        if (newPassword !== confirmPassword) return showNotification('Passwords do not match', 'error');
+
+        const strong = (
+            newPassword.length >= 8 &&
+            /[A-Z]/.test(newPassword) &&
+            /[a-z]/.test(newPassword) &&
+            /[0-9]/.test(newPassword) &&
+            /[!@#$%^&*]/.test(newPassword)
+        );
+        if (!strong) {
+            return showNotification('Password must meet all rules shown above.', 'error');
+        }
+
+        const resetBtn = document.getElementById('forgotResetBtn');
+        const originalText = resetBtn?.textContent || 'Reset Password';
+        if (resetBtn) {
+            resetBtn.textContent = 'Updating...';
+            resetBtn.disabled = true;
+        }
+
+        try {
+            const resp = await fetch(`${API_BASE_URL}/api/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, code, newPassword })
+            });
+            const payload = await resp.json().catch(() => ({}));
+            if (!resp.ok || !payload?.success) {
+                throw new Error(payload?.error || 'Unable to reset password');
+            }
+
+            showNotification('Password updated successfully. Please log in.', 'success');
+            setAuthMode('login');
+            try {
+                const loginEmail = document.getElementById('loginEmail');
+                if (loginEmail) loginEmail.value = email;
+                const loginPass = document.getElementById('loginPassword');
+                if (loginPass) loginPass.value = '';
+            } catch {
+                // ignore
+            }
+        } catch (err) {
+            console.error('Reset password error:', err);
+            showNotification(err?.message || 'Unable to reset password. Please try again.', 'error');
+        } finally {
+            if (resetBtn) {
+                resetBtn.textContent = originalText;
+                resetBtn.disabled = false;
+            }
+        }
     });
 }
 
