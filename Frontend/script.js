@@ -1642,10 +1642,8 @@ if (forgotPasswordLink) {
         if (newPass) newPass.disabled = true;
         if (confirmPass) confirmPass.disabled = true;
 
-        const codeInput = document.getElementById('forgotCode');
-        const codeVerifyBtn = document.getElementById('forgotVerifyCodeBtn');
-        if (codeInput) codeInput.closest('.reg-input-group').style.display = 'none';
-        if (codeVerifyBtn) codeVerifyBtn.style.display = 'none';
+        const codeBlock = document.getElementById('forgotCodeBlock');
+        if (codeBlock) codeBlock.style.display = 'none';
     });
 }
 
@@ -1693,7 +1691,7 @@ if (forgotSendCodeBtn) {
         setForgotPasswordVerifiedUI(false);
         showNotification('Sending code...', 'info');
 
-        const originalText = 'Send Code';
+        const originalText = 'Send Reset Link';
         forgotSendCodeBtn.textContent = 'Sending...';
         forgotSendCodeBtn.disabled = true;
 
