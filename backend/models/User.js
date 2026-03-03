@@ -1,23 +1,17 @@
-const supabase = require('../config/supabaseClient');
+const db = require('../config/firebaseClient');
 
 class User {
   static async create(userData) {
     const { fullName, email, phone, country } = userData;
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .insert([{
-          full_name: fullName,
-          email: email,
-          phone: phone,
-          country: country,
-          registration_status: 'step1_complete'
-        }])
-        .select();
-
-      if (error) throw error;
-      
-      return { id: data[0].id, ...userData };
+      const ref = await db.collection('users').add({
+        full_name: fullName,
+        email: email,
+        phone: phone,
+        country: country,
+        registration_status: 'step1_complete'
+      });
+      return { id: ref.id, ...userData };
     } catch (error) {
       throw error;
     }
@@ -25,15 +19,13 @@ class User {
 
   static async findByEmail(email) {
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('email', email)
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows found
-      
-      return data;
+      const snap = await db.collection('users')
+      .where('email', '==', email)
+      .limit(1)
+      .get();
+    if (snap.empty) return null;
+    const doc = snap.docs[0];
+    return { id: doc.id, ...doc.data() };
     } catch (error) {
       throw error;
     }
@@ -41,15 +33,9 @@ class User {
 
   static async findById(id) {
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error;
-      
-      return data;
+      const doc = await db.collection('users').doc(id).get();
+    if (!doc.exists) return null;
+    return { id: doc.id, ...doc.data() };
     } catch (error) {
       throw error;
     }
@@ -58,21 +44,15 @@ class User {
   static async update(id, updateData) {
     const { qualification, preferredCountry, budget, workExperience } = updateData;
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .update({
-          qualification: qualification,
-          preferred_country: preferredCountry,
-          budget: budget,
-          work_experience: workExperience,
-          registration_status: 'fully_registered'
-        })
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      
-      return data && data.length > 0;
+      const docRef = db.collection('users').doc(id);
+    await docRef.update({
+      qualification: qualification,
+      preferred_country: preferredCountry,
+      budget: budget,
+      work_experience: workExperience,
+      registration_status: 'fully_registered'
+    });
+    return true;
     } catch (error) {
       throw error;
     }

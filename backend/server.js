@@ -15,7 +15,9 @@ const { loadEnv } = require('./utils/loadEnv');
 const isRender = Boolean(process.env.RENDER);
 const isProduction = process.env.NODE_ENV === 'production';
 loadEnv(path.join(__dirname, '.env'), { override: !(isRender || isProduction) });
-const supabase = require('./config/supabaseClient');
+
+// Firestore client instead of Supabase
+const db = require('./config/firebaseClient');
 
 const app = express();
 app.use(cors());
@@ -41,16 +43,12 @@ const isStrongPassword = (password) => {
 // --- DATABASE INITIALIZATION ---
 async function initializeDatabase() {
   try {
-    // Check if registrations table exists by trying a simple query
-    const { error } = await supabase
-      .from('registrations')
-      .select('count')
-      .limit(1);
-
-    if (!error) {
-      console.log('✅ Database tables already initialized');
+    // simple check: list one document from registrations
+    const snap = await db.collection('registrations').limit(1).get();
+    if (!snap.empty) {
+      console.log('✅ Database collections already initialized');
     } else {
-      console.log('⚠️  Note: Create tables manually in Supabase dashboard or via migration tool');
+      console.log('⚠️  No registrations documents found; ensure you created collections in Firestore');
     }
   } catch (error) {
     console.error('⚠️  Database check:', error.message);
@@ -81,9 +79,8 @@ app.use(express.static(frontendPath));
 // Health Check
 app.get('/health', async (req, res) => {
   try {
-    const { error } = await supabase.from('registrations').select('count', { count: 'exact', head: true });
-    if (error) throw error;
-    res.json({ ok: true, status: 'Live', db: 'Connected', timestamp: new Date() });
+    const snap = await db.collection('registrations').get();
+    res.json({ ok: true, status: 'Live', db: 'Connected', count: snap.size, timestamp: new Date() });
   } catch (err) {
     res.status(500).json({ ok: false, status: 'Live', db: 'Disconnected', error: err.message, timestamp: new Date() });
   }
@@ -97,22 +94,22 @@ app.post('/api/register', async (req, res) => {
       return res.status(400).json({ success: false, error: 'All fields are required' });
     }
 
-    const { data, error } = await supabase
-      .from('registrations')
-      .insert([{
-        full_name: fullName,
-        email: email,
-        phone: phone,
-        password: password
-      }])
-      .select();
-
-    if (error) {
-      if (error.message.includes('duplicate') || error.code === '23505') {
-        return res.status(409).json({ success: false, error: 'This email is already registered. Please log in.' });
-      }
-      throw error;
+    // Firestore insert and duplicate check
+    const existing = await db.collection('registrations')
+      .where('email', '==', email)
+      .limit(1)
+      .get();
+    if (!existing.empty) {
+      return res.status(409).json({ success: false, error: 'This email is already registered. Please log in.' });
     }
+
+    const ref = await db.collection('registrations').add({
+      full_name: fullName,
+      email: email,
+      phone: phone,
+      password: password
+    });
+    const data = { id: ref.id, full_name: fullName, email, phone };
 
     try {
       const { sendAdminEmail, sendConfirmationEmail } = require('./services/emailService');
@@ -140,16 +137,14 @@ app.post('/api/forgot-password', async (req, res) => {
     const email = String(req.body?.email || '').trim().toLowerCase();
     if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
 
-    const { data: users, error: findError } = await supabase
-      .from('registrations')
-      .select('email, full_name')
-      .eq('email', email)
-      .limit(1);
-
-    if (findError) throw findError;
-    if (!users || users.length === 0) {
+    const snap = await db.collection('registrations')
+      .where('email', '==', email)
+      .limit(1)
+      .get();
+    if (snap.empty) {
       return res.status(404).json({ success: false, error: 'Email not registered. Please sign up first.' });
     }
+    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const codeHash = crypto
@@ -159,11 +154,7 @@ app.post('/api/forgot-password', async (req, res) => {
 
     const expiresAt = new Date(Date.now() + RESET_CODE_TTL_MINUTES * 60 * 1000).toISOString();
 
-    const { error: insertError } = await supabase
-      .from('password_reset_codes')
-      .insert([{ email, code_hash: codeHash, expires_at: expiresAt }]);
-
-    if (insertError) throw insertError;
+    await db.collection('password_reset_codes').add({ email, code_hash: codeHash, expires_at: expiresAt });
 
     const { sendPasswordResetCodeEmail } = require('./services/emailService');
     const ok = await sendPasswordResetCodeEmail(email, code, RESET_CODE_TTL_MINUTES);
@@ -219,14 +210,12 @@ app.post(
 
       // If userId is missing but email is provided, look up userId
       if (!userId && email) {
-        const { data: users, error: lookupError } = await supabase
-          .from('registrations')
-          .select('id')
-          .eq('email', email)
-          .limit(1);
-
-        if (!lookupError && users && users.length > 0) {
-          userId = users[0].id;
+        const lookupSnap = await db.collection('registrations')
+          .where('email','==',email)
+          .limit(1)
+          .get();
+        if (!lookupSnap.empty) {
+          userId = lookupSnap.docs[0].id;
         }
       }
 
@@ -262,35 +251,34 @@ app.post(
         String(declaration).toLowerCase()
       ) ? 1 : 0;
 
-      const { error } = await supabase
-        .from('next_form')
-        .insert([{
-          user_id: userId,
-          fullName,
-          dob,
-          gender,
-          nationality,
-          phone,
-          email,
-          city,
-          passportStatus,
-          passport_id: passport_id,
-          highestQualification,
-          currentCourse: currentCourse || null,
-          specialization: specialization || null,
-          collegeName: collegeName || null,
-          yearOfPassing: yearOfPassing || null,
-          cgpa: cgpa || null,
-          preferredCountry,
-          levelOfStudy,
-          coaching: coaching || null,
-          preferredIntake,
-          desiredCourse,
-          budgetRange: budgetRange || null,
-          fundingSource: fundingSource || null,
-          loanStatus: loanStatus || null,
-          declaration: declarationFlag
-        }]);
+      // insert document into next_form collection
+      await db.collection('next_form').add({
+        user_id: userId,
+        fullName,
+        dob,
+        gender,
+        nationality,
+        phone,
+        email,
+        city,
+        passportStatus,
+        passport_id: passport_id,
+        highestQualification,
+        currentCourse: currentCourse || null,
+        specialization: specialization || null,
+        collegeName: collegeName || null,
+        yearOfPassing: yearOfPassing || null,
+        cgpa: cgpa || null,
+        preferredCountry,
+        levelOfStudy,
+        coaching: coaching || null,
+        preferredIntake,
+        desiredCourse,
+        budgetRange: budgetRange || null,
+        fundingSource: fundingSource || null,
+        loanStatus: loanStatus || null,
+        declaration: declarationFlag
+      });
 
       if (error) throw error;
 
@@ -348,15 +336,14 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Email and password are required' });
     }
 
-    const { data: rows, error } = await supabase
-      .from('registrations')
-      .select('*')
-      .eq('email', email)
-      .limit(1);
-
-    if (error || !rows || rows.length === 0) {
+    const snap = await db.collection('registrations')
+      .where('email','==',email)
+      .limit(1)
+      .get();
+    if (snap.empty) {
       return res.status(401).json({ success: false, error: 'Account not found. Please register first.' });
     }
+    const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     const isMatch = password === rows[0].password;
     if (!isMatch) {
@@ -388,16 +375,14 @@ app.post('/api/verify-reset-code', async (req, res) => {
     if (!/^\d{6}$/.test(code)) return res.status(400).json({ success: false, error: 'Invalid code' });
 
     const nowIso = new Date().toISOString();
-    const { data: rows, error } = await supabase
-      .from('password_reset_codes')
-      .select('id, code_hash, expires_at, used_at, created_at')
-      .eq('email', email)
-      .is('used_at', null)
-      .gt('expires_at', nowIso)
-      .order('created_at', { ascending: false })
-      .limit(10);
-
-    if (error) throw error;
+    const codeSnap = await db.collection('password_reset_codes')
+      .where('email','==',email)
+      .where('used_at','==',null)
+      .where('expires_at','>', nowIso)
+      .orderBy('created_at','desc')
+      .limit(10)
+      .get();
+    const rows = codeSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     const candidateHash = crypto
       .createHash('sha256')
@@ -434,16 +419,14 @@ app.post('/api/reset-password', async (req, res) => {
     }
 
     const nowIso = new Date().toISOString();
-    const { data: rows, error } = await supabase
-      .from('password_reset_codes')
-      .select('id, code_hash, expires_at, used_at, created_at')
-      .eq('email', email)
-      .is('used_at', null)
-      .gt('expires_at', nowIso)
-      .order('created_at', { ascending: false })
-      .limit(10);
-
-    if (error) throw error;
+    const codeSnap2 = await db.collection('password_reset_codes')
+      .where('email','==',email)
+      .where('used_at','==',null)
+      .where('expires_at','>', nowIso)
+      .orderBy('created_at','desc')
+      .limit(10)
+      .get();
+    const rows = codeSnap2.docs.map(d => ({ id: d.id, ...d.data() }));
 
     const candidateHash = crypto
       .createHash('sha256')
@@ -455,28 +438,26 @@ app.post('/api/reset-password', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Code is invalid or expired' });
     }
 
-    const { data: userRows, error: userErr } = await supabase
-      .from('registrations')
-      .select('full_name')
-      .eq('email', email)
-      .limit(1);
-
-    if (userErr) throw userErr;
-    if (!userRows || userRows.length === 0) {
+    const userSnap = await db.collection('registrations')
+      .where('email','==',email)
+      .limit(1)
+      .get();
+    if (userSnap.empty) {
       return res.status(404).json({ success: false, error: 'Account not found. Please register first.' });
     }
+    const userRows = userSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    const { error: updateErr } = await supabase
-      .from('registrations')
-      .update({ password: newPassword })
-      .eq('email', email);
-    if (updateErr) throw updateErr;
+    // update password by querying the document and then setting
+    const regSnap = await db.collection('registrations')
+      .where('email','==',email)
+      .limit(1)
+      .get();
+    if (!regSnap.empty) {
+      const docRef = regSnap.docs[0].ref;
+      await docRef.update({ password: newPassword });
+    }
 
-    const { error: markUsedErr } = await supabase
-      .from('password_reset_codes')
-      .update({ used_at: nowIso })
-      .eq('id', match.id);
-    if (markUsedErr) throw markUsedErr;
+    await db.collection('password_reset_codes').doc(match.id).update({ used_at: nowIso });
 
     try {
       const { sendPasswordChangedEmail } = require('./services/emailService');

@@ -1,16 +1,15 @@
-const supabase = require('./supabaseClient');
+const db = require('./firebaseClient');
 
-// Test connection
+// Test connection by fetching one document from a known collection
 async function testConnection() {
     try {
-        const { data, error } = await supabase.from('registrations').select('count', { count: 'exact', head: true });
-        if (error) throw error;
-        console.log('✅ Connected to Supabase successfully!');
+        const snap = await db.collection('registrations').limit(1).get();
+        console.log('✅ Connected to Firestore successfully! Document count:', snap.size);
     } catch (err) {
-        console.error('✗ Supabase connection error:', err.message);
+        console.error('✗ Firestore connection error:', err.message);
     }
 }
 
 testConnection();
 
-module.exports = supabase;
+module.exports = db;

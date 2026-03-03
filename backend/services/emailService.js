@@ -1,6 +1,46 @@
 
 require('dotenv').config();
 const axios = require('axios');
+const nodemailer = require('nodemailer');
+
+// generic sendEmail chooses provider based on available configuration
+const sendEmail = async ({ to, subject, html }) => {
+  // try Brevo first
+  const brevoKey = String(process.env.BREVO_API_KEY || '').trim();
+  const brevoSender = String(process.env.BREVO_SENDER_EMAIL || '').trim();
+  if (brevoKey && brevoSender) {
+    return sendBrevoEmail({ to, subject, html });
+  }
+
+  // fallback to Gmail using nodemailer
+  const gmailUser = String(process.env.EMAIL_USER || '').trim();
+  const gmailPass = String(process.env.EMAIL_PASS || '').trim();
+  if (gmailUser && gmailPass) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: gmailUser, pass: gmailPass }
+    });
+
+    const mailOptions = {
+      from: gmailUser,
+      to: Array.isArray(to) ? to.join(',') : to,
+      subject,
+      html
+    };
+
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Gmail send success:', info.response);
+      return info;
+    } catch (err) {
+      console.error('Gmail send error:', err);
+      throw err;
+    }
+  }
+
+  throw new Error('No email provider configured (Brevo or Gmail)');
+};
+
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -11,6 +51,7 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+// internal helper that talks directly to Brevo; throws if config is missing
 const sendBrevoEmail = async ({ to, subject, html }) => {
   const apiKey = String(process.env.BREVO_API_KEY || '').trim();
   const senderEmail = String(process.env.BREVO_SENDER_EMAIL || '').trim();
@@ -55,7 +96,7 @@ const sendBrevoEmail = async ({ to, subject, html }) => {
 
 const sendLoginCodeEmail = async (userEmail, code) => {
   const html = `<h2>Login Code: ${escapeHtml(code)}</h2><p>Expires in 10 mins.</p>`;
-  return sendBrevoEmail({
+  return sendEmail({
     to: userEmail,
     subject: 'Your Login Verification Code',
     html
@@ -100,7 +141,7 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
       <p style="color: #666; font-size: 12px;">Guiding Futures Beyond Borders</p>
     `;
 
-    await sendBrevoEmail({
+    await sendEmail({
       to: userEmail,
       subject: 'Abroad Vision Carrerz - Registration Successful',
       html
@@ -149,7 +190,7 @@ const sendAdminEmail = async (user) => {
       process.env.ADMIN_EMAILS?.split(',').map(e => e.trim()).filter(Boolean) ||
       ['admin@example.com'];
 
-    await sendBrevoEmail({
+    await sendEmail({
       to: adminList,
       subject: `New Registration: ${user?.fullName || user?.email || 'New Lead'}`,
       html
@@ -172,7 +213,7 @@ const sendPasswordResetCodeEmail = async (userEmail, code, expiresMinutes = 5) =
   `;
 
   try {
-    await sendBrevoEmail({
+    await sendEmail({
       to: userEmail,
       subject: 'Abroad Vision Carrerz - Password Reset Code',
       html
@@ -199,7 +240,7 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
   `;
 
   try {
-    await sendBrevoEmail({
+    await sendEmail({
       to: userEmail,
       subject: 'Abroad Vision Carrerz - Password Changed',
       html
@@ -210,6 +251,13 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
     return false;
   }
 };
+
+// log which providers are configured so startup logs help debugging
+(() => {
+  const brevo = Boolean(String(process.env.BREVO_API_KEY || '').trim() && String(process.env.BREVO_SENDER_EMAIL || '').trim());
+  const gmail = Boolean(String(process.env.EMAIL_USER || '').trim() && String(process.env.EMAIL_PASS || '').trim());
+  console.log('📧 emailService providers -> Brevo:', brevo, 'Gmail:', gmail);
+})();
 
 module.exports = {
   sendConfirmationEmail,
