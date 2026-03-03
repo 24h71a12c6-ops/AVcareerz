@@ -1,44 +1,15 @@
 
 require('dotenv').config();
 const axios = require('axios');
-const nodemailer = require('nodemailer');
 
-// generic sendEmail chooses provider based on available configuration
+// generic sendEmail uses Brevo; throws if not configured
 const sendEmail = async ({ to, subject, html }) => {
-  // try Brevo first
   const brevoKey = String(process.env.BREVO_API_KEY || '').trim();
   const brevoSender = String(process.env.BREVO_SENDER_EMAIL || '').trim();
-  if (brevoKey && brevoSender) {
-    return sendBrevoEmail({ to, subject, html });
+  if (!brevoKey || !brevoSender) {
+    throw new Error('Brevo is not configured; set BREVO_API_KEY and BREVO_SENDER_EMAIL');
   }
-
-  // fallback to Gmail using nodemailer
-  const gmailUser = String(process.env.EMAIL_USER || '').trim();
-  const gmailPass = String(process.env.EMAIL_PASS || '').trim();
-  if (gmailUser && gmailPass) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user: gmailUser, pass: gmailPass }
-    });
-
-    const mailOptions = {
-      from: gmailUser,
-      to: Array.isArray(to) ? to.join(',') : to,
-      subject,
-      html
-    };
-
-    try {
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Gmail send success:', info.response);
-      return info;
-    } catch (err) {
-      console.error('Gmail send error:', err);
-      throw err;
-    }
-  }
-
-  throw new Error('No email provider configured (Brevo or Gmail)');
+  return sendBrevoEmail({ to, subject, html });
 };
 
 
