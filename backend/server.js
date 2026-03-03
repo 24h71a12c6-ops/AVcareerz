@@ -384,7 +384,7 @@ app.post('/api/verify-reset-code', async (req, res) => {
     return res.status(500).json({ success: false, error: 'Server error.' });
   }
 });
-// Reset Password
+// Reset Password - Hashing logic tholaginchi update chesina code
 app.post('/api/reset-password', async (req, res) => {
   try {
     const email = String(req.body?.email || '').trim().toLowerCase();
@@ -392,9 +392,11 @@ app.post('/api/reset-password', async (req, res) => {
     const newPassword = String(req.body?.newPassword || '').trim();
 
     if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
-    if (!/^\d{6}$/.test(code)) return res.status(400).json({ success: false, error: 'Invalid code' });
+    if (!/^\d{6}$/.test(code)) return res.status(400).json({ success: false, error: 'Invalid code format' });
     if (!newPassword) return res.status(400).json({ success: false, error: 'New password is required' });
-    if (!isStrongPassword(newPassword)) {
+
+    // Password strength check (nee project function idi)
+    if (typeof isStrongPassword === 'function' && !isStrongPassword(newPassword)) {
       return res.status(400).json({
         success: false,
         error: 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.'
@@ -402,34 +404,56 @@ app.post('/api/reset-password', async (req, res) => {
     }
 
     const nowIso = new Date().toISOString();
+
+    // 1. Plain text 'code' tho check chesthunnam (No Hashing)
     const codeSnap2 = await db.collection('password_reset_codes')
-      .where('email','==',email)
-      .where('used_at','==',null)
-      .where('expires_at','>', nowIso)
-      .orderBy('created_at','desc')
-      .limit(10)
+      .where('email', '==', email)
+      .where('code', '==', code) // Direct code check
+      .where('used_at', '==', null)
       .get();
-    const rows = codeSnap2.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    const candidateHash = crypto
-      .createHash('sha256')
-      .update(`${code}:${RESET_PASSWORD_PEPPER}`)
-      .digest('hex');
-
-    const match = (rows || []).find(r => r.code_hash === candidateHash);
-    if (!match) {
-      return res.status(400).json({ success: false, error: 'Code is invalid or expired' });
+    if (codeSnap2.empty) {
+      return res.status(400).json({ success: false, error: 'Code is invalid or already used.' });
     }
 
+    const matchDoc = codeSnap2.docs[0];
+    const matchData = matchDoc.data();
+
+    // 2. Expiry check
+    if (matchData.expires_at < nowIso) {
+      return res.status(400).json({ success: false, error: 'Code has expired.' });
+    }
+
+    // 3. User ni vethiki password update cheyyali
     const userSnap = await db.collection('registrations')
-      .where('email','==',email)
+      .where('email', '==', email)
       .limit(1)
       .get();
-    if (userSnap.empty) {
-      return res.status(404).json({ success: false, error: 'Account not found. Please register first.' });
-    }
-    const userRows = userSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
+    if (userSnap.empty) {
+      return res.status(404).json({ success: false, error: 'Account not found.' });
+    }
+
+    const userDocId = userSnap.docs[0].id;
+
+    // 4. Actual Password Update
+    await db.collection('registrations').doc(userDocId).update({
+      password: newPassword, // Nee current setup prakaram plain text save chesthunnam
+      updated_at: nowIso
+    });
+
+    // 5. Code ni 'used' ga mark cheyyali (Security kosam)
+    await db.collection('password_reset_codes').doc(matchDoc.id).update({
+      used_at: nowIso
+    });
+
+    return res.json({ success: true, message: 'Password reset successful! Please login now.' });
+
+  } catch (error) {
+    console.error('Reset password error:', error);
+    return res.status(500).json({ success: false, error: 'Server error during password reset.' });
+  }
+});
     // update password by querying the document and then setting
     const regSnap = await db.collection('registrations')
       .where('email','==',email)
