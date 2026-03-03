@@ -384,7 +384,7 @@ app.post('/api/verify-reset-code', async (req, res) => {
     return res.status(500).json({ success: false, error: 'Server error.' });
   }
 });
-// Reset Password - Hashing logic tholaginchi update chesina code
+// Reset Password - Cleaned and Fixed Syntax
 app.post('/api/reset-password', async (req, res) => {
   try {
     const email = String(req.body?.email || '').trim().toLowerCase();
@@ -395,7 +395,7 @@ app.post('/api/reset-password', async (req, res) => {
     if (!/^\d{6}$/.test(code)) return res.status(400).json({ success: false, error: 'Invalid code format' });
     if (!newPassword) return res.status(400).json({ success: false, error: 'New password is required' });
 
-    // Password strength check (nee project function idi)
+    // Password strength check
     if (typeof isStrongPassword === 'function' && !isStrongPassword(newPassword)) {
       return res.status(400).json({
         success: false,
@@ -405,10 +405,10 @@ app.post('/api/reset-password', async (req, res) => {
 
     const nowIso = new Date().toISOString();
 
-    // 1. Plain text 'code' tho check chesthunnam (No Hashing)
+    // 1. Check if the plain-text code matches
     const codeSnap2 = await db.collection('password_reset_codes')
       .where('email', '==', email)
-      .where('code', '==', code) // Direct code check
+      .where('code', '==', code)
       .where('used_at', '==', null)
       .get();
 
@@ -419,12 +419,11 @@ app.post('/api/reset-password', async (req, res) => {
     const matchDoc = codeSnap2.docs[0];
     const matchData = matchDoc.data();
 
-    // 2. Expiry check
     if (matchData.expires_at < nowIso) {
       return res.status(400).json({ success: false, error: 'Code has expired.' });
     }
 
-    // 3. User ni vethiki password update cheyyali
+    // 2. Find and update the user
     const userSnap = await db.collection('registrations')
       .where('email', '==', email)
       .limit(1)
@@ -434,49 +433,34 @@ app.post('/api/reset-password', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Account not found.' });
     }
 
-    const userDocId = userSnap.docs[0].id;
+    const userDoc = userSnap.docs[0];
+    const userDocId = userDoc.id;
+    const userData = userDoc.data();
 
-    // 4. Actual Password Update
+    // Update password
     await db.collection('registrations').doc(userDocId).update({
-      password: newPassword, // Nee current setup prakaram plain text save chesthunnam
+      password: newPassword,
       updated_at: nowIso
     });
 
-    // 5. Code ni 'used' ga mark cheyyali (Security kosam)
+    // 3. Mark code as used
     await db.collection('password_reset_codes').doc(matchDoc.id).update({
       used_at: nowIso
     });
+
+    // 4. Send Confirmation Email (Optional)
+    try {
+      const { sendPasswordChangedEmail } = require('./services/emailService');
+      await sendPasswordChangedEmail(email, userData.full_name || 'User');
+    } catch (mailErr) {
+      console.error('Email error:', mailErr.message);
+    }
 
     return res.json({ success: true, message: 'Password reset successful! Please login now.' });
 
   } catch (error) {
     console.error('Reset password error:', error);
     return res.status(500).json({ success: false, error: 'Server error during password reset.' });
-  }
-});
-    // update password by querying the document and then setting
-    const regSnap = await db.collection('registrations')
-      .where('email','==',email)
-      .limit(1)
-      .get();
-    if (!regSnap.empty) {
-      const docRef = regSnap.docs[0].ref;
-      await docRef.update({ password: newPassword });
-    }
-
-    await db.collection('password_reset_codes').doc(match.id).update({ used_at: nowIso });
-
-    try {
-      const { sendPasswordChangedEmail } = require('./services/emailService');
-      await sendPasswordChangedEmail(email, userRows?.[0]?.full_name || '');
-    } catch (mailErr) {
-      console.error('Password changed email error:', mailErr?.message || mailErr);
-    }
-
-    return res.json({ success: true, message: 'Password reset successful. Please log in.' });
-  } catch (error) {
-    console.error('Reset password error:', error?.message || error);
-    return res.status(500).json({ success: false, error: 'Server error resetting password.' });
   }
 });
 
