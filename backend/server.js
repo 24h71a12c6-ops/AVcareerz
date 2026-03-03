@@ -137,38 +137,30 @@ app.post('/api/forgot-password', async (req, res) => {
     const email = String(req.body?.email || '').trim().toLowerCase();
     if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
 
-    const snap = await db.collection('registrations')
-      .where('email', '==', email)
-      .limit(1)
-      .get();
-    if (snap.empty) {
-      return res.status(404).json({ success: false, error: 'Email not registered. Please sign up first.' });
-    }
-    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const snap = await db.collection('registrations').where('email', '==', email).limit(1).get();
+    if (snap.empty) return res.status(404).json({ success: false, error: 'Email not registered.' });
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    const codeHash = crypto
-      .createHash('sha256')
-      .update(`${code}:${RESET_PASSWORD_PEPPER}`)
-      .digest('hex');
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
 
-    const expiresAt = new Date(Date.now() + RESET_CODE_TTL_MINUTES * 60 * 1000).toISOString();
-
-    await db.collection('password_reset_codes').add({ email, code_hash: codeHash, expires_at: expiresAt });
+    // We are saving 'code' directly now, NOT 'code_hash'
+    await db.collection('password_reset_codes').add({ 
+      email, 
+      code, 
+      expires_at: expiresAt, 
+      used_at: null 
+    });
 
     const { sendPasswordResetCodeEmail } = require('./services/emailService');
-    const ok = await sendPasswordResetCodeEmail(email, code, RESET_CODE_TTL_MINUTES);
-    if (!ok) {
-      return res.status(502).json({ success: false, error: 'Unable to send reset code email right now. Please try again.' });
-    }
+    const ok = await sendPasswordResetCodeEmail(email, code, 15);
+    
+    if (!ok) return res.status(502).json({ success: false, error: 'Email failed to send.' });
 
-    return res.json({ success: true, message: 'Code sent successfully via email.' });
+    return res.json({ success: true, message: 'Code sent successfully.' });
   } catch (error) {
-    console.error('Forgot password error:', error?.message || error);
-    return res.status(500).json({ success: false, error: 'Server error during password reset.' });
+    return res.status(500).json({ success: false, error: 'Server error.' });
   }
 });
-
 // Step 2: Additional academic data + uploads
 app.post(
   '/api/register-step2',
@@ -371,36 +363,27 @@ app.post('/api/verify-reset-code', async (req, res) => {
     const email = String(req.body?.email || '').trim().toLowerCase();
     const code = String(req.body?.code || '').trim();
 
-    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
-    if (!/^\d{6}$/.test(code)) return res.status(400).json({ success: false, error: 'Invalid code' });
-
-    const nowIso = new Date().toISOString();
+    // Direct comparison: checking if this email and code exist together
     const codeSnap = await db.collection('password_reset_codes')
-      .where('email','==',email)
-      .where('used_at','==',null)
-      .where('expires_at','>', nowIso)
-      .orderBy('created_at','desc')
-      .limit(10)
+      .where('email', '==', email)
+      .where('code', '==', code) 
+      .where('used_at', '==', null)
       .get();
-    const rows = codeSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    const candidateHash = crypto
-      .createHash('sha256')
-      .update(`${code}:${RESET_PASSWORD_PEPPER}`)
-      .digest('hex');
-
-    const match = (rows || []).find(r => r.code_hash === candidateHash);
-    if (!match) {
-      return res.status(400).json({ success: false, error: 'Code is invalid or expired' });
+    if (codeSnap.empty) {
+      return res.status(400).json({ success: false, error: 'Invalid code.' });
     }
 
-    return res.json({ success: true, message: 'Code verified' });
+    const data = codeSnap.docs[0].data();
+    if (data.expires_at < new Date().toISOString()) {
+      return res.status(400).json({ success: false, error: 'Code expired.' });
+    }
+
+    return res.json({ success: true, message: 'Verified!' });
   } catch (error) {
-    console.error('Verify reset code error:', error?.message || error);
-    return res.status(500).json({ success: false, error: 'Server error verifying code.' });
+    return res.status(500).json({ success: false, error: 'Server error.' });
   }
 });
-
 // Reset Password
 app.post('/api/reset-password', async (req, res) => {
   try {
