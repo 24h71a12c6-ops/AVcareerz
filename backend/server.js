@@ -86,7 +86,7 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// Registration API
+// Registration API - FIXED
 app.post('/api/register', async (req, res) => {
   try {
     const { fullName, email, phone, password } = req.body;
@@ -94,43 +94,59 @@ app.post('/api/register', async (req, res) => {
       return res.status(400).json({ success: false, error: 'All fields are required' });
     }
 
-    // Firestore insert and duplicate check
+    // 1. Duplicate check
     const existing = await db.collection('registrations')
       .where('email', '==', email)
       .limit(1)
       .get();
+      
     if (!existing.empty) {
       return res.status(409).json({ success: false, error: 'This email is already registered. Please log in.' });
     }
 
+    // 2. Firestore insert
     const ref = await db.collection('registrations').add({
       full_name: fullName,
       email: email,
       phone: phone,
-      password: password
+      password: password,
+      created_at: new Date().toISOString()
     });
-    const data = { id: ref.id, full_name: fullName, email, phone };
 
+    // FIXED: data ni object ga access cheyalasindhi (No [0])
+    const userId = ref.id; 
+
+    // 3. Send Emails
     try {
       const { sendAdminEmail, sendConfirmationEmail } = require('./services/emailService');
+      
       await sendAdminEmail({
-        userId: data?.[0]?.id,
+        userId: userId, // Corrected here
         fullName,
         email,
         phone
       });
+      
       await sendConfirmationEmail(email, fullName);
     } catch (emailError) {
       console.error('Email error (signup):', emailError);
     }
 
-    res.status(201).json({ success: true, message: 'Registration successful!', userId: data[0].id });
+    // FIXED: userId: userId ani pampali (data[0].id kadu)
+    return res.status(201).json({ 
+      success: true, 
+      message: 'Registration successful!', 
+      userId: userId 
+    });
+
   } catch (error) {
     console.error('Reg Error:', error);
-    res.status(500).json({ success: false, error: 'Registration failed: ' + error.message });
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Registration failed: ' + error.message 
+    });
   }
 });
-
 // Forgot Password API
 app.post('/api/forgot-password', async (req, res) => {
   try {
