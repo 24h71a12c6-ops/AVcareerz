@@ -127,7 +127,16 @@ app.post('/api/register', async (req, res) => {
         phone
       });
       
-      await sendConfirmationEmail(email, fullName);
+      // send confirmation only to non-admin addresses
+      const adminList = (process.env.ADMIN_EMAILS || '')
+        .split(',')
+        .map(e => e.trim())
+        .filter(Boolean);
+      if (!adminList.includes(String(email).trim())) {
+        await sendConfirmationEmail(email, fullName);
+      } else {
+        console.log('Registration email is an admin address; confirmation email suppressed');
+      }
     } catch (emailError) {
       console.error('Email error (signup):', emailError);
     }
@@ -291,7 +300,8 @@ app.post(
       if (error) throw error;
 
       try {
-        const { sendAdminEmail } = require('./services/emailService');
+        const { sendAdminEmail, sendConfirmationEmail } = require('./services/emailService');
+        // notify admins about the completed second form
         await sendAdminEmail({
           userId,
           fullName,
@@ -319,8 +329,12 @@ app.post(
           loanStatus,
           declaration: declarationFlag ? 'Yes' : 'No'
         });
+
+        // send confirmation to the user as well
+        const customMsg = 'Thank you for submitting your academic and personal details. Our team will review your application and be in touch soon.';
+        await sendConfirmationEmail(email, fullName, customMsg);
       } catch (emailError) {
-        console.error('Admin email error (step2):', emailError);
+        console.error('Email error (step2):', emailError);
       }
 
       res.status(200).json({

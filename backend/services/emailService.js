@@ -74,9 +74,21 @@ const sendLoginCodeEmail = async (userEmail, code) => {
   });
 };
 
+// helper to parse admin addresses from env
+const getAdminEmailList = () => {
+  return process.env.ADMIN_EMAILS?.split(',').map(e => e.trim()).filter(Boolean) || [];
+};
+
 // User confirmation email
 const sendConfirmationEmail = async (userEmail, userName, customMessage, extra = {}) => {
+  // never send a user-facing confirmation to one of the admin addresses
   try {
+    const adminList = getAdminEmailList();
+    if (adminList.includes(String(userEmail || '').trim())) {
+      console.log('Confirmation email skipped for admin address:', userEmail);
+      return true; // treat as success so callers don't retry
+    }
+
     const safeName = escapeHtml(userName || '');
     const safeMessage = customMessage ? escapeHtml(customMessage) : '';
     const safePreferredCountry = extra?.preferredCountry ? escapeHtml(extra.preferredCountry) : '';
@@ -95,21 +107,49 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
       : '';
 
     const html = `
-      <h2>Welcome ${safeName}! ✨</h2>
-      <p>Thank you for registering with <strong>Abroad Vision Carrerz</strong>.</p>
-      ${introLine}
-      ${destinationBlock}
-      ${courseBlock}
-      <p>Our team will review your details and get back to you shortly.</p>
-      <hr>
-      <p><strong>Next Steps:</strong></p>
-      <ul>
-        <li>Our counselors will contact you on WhatsApp</li>
-        <li>Schedule your free consultation</li>
-        <li>Get personalized guidance for your study abroad journey</li>
-      </ul>
-      <p>Best regards,<br><strong>Abroad Vision Carrerz Team</strong></p>
-      <p style="color: #666; font-size: 12px;">Guiding Futures Beyond Borders</p>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8" />
+        <title>Registration Successful</title>
+        <style>
+          body { font-family: Arial, sans-serif; background: #f4f4f7; margin:0; padding:0; }
+          .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; }
+          .header { text-align: center; padding-bottom: 20px; }
+          .header img { max-width: 150px; }
+          .content { color: #333333; line-height: 1.6; }
+          .footer { font-size: 12px; color: #777777; text-align: center; padding-top: 20px; }
+          .button { display: inline-block; padding: 10px 20px; margin-top: 20px; background: #0045a5; color: #ffffff; text-decoration: none; border-radius: 4px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img src="https://example.com/logo.png" alt="Abroad Vision Carrerz" />
+          </div>
+          <div class="content">
+            <h2>Hello ${safeName || 'Student'},</h2>
+            <p>Thank you for registering with <strong>Abroad Vision Carrerz</strong>. We're excited to have you on board.</p>
+            ${introLine}
+            ${destinationBlock}
+            ${courseBlock}
+            <p>Our team will review your details and get back to you shortly with next steps.</p>
+            <p><strong>Next Steps:</strong></p>
+            <ol>
+              <li>Our counselors will contact you on WhatsApp.</li>
+              <li>Schedule your free consultation.</li>
+              <li>Receive personalized guidance for your study abroad journey.</li>
+            </ol>
+            <a href="https://yourdomain.example.com" class="button">Visit Our Website</a>
+            <p>Best regards,<br><strong>Abroad Vision Carrerz Team</strong></p>
+          </div>
+          <div class="footer">
+            <p>Guiding Futures Beyond Borders</p>
+            <p>If you did not register, please ignore this email or contact support.</p>
+          </div>
+        </div>
+      </body>
+      </html>
     `;
 
     await sendEmail({

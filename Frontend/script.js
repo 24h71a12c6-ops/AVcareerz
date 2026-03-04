@@ -37,6 +37,20 @@ const apiUrl = (path) => {
 
 // --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
+    // --- clear persisted login state so each visit feels like a fresh site ---
+    try {
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('registrationData');
+        localStorage.removeItem('nextFormData');
+        localStorage.removeItem('currentUserId');
+        localStorage.removeItem('hasSignedUp');
+        sessionStorage.removeItem('registrationData');
+        sessionStorage.removeItem('nextFormData');
+        sessionStorage.removeItem('currentUserId');
+    } catch {
+        // ignore if storage inaccessible
+    }
+
     // Check if the user is already logged in
     const isRegisteredUser = () => !!localStorage.getItem('userEmail');
     
@@ -2183,6 +2197,9 @@ if (registrationForm) {
 
                 // 4. Stay on page (User requested normal browsing flow)
                 showNotification('Registration successful! You are now logged in.', 'success');
+
+                // 5. (no redirect here) user will be sent to congrats page after filling the next form
+                //    keeping the sign‑up flow on the same page allows them to continue exploring.
 
                 // Do NOT open the login form automatically.
             } else {
