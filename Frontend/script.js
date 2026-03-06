@@ -48,18 +48,27 @@ const hideRegistrationSection = () => {
 
 // --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
-    // --- clear transient form caches but keep auth state ---
+    // --- clear transient form caches and previous credentials ---
     // registrationData/nextFormData are convenience caches that can be
     // heavily pruned each visit; userEmail and currentUserId indicate an
-    // authenticated user and must persist until explicit logout.
+    // authenticated user and must persist until explicit logout.  we also
+    // remove lastUserEmail/showLoginAfterLogout so login fields start empty.
     try {
         localStorage.removeItem('registrationData');
         localStorage.removeItem('nextFormData');
         sessionStorage.removeItem('registrationData');
         sessionStorage.removeItem('nextFormData');
+        localStorage.removeItem('lastUserEmail');
+        localStorage.removeItem('showLoginAfterLogout');
     } catch {
         // ignore if storage inaccessible
     }
+
+    // clear any existing values in auth forms to defeat autofill
+    ['registrationForm','loginForm','forgotPasswordForm'].forEach(id=>{
+        const f=document.getElementById(id);
+        if(f && typeof f.reset==='function') f.reset();
+    });
 
     // hide registration panel on load if already signed in
     if (isRegisteredUser()) {
