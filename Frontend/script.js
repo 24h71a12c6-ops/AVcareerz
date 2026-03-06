@@ -40,6 +40,10 @@ const isRegisteredUser = () => !!localStorage.getItem('userEmail');
 const hideRegistrationSection = () => {
     const sect = document.getElementById('registration-section');
     if (sect) sect.hidden = true;
+    // also make sure any modal overlay is removed
+    const overlay = document.getElementById('regModalOverlay');
+    if (overlay) overlay.hidden = true;
+    document.body.classList.remove('reg-modal-open');
 };
 
 // --- Main Application Logic ---
@@ -2320,6 +2324,10 @@ if (registrationForm) {
                 localStorage.setItem('userEmail', email);
                 // hide the registration panel now that user is authenticated
                 hideRegistrationSection();
+                // remove any #registration-section hash so it doesn't reopen
+                if (window.location.hash === '#registration-section') {
+                    window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                }
 
                 // User is signed in again; don't keep showing the login card on reopen.
                 try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
