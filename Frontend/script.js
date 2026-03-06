@@ -37,28 +37,30 @@ const apiUrl = (path) => {
 
 // --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
-    // --- clear persisted login state so each visit feels like a fresh site ---
+    // --- clear transient form caches but keep auth state ---
+    // registrationData/nextFormData are convenience caches that can be
+    // heavily pruned each visit; userEmail and currentUserId indicate an
+    // authenticated user and must persist until explicit logout.
     try {
-        localStorage.removeItem('userEmail');
         localStorage.removeItem('registrationData');
         localStorage.removeItem('nextFormData');
-        localStorage.removeItem('currentUserId');
-        localStorage.removeItem('hasSignedUp');
         sessionStorage.removeItem('registrationData');
         sessionStorage.removeItem('nextFormData');
-        sessionStorage.removeItem('currentUserId');
     } catch {
         // ignore if storage inaccessible
     }
 
-    // Check if the user is already logged in
+    // --- authentication helpers ---
     const isRegisteredUser = () => !!localStorage.getItem('userEmail');
-    
-    // Check if current page is the Home Page
-    const isHomePagePath = () => 
-        window.location.pathname.endsWith('index.html') || 
-        window.location.pathname === '/' || 
-        window.location.pathname === '/index.html';
+    const hideRegistrationSection = () => {
+        const sect = document.getElementById('registration-section');
+        if (sect) sect.hidden = true;
+    };
+
+    // hide registration panel on load if already signed in
+    if (isRegisteredUser()) {
+        hideRegistrationSection();
+    }
 
     // ... Rest of your logic continues here ...
    
@@ -890,6 +892,12 @@ document.addEventListener("DOMContentLoaded", function () {
         regOverlay.hidden = true;
 
         openRegModal = () => {
+            // if already signed in, don't show signup modal; take them to step 2
+            if (isRegisteredUser()) {
+                window.location.href = 'next-form.html';
+                return;
+            }
+
             if (isModalOpen()) return;
 
             if (regModalTimer) {
@@ -2181,7 +2189,10 @@ if (registrationForm) {
                 sessionStorage.setItem('registrationData', JSON.stringify(regData));
                 localStorage.setItem('registrationData', JSON.stringify(regData));
 
-                // 2. Hide the registration modal
+                // 2. Hide the registration UI immediately
+                hideRegistrationSection();
+
+                // If it was a modal, close the overlay too
                 if (typeof closeRegModal === 'function') {
                     closeRegModal();
                 } else {
@@ -2200,6 +2211,21 @@ if (registrationForm) {
 
                 // 5. (no redirect here) user will be sent to congrats page after filling the next form
                 //    keeping the sign‑up flow on the same page allows them to continue exploring.
+
+                // If the registration panel is part of the main page (not a modal) the user
+                // will still see the signup card after submitting.  `closeRegModal` only
+                // works for overlay modals, so when the form is embedded on the page we
+                // should either hide it ourselves or send the user to the "congrats" page.
+
+                // redirect to the thank‑you/congrats page unless we are in edit mode.
+                if (!editMode) {
+                    try {
+                        window.location.href = 'congrats.html';
+                        return; // stop further processing
+                    } catch {
+                        // fallback to hiding the panel below if navigation fails
+                    }
+                }
 
                 // Do NOT open the login form automatically.
             } else {
@@ -2292,6 +2318,9 @@ if (loginForm) {
                     localStorage.setItem('currentUserId', data.userId);
                 }
                 localStorage.setItem('userEmail', email);
+                // hide the registration panel now that user is authenticated
+                hideRegistrationSection();
+
                 // User is signed in again; don't keep showing the login card on reopen.
                 try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
                 try { localStorage.setItem('lastUserEmail', email); } catch { }
