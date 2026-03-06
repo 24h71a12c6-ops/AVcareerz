@@ -35,6 +35,13 @@ const apiUrl = (path) => {
     return `${API_BASE_URL}${cleanPath}`;
 };
 
+// global auth helpers (available everywhere in script)
+const isRegisteredUser = () => !!localStorage.getItem('userEmail');
+const hideRegistrationSection = () => {
+    const sect = document.getElementById('registration-section');
+    if (sect) sect.hidden = true;
+};
+
 // --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
     // --- clear transient form caches but keep auth state ---
@@ -49,13 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch {
         // ignore if storage inaccessible
     }
-
-    // --- authentication helpers ---
-    const isRegisteredUser = () => !!localStorage.getItem('userEmail');
-    const hideRegistrationSection = () => {
-        const sect = document.getElementById('registration-section');
-        if (sect) sect.hidden = true;
-    };
 
     // hide registration panel on load if already signed in
     if (isRegisteredUser()) {
@@ -2282,9 +2282,9 @@ if (registrationForm) {
     }
 }
 
-// Login form submission
-if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
+// Login form submission — moved inside DOMContentLoaded for correct scope
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const email = document.getElementById('loginEmail')?.value.trim();
