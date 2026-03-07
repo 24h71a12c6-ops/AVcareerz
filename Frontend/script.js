@@ -99,17 +99,27 @@ const syncRegistrationSectionForAuthState = () => {
 
 // --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
-    // --- Clear ALL autofill and cached form data on page load ---
-    // Keep ONLY userEmail (proves they're logged in) and currentUserId.
-    // Everything else gets wiped so forms always start fresh.
+    // --- Clear ALL data on fresh page load to ensure clean state ---
+    // This ensures new visitors see a fresh website without any previous user's data
     try {
-        localStorage.removeItem('registrationData');
-        localStorage.removeItem('nextFormData');
-        localStorage.removeItem('lastUserEmail');
-        localStorage.removeItem('showLoginAfterLogout');
-        sessionStorage.removeItem('registrationData');
-        sessionStorage.removeItem('nextFormData');
-        sessionStorage.clear(); // Clear all session storage
+        // Clear ALL localStorage including auth tokens to start fresh
+        const shouldClearAll = !sessionStorage.getItem('sessionActive');
+        
+        if (shouldClearAll) {
+            // First visit in this session - clear everything for a fresh start
+            localStorage.clear();
+            sessionStorage.clear();
+            // Mark this session as active so we don't clear again during the same session
+            sessionStorage.setItem('sessionActive', 'true');
+        } else {
+            // Same session - just clear form data but keep auth if valid
+            localStorage.removeItem('registrationData');
+            localStorage.removeItem('nextFormData');
+            localStorage.removeItem('lastUserEmail');
+            localStorage.removeItem('showLoginAfterLogout');
+            sessionStorage.removeItem('registrationData');
+            sessionStorage.removeItem('nextFormData');
+        }
     } catch {
         // ignore if storage inaccessible
     }
