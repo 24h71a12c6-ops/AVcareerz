@@ -8177,12 +8177,12 @@ body.reg-modal-open #registration-section .reg-header {
 #splash-screen {
     position: fixed;
     inset: 0;
-    background-color: #f0f7ff; /* Clean Light Blue */
+    background: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 10000;
-    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 1.2s ease, filter 1.2s ease;
 }
 
 body.splash-active .top-bar,
@@ -8203,90 +8203,92 @@ body.splash-active .navbar {
 
 .splash-container { text-align: center; }
 
-#main-logo {
+.splash-container {
+    text-align: center;
+    /* Gentle pulse for live feel */
+    animation: pulseScale 3s ease-in-out infinite;
+}
+
+.splash-logo {
     width: 200px;
-    /* Formation Animation */
-    animation: formationReveal 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    filter: drop-shadow(0 10px 20px rgba(0, 33, 71, 0.1));
+    display: block;
+    margin: 0 auto;
+}
+
+.brand-group {
+    /* Logo ki title ki gap thagginche main point idi */
+    margin-top: -15px;
 }
 
 .brand-name {
     color: #002147;
-    font-size: 2.5rem;
-    margin-top: 15px;
-    opacity: 0;
-    animation: fadeIn 0.8s ease-out 1.5s forwards;
-}
-
-.word-blue { 
-    color: #002147 !important; 
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 0;
 }
 
 .word-orange { 
-    color: #f39200; 
+    color: #f39200;
 }
 
 .tagline {
     color: #002147;
     font-size: 1rem;
     letter-spacing: 2px;
-    margin-top: 5px;
-    overflow: hidden;
-    white-space: nowrap;
-    border-right: 2px solid #f39200; /* Blinking cursor */
-    width: 0; /* Hidden initially */
-    margin: 10px auto;
-    animation: typing 2.5s steps(30, end) 2.2s forwards, blink-caret 0.75s step-end infinite;
+    margin-top: 2px;
+    font-weight: 500;
 }
 
-.progress-bar {
-    width: 200px;
-    height: 3px;
-    background: #eee;
-    margin: 20px auto;
-    overflow: hidden;
+/* Flight Loading Section */
+.loading-wrapper {
+    width: 220px;
+    margin: 20px auto 0;
+    position: relative;
+}
+
+.flight-icon {
+    position: absolute;
+    left: 0;
+    top: -22px;
+    font-size: 20px;
+    /* Flight moves with progress bar */
+    animation: flightPull 3.5s linear forwards;
+    transform: rotate(45deg);
+}
+
+.loading-bar {
+    width: 100%;
+    height: 4px;
+    background: #f0f0f0;
     border-radius: 10px;
+    overflow: hidden;
 }
 
-.progress-fill {
+.loading-fill {
     width: 0%;
     height: 100%;
-    background: linear-gradient(to right, #002147, #F9A825);
-    animation: loadProgress 2s ease-in-out forwards;
+    background: linear-gradient(to right, #002147, #f39200);
+    animation: fillProgress 3.5s linear forwards;
 }
 
-@keyframes formationReveal {
-    0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+/* Animations */
+@keyframes flightPull {
+    0% { left: 0%; }
+    100% { left: 90%; }
 }
 
-@keyframes fadeInUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-}
-
-@keyframes blink-caret {
-    from, to { border-color: transparent; }
-    50% { border-color: #f39200; }
-}
-
-@keyframes loadProgress {
+@keyframes fillProgress {
     0% { width: 0%; }
     100% { width: 100%; }
 }
 
+@keyframes pulseScale {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
 @media screen and (max-width: 768px) {
-    #main-logo {
+    .splash-logo {
         width: 120px;
     }
     
@@ -8299,7 +8301,7 @@ body.splash-active .navbar {
         letter-spacing: 2px;
     }
     
-    .progress-bar {
+    .loading-wrapper {
         width: 150px;
     }
 }

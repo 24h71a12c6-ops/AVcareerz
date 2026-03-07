@@ -29,12 +29,15 @@ window.addEventListener('load', () => {
 
     const navEntry = performance.getEntriesByType('navigation')[0];
     const navType = navEntry?.type || (performance.navigation?.type === 1 ? 'reload' : 'navigate');
-    const hasSeenSplashEver = localStorage.getItem('hasSeenSplashEver') === '1';
+    const hasSeenSplashThisSession = sessionStorage.getItem('hasSeenSplashThisSession') === '1';
     const skipSplashOnce = sessionStorage.getItem('skipSplashOnce') === '1';
     if (skipSplashOnce) {
         sessionStorage.removeItem('skipSplashOnce');
     }
-    const shouldShowSplash = !skipSplashOnce && (navType === 'reload' || !hasSeenSplashEver);
+    const shouldShowSplash = !skipSplashOnce && (
+        navType === 'reload' ||
+        (navType === 'navigate' && !hasSeenSplashThisSession)
+    );
 
     if (!shouldShowSplash) {
         body?.classList.remove('splash-active');
@@ -43,21 +46,17 @@ window.addEventListener('load', () => {
     }
 
     body?.classList.add('splash-active');
-    sessionStorage.setItem('hasSeenSplash', '1');
-    localStorage.setItem('hasSeenSplashEver', '1');
+    sessionStorage.setItem('hasSeenSplashThisSession', '1');
 
-    // 4.5 seconds loading time for better branding
+    // 3.5 seconds loading time
     setTimeout(() => {
-        // Magic Zoom-Out & Fade Exit
-        splash.style.opacity = '0';
-        splash.style.transform = 'scale(1.1)';
-        splash.style.filter = 'blur(10px)';
+        splash.classList.add('fade-away');
 
         setTimeout(() => {
             splash.remove();
             body?.classList.remove('splash-active');
-        }, 1000);
-    }, 4500);
+        }, 1200);
+    }, 3500);
 });
 
 });
@@ -133,6 +132,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- Clear ALL data on fresh page load to ensure clean state ---
     // This ensures new visitors see a fresh website without any previous user's data
     try {
+        const preserveSplashSeen = localStorage.getItem('hasSeenSplashEver') === '1';
+
         // Clear ALL localStorage including auth tokens to start fresh
         const shouldClearAll = !sessionStorage.getItem('sessionActive');
         
@@ -140,6 +141,12 @@ document.addEventListener("DOMContentLoaded", function () {
             // First visit in this session - clear everything for a fresh start
             localStorage.clear();
             sessionStorage.clear();
+
+            // Keep splash memory intact so splash doesn't return repeatedly.
+            if (preserveSplashSeen) {
+                localStorage.setItem('hasSeenSplashEver', '1');
+            }
+
             // Mark this session as active so we don't clear again during the same session
             sessionStorage.setItem('sessionActive', 'true');
         } else {
