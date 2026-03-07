@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Splash Screen functionality
 window.addEventListener('load', () => {
     const splash = document.getElementById('splash-screen');
+    const body = document.body;
 
     if (!splash) return;
 
@@ -23,10 +24,12 @@ window.addEventListener('load', () => {
     const shouldShowSplash = navType === 'reload' || !hasSeenSplashInTab;
 
     if (!shouldShowSplash) {
+        body?.classList.remove('splash-active');
         splash.remove();
         return;
     }
 
+    body?.classList.add('splash-active');
     sessionStorage.setItem('hasSeenSplash', '1');
 
     // 3500ms = 3.5 seconds varaku splash screen chupisthundi
@@ -37,6 +40,7 @@ window.addEventListener('load', () => {
         // Cleanup: disappear ayyaka memory nundi remove cheyadaniki
         setTimeout(() => {
             splash.remove();
+            body?.classList.remove('splash-active');
         }, 1200); // Transition time tharuvatha remove chestundi
     }, 3500);
 });
