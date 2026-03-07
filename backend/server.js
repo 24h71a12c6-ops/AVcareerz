@@ -372,6 +372,28 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ success: false, error: 'Invalid password' });
     }
 
+    // Store successful login details in Firebase (Firestore)
+    // Note: Do NOT store raw passwords.
+    try {
+      const forwardedFor = String(req.headers['x-forwarded-for'] || '').trim();
+      const clientIp = forwardedFor ? forwardedFor.split(',')[0].trim() : (req.ip || req.socket?.remoteAddress || null);
+      const userAgent = String(req.headers['user-agent'] || '').trim() || null;
+
+      await db.collection('login_details').add({
+        user_id: rows[0].id,
+        full_name: rows[0].full_name || null,
+        email: rows[0].email,
+        phone: rows[0].phone || null,
+        login_at: new Date().toISOString(),
+        ip_address: clientIp,
+        user_agent: userAgent,
+        source: 'web'
+      });
+    } catch (loginLogError) {
+      // Login should still succeed even if audit logging fails
+      console.error('Login audit log error:', loginLogError?.message || loginLogError);
+    }
+
     res.json({
       success: true,
       userId: rows[0].id,
