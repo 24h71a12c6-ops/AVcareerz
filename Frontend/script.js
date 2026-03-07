@@ -46,17 +46,18 @@ window.addEventListener('load', () => {
     sessionStorage.setItem('hasSeenSplash', '1');
     localStorage.setItem('hasSeenSplashEver', '1');
 
-    // 3500ms = 3.5 seconds varaku splash screen chupisthundi
+    // 4.5 seconds loading time for better branding
     setTimeout(() => {
-        // Paiki vellakunda, ikkada magic ga disappear avuthundi
-        splash.classList.add('fade-away');
+        // Magic Zoom-Out & Fade Exit
+        splash.style.opacity = '0';
+        splash.style.transform = 'scale(1.1)';
+        splash.style.filter = 'blur(10px)';
 
-        // Cleanup: disappear ayyaka memory nundi remove cheyadaniki
         setTimeout(() => {
             splash.remove();
             body?.classList.remove('splash-active');
-        }, 1200); // Transition time tharuvatha remove chestundi
-    }, 3500);
+        }, 1000);
+    }, 4500);
 });
 
 });
