@@ -10,6 +10,25 @@ document.addEventListener("DOMContentLoaded", function () {
             navMenu.classList.remove("active");
         }));
     }
+
+// Splash Screen functionality
+window.addEventListener('load', () => {
+    const splash = document.getElementById('splash-screen');
+    
+    if (splash) {
+        // Total duration: 2.8 seconds (Matches the CSS animations)
+        setTimeout(() => {
+            // Slide up animation to reveal the website
+            splash.style.transform = 'translateY(-100%)';
+            
+            // Remove from DOM after transition finishes for performance
+            setTimeout(() => {
+                splash.remove();
+            }, 800);
+        }, 2800);
+    }
+});
+
 });
 // --- API Configuration (Global Scope) ---
 // Define the backend service URL for connection
