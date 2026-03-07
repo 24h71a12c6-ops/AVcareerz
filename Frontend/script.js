@@ -7,6 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
             navMenu.classList.toggle("active");
         });
         document.querySelectorAll(".nav-menu a").forEach(n => n.addEventListener("click", () => {
+            try {
+                const rawHref = (n.getAttribute('href') || '').trim().toLowerCase();
+                const isHomeLink = rawHref === '/' || rawHref === 'index.html' || rawHref.endsWith('/index.html');
+                if (isHomeLink) {
+                    sessionStorage.setItem('skipSplashOnce', '1');
+                }
+            } catch {
+                // ignore
+            }
             navMenu.classList.remove("active");
         }));
     }
@@ -20,8 +29,12 @@ window.addEventListener('load', () => {
 
     const navEntry = performance.getEntriesByType('navigation')[0];
     const navType = navEntry?.type || (performance.navigation?.type === 1 ? 'reload' : 'navigate');
-    const hasSeenSplashInTab = sessionStorage.getItem('hasSeenSplash') === '1';
-    const shouldShowSplash = navType === 'reload' || !hasSeenSplashInTab;
+    const hasSeenSplashEver = localStorage.getItem('hasSeenSplashEver') === '1';
+    const skipSplashOnce = sessionStorage.getItem('skipSplashOnce') === '1';
+    if (skipSplashOnce) {
+        sessionStorage.removeItem('skipSplashOnce');
+    }
+    const shouldShowSplash = !skipSplashOnce && (navType === 'reload' || !hasSeenSplashEver);
 
     if (!shouldShowSplash) {
         body?.classList.remove('splash-active');
@@ -31,6 +44,7 @@ window.addEventListener('load', () => {
 
     body?.classList.add('splash-active');
     sessionStorage.setItem('hasSeenSplash', '1');
+    localStorage.setItem('hasSeenSplashEver', '1');
 
     // 3500ms = 3.5 seconds varaku splash screen chupisthundi
     setTimeout(() => {
@@ -941,13 +955,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 8. REGISTRATION POPUP AFTER 4 SECONDS (with blurred background)
+    // 8. REGISTRATION POPUP AFTER 7 SECONDS (with blurred background)
     const regSection = document.getElementById('registration-section');
     const regOverlay = document.getElementById('regModalOverlay');
     const regCloseBtn = document.getElementById('regModalClose');
 
     if (regSection && regOverlay) {
-        const OPEN_DELAY_MS = 4000;
+        const OPEN_DELAY_MS = 7000;
         let regModalTimer = null;
         let lastScrollY = 0;
 
