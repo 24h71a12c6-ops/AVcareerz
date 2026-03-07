@@ -955,13 +955,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 8. REGISTRATION POPUP AFTER 7 SECONDS (with blurred background)
+    // 8. REGISTRATION POPUP AFTER 10 SECONDS (with blurred background)
     const regSection = document.getElementById('registration-section');
     const regOverlay = document.getElementById('regModalOverlay');
     const regCloseBtn = document.getElementById('regModalClose');
 
     if (regSection && regOverlay) {
-        const OPEN_DELAY_MS = 7000;
+        const OPEN_DELAY_MS = 10000;
         let regModalTimer = null;
         let lastScrollY = 0;
 
