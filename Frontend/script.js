@@ -37,43 +37,91 @@ const apiUrl = (path) => {
 
 // global auth helpers (available everywhere in script)
 const isRegisteredUser = () => !!localStorage.getItem('userEmail');
-const hideRegistrationSection = () => {
+const showRegistrationSection = ({ preferLogin = false } = {}) => {
     const sect = document.getElementById('registration-section');
-    if (sect) sect.hidden = true;
-    // also make sure any modal overlay is removed
+    if (sect) {
+        sect.hidden = false;
+        // Clear any previous hard-hide override.
+        sect.style.removeProperty('display');
+    }
+
     const overlay = document.getElementById('regModalOverlay');
     if (overlay) overlay.hidden = true;
     document.body.classList.remove('reg-modal-open');
+
+    // If auth panels are already initialized, pick the right card.
+    if (typeof setAuthMode === 'function') {
+        setAuthMode(preferLogin ? 'login' : 'signup');
+    }
+};
+const hideRegistrationSection = () => {
+    const sect = document.getElementById('registration-section');
+    if (sect) {
+        sect.hidden = true;
+        sect.style.display = 'none';
+    }
+    // also make sure any modal overlay is removed
+    const overlay = document.getElementById('regModalOverlay');
+    if (overlay) {
+        overlay.hidden = true;
+        overlay.style.display = 'none';
+    }
+    document.body.classList.remove('reg-modal-open');
+};
+const syncRegistrationSectionForAuthState = () => {
+    if (isRegisteredUser()) {
+        hideRegistrationSection();
+        return;
+    }
+
+    const preferLogin = localStorage.getItem('showLoginAfterLogout') === '1';
+    showRegistrationSection({ preferLogin });
 };
 
 // --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
-    // --- clear transient form caches and previous credentials ---
-    // registrationData/nextFormData are convenience caches that can be
-    // heavily pruned each visit; userEmail and currentUserId indicate an
-    // authenticated user and must persist until explicit logout.  we also
-    // remove lastUserEmail/showLoginAfterLogout so login fields start empty.
+    // --- Clear ALL autofill and cached form data on page load ---
+    // Keep ONLY userEmail (proves they're logged in) and currentUserId.
+    // Everything else gets wiped so forms always start fresh.
     try {
         localStorage.removeItem('registrationData');
         localStorage.removeItem('nextFormData');
-        sessionStorage.removeItem('registrationData');
-        sessionStorage.removeItem('nextFormData');
         localStorage.removeItem('lastUserEmail');
         localStorage.removeItem('showLoginAfterLogout');
+        sessionStorage.removeItem('registrationData');
+        sessionStorage.removeItem('nextFormData');
+        sessionStorage.clear(); // Clear all session storage
     } catch {
         // ignore if storage inaccessible
     }
 
-    // clear any existing values in auth forms to defeat autofill
+    // Aggressively clear all form fields to prevent autofill
     ['registrationForm','loginForm','forgotPasswordForm'].forEach(id=>{
         const f=document.getElementById(id);
-        if(f && typeof f.reset==='function') f.reset();
+        if(f && typeof f.reset==='function') {
+            f.reset();
+            // Force clear each input individually
+            const inputs = f.querySelectorAll('input');
+            inputs.forEach(inp => {
+                inp.value = '';
+                inp.removeAttribute('value');
+            });
+        }
     });
+    
+    // Additional aggressive clear after short delay to defeat browser autofill
+    setTimeout(() => {
+        ['fullName', 'email', 'phone', 'password', 'loginEmail', 'loginPassword'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.value = '';
+                el.removeAttribute('value');
+            }
+        });
+    }, 100);
 
-    // hide registration panel on load if already signed in
-    if (isRegisteredUser()) {
-        hideRegistrationSection();
-    }
+    // keep registration card visibility in sync with auth state
+    syncRegistrationSectionForAuthState();
 
     // ... Rest of your logic continues here ...
    
@@ -726,7 +774,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const target = e.target;
         if (!(target instanceof Element)) return;
 
-        const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn');
+        const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn, .prep-text, .register-scroll, .promo-cta');
         if (!cta) return;
 
         // Hash-only links are already handled by the anchor handler above.
@@ -1025,30 +1073,24 @@ document.addEventListener("DOMContentLoaded", function () {
             window.scrollTo({ top: lastScrollY, behavior: 'auto' });
         };
 
-        // Open after ~4-5 seconds on page load.
+        // Open after ~4-5 seconds on page load ONLY if user is not logged in.
         // If user arrived from another page with #registration-section, handle that immediately.
         if (window.location.hash === '#registration-section') {
             if (isRegisteredUser()) {
-                // Normally redirect registered users to next form, except right after signup or when forced to edit.
-                const justRegistered = sessionStorage.getItem('justRegistered') === '1';
-                const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1';
-                if (justRegistered) {
-                    sessionStorage.removeItem('justRegistered');
-                    window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-                    openRegModal();
-                } else if (forceOpenRegistration) {
-                    openRegModal();
-                } else {
-                    window.location.href = 'next-form.html';
-                }
+                // Logged in users: redirect to next form
+                window.location.href = 'next-form.html';
             } else {
+                // Not logged in: open signup modal
                 regModalTimer = null;
                 openRegModal();
             }
         } else {
-            const signedIn = isRegisteredUser();
-            if (!signedIn) {
+            // Auto-open timer only for logged-out users
+            if (!isRegisteredUser()) {
                 regModalTimer = setTimeout(openRegModal, OPEN_DELAY_MS);
+            } else {
+                // Logged in: ensure section is hidden
+                hideRegistrationSection();
             }
         }
 
@@ -1647,9 +1689,18 @@ function setAuthMode(mode) {
     }
 }
 
-// Auth mode selection:
-// - Always default to Sign up
+// Auth mode selection at startup:
+// - Logged in: section stays hidden
+// - Logged out: always show Sign up card (never prefill login)
 setAuthMode('signup');
+
+// Immediately sync visibility based on login state
+if (isRegisteredUser()) {
+    hideRegistrationSection();
+} else {
+    // User is logged out - section can be visible but forms are blank
+    syncRegistrationSectionForAuthState();
+}
 
 if (authTabSignup) authTabSignup.addEventListener('click', () => setAuthMode('signup'));
 if (authTabLogin) authTabLogin.addEventListener('click', () => setAuthMode('login'));
@@ -2219,6 +2270,9 @@ if (registrationForm) {
                     if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
                 } catch {}
 
+                // Keep section state aligned with current login state.
+                syncRegistrationSectionForAuthState();
+
                 // 4. Stay on page (User requested normal browsing flow)
                 showNotification('Registration successful! You are now logged in.', 'success');
 
@@ -2240,7 +2294,11 @@ if (registrationForm) {
                     }
                 }
 
-                // Do NOT open the login form automatically.
+                // Force hide registration section after signup
+                setTimeout(() => {
+                    hideRegistrationSection();
+                    syncRegistrationSectionForAuthState();
+                }, 100);
             } else {
                 // Show error message from backend
                 const errorMsg = data.error || 'Registration failed.';
@@ -2333,6 +2391,7 @@ if (registrationForm) {
                 localStorage.setItem('userEmail', email);
                 // hide the registration panel now that user is authenticated
                 hideRegistrationSection();
+                syncRegistrationSectionForAuthState();
                 // remove any #registration-section hash so it doesn't reopen
                 if (window.location.hash === '#registration-section') {
                     window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
@@ -2359,11 +2418,17 @@ if (registrationForm) {
                     // ignore
                 }
 
-                // If modal is open, close it after login
+                // Force hide and close modal after login
                 const closeBtn = document.getElementById('regModalClose');
                 if (document.body.classList.contains('reg-modal-open') && closeBtn) {
                     closeBtn.click();
                 }
+                
+                // Extra enforcement: hide the section
+                setTimeout(() => {
+                    hideRegistrationSection();
+                    syncRegistrationSectionForAuthState();
+                }, 100);
             } else {
                 showNotification(data.error || 'Login failed. Please try again.', 'error');
             }
