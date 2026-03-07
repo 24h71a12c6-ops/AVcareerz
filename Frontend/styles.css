@@ -8177,23 +8177,32 @@ body.reg-modal-open #registration-section .reg-header {
 #splash-screen {
     position: fixed;
     inset: 0;
-    background-color: #002147;
+    background: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     z-index: 10000;
-    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 1.2s ease,
+                visibility 1.2s;
+}
+
+/* Magic Disappear Class */
+.fade-away {
+    opacity: 0;
+    filter: blur(20px);
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .splash-container {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 40px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
+    animation: pulseScale 2s ease-in-out infinite;
+}
+
+@keyframes pulseScale {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
 #main-logo {

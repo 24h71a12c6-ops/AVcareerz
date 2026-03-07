@@ -14,19 +14,31 @@ document.addEventListener("DOMContentLoaded", function () {
 // Splash Screen functionality
 window.addEventListener('load', () => {
     const splash = document.getElementById('splash-screen');
-    
-    if (splash) {
-        // Total duration: 2.8 seconds (Matches the CSS animations)
-        setTimeout(() => {
-            // Slide up animation to reveal the website
-            splash.style.transform = 'translateY(-100%)';
-            
-            // Remove from DOM after transition finishes for performance
-            setTimeout(() => {
-                splash.remove();
-            }, 800);
-        }, 2800);
+
+    if (!splash) return;
+
+    const navEntry = performance.getEntriesByType('navigation')[0];
+    const navType = navEntry?.type || (performance.navigation?.type === 1 ? 'reload' : 'navigate');
+    const hasSeenSplashInTab = sessionStorage.getItem('hasSeenSplash') === '1';
+    const shouldShowSplash = navType === 'reload' || !hasSeenSplashInTab;
+
+    if (!shouldShowSplash) {
+        splash.remove();
+        return;
     }
+
+    sessionStorage.setItem('hasSeenSplash', '1');
+
+    // 3500ms = 3.5 seconds varaku splash screen chupisthundi
+    setTimeout(() => {
+        // Paiki vellakunda, ikkada magic ga disappear avuthundi
+        splash.classList.add('fade-away');
+
+        // Cleanup: disappear ayyaka memory nundi remove cheyadaniki
+        setTimeout(() => {
+            splash.remove();
+        }, 1200); // Transition time tharuvatha remove chestundi
+    }, 3500);
 });
 
 });
@@ -305,9 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const iconEl = avatar.querySelector('[data-avatar-icon]');
 
                 const authBtn = profileEl.querySelector('[data-action="auth"]');
-                const profileToggle = profileEl.querySelector('[data-action="profile-toggle"]');
                 const logoutBtn = profileEl.querySelector('[data-action="logout"]');
-                const submenu = profileEl.querySelector('.profile-submenu');
 
                 if (signedIn) {
                     profileEl.classList.add('is-signed-in');
@@ -318,18 +328,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (iconEl) iconEl.hidden = true;
 
                     if (authBtn) authBtn.hidden = true;
-                    if (profileToggle) profileToggle.hidden = false;
                     if (logoutBtn) logoutBtn.hidden = false;
-                    if (submenu) submenu.hidden = true;
                 } else {
                     profileEl.classList.remove('is-signed-in');
                     if (initialEl) initialEl.hidden = true;
                     if (iconEl) iconEl.hidden = false;
 
                     if (authBtn) authBtn.hidden = false;
-                    if (profileToggle) profileToggle.hidden = true;
                     if (logoutBtn) logoutBtn.hidden = true;
-                    if (submenu) submenu.hidden = true;
                 }
 
                 avatar.hidden = false;
@@ -598,15 +604,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 </button>
                 <div class="profile-dropdown" role="menu">
                     <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
-                    <button type="button" class="profile-item profile-item--submenu" data-action="profile-toggle" aria-expanded="false" role="menuitem">
-                        <span>Profile</span>
-                        <span class="profile-chevron" aria-hidden="true">▸</span>
-                    </button>
-                    <div class="profile-submenu" hidden>
-                        <div class="profile-subtitle">Saved details</div>
-                        <div class="profile-saved" data-saved-details></div>
-                        <button type="button" class="profile-item profile-item--secondary" data-action="profile-view" role="menuitem">View all</button>
-                    </div>
                     <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
                 </div>
             `;
@@ -620,25 +617,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const trigger = profile.querySelector('.profile-trigger');
             const dropdown = profile.querySelector('.profile-dropdown');
-            const submenu = profile.querySelector('.profile-submenu');
-            const subTrigger = profile.querySelector('.profile-item--submenu');
-            const savedDetailsHost = profile.querySelector('[data-saved-details]');
-
-            const updateSavedDetails = () => {
-                if (!savedDetailsHost) return;
-                savedDetailsHost.innerHTML = renderSavedSummary();
-            };
 
             const onToggle = (evt) => {
                 evt.preventDefault();
                 evt.stopPropagation();
                 const isOpen = profile.classList.toggle('is-open');
                 if (trigger) trigger.setAttribute('aria-expanded', String(isOpen));
-
-                // Reset submenu when opening/closing and refresh saved details.
-                if (subTrigger) subTrigger.setAttribute('aria-expanded', 'false');
-                if (submenu) submenu.hidden = true;
-                if (isOpen) updateSavedDetails();
             };
 
             trigger?.addEventListener('click', onToggle);
@@ -646,19 +630,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const btn = evt.target instanceof Element ? evt.target.closest('[data-action]') : null;
                 const action = btn?.getAttribute('data-action');
 
-                if (action === 'profile-toggle') {
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                    const isExpanded = (subTrigger?.getAttribute('aria-expanded') === 'true');
-                    const next = !isExpanded;
-                    if (subTrigger) subTrigger.setAttribute('aria-expanded', String(next));
-                    if (submenu) submenu.hidden = !next;
-                    if (next) updateSavedDetails();
-                    return;
-                }
-
                 closeAllDropdowns();
-                if (action === 'profile-view') openProfileModal();
                 if (action === 'auth') {
                     try {
                         if (typeof window.__openRegModal === 'function') {
