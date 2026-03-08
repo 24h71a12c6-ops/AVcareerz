@@ -86,42 +86,6 @@ const apiUrl = (path) => {
 
 // global auth helpers (available everywhere in script)
 const isRegisteredUser = () => !!localStorage.getItem('userEmail');
-const getNormalizedEmail = (value) => String(value || '').trim().toLowerCase();
-
-const saveProfileDataForEmail = (email, payload = {}) => {
-    try {
-        const normalizedEmail = getNormalizedEmail(email);
-        if (!normalizedEmail) return;
-
-        const registrationPayload = payload?.registrationData && typeof payload.registrationData === 'object'
-            ? payload.registrationData
-            : null;
-        const nextFormPayload = payload?.nextFormData && typeof payload.nextFormData === 'object'
-            ? payload.nextFormData
-            : null;
-
-        if (registrationPayload) {
-            const registrationByEmail = JSON.parse(localStorage.getItem('registrationDataByEmail') || '{}');
-            registrationByEmail[normalizedEmail] = { ...registrationPayload, email: registrationPayload.email || email };
-            localStorage.setItem('registrationDataByEmail', JSON.stringify(registrationByEmail));
-
-            sessionStorage.setItem('registrationData', JSON.stringify(registrationByEmail[normalizedEmail]));
-            localStorage.setItem('registrationData', JSON.stringify(registrationByEmail[normalizedEmail]));
-        }
-
-        if (nextFormPayload) {
-            const nextFormByEmail = JSON.parse(localStorage.getItem('nextFormDataByEmail') || '{}');
-            nextFormByEmail[normalizedEmail] = { ...nextFormPayload };
-            localStorage.setItem('nextFormDataByEmail', JSON.stringify(nextFormByEmail));
-
-            sessionStorage.setItem('nextFormData', JSON.stringify(nextFormByEmail[normalizedEmail]));
-            localStorage.setItem('nextFormData', JSON.stringify(nextFormByEmail[normalizedEmail]));
-        }
-    } catch {
-        // ignore storage issues
-    }
-};
-
 const showRegistrationSection = ({ preferLogin = false } = {}) => {
     const sect = document.getElementById('registration-section');
     if (sect) {
@@ -327,8 +291,6 @@ document.addEventListener("DOMContentLoaded", function () {
             try { return JSON.parse(value); } catch { return null; }
         };
 
-        const getCurrentUserEmail = () => getNormalizedEmail(localStorage.getItem('userEmail'));
-
         const titleCaseLabel = (key) => {
             if (!key) return '';
             const spaced = String(key)
@@ -340,35 +302,20 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         const getProfileData = () => {
-            const currentUserEmail = getCurrentUserEmail();
-
-            const registrationByEmail = parseJson(localStorage.getItem('registrationDataByEmail')) || {};
-            const nextFormByEmail = parseJson(localStorage.getItem('nextFormDataByEmail')) || {};
-
-            const registrationFromMap = currentUserEmail ? (registrationByEmail[currentUserEmail] || null) : null;
-            const nextFormFromMap = currentUserEmail ? (nextFormByEmail[currentUserEmail] || null) : null;
-
-            const sessionRegistration = parseJson(sessionStorage.getItem('registrationData')) || {};
-            const localRegistration = parseJson(localStorage.getItem('registrationData')) || {};
-            const sessionNextForm = parseJson(sessionStorage.getItem('nextFormData')) || {};
-            const localNextForm = parseJson(localStorage.getItem('nextFormData')) || {};
-
-            const sessionEmail = getNormalizedEmail(sessionRegistration.email || sessionStorage.getItem('userEmail'));
-            const localEmail = getNormalizedEmail(localRegistration.email || localStorage.getItem('userEmail'));
-
+            // Prefer sessionStorage (current tab), but fall back to localStorage so the profile
+            // still shows after refresh/reopen.
             const registrationData =
-                registrationFromMap ||
-                ((currentUserEmail && sessionEmail === currentUserEmail) ? sessionRegistration : null) ||
-                ((currentUserEmail && localEmail === currentUserEmail) ? localRegistration : null) ||
+                parseJson(sessionStorage.getItem('registrationData')) ||
+                parseJson(localStorage.getItem('registrationData')) ||
                 {};
 
             const nextFormData =
-                nextFormFromMap ||
-                ((currentUserEmail && sessionEmail === currentUserEmail) ? sessionNextForm : null) ||
-                ((currentUserEmail && localEmail === currentUserEmail) ? localNextForm : null) ||
+                parseJson(sessionStorage.getItem('nextFormData')) ||
+                parseJson(localStorage.getItem('nextFormData')) ||
                 {};
+            const userEmail = localStorage.getItem('userEmail') || '';
 
-            if (!registrationData.email && currentUserEmail) registrationData.email = currentUserEmail;
+            if (!registrationData.email && userEmail) registrationData.email = userEmail;
 
             return { registrationData, nextFormData };
         };
@@ -395,7 +342,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const initialEl = avatar.querySelector('[data-avatar-initial]');
                 const iconEl = avatar.querySelector('[data-avatar-icon]');
 
-                const profileBtn = profileEl.querySelector('[data-action="profile"]');
+                const authBtn = profileEl.querySelector('[data-action="auth"]');
                 const logoutBtn = profileEl.querySelector('[data-action="logout"]');
 
                 if (signedIn) {
@@ -406,14 +353,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     if (iconEl) iconEl.hidden = true;
 
-                    if (profileBtn) profileBtn.hidden = false;
+                    if (authBtn) authBtn.hidden = true;
                     if (logoutBtn) logoutBtn.hidden = false;
                 } else {
                     profileEl.classList.remove('is-signed-in');
                     if (initialEl) initialEl.hidden = true;
                     if (iconEl) iconEl.hidden = false;
 
-                    if (profileBtn) profileBtn.hidden = true;
+                    if (authBtn) authBtn.hidden = false;
                     if (logoutBtn) logoutBtn.hidden = true;
                 }
 
@@ -682,7 +629,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </span>
                 </button>
                 <div class="profile-dropdown" role="menu">
-                    <button type="button" class="profile-item" data-action="profile" role="menuitem">Profile</button>
+                    <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
                     <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
                 </div>
             `;
@@ -710,8 +657,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 const action = btn?.getAttribute('data-action');
 
                 closeAllDropdowns();
-                if (action === 'profile') {
-                    openProfileModal();
+                if (action === 'auth') {
+                    try {
+                        if (typeof window.__openRegModal === 'function') {
+                            if (typeof setAuthMode === 'function') setAuthMode('signup');
+                            window.__openRegModal();
+                        } else {
+                            window.location.href = 'index.html#registration-section';
+                        }
+                    } catch {
+                        window.location.href = 'index.html#registration-section';
+                    }
                 }
                 if (action === 'logout') doLogout();
             });
@@ -854,25 +810,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
+        // If user is already registered, take them to next-form.html
         if (isRegisteredUser()) {
             e.preventDefault();
             window.location.href = 'next-form.html';
             return;
         }
 
-        if (isHomePage) {
-            e.preventDefault();
-            if (typeof openRegModal === 'function') {
-                openRegModal();
-            } else {
-                scrollToSection('registration-section');
-            }
-            return;
-        }
-
-        // Not registered + not on home page => ensure user lands on the signup modal.
+        // User not registered - show modal on current page
         e.preventDefault();
-        window.location.href = 'index.html#registration-section';
+        
+        // Check if registration section exists on current page
+        const hasRegistrationSection = !!document.getElementById('registration-section');
+        
+        if (hasRegistrationSection && typeof openRegModal === 'function') {
+            // Modal exists on this page - open it
+            openRegModal();
+        } else if (hasRegistrationSection) {
+            // Section exists but modal function not available - scroll to it
+            scrollToSection('registration-section');
+        } else {
+            // No registration section on this page - redirect to index.html
+            window.location.href = 'index.html#registration-section';
+        }
     });
 
     // 6. PHONE INPUT VALIDATION
@@ -980,7 +940,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { localStorage.setItem('lastUserEmail', email); } catch { }
                 try { localStorage.setItem('hasSignedUp', '1'); } catch { }
                 const registrationPayload = { fullName, email, phone: '' };
-                saveProfileDataForEmail(email, { registrationData: registrationPayload });
+                sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+                localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
                 sessionStorage.setItem('justRegistered', '1');
 
                 try {
@@ -2267,7 +2228,8 @@ if (registrationForm) {
 
                 // Store data for profile (session + local so it persists after refresh)
                 const registrationPayload = { fullName, email, phone };
-                saveProfileDataForEmail(email, { registrationData: registrationPayload });
+                sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+                localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
 
                 try {
                     if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
@@ -2319,7 +2281,8 @@ if (registrationForm) {
                 
                 // Store registration data for the next form
                 const regData = { fullName, email, phone };
-                saveProfileDataForEmail(email, { registrationData: regData });
+                sessionStorage.setItem('registrationData', JSON.stringify(regData));
+                localStorage.setItem('registrationData', JSON.stringify(regData));
 
                 // 2. Hide the registration UI immediately
                 hideRegistrationSection();
@@ -2474,7 +2437,8 @@ if (registrationForm) {
                     const fullName = data?.data?.fullName || '';
                     const phone = data?.data?.phone || '';
                     const registrationPayload = { fullName, email, phone };
-                    saveProfileDataForEmail(email, { registrationData: registrationPayload });
+                    sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+                    localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
                 } catch {
                     // ignore
                 }
