@@ -20,21 +20,29 @@ document.addEventListener("DOMContentLoaded", function () {
         }));
     }
 
-// Splash Screen functionality
+// Splash Screen functionality - Hide immediately if skipSplashOnce is set
+(function() {
+    const skipSplashOnce = sessionStorage.getItem('skipSplashOnce') === '1';
+    if (skipSplashOnce) {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            splash.style.display = 'none';
+        }
+        sessionStorage.removeItem('skipSplashOnce');
+    }
+})();
+
 window.addEventListener('load', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
 
-    if (!splash) return;
+    if (!splash || splash.style.display === 'none') return;
 
     const navEntry = performance.getEntriesByType('navigation')[0];
     const navType = navEntry?.type || (performance.navigation?.type === 1 ? 'reload' : 'navigate');
     const hasSeenSplashThisSession = sessionStorage.getItem('hasSeenSplashThisSession') === '1';
-    const skipSplashOnce = sessionStorage.getItem('skipSplashOnce') === '1';
-    if (skipSplashOnce) {
-        sessionStorage.removeItem('skipSplashOnce');
-    }
-    const shouldShowSplash = !skipSplashOnce && (
+    
+    const shouldShowSplash = (
         navType === 'reload' ||
         (navType === 'navigate' && !hasSeenSplashThisSession)
     );
