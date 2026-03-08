@@ -7,36 +7,16 @@ document.addEventListener("DOMContentLoaded", function () {
             navMenu.classList.toggle("active");
         });
         document.querySelectorAll(".nav-menu a").forEach(n => n.addEventListener("click", () => {
-            try {
-                const rawHref = (n.getAttribute('href') || '').trim().toLowerCase();
-                const isHomeLink = rawHref === '/' || rawHref === 'index.html' || rawHref.endsWith('/index.html');
-                if (isHomeLink) {
-                    sessionStorage.setItem('skipSplashOnce', '1');
-                }
-            } catch {
-                // ignore
-            }
             navMenu.classList.remove("active");
         }));
     }
 
-// Splash Screen functionality - Hide immediately if skipSplashOnce is set
-(function() {
-    const skipSplashOnce = sessionStorage.getItem('skipSplashOnce') === '1';
-    if (skipSplashOnce) {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-            splash.style.display = 'none';
-        }
-        sessionStorage.removeItem('skipSplashOnce');
-    }
-})();
-
+// Splash Screen functionality
 window.addEventListener('load', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
 
-    if (!splash || splash.style.display === 'none') return;
+    if (!splash) return;
 
     const navEntry = performance.getEntriesByType('navigation')[0];
     const navType = navEntry?.type || (performance.navigation?.type === 1 ? 'reload' : 'navigate');
