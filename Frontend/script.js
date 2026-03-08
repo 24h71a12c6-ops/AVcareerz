@@ -89,13 +89,14 @@ const isRegisteredUser = () => !!localStorage.getItem('userEmail');
 const showRegistrationSection = ({ preferLogin = false } = {}) => {
     const sect = document.getElementById('registration-section');
     if (sect) {
+        // Don't modify display - let CSS handle visibility via modal class
         sect.hidden = false;
-        // Clear any previous hard-hide override.
-        sect.style.removeProperty('display');
     }
 
     const overlay = document.getElementById('regModalOverlay');
-    if (overlay) overlay.hidden = true;
+    if (overlay) overlay.hidden = false;
+    
+    // Don't add modal class here - let openRegModal handle that
     document.body.classList.remove('reg-modal-open');
 
     // If auth panels are already initialized, pick the right card.
@@ -104,20 +105,17 @@ const showRegistrationSection = ({ preferLogin = false } = {}) => {
     }
 };
 const hideRegistrationSection = () => {
-    const sect = document.getElementById('registration-section');
-    if (sect) {
-        sect.hidden = true;
-        sect.style.display = 'none';
-    }
-    // also make sure any modal overlay is removed
+    // Don't actually hide the section - just ensure modal isn't open
+    document.body.classList.remove('reg-modal-open');
+    
     const overlay = document.getElementById('regModalOverlay');
     if (overlay) {
         overlay.hidden = true;
-        overlay.style.display = 'none';
     }
-    document.body.classList.remove('reg-modal-open');
 };
 const syncRegistrationSectionForAuthState = () => {
+    // For registered users, don't show the registration section or modal
+    // For non-registered users, ensure the section is available (but not opened as modal yet)
     if (isRegisteredUser()) {
         hideRegistrationSection();
         return;
@@ -693,7 +691,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Registration modal helpers (assigned later if the modal exists on this page)
-    let openRegModal = null;
+    let openRegModal = () => {
+        // Default implementation if modal not initialized yet
+        const sect = document.getElementById('registration-section');
+        if (sect) {
+            sect.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            window.location.href = 'index.html#registration-section';
+        }
+    };
     let closeRegModal = null;
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

@@ -2042,7 +2042,8 @@ html body {
 .step-content h4 {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #002147;
+    color: #002147
+    ;
     margin-bottom: 0.3rem;
 }
 
@@ -2571,8 +2572,20 @@ footer,
 .reg-main-container {
     padding: 60px 20px;
     background-color: #f0f4f8;
-    display: flex;
+    display: none; /* Hidden by default, shown as modal when triggered */
     justify-content: center;
+}
+
+/* When modal is open, show as fixed overlay */
+body.reg-modal-open .reg-main-container {
+    display: flex;
+    position: fixed;
+    inset: 16px;
+    z-index: 20001;
+    padding: 16px;
+    background-color: transparent;
+    overflow-y: auto;
+    align-items: center;
 }
 
 .reg-flex-card {
@@ -2604,18 +2617,7 @@ body.reg-modal-open .reg-modal-overlay {
     pointer-events: auto;
 }
 
-body.reg-modal-open #registration-section {
-    position: fixed;
-    inset: 16px;
-    padding: 0;
-    background: transparent;
-    z-index: 20001;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-body.reg-modal-open #registration-section .reg-flex-card {
+body.reg-modal-open .reg-flex-card {
     width: min(860px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
     overflow: auto;

@@ -833,13 +833,6 @@
             sessionStorage.setItem('nextFormData', JSON.stringify(nextFormData));
             try {
                 localStorage.setItem('nextFormData', JSON.stringify(nextFormData));
-
-                const profileEmail = String(userEmail || nextFormData.email || '').trim().toLowerCase();
-                if (profileEmail) {
-                    const nextFormDataByEmail = JSON.parse(localStorage.getItem('nextFormDataByEmail') || '{}');
-                    nextFormDataByEmail[profileEmail] = { ...nextFormData };
-                    localStorage.setItem('nextFormDataByEmail', JSON.stringify(nextFormDataByEmail));
-                }
             } catch {
                 // ignore
             }
