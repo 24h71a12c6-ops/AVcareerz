@@ -89,14 +89,13 @@ const isRegisteredUser = () => !!localStorage.getItem('userEmail');
 const showRegistrationSection = ({ preferLogin = false } = {}) => {
     const sect = document.getElementById('registration-section');
     if (sect) {
-        // Don't modify display - let CSS handle visibility via modal class
         sect.hidden = false;
+        // Clear any previous hard-hide override.
+        sect.style.removeProperty('display');
     }
 
     const overlay = document.getElementById('regModalOverlay');
-    if (overlay) overlay.hidden = false;
-    
-    // Don't add modal class here - let openRegModal handle that
+    if (overlay) overlay.hidden = true;
     document.body.classList.remove('reg-modal-open');
 
     // If auth panels are already initialized, pick the right card.
@@ -105,17 +104,20 @@ const showRegistrationSection = ({ preferLogin = false } = {}) => {
     }
 };
 const hideRegistrationSection = () => {
-    // Don't actually hide the section - just ensure modal isn't open
-    document.body.classList.remove('reg-modal-open');
-    
+    const sect = document.getElementById('registration-section');
+    if (sect) {
+        sect.hidden = true;
+        sect.style.display = 'none';
+    }
+    // also make sure any modal overlay is removed
     const overlay = document.getElementById('regModalOverlay');
     if (overlay) {
         overlay.hidden = true;
+        overlay.style.display = 'none';
     }
+    document.body.classList.remove('reg-modal-open');
 };
 const syncRegistrationSectionForAuthState = () => {
-    // For registered users, don't show the registration section or modal
-    // For non-registered users, ensure the section is available (but not opened as modal yet)
     if (isRegisteredUser()) {
         hideRegistrationSection();
         return;
@@ -691,31 +693,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Registration modal helpers (assigned later if the modal exists on this page)
-    let openRegModal = () => {
-        // Default implementation if modal not initialized yet
-        const sect = document.getElementById('registration-section');
-        if (sect) {
-            sect.scrollIntoView({ behavior: 'smooth' });
-        } else {
-            window.location.href = 'index.html#registration-section';
-        }
-    };
+    let openRegModal = null;
     let closeRegModal = null;
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
             if (href === '#') return;
-
-            // Skip if this is a registration CTA button - let the dedicated handler deal with it
-            if (this.classList.contains('register-scroll') || 
-                this.classList.contains('prep-text') || 
-                this.classList.contains('promo-cta') ||
-                this.classList.contains('register-cta-button') ||
-                this.classList.contains('get-assistance-btn') ||
-                this.classList.contains('register-btn')) {
-                return; // Let the CTA button handler deal with it
-            }
 
             const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1';
 
@@ -812,7 +796,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 5. REGISTER CTA BUTTONS (Unified behavior across the site)
     // - Registered user  => next-form.html
-    // - Not registered    => open signup modal
+    // - Not registered    => open signup modal on index, otherwise go to index.html#registration-section
     document.addEventListener('click', (e) => {
         const target = e.target;
         if (!(target instanceof Element)) return;
@@ -820,29 +804,27 @@ document.addEventListener("DOMContentLoaded", function () {
         const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn, .prep-text, .register-scroll, .promo-cta');
         if (!cta) return;
 
-        // Always prevent default for these special registration buttons
+        // Always prevent default for CTA buttons
         e.preventDefault();
 
-        // If user is already registered, take them to next-form.html
+        const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
+
         if (isRegisteredUser()) {
             window.location.href = 'next-form.html';
             return;
         }
 
-        // User not registered - show modal on current page
-        // Check if registration section exists on current page
-        const hasRegistrationSection = !!document.getElementById('registration-section');
-        
-        if (hasRegistrationSection && typeof openRegModal === 'function') {
-            // Modal exists on this page - open it
-            openRegModal();
-        } else if (hasRegistrationSection) {
-            // Section exists but modal function not available - scroll to it
-            scrollToSection('registration-section');
-        } else {
-            // No registration section on this page - redirect to index.html
-            window.location.href = 'index.html#registration-section';
+        if (isHomePage) {
+            if (typeof openRegModal === 'function') {
+                openRegModal();
+            } else {
+                scrollToSection('registration-section');
+            }
+            return;
         }
+
+        // Not registered + not on home page => ensure user lands on the signup modal.
+        window.location.href = 'index.html#registration-section';
     });
 
     // 6. PHONE INPUT VALIDATION

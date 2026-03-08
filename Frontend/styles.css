@@ -2572,13 +2572,12 @@ footer,
 .reg-main-container {
     padding: 60px 20px;
     background-color: #f0f4f8;
-    display: none; /* Hidden by default, shown as modal when triggered */
+    display: flex;
     justify-content: center;
 }
 
 /* When modal is open, show as fixed overlay */
 body.reg-modal-open .reg-main-container {
-    display: flex;
     position: fixed;
     inset: 16px;
     z-index: 20001;
@@ -3746,6 +3745,11 @@ header {
     gap: var(--training-gap);
     animation: trainings-scroll linear infinite;
     animation-duration: var(--training-duration);
+}
+
+/* Pause animation on hover */
+.trainings-viewport:hover .trainings-track {
+    animation-play-state: paused;
 }
 
 .trainings-track .coaching-card {
