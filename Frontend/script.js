@@ -343,6 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const iconEl = avatar.querySelector('[data-avatar-icon]');
 
                 const authBtn = profileEl.querySelector('[data-action="auth"]');
+                const profileBtn = profileEl.querySelector('[data-action="profile"]');
                 const logoutBtn = profileEl.querySelector('[data-action="logout"]');
 
                 if (signedIn) {
@@ -354,6 +355,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (iconEl) iconEl.hidden = true;
 
                     if (authBtn) authBtn.hidden = true;
+                    if (profileBtn) profileBtn.hidden = false;
                     if (logoutBtn) logoutBtn.hidden = false;
                 } else {
                     profileEl.classList.remove('is-signed-in');
@@ -361,6 +363,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (iconEl) iconEl.hidden = false;
 
                     if (authBtn) authBtn.hidden = false;
+                    if (profileBtn) profileBtn.hidden = true;
                     if (logoutBtn) logoutBtn.hidden = true;
                 }
 
@@ -630,6 +633,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </button>
                 <div class="profile-dropdown" role="menu">
                     <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
+                    <button type="button" class="profile-item" data-action="profile" role="menuitem" hidden>Profile</button>
                     <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
                 </div>
             `;
@@ -668,6 +672,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     } catch {
                         window.location.href = 'index.html#registration-section';
                     }
+                }
+                if (action === 'profile') {
+                    openProfileModal();
                 }
                 if (action === 'logout') doLogout();
             });
