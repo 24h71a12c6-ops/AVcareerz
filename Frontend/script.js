@@ -707,6 +707,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const href = this.getAttribute('href');
             if (href === '#') return;
 
+            // Skip if this is a registration CTA button - let the dedicated handler deal with it
+            if (this.classList.contains('register-scroll') || 
+                this.classList.contains('prep-text') || 
+                this.classList.contains('promo-cta') ||
+                this.classList.contains('register-cta-button') ||
+                this.classList.contains('get-assistance-btn') ||
+                this.classList.contains('register-btn')) {
+                return; // Let the CTA button handler deal with it
+            }
+
             const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1';
 
             // After signup, the "Register Here" CTA should open the next form.
@@ -802,7 +812,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 5. REGISTER CTA BUTTONS (Unified behavior across the site)
     // - Registered user  => next-form.html
-    // - Not registered    => open signup modal on index, otherwise go to index.html#registration-section
+    // - Not registered    => open signup modal
     document.addEventListener('click', (e) => {
         const target = e.target;
         if (!(target instanceof Element)) return;
@@ -810,22 +820,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn, .prep-text, .register-scroll, .promo-cta');
         if (!cta) return;
 
-        // Hash-only links are already handled by the anchor handler above.
-        const href = cta instanceof HTMLAnchorElement ? (cta.getAttribute('href') || '') : '';
-        if (href.startsWith('#')) return;
-
-        const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
+        // Always prevent default for these special registration buttons
+        e.preventDefault();
 
         // If user is already registered, take them to next-form.html
         if (isRegisteredUser()) {
-            e.preventDefault();
             window.location.href = 'next-form.html';
             return;
         }
 
         // User not registered - show modal on current page
-        e.preventDefault();
-        
         // Check if registration section exists on current page
         const hasRegistrationSection = !!document.getElementById('registration-section');
         
