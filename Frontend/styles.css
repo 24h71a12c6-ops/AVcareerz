@@ -2602,9 +2602,9 @@ body.reg-modal-open .reg-main-container {
 .reg-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 360ms ease;
@@ -2614,6 +2614,20 @@ body.reg-modal-open .reg-main-container {
 body.reg-modal-open .reg-modal-overlay {
     opacity: 1;
     pointer-events: auto;
+}
+
+/* Blur page content when modal is open */
+body.reg-modal-open .top-bar,
+body.reg-modal-open header,
+body.reg-modal-open .hero-section,
+body.reg-modal-open .coaching-section,
+body.reg-modal-open .destinations-section,
+body.reg-modal-open .benefits-section,
+body.reg-modal-open .testimonial-section,
+body.reg-modal-open .footer,
+body.reg-modal-open section:not(#registration-section) {
+    filter: blur(5px);
+    transition: filter 360ms ease;
 }
 
 body.reg-modal-open .reg-flex-card {
