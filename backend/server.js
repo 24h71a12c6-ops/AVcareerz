@@ -297,8 +297,6 @@ app.post(
         declaration: declarationFlag
       });
 
-      if (error) throw error;
-
       try {
         const { sendAdminEmail, sendConfirmationEmail } = require('./services/emailService');
         // notify admins about the completed second form

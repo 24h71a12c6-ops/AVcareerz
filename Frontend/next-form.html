@@ -245,6 +245,10 @@
         select#yearOfPassing option { color: #0b1220; }
         select#yearOfPassing:focus { color: #0b1220; }
 
+        select#collegeName { color: #ffffff; }
+        select#collegeName option { color: #0b1220; }
+        select#collegeName:focus { color: #0b1220; }
+
         /* Study Abroad Preferences: ensure dropdown list items are black for readability */
         select#preferredCountry option,
         select#visaType option,
@@ -582,24 +586,24 @@
                             </div>
                             <div class="form-group">
                                 <label for="collegeName">College/University Name <span class="required">*</span></label>
-                                <input type="text" id="collegeName" name="collegeName" required autocomplete="off" list="collegeList">
-                                <datalist id="collegeList">
-                                    <option value="IIT Hyderabad">
-                                    <option value="NIT Warangal">
-                                    <option value="JNTU Hyderabad">
-                                    <option value="Osmania University">
-                                    <option value="Andhra University">
-                                    <option value="SV University Tirupati">
-                                    <option value="KL University">
-                                    <option value="Vignan University">
-                                    <option value="GITAM University">
-                                    <option value="BITS Pilani Hyderabad">
-                                    <option value="University of Hyderabad">
-                                    <option value="Kakatiya University">
-                                    <option value="SR University">
-                                    <option value="Mahindra University">
-                                    <option value="Other">
-                                </datalist>
+                                <select id="collegeName" name="collegeName" required>
+                                    <option value="">Select College/University</option>
+                                    <option value="IIT Hyderabad">IIT Hyderabad</option>
+                                    <option value="NIT Warangal">NIT Warangal</option>
+                                    <option value="JNTU Hyderabad">JNTU Hyderabad</option>
+                                    <option value="Osmania University">Osmania University</option>
+                                    <option value="Andhra University">Andhra University</option>
+                                    <option value="SV University Tirupati">SV University Tirupati</option>
+                                    <option value="KL University">KL University</option>
+                                    <option value="Vignan University">Vignan University</option>
+                                    <option value="GITAM University">GITAM University</option>
+                                    <option value="BITS Pilani Hyderabad">BITS Pilani Hyderabad</option>
+                                    <option value="University of Hyderabad">University of Hyderabad</option>
+                                    <option value="Kakatiya University">Kakatiya University</option>
+                                    <option value="SR University">SR University</option>
+                                    <option value="Mahindra University">Mahindra University</option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="yearOfPassing">Year of Passing <span class="required">*</span></label>
@@ -646,13 +650,14 @@
                                 <label for="preferredCountry">Preferred Country <span class="required">*</span></label>
                                 <select id="preferredCountry" name="preferredCountry" required>
                                     <option value="">Select Country</option>
-                                    <option value="UK">UK</option>
-                                    <option value="Germany">Germany</option>
-                                    <option value="Australia">Australia</option>
                                     <option value="USA">USA</option>
+                                    <option value="UK">UK</option>
                                     <option value="Canada">Canada</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="Germany">Germany</option>
                                     <option value="New Zealand">New Zealand</option>
-                                    <option value="Other">Other</option>
+                                    <option value="Italy">Italy</option>
+                                    <option value="Turkey">Turkey</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -663,7 +668,8 @@
                                     <option value="Tourist">Tourist Visa</option>
                                     <option value="Work">Work Visa</option>
                                     <option value="Dependent">Dependent Visa</option>
-                                    <option value="Other">Other</option>
+                                    <option value="Business">Business Visa</option>
+                                    <option value="Transit">Transit Visa</option>
                                 </select>
                             </div>
                             <div class="form-group">
