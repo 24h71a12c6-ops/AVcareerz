@@ -618,6 +618,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </button>
                 <div class="profile-dropdown" role="menu">
                     <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
+                    <button type="button" class="profile-item" data-action="profile" role="menuitem">Profile</button>
                     <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
                 </div>
             `;
@@ -656,6 +657,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     } catch {
                         window.location.href = 'index.html#registration-section';
                     }
+                }
+                if (action === 'profile') {
+                    openProfileModal();
                 }
                 if (action === 'logout') doLogout();
             });
