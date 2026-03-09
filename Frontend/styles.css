@@ -8272,7 +8272,7 @@ body.splash-active .navbar {
     top: -22px;
     font-size: 20px;
     /* Flight moves with progress bar */
-    animation: flightPull 3.5s linear forwards;
+    animation: flightPull 3s linear forwards;
     transform: rotate(45deg);
 }
 
@@ -8288,7 +8288,7 @@ body.splash-active .navbar {
     width: 0%;
     height: 100%;
     background: linear-gradient(to right, #002147, #f39200);
-    animation: fillProgress 3.5s linear forwards;
+    animation: fillProgress 3s linear forwards;
 }
 
 /* Animations */

@@ -7,6 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
             navMenu.classList.toggle("active");
         });
         document.querySelectorAll(".nav-menu a").forEach(n => n.addEventListener("click", () => {
+            try {
+                const rawHref = (n.getAttribute('href') || '').trim().toLowerCase();
+                const isHomeLink = rawHref === '/' || rawHref === 'index.html' || rawHref.endsWith('/index.html');
+                if (isHomeLink) {
+                    sessionStorage.setItem('forceSplashOnce', '1');
+                }
+            } catch {
+                // ignore
+            }
             navMenu.classList.remove("active");
         }));
     }
@@ -15,14 +24,21 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener('load', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
+    const SPLASH_DURATION_MS = 3000;
+    const SPLASH_FADE_MS = 300;
 
     if (!splash) return;
 
     const navEntry = performance.getEntriesByType('navigation')[0];
     const navType = navEntry?.type || (performance.navigation?.type === 1 ? 'reload' : 'navigate');
     const hasSeenSplashThisSession = sessionStorage.getItem('hasSeenSplashThisSession') === '1';
+    const forceSplashOnce = sessionStorage.getItem('forceSplashOnce') === '1';
+    if (forceSplashOnce) {
+        sessionStorage.removeItem('forceSplashOnce');
+    }
     
     const shouldShowSplash = (
+        forceSplashOnce ||
         navType === 'reload' ||
         (navType === 'navigate' && !hasSeenSplashThisSession)
     );
@@ -36,15 +52,15 @@ window.addEventListener('load', () => {
     body?.classList.add('splash-active');
     sessionStorage.setItem('hasSeenSplashThisSession', '1');
 
-    // 3.5 seconds loading time
+    // 3 seconds loading time
     setTimeout(() => {
         splash.classList.add('fade-away');
 
         setTimeout(() => {
             splash.remove();
             body?.classList.remove('splash-active');
-        }, 1200);
-    }, 3500);
+        }, SPLASH_FADE_MS);
+    }, SPLASH_DURATION_MS);
 });
 
 });
