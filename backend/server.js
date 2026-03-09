@@ -215,6 +215,8 @@ app.post(
         yearOfPassing,
         cgpa,
         preferredCountry,
+        visaType,
+        visaNumber,
         levelOfStudy,
         coaching,
         preferredIntake,
@@ -249,6 +251,7 @@ app.post(
         !passport_id ||
         !highestQualification ||
         !preferredCountry ||
+        !visaType ||
         !levelOfStudy ||
         !preferredIntake ||
         !desiredCourse ||
@@ -287,6 +290,8 @@ app.post(
         yearOfPassing: yearOfPassing || null,
         cgpa: cgpa || null,
         preferredCountry,
+        visaType,
+        visaNumber: visaNumber || null,
         levelOfStudy,
         coaching: coaching || null,
         preferredIntake,
@@ -318,6 +323,8 @@ app.post(
           yearOfPassing,
           cgpa,
           preferredCountry,
+          visaType,
+          visaNumber,
           levelOfStudy,
           coaching,
           preferredIntake,
