@@ -216,6 +216,7 @@
 .testimonial-swiper {
     width: 100%;
     padding: 20px 60px 64px;
+    overflow: visible;
 }
 
 /* ── Card base ── */
@@ -350,7 +351,7 @@
 }
 
 .testimonial-next {
-    right: -26px;
+    right: -44px;
 }
 
 .testimonial-prev.swiper-button-disabled,

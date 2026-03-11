@@ -151,36 +151,59 @@
 
 
   <!-- About Us Section -->
-  <section class="about" id="about">
-    <div class="container">
-      <h2 class="section-title">About Abroad Vision Carrerz</h2>
-      <div class="about-wrapper">
-        <div class="about-content-box">
-          <h3>Abroad Vision Carrerz</h3>
-          <p>
-            We have been engaged in the consulting field for many years, and our teammates are representatives
-            from all corners of the globe. The people working for these consultants are highly skilled professionals
-            working all around the globe and are using it as a platform to share their experiences in gaining
-            admissions.
-            Moreover, the initiative for our emergence is because of the student's support, and we are eager to make you
-            one of our teammates as soon as you find admission through our organization. As you people know, experience
-            is
-            a better teacher. We are nowhere to guide you all the way to help find you better universities, irrespective
-            of the field of study.
-          </p>
-          <div class="vision-section">
-            <h4><i class="fas fa-eye"></i> Our Vision</h4>
-            <p>
-              At Abroad Vision Carrerz, our vision is to be a global education catalyst, connecting students with
-              transformative international learning experiences. We aim to make education accessible, affordable,
-              enriching, and a force for positive global change, fostering a diverse and interconnected world.
-            </p>
+  <section class="about-final-revised" id="about">
+    <span class="about-eyebrow">GLOBAL EDUCATION CATALYST</span>
+    <h2 class="main-title-massive">Empowering Your <span>Global Future</span></h2>
+
+    <div class="about-wrapper">
+      <div class="collage-container">
+        <div class="img-frame frame-1"><img src="images/about.JPEG" class="rotate-img" alt="Student counseling session"></div>
+        <div class="img-frame frame-2"><img src="images/about1.JPEG" class="rotate-img" alt="Expert guidance team"></div>
+        <div class="img-frame frame-3"><img src="images/about2.JPEG" class="rotate-img" alt="Successful students"></div>
+        <div class="img-frame frame-4"><img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1773251881/my_website_images/about3.jpg" class="rotate-img" alt="Campus guidance discussion"></div>
+        <div class="img-frame frame-5"><img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1773251898/my_website_images/about4.jpg" class="rotate-img" alt="Student achievement moment"></div>
+
+        <div class="exp-badge-bottom">
+          <strong class="exp-badge-number">10+</strong>
+          <span class="exp-badge-label">Years of Excellence</span>
+        </div>
+      </div>
+
+      <div class="about-content">
+        <div class="info-header">
+          <div class="header-icon-wrap"><i class="fas fa-globe-asia"></i></div>
+          <div>
+            <h3>India's Elite Study Abroad Partner</h3>
+            <p>Strategizing Success Across Borders</p>
           </div>
         </div>
-        <div class="about-image">
-          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=800&fit=crop&q=90"
-            alt="Student studying">
+
+        <p class="description-premium">
+          Abroad Vision Carrerz is India's premier global education consultancy. Our international network ensures every student gains access to world-class professional insights and top-tier university admissions.
+        </p>
+
+        <ul class="feature-list-premium">
+          <li><i class="fas fa-check"></i><strong>Strategic University Mapping:</strong> Tailored selection based on profile.</li>
+          <li><i class="fas fa-check"></i><strong>Elite Application Support:</strong> End-to-end guidance and documentation.</li>
+          <li><i class="fas fa-check"></i><strong>Visa Mastery:</strong> Precise filing and rigorous mock interview drills.</li>
+        </ul>
+
+        <div class="about-highlights-massive stats-horizontal-grid">
+          <div class="highlight-card">
+            <strong class="counter" data-target="10000">0</strong>
+            <span>Careers Shaped</span>
+          </div>
+          <div class="highlight-card">
+            <strong class="counter" data-target="250">0</strong>
+            <span>Global Partners</span>
+          </div>
+          <div class="highlight-card">
+            <strong class="counter" data-target="99">0</strong>
+            <span>Visa Success %</span>
+          </div>
         </div>
+
+        <a href="#registration-section" class="btn-primary-massive">Consult an Expert</a>
       </div>
     </div>
   </section>
@@ -839,48 +862,137 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const testimonialSwiperRoot = document.querySelector('.testimonial-swiper');
-      if (!testimonialSwiperRoot || typeof Swiper === 'undefined') return;
-
-      new Swiper('.testimonial-swiper', {
-        effect: 'coverflow',
-        grabCursor: true,
-        centeredSlides: true,
-        loop: true,
-        speed: 900,
-        autoplay: {
-          delay: 2600,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true
-        },
-        slidesPerView: 'auto',
-        spaceBetween: 24,
-        coverflowEffect: {
-          rotate: 10,
-          stretch: 0,
-          depth: 140,
-          modifier: 1.2,
-          scale: 0.95,
-          slideShadows: false
-        },
-        navigation: {
-          nextEl: '.testimonial-next'
-        },
-        pagination: {
-          el: '.testimonial-showcase-pagination',
-          clickable: true
-        },
-        breakpoints: {
-          0: {
-            spaceBetween: 14
+      if (testimonialSwiperRoot && typeof Swiper !== 'undefined') {
+        new Swiper('.testimonial-swiper', {
+          effect: 'coverflow',
+          grabCursor: true,
+          centeredSlides: true,
+          loop: true,
+          speed: 900,
+          autoplay: {
+            delay: 2600,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true
           },
-          768: {
-            spaceBetween: 24
+          slidesPerView: 'auto',
+          spaceBetween: 24,
+          coverflowEffect: {
+            rotate: 10,
+            stretch: 0,
+            depth: 140,
+            modifier: 1.2,
+            scale: 0.95,
+            slideShadows: false
           },
-          1200: {
-            spaceBetween: 30
+          navigation: {
+            nextEl: '.testimonial-next'
+          },
+          pagination: {
+            el: '.testimonial-showcase-pagination',
+            clickable: true
+          },
+          breakpoints: {
+            0: {
+              spaceBetween: 14
+            },
+            768: {
+              spaceBetween: 24
+            },
+            1200: {
+              spaceBetween: 30
+            }
           }
+        });
+      }
+
+      const images = document.querySelectorAll('.rotate-img');
+      if (images.length) {
+        const sources = [
+          'images/about.JPEG',
+          'images/about1.JPEG',
+          'images/about2.JPEG',
+          'https://res.cloudinary.com/dtorpeosf/image/upload/v1773251881/my_website_images/about3.jpg',
+          'https://res.cloudinary.com/dtorpeosf/image/upload/v1773251898/my_website_images/about4.jpg'
+        ];
+
+        let idx = 0;
+        let isRotating = false;
+
+        sources.forEach((src) => {
+          const preloadImage = new Image();
+          preloadImage.src = src;
+        });
+
+        function rotate() {
+          if (isRotating) return;
+          isRotating = true;
+          idx = (idx + 1) % sources.length;
+
+          images.forEach((img, i) => {
+            const next = (idx + i) % sources.length;
+
+            img.style.opacity = '0';
+            img.style.transform = 'scale(0.985)';
+            setTimeout(() => {
+              img.src = sources[next];
+              requestAnimationFrame(() => {
+                img.style.opacity = '1';
+                img.style.transform = 'scale(1)';
+              });
+            }, 260);
+          });
+
+          setTimeout(() => {
+            isRotating = false;
+          }, 900);
         }
-      });
+
+        setInterval(rotate, 4000);
+      }
+
+      function startMassiveCounters() {
+        const counters = document.querySelectorAll('#about.about-final-revised .counter');
+
+        counters.forEach(counter => {
+          const target = +counter.getAttribute('data-target');
+          const duration = 2000;
+          const startTime = performance.now();
+
+          function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const easeOut = 1 - Math.pow(1 - progress, 4);
+            const currentCount = Math.floor(easeOut * target);
+
+            if (target === 99) {
+              counter.innerText = currentCount + '%';
+            } else {
+              counter.innerText = currentCount.toLocaleString() + '+';
+            }
+
+            if (progress < 1) {
+              requestAnimationFrame(update);
+            } else {
+              counter.innerText = (target === 99) ? '99%' : target.toLocaleString() + '+';
+            }
+          }
+
+          requestAnimationFrame(update);
+        });
+      }
+
+      const aboutSection = document.querySelector('#about.about-final-revised');
+      if (aboutSection) {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            startMassiveCounters();
+            observer.disconnect();
+          }
+        }, { threshold: 0.35 });
+
+        observer.observe(aboutSection);
+      }
     });
   </script>
   <!-- Countries circular orbit script (destinations right-side) -->
