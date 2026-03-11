@@ -2278,7 +2278,7 @@ html body {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-    background-attachment: scroll;
+    background-attachment: fixed;
 }
 
 /* Overlay color - Ippudu idi graduation girl image paina untundi */
@@ -2350,10 +2350,6 @@ html body {
 
 /* Performance: reduce costly effects on mobile / low-power devices */
 @media (max-width: 992px) {
-    .services-premium-section {
-        background-attachment: scroll;
-    }
-
     .hero-glass {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
