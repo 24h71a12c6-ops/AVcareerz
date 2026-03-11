@@ -225,6 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const slides = document.querySelectorAll('.hero-slide');
     if (slides.length > 0) {
         let currentSlide = 0;
+        let heroSliderInterval = null;
         slides[0].classList.add('active');
 
         // Get hero text elements
@@ -254,7 +255,23 @@ document.addEventListener("DOMContentLoaded", function () {
             slides[currentSlide].classList.add('active');
             triggerHeroTextAnimation();
         }
-        setInterval(nextSlide, 5000);
+
+        const startHeroSlider = () => {
+            if (heroSliderInterval) return;
+            heroSliderInterval = setInterval(nextSlide, 5000);
+        };
+
+        const stopHeroSlider = () => {
+            if (!heroSliderInterval) return;
+            clearInterval(heroSliderInterval);
+            heroSliderInterval = null;
+        };
+
+        startHeroSlider();
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stopHeroSlider();
+            else startHeroSlider();
+        });
     }
 
     // 2. NAV TOGGLE
@@ -775,7 +792,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             isScrolling = true;
         }
-    });
+    }, { passive: true });
 
     function handleScroll() {
         if (!navbar) return;
@@ -1416,6 +1433,15 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
     if (!section) return;
     const track = section.querySelector('.destinations-grid');
     if (!track) return;
+
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lowPowerDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)
+        || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+    const smallScreen = window.matchMedia && window.matchMedia('(max-width: 992px)').matches;
+    if (reduceMotion || lowPowerDevice || smallScreen) {
+        return;
+    }
+
     if (track.dataset.trainInited) return;
     track.dataset.trainInited = '1';
 
