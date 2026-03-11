@@ -2274,10 +2274,10 @@ html body {
     display: flex;
     align-items: center;
     background-color: #2f2f2f;
-    background-image: url('https://res.cloudinary.com/dtorpeosf/image/upload/f_jpg,q_auto/law'), url('images/law.JPEG');
-    background-repeat: no-repeat, no-repeat;
-    background-position: center center, center center;
-    background-size: cover, cover;
+    background-image: url('https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1773236634/law.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
     background-attachment: scroll;
 }
 
