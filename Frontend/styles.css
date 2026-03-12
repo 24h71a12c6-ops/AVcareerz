@@ -7976,11 +7976,6 @@ footer {
     height: 100%;
     object-fit: cover;
     display: block;
-    opacity: 1;
-    transform: scale(1);
-    transition: opacity 0.45s ease, transform 0.75s ease;
-    will-change: opacity, transform;
-    backface-visibility: hidden;
 }
 
 #about.about-final-revised .exp-badge-bottom {

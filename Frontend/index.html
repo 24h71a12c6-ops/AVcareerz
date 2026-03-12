@@ -905,50 +905,11 @@
         });
       }
 
-      const images = document.querySelectorAll('.rotate-img');
-      if (images.length) {
-        const sources = [
-          'images/about.JPEG',
-          'images/about1.JPEG',
-          'images/about2.JPEG',
-          'https://res.cloudinary.com/dtorpeosf/image/upload/v1773251881/my_website_images/about3.jpg',
-          'https://res.cloudinary.com/dtorpeosf/image/upload/v1773251898/my_website_images/about4.jpg'
-        ];
-
-        let idx = 0;
-        let isRotating = false;
-
-        sources.forEach((src) => {
-          const preloadImage = new Image();
-          preloadImage.src = src;
-        });
-
-        function rotate() {
-          if (isRotating) return;
-          isRotating = true;
-          idx = (idx + 1) % sources.length;
-
-          images.forEach((img, i) => {
-            const next = (idx + i) % sources.length;
-
-            img.style.opacity = '0';
-            img.style.transform = 'scale(0.985)';
-            setTimeout(() => {
-              img.src = sources[next];
-              requestAnimationFrame(() => {
-                img.style.opacity = '1';
-                img.style.transform = 'scale(1)';
-              });
-            }, 260);
-          });
-
-          setTimeout(() => {
-            isRotating = false;
-          }, 900);
-        }
-
-        setInterval(rotate, 4000);
-      }
+      // Initialize all counters to 0 on page load
+      const counters = document.querySelectorAll('#about.about-final-revised .counter');
+      counters.forEach(counter => {
+        counter.innerText = '0';
+      });
 
       function startMassiveCounters() {
         const counters = document.querySelectorAll('#about.about-final-revised .counter');
@@ -956,6 +917,10 @@
         counters.forEach(counter => {
           const target = +counter.getAttribute('data-target');
           const duration = 2000;
+          
+          // Reset counter to 0 before starting
+          counter.innerText = '0';
+          
           const startTime = performance.now();
 
           function update(currentTime) {
@@ -987,9 +952,8 @@
         const observer = new IntersectionObserver((entries) => {
           if (entries[0].isIntersecting) {
             startMassiveCounters();
-            observer.disconnect();
           }
-        }, { threshold: 0.35 });
+        }, { threshold: 0.1 });
 
         observer.observe(aboutSection);
       }
