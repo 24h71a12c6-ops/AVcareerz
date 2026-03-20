@@ -55,12 +55,18 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 18px;
+		/* Override large padding from styles.css (90px) that causes nav items to wrap */
+		padding-left: 32px;
+		padding-right: 32px;
+		flex-wrap: nowrap;
 		min-width: 0;
 	}
 
 	.logo {
 		flex: 0 1 auto;
 		min-width: 0;
+		/* styles.css adds left margin; on desktop we rely on container padding instead */
+		margin-left: 0;
 	}
 
 	.logo-text {
@@ -71,9 +77,14 @@
 		flex: 1 1 auto;
 		min-width: 0;
 		justify-content: center;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		gap: 1.1rem;
 		margin-left: 0;
+	}
+
+	/* Keep every nav item on the same line */
+	.nav-menu li a {
+		white-space: nowrap;
 	}
 }
 
@@ -98,6 +109,18 @@
 	.nav-menu li a {
 		padding: 8px 12px;
 		font-size: 0.95rem;
+	}
+}
+
+/* Mid-size desktops (1281–1500): avoid wrapping (e.g. "Register Here" dropping to next line) */
+@media (min-width: 1281px) and (max-width: 1500px) {
+	.nav-menu {
+		gap: 0.85rem;
+	}
+
+	.nav-menu li a {
+		padding: 8px 12px;
+		font-size: 1rem;
 	}
 }
 
