@@ -1,0 +1,640 @@
+/*
+	responsive.css (desktop-only)
+
+	Goal: Make the site behave well across ALL desktop widths (1024px → 4K)
+	WITHOUT disturbing existing mobile/tablet styling or changing the look on large screens.
+
+	This file is intended to be included AFTER styles.css.
+*/
+
+/* Desktop safety: avoid accidental horizontal overflow from legacy 100vw sections */
+@media (min-width: 1024px) {
+	html,
+	body {
+		max-width: 100%;
+		overflow-x: clip;
+	}
+
+	img,
+	video {
+		max-width: 100%;
+		height: auto;
+	}
+}
+
+/* ------------------------------
+	 Containers + section spacing
+	 ------------------------------ */
+@media (min-width: 1024px) {
+	.container {
+		width: 100%;
+		max-width: 1200px;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 32px;
+		padding-right: 32px;
+		box-sizing: border-box;
+	}
+}
+
+@media (min-width: 1440px) {
+	.container {
+		max-width: 1280px;
+		padding-left: 40px;
+		padding-right: 40px;
+	}
+}
+
+/* ------------------------------
+	 Navbar (desktop widths)
+	 Fix: logo/menu/profile overlap
+	 ------------------------------ */
+@media (min-width: 1024px) {
+	.navbar .container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 18px;
+		min-width: 0;
+	}
+
+	.logo {
+		flex: 0 1 auto;
+		min-width: 0;
+	}
+
+	.logo-text {
+		min-width: 0;
+	}
+
+	.nav-menu {
+		flex: 1 1 auto;
+		min-width: 0;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 1.1rem;
+		margin-left: 0;
+	}
+}
+
+/* Smaller desktops (1024–1280): tighten spacing so nothing gets cut */
+@media (min-width: 1024px) and (max-width: 1280px) {
+	.navbar-logo-img {
+		height: 40px;
+	}
+
+	.logo-name {
+		font-size: 1.45rem;
+	}
+
+	.logo-tagline {
+		display: none;
+	}
+
+	.nav-menu {
+		gap: 0.9rem;
+	}
+
+	.nav-menu li a {
+		padding: 8px 12px;
+		font-size: 0.95rem;
+	}
+}
+
+/* Large desktops (>=1600): allow a bit more breathing room */
+@media (min-width: 1600px) {
+	.nav-menu {
+		gap: 1.35rem;
+	}
+}
+
+/* ------------------------------
+	 Hero (desktop readability)
+	 ------------------------------ */
+@media (min-width: 1024px) {
+	.hero {
+		min-height: 640px;
+	}
+
+	.hero-content {
+		max-width: 1200px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+/* ------------------------------
+	 Common grids (desktop sizing)
+	 Keeps cards from becoming too wide on big screens.
+	 ------------------------------ */
+@media (min-width: 1024px) {
+	.destinations-grid,
+	.cards-container,
+	.features-grid,
+	.why-choose-grid,
+	.visa-types-grid {
+		grid-auto-rows: auto;
+	}
+}
+
+/* ------------------------------
+	Navbar (mobile/tablet safety)
+	Fix: some mobile-only blocks in styles.css force row-reverse,
+	which moves the profile + hamburger to the left.
+	------------------------------ */
+@media (max-width: 900px) {
+	/* Not Bootstrap: our hamburger is #navToggle with 3 spans.
+	   Force it visible + remove any accidental arrow pseudo-elements. */
+	#navToggle,
+	#navToggle:focus,
+	#navToggle:active {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	#navToggle::before,
+	#navToggle::after {
+		display: none !important;
+		content: none !important;
+	}
+
+	#navToggle span {
+		display: block !important;
+		background-color: #002145 !important;
+	}
+}
+
+@media (max-width: 768px) {
+	/* Hard guarantee: hamburger is visible on mobile */
+	header .navbar .container .nav-right #navToggle.nav-toggle {
+		display: flex !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+
+	.navbar .container {
+		flex-direction: row !important;
+		justify-content: space-between !important;
+		align-items: center !important;
+		gap: 12px !important;
+		padding-left: 14px !important;
+		padding-right: 14px !important;
+	}
+
+	.logo {
+		margin: 0 !important;
+		max-width: none !important;
+		min-width: 0;
+		flex: 1 1 0;
+		max-width: calc(100vw - 140px);
+		overflow: hidden;
+	}
+
+	.logo-text {
+		min-width: 0;
+		text-align: left;
+		max-width: 100%;
+		overflow: hidden;
+	}
+
+	.logo-name {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 100%;
+	}
+
+	.nav-right {
+		display: flex !important;
+		align-items: center !important;
+		gap: 10px !important;
+		margin-left: auto !important;
+		margin-right: 0 !important;
+		flex: 0 0 auto;
+	}
+
+	.nav-toggle {
+		display: flex !important;
+		flex: 0 0 auto;
+	}
+
+	/* Make the hamburger button easy to tap and always clickable */
+	#navToggle {
+		display: flex !important;
+		flex-direction: column;
+		gap: 6px;
+		align-items: center;
+		justify-content: center;
+		/* Use an odd height so the 3 bars land on whole pixels (avoids 1 line looking thinner) */
+		width: 45px;
+		height: 45px;
+		margin-left: 6px;
+		color: #003D7A !important;
+		/* User request: show ONLY the 3 lines (no box around the icon) */
+		background: transparent !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+		border: 0 !important;
+		border-radius: 0 !important;
+		box-shadow: none !important;
+		outline: none !important;
+		position: relative;
+		z-index: 1000000;
+		pointer-events: auto;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+
+	/* Keyboard accessibility (no visible box on tap/click; only on keyboard focus) */
+	#navToggle:focus-visible {
+		border-radius: 10px;
+		box-shadow: 0 0 0 3px rgba(0, 33, 69, 0.18) !important;
+	}
+
+	#navToggle span {
+		pointer-events: none;
+		/* Default 3-line hamburger (clean + compact) */
+		display: block;
+		width: 26px;
+		height: 3px;
+		margin: 0;
+		border-radius: 999px;
+		background: #002145 !important;
+		box-shadow: none !important;
+		transform: translateZ(0);
+		transition: transform 0.25s ease, opacity 0.2s ease, background-color 0.2s ease;
+		transform-origin: center;
+	}
+
+	/* User request: when the dropdown is open, do NOT change the hamburger into an X */
+	#navToggle[aria-expanded="true"] span {
+		transform: none !important;
+		opacity: 1 !important;
+	}
+
+	/* Keep it blue even while pressing */
+	#navToggle:active span {
+		background: #002145 !important;
+		box-shadow: none !important;
+	}
+
+	/* If you ever switch to a font-awesome <i class="hamburger-icon">, this will style it too */
+	.hamburger-icon {
+		color: #002145 !important;
+		font-size: 30px;
+		display: block;
+	}
+
+	/* When the mobile menu is open, keep the lines a bit stronger */
+	#navMenu.active ~ .nav-right #navToggle span {
+		background: #002145 !important;
+		box-shadow: none !important;
+	}
+
+	/* Mobile dropdown menu (hamburger): compact glass dropdown (not full screen) */
+	#navMenu {
+		display: none !important;
+		position: fixed !important;
+		left: auto !important;
+		right: 12px !important;
+		top: 78px !important;
+		width: min(86vw, 300px) !important;
+		/* Auto-size to content, but never exceed the available viewport height */
+		max-height: calc(100vh - 96px) !important;
+		overflow-y: auto;
+		overflow-x: hidden;
+		-webkit-overflow-scrolling: touch;
+		z-index: 999999 !important;
+		background: rgba(255, 255, 255, 0.92) !important;
+		backdrop-filter: blur(14px) !important;
+		-webkit-backdrop-filter: blur(14px) !important;
+		border: 1px solid rgba(15, 23, 42, 0.08) !important;
+		box-shadow: 0 18px 50px rgba(2, 6, 23, 0.22) !important;
+		padding: 8px 0 !important;
+		margin: 0 !important;
+		border-radius: 14px !important;
+	}
+
+	#navMenu.active {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 0 !important;
+	}
+
+	#navMenu > li {
+		width: 100%;
+	}
+
+	#navMenu > li > a {
+		display: block;
+		padding: 10px 14px;
+		width: 100%;
+		text-align: left;
+		font-size: 0.98rem;
+	}
+
+	#navMenu > li + li {
+		border-top: 1px solid rgba(15, 23, 42, 0.06);
+	}
+
+	/* Mobile: submenu should open only when the user taps Destinations/Study */
+	#navMenu .nav-dropdown > a {
+		position: relative;
+		padding-right: 14px;
+	}
+
+	/* User request: remove the dropdown arrow/chevron indicator */
+	#navMenu .nav-dropdown > a::after,
+	#navMenu .nav-dropdown.is-open > a::after {
+		content: none !important;
+		display: none !important;
+	}
+
+	#navMenu .nav-dropdown .dropdown-menu {
+		display: none !important;
+		position: static !important;
+		box-shadow: none !important;
+		border: 0 !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+		padding: 6px 0 10px 0 !important;
+		margin: 0 !important;
+		max-height: none;
+		background: transparent !important;
+	}
+
+	#navMenu .nav-dropdown.is-open > .dropdown-menu {
+		display: flex !important;
+		flex-direction: column;
+		gap: 0;
+	}
+
+	#navMenu .nav-dropdown .dropdown-menu a {
+		padding-left: 26px;
+		font-weight: 600;
+	}
+}
+
+/* Extra small screens: keep hamburger visible even when space is tight */
+@media (max-width: 420px) {
+	.logo-name {
+		font-size: clamp(1.05rem, 4.6vw, 1.35rem) !important;
+	}
+
+	.nav-right #navToggle {
+		order: 1;
+	}
+	.nav-right .nav-profile {
+		order: 2;
+	}
+}
+
+/* Tablet / touch widths (769–900px): allow click-to-open dropdown (no hover needed)
+   Your JS toggles `.nav-dropdown.is-open` at <=900px, but without this rule the
+   submenu stays `display: none` because desktop CSS only opens on :hover. */
+@media (min-width: 769px) and (max-width: 900px) {
+	#navMenu .nav-dropdown.is-open > .dropdown-menu {
+		display: flex;
+	}
+}
+
+/* Navbar brand/title sizing: keep it readable without forcing a centered look */
+@media (max-width: 520px) {
+	.navbar-logo-img {
+		height: 40px;
+	}
+
+	.logo-name {
+		font-size: clamp(1.35rem, 5.2vw, 1.85rem) !important;
+		letter-spacing: 0.3px;
+	}
+}
+
+@media (max-width: 768px) {
+	/* Override legacy mobile blocks that shrink the brand title via !important */
+	.logo-name {
+		font-size: clamp(1.35rem, 5vw, 1.9rem) !important;
+	}
+}
+
+/* ------------------------------
+	Explore Study Destinations
+	Fix: fixed grid column widths + extra left margins cause overflow on
+	smaller desktops and make the promo card/CTA look misaligned.
+	------------------------------ */
+
+/* Desktops up to 1439px: keep 2 columns but make them flexible
+   (base CSS assumes ~1240px total width, but the desktop container is 1200px here). */
+@media (min-width: 1024px) and (max-width: 1439px) {
+	.destinations-layout {
+		max-width: 100%;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+	}
+
+	.description-box {
+		max-width: none;
+		margin-left: 0;
+		justify-self: stretch;
+	}
+}
+
+/* Tablets + mobile: stack layout cleanly */
+@media (max-width: 1023px) {
+	.destinations-layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.description-box {
+		max-width: none;
+		margin-left: 0;
+		justify-self: stretch;
+	}
+}
+
+/* Promo button: prevent horizontal overflow and keep it centered */
+.promo-content {
+	min-width: 0;
+}
+
+.promo-cta {
+	max-width: 100%;
+	box-sizing: border-box;
+	white-space: normal;
+	line-height: 1.25;
+}
+
+@media (max-width: 1023px) {
+	.promo-cta {
+		width: 100%;
+	}
+}
+
+/* Destinations cards carousel: make it scroll across full screen width (desktop) */
+@media (min-width: 1024px) {
+	.destinations .destinations-layout .destinations-grid {
+		/* ensure it sits under both columns */
+		grid-column: 1 / -1;
+		justify-self: stretch;
+
+		/* full-bleed: break out of the 1240px layout and span the viewport */
+		width: 100vw;
+		max-width: 100vw;
+		margin-left: calc(50% - 50vw);
+		margin-right: calc(50% - 50vw);
+
+		/* comfortable gutters on all screen sizes */
+		padding-left: clamp(14px, 3vw, 56px);
+		padding-right: clamp(14px, 3vw, 56px);
+		box-sizing: border-box;
+	}
+}
+
+/* Countries orbit (Destinations right-side): scale smoothly on small screens */
+.destinations .countries-grid {
+	width: min(520px, 92vw);
+	aspect-ratio: 1;
+	height: auto;
+	/* Single source of truth for ALL orbiting flag icon sizes */
+	/* Desktop: keep them close to the size in your screenshot */
+	--orbit-flag-size: clamp(56px, 4vw, 72px);
+}
+
+.destinations .countries-grid::before {
+	width: 80%;
+	height: 80%;
+}
+
+.destinations .countries-grid::after {
+	width: 58%;
+	height: 58%;
+}
+
+.destinations .country-center {
+	width: clamp(96px, 22vw, 130px);
+	height: clamp(96px, 22vw, 130px);
+}
+
+.destinations .country-center .center-logo {
+	width: 78%;
+	height: 78%;
+}
+
+.destinations .country-item {
+	/* IMPORTANT: the element that follows the orbit path must be a SQUARE,
+	   otherwise different label lengths/heights change the anchor center
+	   and the radius looks uneven. */
+	width: var(--orbit-flag-size);
+	height: var(--orbit-flag-size);
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.destinations .country-item .country-flag {
+	width: var(--orbit-flag-size);
+	height: var(--orbit-flag-size);
+	/* Important: base styles add border + padding.
+	   With border-box the OUTER circle stays exactly --orbit-flag-size,
+	   which keeps the orbit radius perfectly consistent. */
+	box-sizing: border-box;
+}
+
+.destinations .country-item span {
+	font-size: 11px;
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+/* ------------------------------
+	Destinations orbit animation (clockwise)
+	------------------------------ */
+
+/* Keep the orbit layout even on small screens (override styles.css fallback) */
+.destinations .countries-grid {
+	display: block !important;
+	position: relative;
+	overflow: visible;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.destinations .destinations-side {
+	justify-content: center;
+}
+
+.destinations .countries-grid > .country-item {
+	position: absolute !important;
+	left: 50% !important;
+	top: 50% !important;
+	transform: translate(-50%, -50%);
+	/* Motion Path (fallback): place the bubbles BETWEEN the two rings.
+	   Outer ring radius: 40% (80% diameter)
+	   Inner ring radius: 29% (58% diameter)
+	   Mid radius: (40% + 29%) / 2 = 34.5% */
+	offset-path: circle(calc((40% + 29%) / 2) at 50% 50%);
+	/* Ensure the orbit is computed from the grid's center */
+	offset-position: 50% 50%;
+	offset-rotate: 0deg;
+	offset-anchor: 50% 50%;
+	animation: destinations-orbit 18s linear infinite;
+}
+
+/* If the JS orbit is active, disable motion-path so there is no fight over transforms */
+.destinations .countries-grid.js-orbit > .country-item {
+	offset-path: none;
+	offset-distance: 0%;
+	animation: none;
+}
+
+@media (max-width: 520px) {
+	.destinations .countries-grid {
+		--orbit-flag-size: clamp(44px, 12vw, 60px);
+	}
+
+	.destinations .country-item {
+		width: var(--orbit-flag-size);
+		height: var(--orbit-flag-size);
+	}
+
+	.destinations .country-item .country-flag {
+		width: var(--orbit-flag-size);
+		height: var(--orbit-flag-size);
+	}
+
+	.destinations .country-item span {
+		font-size: 10px;
+	}
+}
+
+/* Stagger start positions for 8 flags */
+.destinations .countries-grid > .country-item:nth-child(1) { --i: 0; }
+.destinations .countries-grid > .country-item:nth-child(2) { --i: 1; }
+.destinations .countries-grid > .country-item:nth-child(3) { --i: 2; }
+.destinations .countries-grid > .country-item:nth-child(4) { --i: 3; }
+.destinations .countries-grid > .country-item:nth-child(5) { --i: 4; }
+.destinations .countries-grid > .country-item:nth-child(6) { --i: 5; }
+.destinations .countries-grid > .country-item:nth-child(7) { --i: 6; }
+.destinations .countries-grid > .country-item:nth-child(8) { --i: 7; }
+
+.destinations .countries-grid > .country-item {
+	animation-delay: calc(-2.25s * var(--i));
+}
+
+@keyframes destinations-orbit {
+	to {
+		offset-distance: 100%;
+	}
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	.destinations .countries-grid > .country-item {
+		animation: none;
+		offset-distance: 0%;
+	}
+}
+

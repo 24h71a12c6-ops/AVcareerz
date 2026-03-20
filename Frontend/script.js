@@ -1,25 +1,3 @@
-// Hamburger menu functionality for mobile navigation
-document.addEventListener("DOMContentLoaded", function () {
-    const hamburger = document.querySelector("#navToggle");
-    const navMenu = document.querySelector("#navMenu");
-    if (hamburger && navMenu) {
-        hamburger.addEventListener("click", () => {
-            navMenu.classList.toggle("active");
-        });
-        document.querySelectorAll(".nav-menu a").forEach(n => n.addEventListener("click", () => {
-            try {
-                const rawHref = (n.getAttribute('href') || '').trim().toLowerCase();
-                const isHomeLink = rawHref === '/' || rawHref === 'index.html' || rawHref.endsWith('/index.html');
-                if (isHomeLink) {
-                    sessionStorage.setItem('forceSplashOnce', '1');
-                }
-            } catch {
-                // ignore
-            }
-            navMenu.classList.remove("active");
-        }));
-    }
-
 // Splash Screen functionality
 window.addEventListener('load', () => {
     const splash = document.getElementById('splash-screen');
@@ -63,7 +41,6 @@ window.addEventListener('load', () => {
     }, SPLASH_DURATION_MS);
 });
 
-});
 // --- API Configuration (Global Scope) ---
 // Define the backend service URL for connection
 
@@ -225,7 +202,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const slides = document.querySelectorAll('.hero-slide');
     if (slides.length > 0) {
         let currentSlide = 0;
-        let heroSliderInterval = null;
         slides[0].classList.add('active');
 
         // Get hero text elements
@@ -255,41 +231,134 @@ document.addEventListener("DOMContentLoaded", function () {
             slides[currentSlide].classList.add('active');
             triggerHeroTextAnimation();
         }
-
-        const startHeroSlider = () => {
-            if (heroSliderInterval) return;
-            heroSliderInterval = setInterval(nextSlide, 5000);
-        };
-
-        const stopHeroSlider = () => {
-            if (!heroSliderInterval) return;
-            clearInterval(heroSliderInterval);
-            heroSliderInterval = null;
-        };
-
-        startHeroSlider();
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) stopHeroSlider();
-            else startHeroSlider();
-        });
+        setInterval(nextSlide, 5000);
     }
 
-    // 2. NAV TOGGLE
+    // 2. NAV TOGGLE (single source of truth)
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
     if (navToggle && navMenu) {
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            const spans = navToggle.querySelectorAll('span');
-            if (navMenu.classList.contains('active')) {
-                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-                spans[1].style.opacity = '0';
-                spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+        const spans = Array.from(navToggle.querySelectorAll('span'));
+        const isOpen = () => navMenu.classList.contains('active');
+
+        const closeSubmenus = () => {
+            navMenu.querySelectorAll('.nav-dropdown.is-open').forEach((li) => li.classList.remove('is-open'));
+        };
+
+        const syncHamburgerIcon = (open) => {
+            // Let CSS handle the icon animation based on aria-expanded.
+            // Inline styles would override CSS and make the hamburger hard to style.
+            if (spans.length < 3) return;
+            spans.forEach((s) => {
+                try {
+                    s.style.removeProperty('transform');
+                    s.style.removeProperty('opacity');
+                } catch {
+                    // ignore
+                }
+            });
+            navToggle.classList.toggle('is-open', !!open);
+        };
+
+        const setOpen = (open) => {
+            navMenu.classList.toggle('active', !!open);
+            navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            syncHamburgerIcon(!!open);
+
+            // Keep the menu consistent every time it opens/closes.
+            if (open) {
+                try { navMenu.scrollTop = 0; } catch { /* ignore */ }
+                closeSubmenus();
             } else {
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
+                closeSubmenus();
             }
+        };
+
+        // a11y defaults
+        if (!navToggle.hasAttribute('role')) navToggle.setAttribute('role', 'button');
+        if (!navToggle.hasAttribute('tabindex')) navToggle.setAttribute('tabindex', '0');
+        navToggle.setAttribute('aria-controls', 'navMenu');
+        if (!navToggle.hasAttribute('aria-expanded')) navToggle.setAttribute('aria-expanded', 'false');
+
+        // Ensure icon state matches initial menu state
+        syncHamburgerIcon(isOpen());
+
+        navToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpen(!isOpen());
+        });
+
+        navToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setOpen(!isOpen());
+            }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!isOpen()) return;
+            const t = e.target;
+            if (t && (navMenu.contains(t) || navToggle.contains(t))) return;
+            setOpen(false);
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            if (!isOpen()) return;
+            setOpen(false);
+        });
+
+        // Close after choosing a link (but NOT when tapping a submenu trigger)
+        navMenu.querySelectorAll('a').forEach((n) => n.addEventListener('click', () => {
+            try {
+                // If this anchor opens a submenu, don't close the menu.
+                const hasSubmenu = !!(n.nextElementSibling && n.nextElementSibling.classList && n.nextElementSibling.classList.contains('dropdown-menu'));
+                const isDropdownTrigger = !!(n.matches && n.matches('.nav-dropdown > a'));
+                if (isDropdownTrigger && hasSubmenu) return;
+
+                const rawHref = (n.getAttribute('href') || '').trim().toLowerCase();
+                const isHomeLink = rawHref === '/' || rawHref === 'index.html' || rawHref.endsWith('/index.html');
+                if (isHomeLink) sessionStorage.setItem('forceSplashOnce', '1');
+            } catch {
+                // ignore
+            }
+            setOpen(false);
+        }));
+
+        // Mobile: tap Destinations/Study to open nested country list
+        const bindMobileSubmenu = () => {
+            // Bind once regardless of viewport size; we decide whether to intercept at click-time.
+            navMenu.querySelectorAll('.nav-dropdown > a').forEach((trigger) => {
+                // Avoid double-binding if script runs again for any reason
+                if (trigger.__submenuBound) return;
+                trigger.__submenuBound = true;
+
+                trigger.addEventListener('click', (e) => {
+                    const shouldIntercept = window.innerWidth <= 900 || navMenu.classList.contains('active');
+                    if (!shouldIntercept) return;
+                    e.preventDefault();
+                    // Important: also stop other click handlers on this same element
+                    // (we have a global smooth-scroll handler for all #hash links)
+                    e.stopImmediatePropagation();
+
+                    const li = trigger.closest('.nav-dropdown');
+                    if (!li) return;
+
+                    const isOpenNow = li.classList.toggle('is-open');
+                    trigger.setAttribute('aria-expanded', isOpenNow ? 'true' : 'false');
+                });
+            });
+        };
+
+        bindMobileSubmenu();
+
+        // If viewport becomes desktop, close the mobile menu
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && isOpen()) setOpen(false);
+            bindMobileSubmenu();
         });
     }
 
@@ -707,6 +776,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const sections = document.querySelectorAll('section[id]');
     const navbar = document.querySelector('.navbar');
 
+    // Some pages reuse this script without being index.html.
+    // We treat index.html (and /) as the home page so hash links can either scroll
+    // locally or redirect to index.html#... when the section isn't present.
+    function isHomePagePath() {
+        const path = String(window.location.pathname || '').toLowerCase();
+        // Examples:
+        //   /               (root)
+        //   /index.html
+        //   /frontend/index.html
+        //   /Frontend/index.html
+        return path === '/' || path.endsWith('/index.html');
+    }
+
     function scrollToSection(targetId) {
         const target = document.getElementById(targetId);
         if (target) {
@@ -725,6 +807,25 @@ document.addEventListener("DOMContentLoaded", function () {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
             if (href === '#') return;
+
+            // If the hamburger dropdown is open and the user tapped the nav-dropdown trigger
+            // (Destinations/Study), treat it as a submenu toggle only (no redirect / no scroll).
+            try {
+                const menuOpen = !!navMenu && navMenu.classList.contains('active');
+                if (menuOpen) {
+                    const isInsideMenu = !!(this.closest && this.closest('#navMenu'));
+                    const isDropdownTrigger = !!(this.matches && this.matches('#navMenu .nav-dropdown > a'));
+                    const hasSubmenu = !!(this.nextElementSibling && this.nextElementSibling.classList && this.nextElementSibling.classList.contains('dropdown-menu'));
+                    if (isInsideMenu && isDropdownTrigger && hasSubmenu) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+            } catch {
+                // ignore
+            }
+
+            // (submenu triggers are handled above)
 
             const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1';
 
@@ -774,10 +875,16 @@ document.addEventListener("DOMContentLoaded", function () {
             // Close mobile menu
             if (navMenu) {
                 navMenu.classList.remove('active');
-                const spans = navToggle.querySelectorAll('span');
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
+                try {
+                    const spans = navToggle ? navToggle.querySelectorAll('span') : [];
+                    if (spans.length >= 3) {
+                        spans[0].style.transform = 'none';
+                        spans[1].style.opacity = '1';
+                        spans[2].style.transform = 'none';
+                    }
+                } catch {
+                    // ignore
+                }
             }
         });
     });
@@ -792,7 +899,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             isScrolling = true;
         }
-    }, { passive: true });
+    });
 
     function handleScroll() {
         if (!navbar) return;
@@ -1433,15 +1540,6 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
     if (!section) return;
     const track = section.querySelector('.destinations-grid');
     if (!track) return;
-
-    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const lowPowerDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)
-        || (navigator.deviceMemory && navigator.deviceMemory <= 4);
-    const smallScreen = window.matchMedia && window.matchMedia('(max-width: 992px)').matches;
-    if (reduceMotion || lowPowerDevice || smallScreen) {
-        return;
-    }
-
     if (track.dataset.trainInited) return;
     track.dataset.trainInited = '1';
 

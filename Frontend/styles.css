@@ -763,21 +763,6 @@
         transition: 0.3s;
     }
 }
-@media screen and (min-width: 769px) {
-    .nav-toggle {
-        display: none !important;
-    }
-    .nav-menu {
-        position: static;
-        flex-direction: row;
-        background: none;
-        box-shadow: none;
-        left: 0;
-        top: 0;
-        width: auto;
-        border-radius: 0;
-    }
-}
 /* --- MOBILE RESPONSIVENESS IMPROVEMENTS --- */
 html body {
   @media (max-width: 600px) {
@@ -3488,7 +3473,7 @@ header {
 }
 
 .logo-name::after {
-    content: 'Carrerz';
+    content: ' Carrerz';
     color: #FF9500;
 }
 

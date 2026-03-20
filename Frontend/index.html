@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Abroad Vision Carrerz - Study Abroad Consultancy</title>
-  <link rel="stylesheet" href="styles.css?v=20260206">
+  <link rel="stylesheet" href="styles.css?v=20260318-2">
+  <link rel="stylesheet" href="responsive.css?v=20260318-6">
   <link rel="stylesheet" href="testimonial-stats.css">
   <link rel="stylesheet" href="benefits-section.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -111,25 +112,26 @@
   <section class="hero" id="home">
 
     <div class="hero-slider">
-      <div class="hero-slider">
-        <div class="hero-slide active">
-          <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071959/my_website_images/two.jpg" alt="Banner 2">
-        </div>
-        <div class="hero-slide">
-          <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071963/my_website_images/3rd.jpg" alt="Banner 3">
-        </div>
-        <div class="hero-slide">
-          <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071967/my_website_images/4th.jpg" alt="Banner 4">
-        </div>
-        <div class="hero-slide">
-          <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071972/my_website_images/5th.jpg" alt="Banner 5">
-        </div>
-        <div class="hero-slide">
-          <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071990/my_website_images/6th.jpg" alt="Banner 6">
-        </div>
-        <div class="hero-slide">
-          <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071999/my_website_images/7th.jpg" alt="Banner 7">
-        </div>
+      <div class="hero-slide active">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071959/my_website_images/two.jpg" alt="Banner 2">
+      </div>
+      <div class="hero-slide">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071963/my_website_images/3rd.jpg" alt="Banner 3">
+      </div>
+      <div class="hero-slide">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071967/my_website_images/4th.jpg" alt="Banner 4">
+      </div>
+      <div class="hero-slide">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071972/my_website_images/5th.jpg" alt="Banner 5">
+      </div>
+      <div class="hero-slide">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071990/my_website_images/6th.jpg" alt="Banner 6">
+      </div>
+      <div class="hero-slide">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071999/my_website_images/7th.jpg" alt="Banner 7">
+      </div>
+    </div>
+
     <div class="hero-overlay">
       <div class="hero-content">
         <div class="hero-glass">
@@ -858,7 +860,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20260308"></script>
+  <script src="script.js?v=20260318-6"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const testimonialSwiperRoot = document.querySelector('.testimonial-swiper');
@@ -968,8 +970,53 @@
       const items = Array.from(container.querySelectorAll('.country-item'));
       const count = items.length;
 
-      // choose an orbit radius based on the smaller container dimension so the orbit is symmetric
-      let radius = Math.max(80, Math.min(260, (Math.min(container.offsetWidth, container.offsetHeight) / 2) - 60));
+    // Mark JS-orbit as active (prevents CSS motion-path orbit from fighting transforms)
+    container.classList.add('js-orbit');
+    container.style.overflow = 'visible';
+
+    // Force every orbiting item to be a fixed square anchored on the FLAG bubble,
+    // so translate(-50%, -50%) is always the same and the radius stays equal.
+    function getBubbleSize(el) {
+      const flag = el.querySelector('.country-flag');
+      if (!flag) return 76;
+      const rect = flag.getBoundingClientRect();
+      return Math.max(40, Math.round(rect.width || 76));
+    }
+
+    const bubbleSize = items.reduce((max, el) => Math.max(max, getBubbleSize(el)), 76);
+
+    items.forEach((el) => {
+      el.style.width = `${bubbleSize}px`;
+      el.style.height = `${bubbleSize}px`;
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.position = 'absolute';
+      el.style.left = '50%';
+      el.style.top = '50%';
+
+      const flag = el.querySelector('.country-flag');
+      if (flag) {
+        flag.style.width = `${bubbleSize}px`;
+        flag.style.height = `${bubbleSize}px`;
+        flag.style.boxSizing = 'border-box';
+      }
+
+      const label = el.querySelector('span');
+      if (label) {
+        label.style.position = 'absolute';
+        label.style.top = 'calc(100% + 8px)';
+        label.style.left = '50%';
+        label.style.transform = 'translateX(-50%)';
+        label.style.whiteSpace = 'nowrap';
+      }
+    });
+
+      // Orbit should be BETWEEN the two rings:
+      // Outer ring radius: 40% (80% diameter)
+      // Inner ring radius: 29% (58% diameter)
+      // Mid radius: 34.5%
+      let radius = 0;
       const baseAngles = items.map((_, i) => (-90 + (360 / count) * i) * (Math.PI / 180));
 
       let start = null;
@@ -977,7 +1024,21 @@
       const rotationPeriod = 20000; // ms per full rotation (20s)
 
       function recalc() {
-        radius = Math.max(80, Math.min(260, (Math.min(container.offsetWidth, container.offsetHeight) / 2) - 60));
+		const size = Math.min(container.offsetWidth, container.offsetHeight);
+    const outerRingRadius = size * 0.4;
+    const innerRingRadius = size * 0.29;
+    const midRingRadius = (outerRingRadius + innerRingRadius) / 2;
+
+    // If the bubble is too large to fit fully between rings, we still keep the CENTER
+    // on the midline; otherwise clamp to stay comfortably inside the band.
+    const pad = 6;
+    const minR = innerRingRadius + (bubbleSize / 2) + pad;
+    const maxR = outerRingRadius - (bubbleSize / 2) - pad;
+    if (minR <= maxR) {
+      radius = Math.min(maxR, Math.max(minR, midRingRadius));
+    } else {
+      radius = midRingRadius;
+    }
       }
 
       function render(now) {
@@ -989,7 +1050,8 @@
           const angle = baseAngles[i] + rotation;
           const x = Math.cos(angle) * radius;
           const y = Math.sin(angle) * radius;
-          el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+		  // translate(-50%, -50%) is safe because we forced a fixed square size above
+		  el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
           const flag = el.querySelector('.country-flag');
           if (flag) flag.style.transform = `rotate(${(-rotation * 180 / Math.PI)}deg)`;
         });
@@ -1035,21 +1097,6 @@
         else startLoop();
       });
     })();
-  </script>
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Find the 3-bars icon (adjust selector if needed)
-    const menuIcon = document.querySelector('.fa-bars, .hamburger-icon, .navbar-toggler');
-    // Find the navbar menu container
-    const navMenu = document.querySelector('.nav-links');
-
-    if (menuIcon && navMenu) {
-      menuIcon.addEventListener('click', function() {
-        navMenu.classList.toggle('active');
-        console.log("Navbar dropdown toggled!");
-      });
-    }
-  });
   </script>
 </body>
 
