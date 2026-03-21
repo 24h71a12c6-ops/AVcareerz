@@ -1,8 +1,10 @@
 // Splash Screen functionality
-window.addEventListener('load', () => {
+// NOTE: Using `load` waits for ALL images to download, which can make the site feel "stuck"
+// on slower connections. We show the splash quickly and remove it on DOM ready.
+document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
-    const SPLASH_DURATION_MS = 3000;
+    const SPLASH_DURATION_MS = 800;
     const SPLASH_FADE_MS = 300;
 
     if (!splash) return;
@@ -15,11 +17,8 @@ window.addEventListener('load', () => {
         sessionStorage.removeItem('forceSplashOnce');
     }
     
-    const shouldShowSplash = (
-        forceSplashOnce ||
-        navType === 'reload' ||
-        (navType === 'navigate' && !hasSeenSplashThisSession)
-    );
+    // Keep it fast: show only on the first navigation in a session (or when forced).
+    const shouldShowSplash = (forceSplashOnce || (navType === 'navigate' && !hasSeenSplashThisSession));
 
     if (!shouldShowSplash) {
         body?.classList.remove('splash-active');
@@ -30,7 +29,7 @@ window.addEventListener('load', () => {
     body?.classList.add('splash-active');
     sessionStorage.setItem('hasSeenSplashThisSession', '1');
 
-    // 3 seconds loading time
+    // Short splash (fast open)
     setTimeout(() => {
         splash.classList.add('fade-away');
 
@@ -39,6 +38,188 @@ window.addEventListener('load', () => {
             body?.classList.remove('splash-active');
         }, SPLASH_FADE_MS);
     }, SPLASH_DURATION_MS);
+
+    // Failsafe: never block the page on the splash for too long.
+    setTimeout(() => {
+        try {
+            if (!document.getElementById('splash-screen')) return;
+            splash.remove();
+            body?.classList.remove('splash-active');
+        } catch {
+            // ignore
+        }
+    }, 2200);
+});
+
+// Location / map section: branch switcher (no external libs)
+document.addEventListener('DOMContentLoaded', () => {
+    const section = document.querySelector('.av-location-section');
+    if (!section) return;
+
+    const info = section.querySelector('#branch-info');
+    const map = section.querySelector('#loc-map') || section.querySelector('#branch-map');
+    const directions = section.querySelector('#direction-link');
+    const callLink = section.querySelector('#call-link');
+    const statusEl = section.querySelector('#branch-status');
+    const pulse = section.querySelector('.modern-pulse');
+    const buttons = Array.from(section.querySelectorAll('.loc-pill[data-branch], .av-branch-btn[data-branch]'));
+    if (!info || !map || buttons.length === 0) return;
+
+    const normalizeBranchKey = (rawKey) => {
+        const k = String(rawKey || '').trim().toLowerCase();
+        if (k === 'vuyyuru' || k === 'vuy') return 'vuy';
+        if (k === 'vijayawada' || k === 'vjy') return 'vjy';
+        if (k === 'hyderabad' || k === 'hyd') return 'hyd';
+        return k;
+    };
+
+    const branches = {
+        vuy: {
+            label: 'Vuyyuru',
+            address: '30/102 ground floor, DBR complex, Vuyyuru, 521165 Andhra Pradesh',
+            phone: '+91 70367 77567'
+        },
+        vjy: {
+            label: 'Vijayawada',
+            address: '1st floor Sri Sai Balaji Towers, AS RamaRao Road, Moghalrajpuram, Vijayawada, 520010',
+            phone: '+91 70367 77567'
+        },
+        hyd: {
+            label: 'Hyderabad',
+            address: '10/A Sarala Mansion, SR Nagar X Roads, Vengal Rao Nagar, Hyderabad 500038 Telangana',
+            phone: '+91 70367 77567'
+        }
+    };
+
+    const toMapSrc = (address) => `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
+    const toDirectionsHref = (address) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
+    const toTelHref = (phone) => {
+        const digits = (phone || '').replace(/[^\d+]/g, '');
+        return digits ? `tel:${digits}` : 'tel:+917036777567';
+    };
+
+    // Live status (Mon–Sat, 10:00–18:00 IST). Uses Asia/Kolkata even if user is abroad.
+    const getIndiaNow = () => {
+        try {
+            const parts = new Intl.DateTimeFormat('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                weekday: 'short',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).formatToParts(new Date());
+
+            const get = (t) => parts.find((p) => p.type === t)?.value;
+            const weekday = get('weekday') || '';
+            const hour = Number(get('hour') || '0');
+            const minute = Number(get('minute') || '0');
+            return { weekday, hour, minute };
+        } catch {
+            const d = new Date();
+            return { weekday: d.toLocaleString('en-IN', { weekday: 'short' }), hour: d.getHours(), minute: d.getMinutes() };
+        }
+    };
+
+    const computeOpenStatus = () => {
+        const { weekday, hour, minute } = getIndiaNow();
+        const isSunday = /^sun/i.test(String(weekday));
+        if (isSunday) return { open: false, text: '○ Closed • Opens Mon 10:00 AM' };
+
+        const mins = hour * 60 + minute;
+        const openMins = 10 * 60;
+        const closeMins = 18 * 60;
+
+        if (mins >= openMins && mins < closeMins) return { open: true, text: '● Open Now' };
+        if (mins < openMins) return { open: false, text: '○ Closed • Opens 10:00 AM' };
+        return { open: false, text: '○ Closed • Opens Tomorrow 10:00 AM' };
+    };
+
+    const renderStatus = () => {
+        if (!statusEl) return;
+        const s = computeOpenStatus();
+        statusEl.textContent = s.text;
+        statusEl.classList.toggle('is-closed', !s.open);
+    };
+
+    const setActive = (rawBranchKey) => {
+        const branchKey = normalizeBranchKey(rawBranchKey);
+        const branch = branches[branchKey];
+        if (!branch) return;
+
+        // Update active state
+        buttons.forEach((b) => {
+            const bKey = normalizeBranchKey(b.dataset.branch);
+            const isActive = bKey === branchKey;
+            b.classList.toggle('is-active', isActive);
+            b.classList.toggle('active', isActive);
+            b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        // Update content
+        const addrSpan = info.querySelector('#addr-text');
+        if (addrSpan) {
+            addrSpan.textContent = branch.address;
+        } else {
+            info.innerHTML = `<p><i class="fas fa-map-marker-alt" aria-hidden="true"></i> ${branch.address}</p>`;
+        }
+
+        if (directions) {
+            directions.href = toDirectionsHref(branch.address);
+        }
+
+        if (callLink) {
+            callLink.href = toTelHref(branch.phone);
+        }
+
+        // Live status badge
+        renderStatus();
+
+        // Pulse feedback (restart animation each change)
+        if (pulse) {
+            pulse.classList.remove('is-animating');
+            // force reflow to restart animation
+            void pulse.offsetWidth;
+            pulse.classList.add('is-animating');
+        }
+
+        // Smooth map transition (fade out -> swap src -> fade in)
+        try { map.style.opacity = '0'; } catch { /* ignore */ }
+
+        const nextSrc = toMapSrc(branch.address);
+        const restoreOpacity = () => {
+            try { map.style.opacity = '1'; } catch { /* ignore */ }
+        };
+
+        const onLoad = () => {
+            map.removeEventListener('load', onLoad);
+            restoreOpacity();
+        };
+
+        map.addEventListener('load', onLoad);
+
+        setTimeout(() => {
+            map.src = nextSrc;
+            // Failsafe: if load doesn't fire (rare), restore anyway.
+            setTimeout(restoreOpacity, 900);
+        }, 250);
+    };
+
+    // Expose for inline onclick in Modern Square markup
+    window.switchLoc = (key) => setActive(String(key || '').trim());
+
+    // Bind clicks
+    buttons.forEach((btn) => {
+        btn.addEventListener('click', () => setActive(btn.dataset.branch));
+    });
+
+    // Initialize from markup (first active or fallback)
+    const initial = buttons.find((b) => b.classList.contains('active') || b.classList.contains('is-active'))?.dataset.branch || 'vuy';
+    setActive(initial);
+
+    // Update status periodically (in case user leaves the page open)
+    renderStatus();
+    setInterval(renderStatus, 60 * 1000);
 });
 
 // --- API Configuration (Global Scope) ---
@@ -110,35 +291,21 @@ const syncRegistrationSectionForAuthState = () => {
 
 // --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
-    // --- Clear ALL data on fresh page load to ensure clean state ---
-    // This ensures new visitors see a fresh website without any previous user's data
+    // Storage cleanup
+    // IMPORTANT: don't clear sessionStorage entirely — it breaks splash/session state and can feel "stuck".
+    // Only clear form-related cached data.
     try {
-        const preserveSplashSeen = localStorage.getItem('hasSeenSplashEver') === '1';
-
-        // Clear ALL localStorage including auth tokens to start fresh
-        const shouldClearAll = !sessionStorage.getItem('sessionActive');
-        
-        if (shouldClearAll) {
-            // First visit in this session - clear everything for a fresh start
-            localStorage.clear();
-            sessionStorage.clear();
-
-            // Keep splash memory intact so splash doesn't return repeatedly.
-            if (preserveSplashSeen) {
-                localStorage.setItem('hasSeenSplashEver', '1');
-            }
-
-            // Mark this session as active so we don't clear again during the same session
+        const isNewSession = !sessionStorage.getItem('sessionActive');
+        if (isNewSession) {
             sessionStorage.setItem('sessionActive', 'true');
-        } else {
-            // Same session - just clear form data but keep auth if valid
-            localStorage.removeItem('registrationData');
-            localStorage.removeItem('nextFormData');
-            localStorage.removeItem('lastUserEmail');
-            localStorage.removeItem('showLoginAfterLogout');
-            sessionStorage.removeItem('registrationData');
-            sessionStorage.removeItem('nextFormData');
         }
+
+        localStorage.removeItem('registrationData');
+        localStorage.removeItem('nextFormData');
+        localStorage.removeItem('lastUserEmail');
+        localStorage.removeItem('showLoginAfterLogout');
+        sessionStorage.removeItem('registrationData');
+        sessionStorage.removeItem('nextFormData');
     } catch {
         // ignore if storage inaccessible
     }
@@ -180,17 +347,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!img) return;
                 if (!img.getAttribute('decoding')) img.setAttribute('decoding', 'async');
 
-                // Keep hero + navbar/logo eager; everything else can be lazy.
+                // Keep navbar/logo eager; hero: only the ACTIVE slide should be eager.
                 const inHero = !!img.closest('.hero');
                 const inNavbar = !!img.closest('.navbar');
+                const heroSlide = img.closest('.hero-slide');
+                const isActiveHero = !!(heroSlide && heroSlide.classList.contains('active'));
                 const hasLoading = img.hasAttribute('loading');
                 if (!hasLoading) {
-                    img.setAttribute('loading', (inHero || inNavbar) ? 'eager' : 'lazy');
+                    if (inNavbar) img.setAttribute('loading', 'eager');
+                    else if (inHero) img.setAttribute('loading', isActiveHero ? 'eager' : 'lazy');
+                    else img.setAttribute('loading', 'lazy');
                 }
 
                 // First hero slide image should be high priority.
-                if (inHero && img.closest('.hero-slide')?.classList.contains('active')) {
+                if (inHero && isActiveHero) {
                     if (!img.getAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'high');
+                } else if (inHero) {
+                    if (!img.getAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'low');
                 }
             });
         } catch (err) {

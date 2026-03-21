@@ -5,6 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Abroad Vision Carrerz - Study Abroad Consultancy</title>
+
+  <!-- Performance: warm up connections for faster first load (free) -->
+  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+
   <link rel="stylesheet" href="styles.css?v=20260318-2">
   <link rel="stylesheet" href="responsive.css?v=20260320-1">
   <link rel="stylesheet" href="testimonial-stats.css">
@@ -113,22 +120,22 @@
 
     <div class="hero-slider">
       <div class="hero-slide active">
-        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071959/my_website_images/two.jpg" alt="Banner 2">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071959/my_website_images/two.jpg" alt="Banner 2" decoding="async" fetchpriority="high">
       </div>
       <div class="hero-slide">
-        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071963/my_website_images/3rd.jpg" alt="Banner 3">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071963/my_website_images/3rd.jpg" alt="Banner 3" loading="lazy" decoding="async" fetchpriority="low">
       </div>
       <div class="hero-slide">
-        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071967/my_website_images/4th.jpg" alt="Banner 4">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071967/my_website_images/4th.jpg" alt="Banner 4" loading="lazy" decoding="async" fetchpriority="low">
       </div>
       <div class="hero-slide">
-        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071972/my_website_images/5th.jpg" alt="Banner 5">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071972/my_website_images/5th.jpg" alt="Banner 5" loading="lazy" decoding="async" fetchpriority="low">
       </div>
       <div class="hero-slide">
-        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071990/my_website_images/6th.jpg" alt="Banner 6">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071990/my_website_images/6th.jpg" alt="Banner 6" loading="lazy" decoding="async" fetchpriority="low">
       </div>
       <div class="hero-slide">
-        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771071999/my_website_images/7th.jpg" alt="Banner 7">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071999/my_website_images/7th.jpg" alt="Banner 7" loading="lazy" decoding="async" fetchpriority="low">
       </div>
     </div>
 
@@ -162,8 +169,8 @@
         <div class="img-frame frame-1"><img src="images/about.JPEG" class="rotate-img" alt="Student counseling session"></div>
         <div class="img-frame frame-2"><img src="images/about1.JPEG" class="rotate-img" alt="Expert guidance team"></div>
         <div class="img-frame frame-3"><img src="images/about2.JPEG" class="rotate-img" alt="Successful students"></div>
-        <div class="img-frame frame-4"><img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1773251881/my_website_images/about3.jpg" class="rotate-img" alt="Campus guidance discussion"></div>
-        <div class="img-frame frame-5"><img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1773251898/my_website_images/about4.jpg" class="rotate-img" alt="Student achievement moment"></div>
+        <div class="img-frame frame-4"><img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1773251881/my_website_images/about3.jpg" class="rotate-img" alt="Campus guidance discussion" loading="lazy" decoding="async"></div>
+        <div class="img-frame frame-5"><img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1773251898/my_website_images/about4.jpg" class="rotate-img" alt="Student achievement moment" loading="lazy" decoding="async"></div>
 
         <div class="exp-badge-bottom">
           <strong class="exp-badge-number">10+</strong>
@@ -558,6 +565,61 @@
     </div>
   </section>
 
+  <!-- Location / Map (Modern Square: big square map + clean glass card) -->
+  <section class="av-location-section modern-square-location" id="locations" aria-labelledby="av-location-title" style="--location-bg-url: none;">
+    <div class="container">
+      <div class="av-location-header">
+        <span class="badge-orange">OUR PRESENCE</span>
+        <h2 class="title-main" id="av-location-title">Visit Our Branches</h2>
+        <div class="divider-orange" aria-hidden="true"></div>
+      </div>
+
+      <div class="location-grid">
+        <div class="details-side">
+          <div class="glass-card">
+            <div class="branch-selector mt-3" role="tablist" aria-label="Select a branch">
+              <button type="button" class="loc-pill active" data-branch="vuy" role="tab" aria-selected="true" onclick="switchLoc('vuy')">Vuyyuru</button>
+              <button type="button" class="loc-pill" data-branch="vjy" role="tab" aria-selected="false" onclick="switchLoc('vjy')">Vijayawada</button>
+              <button type="button" class="loc-pill" data-branch="hyd" role="tab" aria-selected="false" onclick="switchLoc('hyd')">Hyderabad</button>
+            </div>
+
+            <div class="address-details info-list mt-4">
+              <div id="branch-info" class="fade-in">
+                <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="addr-text">30/102 ground floor, DBR complex, Vuyyuru, 521165 AP</span></p>
+              </div>
+              <p><i class="fas fa-phone-alt" aria-hidden="true"></i> <span id="branch-phone">+91 70367 77567</span></p>
+              <p><i class="fas fa-envelope" aria-hidden="true"></i> info@avcareerz.com</p>
+
+              <div class="status-indicator" aria-live="polite">
+                <span class="pulse-green" aria-hidden="true"></span>
+                <span id="branch-status">Checking hours…</span>
+              </div>
+            </div>
+
+            <div class="action-btns mt-4">
+              <a id="call-link" href="tel:+917036777567" class="btn-outline-call">Call Now</a>
+              <a id="direction-link" href="https://www.google.com/maps/search/?api=1&query=30%2F102%20ground%20floor%2C%20DBR%20complex%2C%20Vuyyuru%20521165" target="_blank" rel="noopener" class="btn-orange-dir">Get Directions</a>
+            </div>
+
+            <p class="av-hours"><i class="fas fa-clock" aria-hidden="true"></i> Mon - Sat: 10 AM - 6 PM</p>
+          </div>
+        </div>
+
+        <div class="map-side">
+          <div class="square-map-wrapper" aria-label="Branch map">
+            <iframe
+              id="loc-map"
+              title="Abroad Vision Carrerz Branch Location"
+              src="https://www.google.com/maps?q=30/102%20ground%20floor,%20DBR%20complex,%20Vuyyuru%20521165&output=embed"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="testimonial-showcase-section" aria-labelledby="testimonial-showcase-title">
     <div class="testimonial-showcase-container">
       <div class="testimonial-showcase-heading">
@@ -658,7 +720,7 @@
     <div class="reg-flex-card">
 
       <div class="reg-left-side" style="background: none; position: relative; min-height: 550px;">
-        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072032/my_website_images/student-assisted.png" alt="Student Assisted" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;">
+        <img src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1771072032/my_website_images/student-assisted.png" alt="Student Assisted" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;">
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(100, 181, 246, 0.18); z-index: 2;"></div>
         <div class="reg-text-overlay" style="position: absolute; bottom: 0; left: 0; width: 100%; z-index: 3; padding: 40px; background: linear-gradient(0deg, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.0) 100%);">
           <h2 class="white-text" style="color: #fff; font-size: 2.5rem; margin: 0; font-weight: 800;">Guiding Futures</h2>
@@ -858,9 +920,9 @@
   <!-- Registration popup overlay (used to blur background when registration opens as a modal) -->
   <div id="regModalOverlay" class="reg-modal-overlay" hidden></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20260318-6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="script.js?v=20260320-1" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const testimonialSwiperRoot = document.querySelector('.testimonial-swiper');
@@ -964,6 +1026,8 @@
   <!-- Countries circular orbit script (destinations right-side) -->
   <script>
     (function () {
+      // Performance: delay DOM measurements/animation setup until browser is idle/after first paint.
+      const startOrbit = () => {
       const container = document.querySelector('.destinations-side .countries-grid');
       if (!container) return;
       const section = document.querySelector('.destinations');
@@ -1096,6 +1160,13 @@
         if (document.hidden) stopLoop();
         else startLoop();
       });
+      };
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(startOrbit, { timeout: 1500 });
+      } else {
+        setTimeout(startOrbit, 0);
+      }
     })();
   </script>
 </body>
