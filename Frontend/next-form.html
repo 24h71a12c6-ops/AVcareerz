@@ -812,6 +812,20 @@
     const successMessage = document.getElementById('successMessage');
     academicForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        // Enforce built-in HTML validation (required fields, email format, etc.)
+        // Since we prevent default submit, the browser won't block submission unless we do this.
+        try {
+            if (!academicForm.reportValidity()) {
+                successMessage.textContent = 'Please fill all required fields highlighted above.';
+                successMessage.style.color = '#ef4444';
+                successMessage.style.display = 'block';
+                return;
+            }
+        } catch {
+            // If reportValidity is not supported for some reason, continue and let backend validate.
+        }
+
         const formData = new FormData(academicForm);
 
             // Try userId first, fallback to email if userId not found
@@ -825,6 +839,7 @@
             formData.append('email', userEmail);
         } else {
             successMessage.textContent = 'User session not found. Please log in again to continue.';
+            successMessage.style.color = '#ef4444';
             successMessage.style.display = 'block';
             return;
         }
@@ -866,10 +881,12 @@
                 window.location.href = 'congrats.html';
             } else {
                 successMessage.textContent = result.error || 'There was a problem submitting your registration. Please try again.';
+                successMessage.style.color = '#ef4444';
                 successMessage.style.display = 'block';
             }
         } catch (err) {
             successMessage.textContent = 'Unable to connect to server. Please try again later.';
+            successMessage.style.color = '#ef4444';
             successMessage.style.display = 'block';
         }
         submitBtn.innerHTML = originalText;
