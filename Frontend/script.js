@@ -51,6 +51,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2200);
 });
 
+// Section Focus Mode: blur other sections until the user scrolls/opens them.
+// Enabled only on index.html to avoid surprising effects on destination/service pages.
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        const path = String(window.location.pathname || '').toLowerCase();
+        const isIndex = path === '/' || path.endsWith('/index.html') || path.endsWith('index.html');
+        if (!isIndex) return;
+
+        // Respect reduced motion preference (blur transitions can feel uncomfortable to some users).
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const sections = Array.from(document.querySelectorAll('body > section'));
+        if (sections.length < 2) return;
+
+        document.body.classList.add('section-focus-mode');
+        sections.forEach((s) => s.classList.add('page-section'));
+
+        const setFocused = (focusedSection) => {
+            if (!focusedSection) return;
+            sections.forEach((s) => {
+                const isFocused = s === focusedSection;
+                s.classList.toggle('is-blurred', !isFocused);
+            });
+        };
+
+        // Initial focus: follow hash if it points to a section, otherwise first section.
+        const hashId = String(window.location.hash || '').replace(/^#/, '').trim();
+        const hashTarget = hashId ? document.getElementById(hashId) : null;
+        if (hashTarget && hashTarget.tagName === 'SECTION') setFocused(hashTarget);
+        else setFocused(sections[0]);
+
+        if (!('IntersectionObserver' in window)) return;
+
+        const state = new Map();
+        sections.forEach((s) => state.set(s, { is: false, ratio: 0 }));
+
+        const io = new IntersectionObserver(
+            (entries) => {
+                for (const e of entries) {
+                    state.set(e.target, { is: e.isIntersecting, ratio: e.intersectionRatio });
+                }
+
+                // Pick the most-visible intersecting section.
+                let best = null;
+                let bestRatio = 0;
+                for (const [el, v] of state.entries()) {
+                    if (!v.is) continue;
+                    if (v.ratio >= bestRatio) {
+                        best = el;
+                        bestRatio = v.ratio;
+                    }
+                }
+
+                if (best) setFocused(best);
+            },
+            {
+                root: null,
+                // Shrink the "viewport" a bit so the centered section wins more reliably.
+                rootMargin: '-20% 0px -20% 0px',
+                threshold: [0, 0.15, 0.25, 0.35, 0.5, 0.65, 0.8]
+            }
+        );
+
+        sections.forEach((s) => io.observe(s));
+    } catch {
+        // Non-fatal: section blur is a progressive enhancement.
+    }
+});
+
 // Location / map section: branch switcher (no external libs)
 document.addEventListener('DOMContentLoaded', () => {
     const section = document.querySelector('.av-location-section');
