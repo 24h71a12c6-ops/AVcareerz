@@ -2591,6 +2591,18 @@ body.reg-modal-open section:not(#registration-section) {
     transition: filter 360ms ease;
 }
 
+/*
+    Keep the registration popup crisp even when "Section Focus Mode" is enabled.
+    Section Focus Mode may apply `.is-blurred` (filter + pointer-events: none)
+    to non-focused sections, which can unintentionally blur the registration modal.
+*/
+body.reg-modal-open #registration-section.page-section,
+body.reg-modal-open #registration-section.page-section.is-blurred {
+    filter: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
 body.reg-modal-open .reg-flex-card {
     width: min(860px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
