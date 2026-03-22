@@ -8692,6 +8692,15 @@ body.splash-active .navbar {
     line-height: 1.1;
 }
 
+.modern-square-location .av-location-header .subtitle {
+    margin: 0 auto 16px;
+    max-width: 720px;
+    color: rgba(0, 33, 69, 0.78);
+    font-size: 15px;
+    line-height: 1.55;
+    font-weight: 600;
+}
+
 .modern-square-location .av-location-header .divider-orange {
     width: 86px;
     height: 4px;
@@ -8705,10 +8714,10 @@ body.splash-active .navbar {
     display: flex;
     gap: 50px; /* Card ki map ki madhyalo clean gap */
     align-items: center; /* Card and Map vertical ga center avthayi */
-    padding: 50px; /* Chuttu oke rakamaina spacing */
+    padding: 44px; /* Chuttu oke rakamaina spacing */
     background: #fff;
     border-radius: 30px;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.05);
+    box-shadow: 0 18px 55px rgba(0, 33, 69, 0.08);
     border: 1px solid rgba(2, 6, 23, 0.06);
 }
 
@@ -8728,9 +8737,10 @@ body.splash-active .navbar {
     justify-content: space-between; /* Elements ni top to bottom spread chestundi */
     height: 100%; /* Map height ki match avthundi */
     padding: 40px !important; /* Spacing pencham */
-    background: rgba(249, 168, 37, 0.08); /* Light orange card background */
-    border: 1px solid rgba(249, 168, 37, 0.16);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(249, 168, 37, 0.07));
+    border: 1px solid rgba(0, 33, 69, 0.08);
     border-radius: 22px;
+    box-shadow: 0 16px 40px rgba(0, 33, 69, 0.08);
 }
 
 .modern-square-location .glass-card h2 {
@@ -8752,17 +8762,18 @@ body.splash-active .navbar {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    margin-bottom: 18px; /* gap under Vuyyuru/Vij/Hyderabad row */
 }
 
 /* Loc Pills */
 .modern-square-location .loc-pill {
-    padding: 10px 20px;
-    border: 1.5px solid #eee;
-    background: #f8f9fa;
+    padding: 10px 18px;
+    border: 1px solid rgba(0, 33, 69, 0.14);
+    background: rgba(255, 255, 255, 0.92);
     border-radius: 50px;
-    font-weight: 600;
-    color: #666;
-    transition: 0.3s;
+    font-weight: 800;
+    color: rgba(0, 33, 69, 0.82);
+    transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease, border-color 180ms ease, color 180ms ease;
     cursor: pointer;
 }
 
@@ -8770,11 +8781,18 @@ body.splash-active .navbar {
     background: #F9A825; /* Orange as requested */
     color: #ffffff !important; /* White Text */
     border: none;
-    box-shadow: 0 4px 12px rgba(249, 168, 37, 0.3);
+    box-shadow: 0 10px 22px rgba(249, 168, 37, 0.30);
 }
 
 .modern-square-location .loc-pill:hover {
     transform: translateY(-1px);
+    border-color: rgba(249, 168, 37, 0.55);
+    box-shadow: 0 10px 22px rgba(0, 33, 69, 0.06);
+}
+
+.modern-square-location .loc-pill:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(249, 168, 37, 0.35), 0 10px 22px rgba(0, 33, 69, 0.06);
 }
 
 /* Icons & Text */
@@ -8840,6 +8858,75 @@ body.splash-active .navbar {
     transition: 0.3s;
 }
 
+/* New: generic navy button (used by Call Now) */
+.modern-square-location .btn-navy {
+    background-color: #ffffff !important;
+    color: #002145 !important; /* Navy text */
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 999px; /* more curved edges */
+    text-decoration: none !important;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none !important;
+    outline: none;
+    box-shadow:
+        0 10px 22px rgba(0, 33, 69, 0.10),
+        0 0 0 1px rgba(0, 33, 69, 0.06) inset;
+    flex: 1;
+    text-align: center;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+/* New: WhatsApp button (matches navy theme) */
+.modern-square-location .btn-whatsapp {
+    background-color: #ffffff !important;
+    color: #002145 !important;
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 999px; /* more curved edges */
+    text-decoration: none !important;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none !important;
+    outline: none;
+    box-shadow:
+        0 10px 22px rgba(0, 33, 69, 0.10),
+        0 0 0 1px rgba(0, 33, 69, 0.06) inset;
+    flex: 1;
+    text-align: center;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+/* Prevent any global link underline styles from leaking into these buttons */
+.modern-square-location .btn-navy:hover,
+.modern-square-location .btn-navy:focus,
+.modern-square-location .btn-navy:active,
+.modern-square-location .btn-navy:visited,
+.modern-square-location .btn-whatsapp:hover,
+.modern-square-location .btn-whatsapp:focus,
+.modern-square-location .btn-whatsapp:active,
+.modern-square-location .btn-whatsapp:visited {
+    text-decoration: none !important;
+    outline: none !important;
+}
+
+/* Keep keyboard focus visible (without blue outline) */
+.modern-square-location .btn-navy:focus-visible,
+.modern-square-location .btn-whatsapp:focus-visible {
+    outline: none !important;
+    box-shadow:
+        0 0 0 3px rgba(255, 122, 0, 0.30),
+        0 10px 22px rgba(0, 33, 69, 0.10),
+        0 0 0 1px rgba(0, 33, 69, 0.06) inset;
+}
+
 .modern-square-location .btn-outline-call {
     background: #002145 !important; /* Navy Blue */
     color: #ffffff !important; /* White Text */
@@ -8863,10 +8950,65 @@ body.splash-active .navbar {
     margin-top: 10px;
 }
 
+/* Requested: free spacing row for Call + WhatsApp */
+.modern-square-location .action-btns-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    width: 100%;
+    align-items: stretch;
+}
+
+/* Force both buttons to take exactly equal width */
+.modern-square-location .action-btns-row > a {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.modern-square-location .action-btns-row a i {
+    margin-right: 0;
+    font-size: 15px;
+}
+
+/* Hours line (Mon - Sat ...) */
+.modern-square-location .av-hours {
+    margin-top: 20px; /* push it a bit down */
+    margin-bottom: 0;
+    color: rgba(0, 33, 69, 0.90);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modern-square-location .av-hours i {
+    color: #F9A825;
+}
+
+/* Mobile: stack with equal gap */
+@media (max-width: 520px) {
+    .modern-square-location .action-btns-row {
+        flex-direction: column;
+        gap: 14px;
+    }
+}
+
 .modern-square-location .btn-orange-dir:hover,
 .modern-square-location .btn-outline-call:hover {
-    background: #0a2d5e !important;
-    transform: translateY(-2px);
+    background-color: #0a2d5e !important;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 33, 69, 0.2);
+}
+
+/* Hover: Call Now + WhatsApp should turn orange */
+.modern-square-location .btn-navy:hover,
+.modern-square-location .btn-whatsapp:hover {
+    background-color: #ff7a00 !important;
+    color: #ffffff !important;
+    transform: translateY(-3px);
+    box-shadow:
+        0 14px 30px rgba(255, 122, 0, 0.24),
+        0 0 0 1px rgba(255, 255, 255, 0.18) inset;
 }
 
 /* Square Map Wrapper */
