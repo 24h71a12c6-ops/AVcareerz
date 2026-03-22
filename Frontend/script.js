@@ -362,19 +362,28 @@ const syncRegistrationSectionForAuthState = () => {
 document.addEventListener("DOMContentLoaded", function () {
     // Storage cleanup
     // IMPORTANT: don't clear sessionStorage entirely — it breaks splash/session state and can feel "stuck".
-    // Only clear form-related cached data.
+    // For a *fresh* experience on each new browser/tab session, clear persisted auth/profile
+    // keys from localStorage ONLY once per session (so navigation within the same tab still works).
     try {
         const isNewSession = !sessionStorage.getItem('sessionActive');
         if (isNewSession) {
             sessionStorage.setItem('sessionActive', 'true');
-        }
 
-        localStorage.removeItem('registrationData');
-        localStorage.removeItem('nextFormData');
-        localStorage.removeItem('lastUserEmail');
-        localStorage.removeItem('showLoginAfterLogout');
-        sessionStorage.removeItem('registrationData');
-        sessionStorage.removeItem('nextFormData');
+            // Clear auth + profile cache so the profile icon doesn't show previous login details
+            // before the user logs in again.
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('currentUserId');
+            localStorage.removeItem('hasSignedUp');
+
+            localStorage.removeItem('registrationData');
+            localStorage.removeItem('nextFormData');
+            localStorage.removeItem('showLoginAfterLogout');
+            localStorage.removeItem('lastUserEmail');
+
+            sessionStorage.removeItem('currentUserId');
+            sessionStorage.removeItem('registrationData');
+            sessionStorage.removeItem('nextFormData');
+        }
     } catch {
         // ignore if storage inaccessible
     }
