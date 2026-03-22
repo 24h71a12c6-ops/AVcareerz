@@ -880,7 +880,12 @@
             if (response.ok && result.success) {
                 window.location.href = 'congrats.html';
             } else {
-                successMessage.textContent = result.error || 'There was a problem submitting your registration. Please try again.';
+                const baseMsg = result.error || 'There was a problem submitting your registration. Please try again.';
+                if (Array.isArray(result.missingFields) && result.missingFields.length) {
+                    successMessage.textContent = `${baseMsg} (Missing: ${result.missingFields.join(', ')})`;
+                } else {
+                    successMessage.textContent = baseMsg;
+                }
                 successMessage.style.color = '#ef4444';
                 successMessage.style.display = 'block';
             }
