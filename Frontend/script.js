@@ -4,30 +4,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
-    const SPLASH_DURATION_MS = 800;
-    const SPLASH_FADE_MS = 300;
+    // Keep this in sync with the CSS loading animations (currently 3s).
+    const SPLASH_DURATION_MS = 3000;
+    const SPLASH_FADE_MS = 1200;
 
     if (!splash) return;
 
-    const navEntry = performance.getEntriesByType('navigation')[0];
-    const navType = navEntry?.type || (performance.navigation?.type === 1 ? 'reload' : 'navigate');
-    const hasSeenSplashThisSession = sessionStorage.getItem('hasSeenSplashThisSession') === '1';
-    const forceSplashOnce = sessionStorage.getItem('forceSplashOnce') === '1';
-    if (forceSplashOnce) {
-        sessionStorage.removeItem('forceSplashOnce');
-    }
-    
-    // Keep it fast: show only on the first navigation in a session (or when forced).
-    const shouldShowSplash = (forceSplashOnce || (navType === 'navigate' && !hasSeenSplashThisSession));
-
-    if (!shouldShowSplash) {
-        body?.classList.remove('splash-active');
-        splash.remove();
-        return;
-    }
-
+    // Always show the splash on a full page load.
+    // (Previously it showed only once per session, which can make it feel like it "stopped working".)
     body?.classList.add('splash-active');
-    sessionStorage.setItem('hasSeenSplashThisSession', '1');
 
     // Short splash (fast open)
     setTimeout(() => {
@@ -48,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {
             // ignore
         }
-    }, 2200);
+    }, Math.max(8000, SPLASH_DURATION_MS + SPLASH_FADE_MS + 1500));
 });
 
 // Section Focus Mode: blur other sections until the user scrolls/opens them.
@@ -3004,7 +2989,7 @@ if (destinationForm) {
         console.log('Destination Form submitted:', formData);
 
         // Success message
-        showNotification('Registration completed successfully! Welcome to Abroad Vision Carrerz.', 'success');
+        showNotification('Registration completed successfully! Welcome to Abroad Vision Careerz.', 'success');
 
         // Reset form
         destinationForm.reset();

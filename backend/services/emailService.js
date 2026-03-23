@@ -26,7 +26,7 @@ function escapeHtml(value) {
 const sendBrevoEmail = async ({ to, subject, html }) => {
   const apiKey = String(process.env.BREVO_API_KEY || '').trim();
   const senderEmail = String(process.env.BREVO_SENDER_EMAIL || '').trim();
-  const senderName = String(process.env.BREVO_SENDER_NAME || 'Abroad Vision Carrerz').trim();
+  const senderName = String(process.env.BREVO_SENDER_NAME || 'Abroad Vision Careerz').trim();
 
   if (!apiKey || !senderEmail) {
     throw new Error('Missing BREVO_API_KEY or BREVO_SENDER_EMAIL');
@@ -125,11 +125,11 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
       <body>
         <div class="container">
           <div class="header">
-            <img src="https://example.com/logo.png" alt="Abroad Vision Carrerz" />
+            <img src="https://example.com/logo.png" alt="Abroad Vision Careerz" />
           </div>
           <div class="content">
             <h2>Hello ${safeName || 'Student'},</h2>
-            <p>Thank you for registering with <strong>Abroad Vision Carrerz</strong>. We're excited to have you on board.</p>
+            <p>Thank you for registering with <strong>Abroad Vision Careerz</strong>. We're excited to have you on board.</p>
             ${introLine}
             ${destinationBlock}
             ${courseBlock}
@@ -141,7 +141,7 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
               <li>Receive personalized guidance for your study abroad journey.</li>
             </ol>
             <a href="https://yourdomain.example.com" class="button">Visit Our Website</a>
-            <p>Best regards,<br><strong>Abroad Vision Carrerz Team</strong></p>
+            <p>Best regards,<br><strong>Abroad Vision Careerz Team</strong></p>
           </div>
           <div class="footer">
             <p>Guiding Futures Beyond Borders</p>
@@ -154,7 +154,7 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
 
     await sendEmail({
       to: userEmail,
-      subject: 'Abroad Vision Carrerz - Registration Successful',
+      subject: 'Abroad Vision Careerz - Registration Successful',
       html
     });
     return true;
@@ -226,7 +226,7 @@ const sendPasswordResetCodeEmail = async (userEmail, code, expiresMinutes = 5) =
   try {
     await sendEmail({
       to: userEmail,
-      subject: 'Abroad Vision Carrerz - Password Reset Code',
+      subject: 'Abroad Vision Careerz - Password Reset Code',
       html
     });
     return true;
@@ -246,14 +246,14 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
     <p>Your account password was successfully changed.</p>
     <p style="margin-top: 12px; color: #555;">If you did not make this change, contact support immediately.</p>
     <hr>
-    <p>Regards,<br><strong>Abroad Vision Carrerz Team</strong></p>
+    <p>Regards,<br><strong>Abroad Vision Careerz Team</strong></p>
     <p style="color: #666; font-size: 12px;">Guiding Futures Beyond Borders</p>
   `;
 
   try {
     await sendEmail({
       to: userEmail,
-      subject: 'Abroad Vision Carrerz - Password Changed',
+      subject: 'Abroad Vision Careerz - Password Changed',
       html
     });
     return true;

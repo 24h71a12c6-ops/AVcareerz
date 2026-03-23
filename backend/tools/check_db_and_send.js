@@ -46,11 +46,9 @@ async function main() {
   console.log('Using API Key starts with:', process.env.RESEND_API_KEY.substring(0, 5) + '...');
 
   try {
-    // Send to the admin email defined in .env, or a hardcoded one if missing
-    // Since we used onboarding@resend.dev, we MUST send to the resend account email.
-    // We'll try sending to the ADMIN_EMAIL from .env as a best guess for the verified email.
-    // Also try the email from the screenshot to see if it's allowed.
-    const toEmail = '24h71a12c6@gmail.com'; 
+    // Send to configured admin email(s) if present; otherwise use the official contact inbox.
+    const fromEnvAdminEmails = String(process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim()).filter(Boolean);
+    const toEmail = fromEnvAdminEmails[0] || String(process.env.ADMIN_EMAIL || '').trim() || 'Info@avcareerz.com';
     console.log(`Attempting to send test email to: ${toEmail} using onboarding@resend.dev`);
 
     const { data, error } = await resend.emails.send({
