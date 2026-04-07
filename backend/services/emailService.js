@@ -5,7 +5,7 @@ const axios = require('axios');
 // generic sendEmail uses Brevo; throws if not configured
 const sendEmail = async ({ to, subject, html }) => {
   const brevoKey = String(process.env.BREVO_API_KEY || '').trim();
-  const brevoSender = String(process.env.BREVO_SENDER_EMAIL || '').trim();
+  const brevoSender = String(process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim();
   if (!brevoKey || !brevoSender) {
     throw new Error('Brevo is not configured; set BREVO_API_KEY and BREVO_SENDER_EMAIL');
   }
@@ -25,7 +25,7 @@ function escapeHtml(value) {
 // internal helper that talks directly to Brevo; throws if config is missing
 const sendBrevoEmail = async ({ to, subject, html }) => {
   const apiKey = String(process.env.BREVO_API_KEY || '').trim();
-  const senderEmail = String(process.env.BREVO_SENDER_EMAIL || '').trim();
+  const senderEmail = String(process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim();
   const senderName = String(process.env.BREVO_SENDER_NAME || 'Abroad Vision Careerz').trim();
 
   if (!apiKey || !senderEmail) {
@@ -76,7 +76,9 @@ const sendLoginCodeEmail = async (userEmail, code) => {
 
 // helper to parse admin addresses from env
 const getAdminEmailList = () => {
-  return process.env.ADMIN_EMAILS?.split(',').map(e => e.trim()).filter(Boolean) || [];
+  const primaryAdmin = String(process.env.ADMIN_EMAIL || '').trim();
+  const csvAdmins = process.env.ADMIN_EMAILS?.split(',').map(e => e.trim()).filter(Boolean) || [];
+  return [...new Set([primaryAdmin, ...csvAdmins].filter(Boolean))];
 };
 
 // User confirmation email
@@ -197,12 +199,11 @@ const sendAdminEmail = async (user) => {
       <p>Please follow up with this student.</p>
     `;
 
-    const adminList =
-      process.env.ADMIN_EMAILS?.split(',').map(e => e.trim()).filter(Boolean) ||
-      ['admin@example.com'];
+    const adminList = getAdminEmailList();
+    const adminTo = adminList[0] || 'info@avcareerz.com';
 
     await sendEmail({
-      to: adminList,
+      to: adminTo,
       subject: `New Registration: ${user?.fullName || user?.email || 'New Lead'}`,
       html
     });

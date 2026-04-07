@@ -139,10 +139,12 @@ app.post('/api/register', async (req, res) => {
       });
       
       // send confirmation only to non-admin addresses
-      const adminList = (process.env.ADMIN_EMAILS || '')
+      const adminPrimary = String(process.env.ADMIN_EMAIL || '').trim();
+      const adminCsv = (process.env.ADMIN_EMAILS || '')
         .split(',')
         .map(e => e.trim())
         .filter(Boolean);
+      const adminList = [...new Set([adminPrimary, ...adminCsv].filter(Boolean))];
       if (!adminList.includes(String(email).trim())) {
         await sendConfirmationEmail(email, fullName);
       } else {
