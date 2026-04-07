@@ -1273,7 +1273,7 @@ html body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: #F9A825;
+    color: #ffffff;
     text-decoration: none;
     transition: color .18s ease;
 }
@@ -1287,16 +1287,53 @@ html body {
     border-radius: 999px;
     color: #F9A825;
     text-decoration: none;
-    transition: color .18s ease, background-color .18s ease;
+    transition: transform .3s ease, color .3s ease, background-color .18s ease;
 }
 
 .top-bar .social-link:hover,
 .top-bar .contact-item:hover {
-    color: #ffffff;
+    color: #F9A825;
 }
 
 .top-bar .social-link:hover {
     background: rgba(255, 255, 255, 0.10);
+    transform: translateY(-3px);
+}
+
+.top-bar .social-link:hover .fa-instagram {
+    color: #e4405f;
+}
+
+.top-bar .social-link:hover .fa-x-twitter {
+    color: #1DA1F2;
+}
+
+/* Top bar social-links block (Instagram, X, Facebook) */
+.top-bar .social-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.top-bar .social-links a {
+    text-decoration: none;
+    font-size: 17px;
+    margin: 0 6px;
+    color: #ffffff;
+    transition: 0.4s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.top-bar .social-links a:hover {
+    transform: scale(1.2) translateY(-5px);
+    color: #F9A825;
+    background: rgba(255, 255, 255, 0.16);
 }
 
 .form-group {
