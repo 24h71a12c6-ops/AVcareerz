@@ -36,6 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }, Math.max(8000, SPLASH_DURATION_MS + SPLASH_FADE_MS + 1500));
 });
 
+const glowDot = document.querySelector('.cursor-dot-glow');
+
+if (glowDot) {
+    window.addEventListener('mousemove', (e) => {
+        const posX = e.clientX;
+        const posY = e.clientY;
+
+        glowDot.style.left = `${posX}px`;
+        glowDot.style.top = `${posY}px`;
+    });
+}
+
 // Section Focus Mode: blur other sections until the user scrolls/opens them.
 // Enabled only on index.html to avoid surprising effects on destination/service pages.
 document.addEventListener('DOMContentLoaded', () => {

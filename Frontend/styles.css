@@ -4553,7 +4553,7 @@ footer {
 }
 
 .footer-section ul li a:hover {
-    color: var(--accent-color);
+    color: #F9A825;
 }
 
 .social-icons {
@@ -4561,11 +4561,19 @@ footer {
     gap: 1rem;
 }
 
+.footer-section.footer-social {
+    text-align: center;
+}
+
+.footer-section.footer-social .social-icons {
+    justify-content: center;
+}
+
 .social-icons a {
     width: 40px;
     height: 40px;
-    background: var(--primary-color);
-    color: var(--white);
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -4575,7 +4583,8 @@ footer {
 }
 
 .social-icons a:hover {
-    background: var(--accent-color);
+    background: rgba(255, 255, 255, 0.16);
+    color: #F9A825;
     transform: translateY(-3px);
 }
 
@@ -6760,9 +6769,13 @@ footer {
     position: relative;
     margin-top: 80px;
     padding: 120px 0 90px;
-    background: linear-gradient(120deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('images/visa.JPEG') center/cover no-repeat;
+    background: none;
     text-align: center;
     overflow: hidden;
+}
+
+.visa-services-page .country-hero {
+    background: linear-gradient(120deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('images/visa.JPEG') center/cover no-repeat;
 }
 
 .country-hero::after {
@@ -9098,16 +9111,49 @@ body.section-focus-mode .page-section {
 }
 
 body.section-focus-mode .page-section.is-blurred {
-    filter: blur(5px);
-    opacity: 0.58;
+    filter: blur(2px);
+    opacity: 0.82;
     pointer-events: none;
 }
 
 /* Mobile: keep it lighter (blur can be expensive on some devices) */
 @media (max-width: 768px) {
     body.section-focus-mode .page-section.is-blurred {
-        filter: blur(3px);
-        opacity: 0.70;
+        filter: blur(1.5px);
+        opacity: 0.86;
     }
+}
+
+/* Real mouse hide chesi, standard pointer setup */
+body, a, button, [onclick] {
+    cursor: pointer !important;
+}
+
+/* Base style for body */
+body {
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+/* Glow Dot */
+.cursor-dot-glow {
+    width: 12px;
+    height: 12px;
+    background-color: #F9A825;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 6px 2px rgba(249, 168, 37, 0.35);
+    margin-left: 2px;
+    margin-top: 1px;
+    transition: transform 0.1s ease-out;
+}
+
+.coaching-section {
+    background: #ffffff !important;
 }
 
