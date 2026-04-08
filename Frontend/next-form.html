@@ -898,6 +898,88 @@
         submitBtn.disabled = false;
     });
     </script>
+    (function () {
+        const PARTIAL_SESSION_KEY = 'form_session';
+        const PARTIAL_SENT_CACHE_KEY = 'partial_lead_sent_map';
+
+        const getOrCreateSessionId = () => {
+            let sid = window.localStorage.getItem(PARTIAL_SESSION_KEY);
+            if (!sid) {
+                sid = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+                window.localStorage.setItem(PARTIAL_SESSION_KEY, sid);
+            }
+            return sid;
+        };
+
+        const readSentMap = () => {
+            try {
+                return JSON.parse(window.localStorage.getItem(PARTIAL_SENT_CACHE_KEY) || '{}') || {};
+            } catch {
+                return {};
+            }
+        };
+
+        const writeSentMap = (map) => {
+            try {
+                window.localStorage.setItem(PARTIAL_SENT_CACHE_KEY, JSON.stringify(map || {}));
+            } catch {
+                // ignore storage failures
+            }
+        };
+
+        async function captureAbandonedLead(field, value) {
+            const normalized = String(value || '').trim();
+            if (normalized.length < 3) return;
+
+            const sessionId = getOrCreateSessionId();
+            const key = `${sessionId}:${field}`;
+            const sentMap = readSentMap();
+
+            // Avoid duplicate pings for same field/value in same session
+            if (sentMap[key] === normalized) return;
+
+            const fullNameEl = document.getElementById('fullName');
+            const phoneEl = document.getElementById('phone');
+            const emailEl = document.getElementById('email');
+
+            const payload = {
+                field,
+                value: normalized,
+                name: String(fullNameEl?.value || '').trim(),
+                phone: String(phoneEl?.value || '').trim(),
+                email: String(emailEl?.value || '').trim(),
+                sessionId,
+                page: 'next-form'
+            };
+
+            try {
+                await fetch(apiUrl('/api/partial-lead'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                sentMap[key] = normalized;
+                writeSentMap(sentMap);
+            } catch (err) {
+                // Silent error to not disturb user journey
+            }
+        }
+
+        const fullNameInput = document.getElementById('fullName');
+        const phoneInput = document.getElementById('phone');
+        const emailInput = document.getElementById('email');
+
+        if (fullNameInput) {
+            fullNameInput.addEventListener('blur', (e) => captureAbandonedLead('name', e.target.value));
+        }
+        if (phoneInput) {
+            phoneInput.addEventListener('blur', (e) => captureAbandonedLead('phone', e.target.value));
+        }
+        if (emailInput) {
+            emailInput.addEventListener('blur', (e) => captureAbandonedLead('email', e.target.value));
+        }
+    })();
+
     <script>
         // Toggle .filled class when inputs/selects/textareas have values
         (function(){

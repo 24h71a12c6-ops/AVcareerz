@@ -2,6 +2,7 @@
 
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
@@ -62,6 +63,12 @@ initializeDatabase();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const partialLeadLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 5, // Max 5 partial alerts per IP
+  message: 'Too many partial hits, ignoring for now.'
+});
 
 // --- DYNAMIC PATH RESOLUTION (FIX FOR RENDER) ---
 const frontendPath = fs.existsSync(path.join(__dirname, 'Frontend'))
@@ -517,6 +524,68 @@ app.post('/api/verify-reset-code', async (req, res) => {
     return res.status(500).json({ success: false, error: 'Server error.' });
   }
 });
+
+// Partial lead capture: silently store key fields before full form submit
+app.post('/api/partial-lead', partialLeadLimiter, async (req, res) => {
+  try {
+    const { sendEmail } = require('./services/emailService');
+
+    const asText = (v) => String(v ?? '').trim();
+    const name = asText(req.body?.name || req.body?.fullName);
+    const phone = asText(req.body?.phone);
+    const email = asText(req.body?.email).toLowerCase();
+    const field = asText(req.body?.field);
+    const value = asText(req.body?.value);
+    const sessionId = asText(req.body?.sessionId) || String(Date.now());
+
+    // Support both payload styles:
+    // 1) { field: 'phone', value: '...' }
+    // 2) { phone: '...' } / { email: '...' } / { name: '...' }
+    const merged = {
+      name,
+      phone,
+      email,
+      sessionId,
+      page: asText(req.body?.page) || 'next-form',
+      capturedAt: new Date().toISOString()
+    };
+
+    if (field && value) {
+      if (field === 'name' || field === 'fullName') merged.name = value;
+      if (field === 'phone') merged.phone = value;
+      if (field === 'email') merged.email = value.toLowerCase();
+    }
+
+    // Avoid noise: only alert when we at least have phone or email
+    if (merged.phone || merged.email) {
+      const adminTo = String(process.env.ADMIN_EMAIL || 'info@avcareerz.com').trim() || 'info@avcareerz.com';
+      const safeJson = JSON.stringify(merged, null, 2);
+
+      await sendEmail({
+        to: adminTo,
+        subject: `⚠️ [PARTIAL] Potential Lead: ${merged.name || 'Interested Student'}`,
+        html: `
+          <h3>Partial lead captured</h3>
+          <p>A user started filling the form but has not submitted yet.</p>
+          <pre style="background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">${safeJson}</pre>
+        `
+      });
+
+      console.log('Partial lead captured and emailed:', {
+        sessionId: merged.sessionId,
+        hasPhone: Boolean(merged.phone),
+        hasEmail: Boolean(merged.email)
+      });
+    }
+
+    return res.status(200).json({ success: true, captured: true });
+  } catch (error) {
+    // keep this silent for frontend UX, but log server-side
+    console.error('Partial lead capture error:', error?.message || error);
+    return res.status(200).json({ success: true, captured: false });
+  }
+});
+
 // Reset Password - Cleaned and Fixed Syntax
 app.post('/api/reset-password', async (req, res) => {
   try {

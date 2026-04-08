@@ -278,6 +278,7 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
 })();
 
 module.exports = {
+  sendEmail,
   sendConfirmationEmail,
   sendAdminEmail,
   sendPasswordResetCodeEmail,
