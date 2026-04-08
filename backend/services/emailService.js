@@ -2,10 +2,16 @@
 require('dotenv').config();
 const axios = require('axios');
 
+const DEFAULT_BREVO_SENDER_EMAIL = 'info@avcareerz.com';
+
+function getEnvString(name) {
+  return String(process.env[name] || '').trim().replace(/^['"]|['"]$/g, '');
+}
+
 // generic sendEmail uses Brevo; throws if not configured
 const sendEmail = async ({ to, subject, html }) => {
-  const brevoKey = String(process.env.BREVO_API_KEY || '').trim();
-  const brevoSender = String(process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim();
+  const brevoKey = getEnvString('BREVO_API_KEY');
+  const brevoSender = getEnvString('BREVO_SENDER_EMAIL') || DEFAULT_BREVO_SENDER_EMAIL;
   if (!brevoKey || !brevoSender) {
     throw new Error('Brevo is not configured; set BREVO_API_KEY and BREVO_SENDER_EMAIL');
   }
@@ -24,9 +30,9 @@ function escapeHtml(value) {
 
 // internal helper that talks directly to Brevo; throws if config is missing
 const sendBrevoEmail = async ({ to, subject, html }) => {
-  const apiKey = String(process.env.BREVO_API_KEY || '').trim();
-  const senderEmail = String(process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim();
-  const senderName = String(process.env.BREVO_SENDER_NAME || 'Abroad Vision Careerz').trim();
+  const apiKey = getEnvString('BREVO_API_KEY');
+  const senderEmail = getEnvString('BREVO_SENDER_EMAIL') || DEFAULT_BREVO_SENDER_EMAIL;
+  const senderName = getEnvString('BREVO_SENDER_NAME') || 'avcareerz';
 
   if (!apiKey || !senderEmail) {
     throw new Error('Missing BREVO_API_KEY or BREVO_SENDER_EMAIL');
@@ -44,9 +50,9 @@ const sendBrevoEmail = async ({ to, subject, html }) => {
   try {
     const response = await axios.post('https://api.brevo.com/v3/smtp/email', payload, {
       headers: {
-        'api-key': apiKey,
-        'content-type': 'application/json',
-        accept: 'application/json'
+        'api-key': process.env.BREVO_API_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       timeout: 15000
     });
@@ -266,7 +272,7 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
 
 // log which providers are configured so startup logs help debugging
 (() => {
-  const brevo = Boolean(String(process.env.BREVO_API_KEY || '').trim() && String(process.env.BREVO_SENDER_EMAIL || '').trim());
+  const brevo = Boolean(getEnvString('BREVO_API_KEY') && (getEnvString('BREVO_SENDER_EMAIL') || DEFAULT_BREVO_SENDER_EMAIL));
   const gmail = Boolean(String(process.env.EMAIL_USER || '').trim() && String(process.env.EMAIL_PASS || '').trim());
   console.log('📧 emailService providers -> Brevo:', brevo, 'Gmail:', gmail);
 })();
