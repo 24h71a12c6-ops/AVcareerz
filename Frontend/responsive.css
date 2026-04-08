@@ -85,6 +85,15 @@
 	/* Keep every nav item on the same line */
 	.nav-menu li a {
 		white-space: nowrap;
+		padding: 10px 15px;
+		font-size: 1.02rem;
+		font-weight: 600;
+		border-radius: 10px;
+	}
+
+	.nav-profile .profile-trigger {
+		width: 44px;
+		height: 44px;
 	}
 }
 
@@ -350,10 +359,11 @@
 
 	#navMenu > li > a {
 		display: block;
-		padding: 10px 14px;
+		padding: 12px 16px;
 		width: 100%;
 		text-align: left;
-		font-size: 0.98rem;
+		font-size: 1.06rem;
+		font-weight: 600;
 	}
 
 	#navMenu > li + li {
