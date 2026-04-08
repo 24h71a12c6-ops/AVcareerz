@@ -945,20 +945,39 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="script.js?v=20260320-1" defer></script>
   <script>
-    window.addEventListener('pagehide', function() {
+    // Global flags
+    window.leadSent = false;
+
+    const sendData = () => {
       if (window.leadSent) return;
 
-      // Screenshot prakaram placeholders vadi data pick chesthunnam
-      const fullName = document.querySelector('input[placeholder*="Name"]')?.value;
-      const phone = document.querySelector('input[placeholder*="Phone"]')?.value;
-      const email = document.querySelector('input[placeholder*="Email"]')?.value;
+      // Screenshot prakaram direct selectors
+      const name = document.querySelector('input[type="text"]') || document.querySelector('input[placeholder*="Name"]');
+      const email = document.querySelector('input[type="email"]') || document.querySelector('input[placeholder*="Email"]');
+      const phone = document.querySelector('input[type="tel"]') || document.querySelector('input[placeholder*="Phone"]');
 
-      if (fullName || phone) {
-        const data = JSON.stringify({ fullName, phone, email, type: 'Home-Partial' });
-        // Direct string pampistham, backend lo parse cheskuntam
-        navigator.sendBeacon('/api/partial-lead', data);
+      const payload = {
+        fullName: name?.value || "",
+        email: email?.value || "",
+        phone: phone?.value || "",
+        source: 'Home Page Exit',
+        status: 'partial-lead'
+      };
+
+      // Name or Phone unte matrame pampali
+      if (payload.fullName.length > 2 || payload.phone.length > 5) {
+        navigator.sendBeacon('/api/partial-lead', JSON.stringify(payload));
         window.leadSent = true;
+        console.log("Partial lead sent!");
       }
+    };
+
+    // Anni possible exit events ni cover chesthunnam
+    ['visibilitychange', 'pagehide', 'beforeunload'].forEach(event => {
+      window.addEventListener(event, () => {
+        if (event === 'visibilitychange' && document.visibilityState !== 'hidden') return;
+        sendData();
+      });
     });
   </script>
   <script>
