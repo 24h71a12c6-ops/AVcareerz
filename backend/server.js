@@ -2,7 +2,6 @@
 
 const express = require('express');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
@@ -63,12 +62,6 @@ initializeDatabase();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-const partialLeadLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 5, // Max 5 partial alerts per IP
-  message: 'Too many partial hits, ignoring for now.'
-});
 
 // --- DYNAMIC PATH RESOLUTION (FIX FOR RENDER) ---
 const frontendPath = fs.existsSync(path.join(__dirname, 'Frontend'))
@@ -526,7 +519,7 @@ app.post('/api/verify-reset-code', async (req, res) => {
 });
 
 // Partial lead capture: silently store key fields before full form submit
-app.post('/api/partial-lead', partialLeadLimiter, async (req, res) => {
+app.post('/api/partial-lead', async (req, res) => {
   try {
     const { sendEmail } = require('./services/emailService');
 
