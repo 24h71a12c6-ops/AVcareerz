@@ -519,17 +519,29 @@ app.post('/api/verify-reset-code', async (req, res) => {
 });
 
 // Partial lead capture: silently store key fields before full form submit
-app.post('/api/partial-lead', async (req, res) => {
+app.post('/api/partial-lead', express.text({ type: '*/*' }), async (req, res) => {
   try {
     const { sendEmail } = require('./services/emailService');
 
+    // sendBeacon can arrive as text/plain (string body).
+    // Keep compatibility with JSON/object payloads too.
+    let body = req.body;
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        body = {};
+      }
+    }
+    if (!body || typeof body !== 'object') body = {};
+
     const asText = (v) => String(v ?? '').trim();
-    const name = asText(req.body?.name || req.body?.fullName);
-    const phone = asText(req.body?.phone);
-    const email = asText(req.body?.email).toLowerCase();
-    const field = asText(req.body?.field);
-    const value = asText(req.body?.value);
-    const sessionId = asText(req.body?.sessionId) || String(Date.now());
+    const name = asText(body?.name || body?.fullName);
+    const phone = asText(body?.phone);
+    const email = asText(body?.email).toLowerCase();
+    const field = asText(body?.field);
+    const value = asText(body?.value);
+    const sessionId = asText(body?.sessionId) || String(Date.now());
 
     // Support both payload styles:
     // 1) { field: 'phone', value: '...' }
@@ -539,7 +551,7 @@ app.post('/api/partial-lead', async (req, res) => {
       phone,
       email,
       sessionId,
-      page: asText(req.body?.page) || 'next-form',
+      page: asText(body?.page) || 'next-form',
       capturedAt: new Date().toISOString()
     };
 

@@ -556,7 +556,7 @@
                             </div>
                                 <div class="form-group">
                                     <label for="passport_id">Passport Number <span class="required">*</span></label>
-                                    <input type="text" id="passport_id" name="passport_id" required placeholder="Enter Passport Number" autocomplete="off">
+                                    <input type="text" id="passport_id" name="passport_id" required placeholder="Format: A1234567" autocomplete="off" minlength="8" maxlength="8" pattern="[A-Za-z][0-9]{7}" title="Passport number must be 1 letter followed by 7 digits (e.g., A1234567)">
                                 </div>
                         </div>
 
@@ -811,8 +811,57 @@
 
     const academicForm = document.getElementById('academicForm');
     const successMessage = document.getElementById('successMessage');
+    const passportInput = document.getElementById('passport_id');
+    const PASSPORT_REGEX = /^[A-Z][0-9]{7}$/;
+
+    function normalizePassportInput() {
+        if (!passportInput) return;
+        passportInput.value = String(passportInput.value || '').toUpperCase().replace(/\s+/g, '');
+    }
+
+    function validatePassportInput() {
+        if (!passportInput) return true;
+
+        normalizePassportInput();
+        const passportValue = String(passportInput.value || '').trim();
+
+        if (!passportValue) {
+            passportInput.setCustomValidity('Passport number is required.');
+            return false;
+        }
+
+        if (!PASSPORT_REGEX.test(passportValue)) {
+            passportInput.setCustomValidity('Passport number must be in format A1234567 (1 letter + 7 digits).');
+            return false;
+        }
+
+        passportInput.setCustomValidity('');
+        return true;
+    }
+
+    if (passportInput) {
+        passportInput.addEventListener('input', function () {
+            normalizePassportInput();
+            validatePassportInput();
+        });
+
+        passportInput.addEventListener('blur', function () {
+            validatePassportInput();
+            passportInput.reportValidity();
+        });
+    }
+
     academicForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        // Passport format must be valid before proceeding.
+        if (!validatePassportInput()) {
+            passportInput.reportValidity();
+            successMessage.textContent = 'Please enter a valid passport number in format A1234567.';
+            successMessage.style.color = '#ef4444';
+            successMessage.style.display = 'block';
+            return;
+        }
 
         // Enforce built-in HTML validation (required fields, email format, etc.)
         // Since we prevent default submit, the browser won't block submission unless we do this.

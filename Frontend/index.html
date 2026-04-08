@@ -945,28 +945,19 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="script.js?v=20260320-1" defer></script>
   <script>
-    let registrationSubmitted = false;
-    let homeExitLeadSent = false;
+    window.addEventListener('pagehide', function() {
+      if (window.leadSent) return;
 
-    // Browser close chesthunna or back veltuna trigger avthundi
-    window.addEventListener('visibilitychange', function() {
-      if (document.visibilityState === 'hidden' && !registrationSubmitted && !homeExitLeadSent) {
+      // Screenshot prakaram placeholders vadi data pick chesthunnam
+      const fullName = document.querySelector('input[placeholder*="Name"]')?.value;
+      const phone = document.querySelector('input[placeholder*="Phone"]')?.value;
+      const email = document.querySelector('input[placeholder*="Email"]')?.value;
 
-        // Screenshot lo unna input fields IDs check chesi ikkada update chesa
-        const partialData = {
-          fullName: document.querySelector('input[placeholder="Enter your Name"]')?.value || "",
-          email: document.querySelector('input[placeholder="Enter your Email"]')?.value || "",
-          phone: document.querySelector('input[placeholder="+91 Enter your Phone"]')?.value || "",
-          source: 'Home Page Sign-Up Card',
-          status: 'partial-lead'
-        };
-
-        // కనీసం పేరు లేదా ఫోన్ ఉంటేనే పంపిస్తుంది
-        if (partialData.fullName || partialData.phone) {
-          const blob = new Blob([JSON.stringify(partialData)], { type: 'application/json' });
-          navigator.sendBeacon('/api/partial-lead', blob);
-          homeExitLeadSent = true;
-        }
+      if (fullName || phone) {
+        const data = JSON.stringify({ fullName, phone, email, type: 'Home-Partial' });
+        // Direct string pampistham, backend lo parse cheskuntam
+        navigator.sendBeacon('/api/partial-lead', data);
+        window.leadSent = true;
       }
     });
   </script>
