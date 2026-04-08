@@ -345,14 +345,33 @@ const hideRegistrationSection = () => {
     }
     document.body.classList.remove('reg-modal-open');
 };
+const updateRegistrationProgressCue = () => {
+    const step1 = document.getElementById('regStep1');
+    const step2 = document.getElementById('regStep2');
+    if (!step1 || !step2) return;
+
+    if (isRegisteredUser()) {
+        step1.textContent = '✅ Step 1: Register (Done)';
+        step1.style.color = '#16a34a';
+        step2.textContent = '🚀 Step 2: Complete Study Details';
+        step2.style.color = '#dc2626';
+    } else {
+        step1.textContent = '✅ Step 1: Register';
+        step1.style.color = '#16a34a';
+        step2.textContent = '⏳ Step 2: Study Details';
+        step2.style.color = '#f59e0b';
+    }
+};
 const syncRegistrationSectionForAuthState = () => {
     if (isRegisteredUser()) {
         hideRegistrationSection();
+        updateRegistrationProgressCue();
         return;
     }
 
     const preferLogin = localStorage.getItem('showLoginAfterLogout') === '1';
     showRegistrationSection({ preferLogin });
+    updateRegistrationProgressCue();
 };
 
 // --- Main Application Logic ---
@@ -2517,6 +2536,40 @@ if (registrationForm) {
             passwordPatterns.length.test(password);
     }
 
+    const continueToApplicationForm = () => {
+        sessionStorage.setItem('pendingApplicationStep', '2');
+        window.location.href = 'next-form.html';
+    };
+
+    const showPostSignupPromptAndRedirect = () => {
+        const title = 'Account Created!';
+        const text = 'Now, please provide your study details to get started.';
+
+        if (window.Swal && typeof window.Swal.fire === 'function') {
+            window.Swal.fire({
+                title,
+                text,
+                icon: 'success',
+                confirmButtonText: 'Continue to Application Form',
+                allowOutsideClick: false,
+                timer: 8000,
+                timerProgressBar: true
+            }).then((result) => {
+                const timerDismiss = window.Swal?.DismissReason?.timer;
+                if (result?.isConfirmed || result?.dismiss === timerDismiss) {
+                    continueToApplicationForm();
+                }
+            });
+            return;
+        }
+
+        // Fallback if SweetAlert isn't loaded
+        showNotification(`${title} ${text} Redirecting to application form...`, 'success');
+        setTimeout(() => {
+            continueToApplicationForm();
+        }, 1200);
+    };
+
     registrationForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -2676,25 +2729,10 @@ if (registrationForm) {
                 // Keep section state aligned with current login state.
                 syncRegistrationSectionForAuthState();
 
-                // 4. Stay on page (User requested normal browsing flow)
-                showNotification('Registration successful! You are now logged in.', 'success');
-
-                // 5. (no redirect here) user will be sent to congrats page after filling the next form
-                //    keeping the sign‑up flow on the same page allows them to continue exploring.
-
-                // If the registration panel is part of the main page (not a modal) the user
-                // will still see the signup card after submitting.  `closeRegModal` only
-                // works for overlay modals, so when the form is embedded on the page we
-                // should either hide it ourselves or send the user to the "congrats" page.
-
-                // redirect to the thank‑you/congrats page unless we are in edit mode.
+                // 4. Direct next step UX: prompt + auto redirect to application form
                 if (!editMode) {
-                    try {
-                        window.location.href = 'congrats.html';
-                        return; // stop further processing
-                    } catch {
-                        // fallback to hiding the panel below if navigation fails
-                    }
+                    showPostSignupPromptAndRedirect();
+                    return;
                 }
 
                 // Force hide registration section after signup
