@@ -898,6 +898,7 @@
         submitBtn.disabled = false;
     });
     </script>
+    <script>
     (function () {
         const PARTIAL_SESSION_KEY = 'form_session';
         const PARTIAL_SENT_CACHE_KEY = 'partial_lead_sent_map';
@@ -979,6 +980,7 @@
             emailInput.addEventListener('blur', (e) => captureAbandonedLead('email', e.target.value));
         }
     })();
+    </script>
 
     <script>
         // Toggle .filled class when inputs/selects/textareas have values
