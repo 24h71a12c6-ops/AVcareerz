@@ -945,43 +945,30 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="script.js?v=20260320-1" defer></script>
   <script>
-    (function () {
-      let homeExitLeadSent = false;
-      let registrationSubmitted = false;
+    let registrationSubmitted = false;
+    let homeExitLeadSent = false;
 
-      document.addEventListener('DOMContentLoaded', function () {
-        const registrationForm = document.getElementById('registrationForm');
-        if (registrationForm) {
-          registrationForm.addEventListener('submit', function () {
-            registrationSubmitted = true;
-          }, { capture: true });
-        }
-      });
+    // Browser close chesthunna or back veltuna trigger avthundi
+    window.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden' && !registrationSubmitted && !homeExitLeadSent) {
 
-      window.addEventListener('visibilitychange', function () {
-        if (document.visibilityState !== 'hidden') return;
-        if (homeExitLeadSent || registrationSubmitted) return;
-
+        // Screenshot lo unna input fields IDs check chesi ikkada update chesa
         const partialData = {
-          fullName: String(document.getElementById('fullName')?.value || '').trim(),
-          phone: String(document.getElementById('phone')?.value || '').trim(),
-          email: String(document.getElementById('email')?.value || '').trim(),
+          fullName: document.querySelector('input[placeholder="Enter your Name"]')?.value || "",
+          email: document.querySelector('input[placeholder="Enter your Email"]')?.value || "",
+          phone: document.querySelector('input[placeholder="+91 Enter your Phone"]')?.value || "",
           source: 'Home Page Sign-Up Card',
           status: 'partial-lead'
         };
 
-        if (!partialData.fullName && !partialData.phone && !partialData.email) return;
-
-        const endpoint = '/api/partial-lead';
-        const blob = new Blob([JSON.stringify(partialData)], { type: 'application/json' });
-
-        try {
-          homeExitLeadSent = navigator.sendBeacon(endpoint, blob);
-        } catch {
-          // Ignore beacon failures to avoid user-facing noise.
+        // కనీసం పేరు లేదా ఫోన్ ఉంటేనే పంపిస్తుంది
+        if (partialData.fullName || partialData.phone) {
+          const blob = new Blob([JSON.stringify(partialData)], { type: 'application/json' });
+          navigator.sendBeacon('/api/partial-lead', blob);
+          homeExitLeadSent = true;
         }
-      });
-    })();
+      }
+    });
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
