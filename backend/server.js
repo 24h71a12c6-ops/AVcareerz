@@ -7,7 +7,6 @@ const fs = require('fs');
 const multer = require('multer');
 const crypto = require('crypto');
 const { exec } = require('child_process');
-const axios = require('axios');
 
 const { loadEnv } = require('./utils/loadEnv');
 
@@ -41,14 +40,12 @@ const isStrongPassword = (password) => {
   );
 };
 
-// Common instant alert utility (Telegram + Email)
+// Common instant alert utility (Email-only)
 const sendInstantAlert = async (type, payload = {}) => {
   try {
     const { sendEmail } = require('./services/emailService');
 
     const data = (payload && typeof payload === 'object') ? payload : {};
-    const botToken = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
-    const chatId = String(process.env.TELEGRAM_CHAT_ID || '').trim();
     const adminTo = String(process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim() || 'info@avcareerz.com';
 
     let emoji = '🔔';
@@ -70,36 +67,10 @@ const sendInstantAlert = async (type, payload = {}) => {
     const source = data.source || 'Website';
     const url = data.url ? `\n🔗 *URL:* ${data.url}` : '';
 
-    const telegramMsg = `${emoji} *${statusText}*\n━━━━━━━━━━━━━━━━━━\n👤 *Name:* ${fullName}\n📞 *Phone:* ${phone}\n📧 *Email:* ${email}\n📍 *Source:* ${source}${url}\n━━━━━━━━━━━━━━━━━━`;
-
-    const promises = [];
-
-    if (botToken && chatId) {
-      promises.push(
-        axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          chat_id: chatId,
-          text: telegramMsg,
-          parse_mode: 'Markdown'
-        })
-      );
-    } else {
-      console.warn('Telegram env keys missing; skipping Telegram alert');
-    }
-
-    promises.push(
-      sendEmail({
-        to: adminTo,
-        subject: `${emoji} ${statusText}: ${fullName || 'User'}`,
-        html: `<pre style="background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">Details:\nName: ${fullName}\nPhone: ${phone}\nEmail: ${email}\nSource: ${source}${data.url ? `\nURL: ${data.url}` : ''}</pre>`
-      })
-    );
-
-    const results = await Promise.allSettled(promises);
-    results.forEach((r, idx) => {
-      if (r.status === 'rejected') {
-        const channel = idx === 0 && botToken && chatId ? 'Telegram' : 'Email';
-        console.error(`${channel} alert failed:`, r.reason?.message || r.reason);
-      }
+    await sendEmail({
+      to: adminTo,
+      subject: `${emoji} ${statusText}: ${fullName || 'User'}`,
+      html: `<pre style="background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">Details:\nName: ${fullName}\nPhone: ${phone}\nEmail: ${email}\nSource: ${source}${url}</pre>`
     });
   } catch (err) {
     console.error('Alert Error:', err?.message || err);
