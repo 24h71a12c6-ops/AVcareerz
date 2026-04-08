@@ -7,6 +7,7 @@ const fs = require('fs');
 const multer = require('multer');
 const crypto = require('crypto');
 const { exec } = require('child_process');
+const axios = require('axios');
 
 const { loadEnv } = require('./utils/loadEnv');
 
@@ -523,71 +524,38 @@ app.post('/api/partial-lead', express.text({ type: '*/*' }), async (req, res) =>
   try {
     const { sendEmail } = require('./services/emailService');
 
-    // sendBeacon can arrive as text/plain (string body).
-    // Keep compatibility with JSON/object payloads too.
-    let body = req.body;
-    if (typeof body === 'string') {
-      try {
-        body = JSON.parse(body);
-      } catch {
-        body = {};
-      }
-    }
-    if (!body || typeof body !== 'object') body = {};
+    const data = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+    console.log('Lead Received:', data);
 
-    const asText = (v) => String(v ?? '').trim();
-    const name = asText(body?.name || body?.fullName);
-    const phone = asText(body?.phone);
-    const email = asText(body?.email).toLowerCase();
-    const field = asText(body?.field);
-    const value = asText(body?.value);
-    const sessionId = asText(body?.sessionId) || String(Date.now());
+    // Keep secrets in env, not in code
+    const botToken = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
+    const chatId = String(process.env.TELEGRAM_CHAT_ID || '').trim();
 
-    // Support both payload styles:
-    // 1) { field: 'phone', value: '...' }
-    // 2) { phone: '...' } / { email: '...' } / { name: '...' }
-    const merged = {
-      name,
-      phone,
-      email,
-      sessionId,
-      page: asText(body?.page) || 'next-form',
-      capturedAt: new Date().toISOString()
-    };
+    const telegramMsg = `🚀 *New Partial Lead Alert!*\n━━━━━━━━━━━━━━━━━━\n👤 *Name:* ${data.fullName || data.name || 'Not provided'}\n📞 *Phone:* ${data.phone || 'Not provided'}\n📧 *Email:* ${data.email || 'Not provided'}\n📍 *Page:* ${data.source || data.page || 'Unknown'}\n━━━━━━━━━━━━━━━━━━\nCheck Dashboard for more info.`;
 
-    if (field && value) {
-      if (field === 'name' || field === 'fullName') merged.name = value;
-      if (field === 'phone') merged.phone = value;
-      if (field === 'email') merged.email = value.toLowerCase();
-    }
+    const adminTo = String(process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim() || 'info@avcareerz.com';
 
-    // Avoid noise: only alert when we at least have phone or email
-    if (merged.phone || merged.email) {
-      const adminTo = String(process.env.ADMIN_EMAIL || 'info@avcareerz.com').trim() || 'info@avcareerz.com';
-      const safeJson = JSON.stringify(merged, null, 2);
+    const emailPromise = sendEmail({
+      to: adminTo,
+      subject: `⚠️ [PARTIAL] Potential Lead: ${data.fullName || data.name || 'Anonymous'}`,
+      html: `<pre style="background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">${JSON.stringify(data, null, 2)}</pre>`
+    });
 
-      await sendEmail({
-        to: adminTo,
-        subject: `⚠️ [PARTIAL] Potential Lead: ${merged.name || 'Interested Student'}`,
-        html: `
-          <h3>Partial lead captured</h3>
-          <p>A user started filling the form but has not submitted yet.</p>
-          <pre style="background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">${safeJson}</pre>
-        `
-      });
+    const telegramPromise = (botToken && chatId)
+      ? axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          chat_id: chatId,
+          text: telegramMsg,
+          parse_mode: 'Markdown'
+        })
+      : Promise.resolve();
 
-      console.log('Partial lead captured and emailed:', {
-        sessionId: merged.sessionId,
-        hasPhone: Boolean(merged.phone),
-        hasEmail: Boolean(merged.email)
-      });
-    }
+    await Promise.all([telegramPromise, emailPromise]);
 
-    return res.status(200).json({ success: true, captured: true });
+    console.log('✅ Alert sent to Telegram & Email!');
+    return res.sendStatus(200);
   } catch (error) {
-    // keep this silent for frontend UX, but log server-side
-    console.error('Partial lead capture error:', error?.message || error);
-    return res.status(200).json({ success: true, captured: false });
+    console.error('❌ Error processing lead:', error?.message || error);
+    return res.sendStatus(500);
   }
 });
 

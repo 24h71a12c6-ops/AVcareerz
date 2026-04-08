@@ -15,7 +15,7 @@
   "author": "Abroad Vision Carrerz",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.13.2",
+    "axios": "^1.14.0",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
