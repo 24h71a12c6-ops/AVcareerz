@@ -979,6 +979,45 @@
         if (emailInput) {
             emailInput.addEventListener('blur', (e) => captureAbandonedLead('email', e.target.value));
         }
+
+        let exitCaptureSent = false;
+        const captureExitLead = () => {
+            if (exitCaptureSent) return;
+
+            const fields = ['fullName', 'phone', 'email'];
+            const dataToSave = {
+                source: window.location.pathname,
+                page: 'next-form',
+                isExitCapture: true,
+                sessionId: getOrCreateSessionId()
+            };
+
+            fields.forEach((id) => {
+                const el = document.getElementById(id);
+                const value = String(el?.value || '').trim();
+                if (value.length > 3) {
+                    dataToSave[id] = value;
+                }
+            });
+
+            // Send only when we have user-entered values beyond metadata
+            if (Object.keys(dataToSave).length <= 4) return;
+
+            const endpoint = apiUrl('/api/partial-lead');
+            const payload = new Blob([JSON.stringify(dataToSave)], {
+                type: 'application/json'
+            });
+
+            try {
+                exitCaptureSent = navigator.sendBeacon(endpoint, payload);
+            } catch {
+                // silent fail; blur capture still exists as primary path
+            }
+        };
+
+        window.addEventListener('beforeunload', captureExitLead);
+        // Extra reliability on some mobile/modern browsers
+        window.addEventListener('pagehide', captureExitLead);
     })();
     </script>
 
@@ -1039,4 +1078,24 @@
             </div>
         </div>
     </section>
+
+<script>
+    // User 'Back' kottina leda tab close chesina data velladaniki idi logic
+    window.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') {
+            const data = {
+                fullName: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                status: 'partial-lead'
+            };
+
+            // Data unteనే server ki pampisthundi
+            if (data.fullName || data.phone) {
+                const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+                navigator.sendBeacon('/api/partial-lead', blob);
+            }
+        }
+    });
+</script>
 
