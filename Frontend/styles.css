@@ -2645,6 +2645,8 @@ body.reg-modal-open .reg-flex-card {
     max-height: calc(100vh - 32px);
     overflow: auto;
     position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: none;
     transform: translateY(24px) scale(0.965);
     opacity: 0;
     transform-origin: 50% 35%;
@@ -2654,11 +2656,11 @@ body.reg-modal-open .reg-flex-card {
 
 @keyframes regModalIn {
     0% {
-        transform: translateY(24px) scale(0.965);
+        transform: translateY(18px) scale(0.985);
         opacity: 0;
     }
     65% {
-        transform: translateY(-6px) scale(1.01);
+        transform: translateY(0) scale(1);
         opacity: 1;
     }
     100% {
