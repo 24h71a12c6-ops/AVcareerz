@@ -4,15 +4,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
-    // Keep this in sync with the CSS loading animations (currently 3s).
-    const SPLASH_DURATION_MS = 3000;
-    const SPLASH_FADE_MS = 1200;
+    // Show very short splash only once per tab session so site feels instant on open.
+    const hasShownSplash = sessionStorage.getItem('av_splash_shown') === '1';
+    const SPLASH_DURATION_MS = hasShownSplash ? 120 : 700;
+    const SPLASH_FADE_MS = 220;
 
     if (!splash) return;
 
-    // Always show the splash on a full page load.
-    // (Previously it showed only once per session, which can make it feel like it "stopped working".)
     body?.classList.add('splash-active');
+    sessionStorage.setItem('av_splash_shown', '1');
 
     // Short splash (fast open)
     setTimeout(() => {
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {
             // ignore
         }
-    }, Math.max(8000, SPLASH_DURATION_MS + SPLASH_FADE_MS + 1500));
+    }, Math.max(2200, SPLASH_DURATION_MS + SPLASH_FADE_MS + 500));
 });
 
 const glowDot = document.querySelector('.cursor-dot-glow');
@@ -52,6 +52,9 @@ if (glowDot) {
 // Enabled only on index.html to avoid surprising effects on destination/service pages.
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        const ENABLE_SECTION_FOCUS_MODE = false;
+        if (!ENABLE_SECTION_FOCUS_MODE) return;
+
         const path = String(window.location.pathname || '').toLowerCase();
         const isIndex = path === '/' || path.endsWith('/index.html') || path.endsWith('index.html');
         if (!isIndex) return;

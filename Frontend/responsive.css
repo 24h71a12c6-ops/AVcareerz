@@ -671,3 +671,43 @@
 	}
 }
 
+/* ---------------------------------
+	Targeted mobile tweaks (only 2 asks)
+	1) Navbar brand vertical centering
+	2) About Us points aligned columns
+   --------------------------------- */
+@media (max-width: 768px) {
+	header .navbar .logo {
+		align-items: center !important;
+	}
+
+	header .navbar .logo-text {
+		display: flex !important;
+		flex-direction: column;
+		justify-content: center;
+		line-height: 1.05 !important;
+	}
+
+	header .navbar .logo-name {
+		margin: 0 !important;
+		line-height: 1.08 !important;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		display: grid !important;
+		grid-template-columns: 20px minmax(120px, 150px) minmax(0, 1fr);
+		column-gap: 10px;
+		align-items: start;
+	}
+
+	#about.about-final-revised .feature-list-premium li i {
+		margin-top: 4px;
+		justify-self: center;
+	}
+
+	#about.about-final-revised .feature-list-premium li strong {
+		display: block;
+		line-height: 1.35;
+	}
+}
+

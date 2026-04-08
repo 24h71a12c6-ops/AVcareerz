@@ -7930,6 +7930,48 @@ footer {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+/* subtle grid texture behind About section content */
+#about.about-final-revised::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(0, 33, 71, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 33, 71, 0.1) 1px, transparent 1px),
+        linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.32) 50%, transparent 62%);
+    background-size: 40px 40px, 40px 40px, 240% 240%;
+    background-position: 0 0, 0 0, 120% 0;
+    opacity: 0.92;
+    mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+    animation: aboutGridShineSweep 7s linear infinite;
+}
+
+@keyframes aboutGridShineSweep {
+    0% {
+        background-position: 0 0, 0 0, 120% 0;
+    }
+    100% {
+        background-position: 0 0, 0 0, -40% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #about.about-final-revised::before {
+        animation: none;
+    }
+}
+
+#about.about-final-revised > * {
+    position: relative;
+    z-index: 1;
 }
 
 #about.about-final-revised .about-eyebrow {
@@ -8643,7 +8685,7 @@ body.splash-active .navbar {
     top: -22px;
     font-size: 20px;
     /* Flight moves with progress bar */
-    animation: flightPull 3s linear forwards;
+    animation: flightPull 0.9s linear forwards;
     transform: rotate(45deg);
 }
 
@@ -8659,7 +8701,7 @@ body.splash-active .navbar {
     width: 0%;
     height: 100%;
     background: linear-gradient(to right, #002147, #f39200);
-    animation: fillProgress 3s linear forwards;
+    animation: fillProgress 0.9s linear forwards;
 }
 
 /* Animations */
@@ -9156,5 +9198,55 @@ body {
 
 .coaching-section {
     background: #ffffff !important;
+}
+
+/* ============================================
+   Clarity + Performance Patch (safe overrides)
+   ============================================ */
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    image-rendering: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Keep all sections crystal clear (disable blur mode side effects) */
+body.section-focus-mode .page-section,
+body.section-focus-mode .page-section.is-blurred {
+    filter: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Faster initial render: defer paint work for below-the-fold sections */
+body > section {
+    content-visibility: auto;
+    contain-intrinsic-size: 900px;
+}
+
+body > section.hero,
+body > section#about {
+    content-visibility: visible;
+    contain-intrinsic-size: auto;
+}
+
+/* Mobile GPU relief: disable decorative custom cursor */
+@media (max-width: 1024px) {
+    .cursor-dot-glow {
+        display: none !important;
+    }
 }
 
