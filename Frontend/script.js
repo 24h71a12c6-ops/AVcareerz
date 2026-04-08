@@ -315,6 +315,106 @@ const apiUrl = (path) => {
     return `${API_BASE_URL}${cleanPath}`;
 };
 
+// Global exit-lead sync (Sign-up/Login/any page using script.js)
+// Next-form has its own dedicated capture logic in next-form.html.
+(function initGlobalLeadSync() {
+    try {
+        if (window.__globalLeadSyncInitialized) return;
+        window.__globalLeadSyncInitialized = true;
+
+        if (typeof window.leadSent !== 'boolean') {
+            window.leadSent = false;
+        }
+
+        const getFirstValue = (selectors) => {
+            for (const sel of selectors) {
+                const el = document.querySelector(sel);
+                if (!el || typeof el.value !== 'string') continue;
+                const v = el.value.trim();
+                if (v) return v;
+            }
+            return '';
+        };
+
+        const resolveContext = () => {
+            const path = String(window.location.pathname || '').toLowerCase();
+            if (path.includes('login')) return 'Login Page Exit';
+            if (path.includes('signup') || path.includes('register')) return 'Sign-up Page Exit';
+            if (path.includes('next-form') || path.endsWith('/next') || path.includes('/next/')) return 'Next-Form Exit';
+            return 'User Exit';
+        };
+
+        const syncLead = (triggerPoint) => {
+            if (window.leadSent) return;
+
+            const fullName = getFirstValue([
+                'input[placeholder*="Name"]',
+                'input[name*="name"]',
+                'input[id*="name"]'
+            ]);
+
+            const phone = getFirstValue([
+                'input[placeholder*="Phone"]',
+                'input[name*="phone"]',
+                'input[id*="phone"]',
+                'input[type="tel"]'
+            ]);
+
+            const email = getFirstValue([
+                'input[placeholder*="Email"]',
+                'input[name*="email"]',
+                'input[id*="email"]',
+                'input[type="email"]'
+            ]);
+
+            const phoneDigits = phone.replace(/\D/g, '');
+            if (fullName.length <= 2 && phoneDigits.length <= 5) return;
+
+            const payload = {
+                fullName,
+                phone,
+                email,
+                source: triggerPoint || resolveContext(),
+                url: window.location.pathname
+            };
+
+            const endpoint = '/api/partial-lead';
+            const body = JSON.stringify(payload);
+
+            let sent = false;
+            try {
+                if (navigator.sendBeacon) {
+                    sent = navigator.sendBeacon(endpoint, body);
+                }
+            } catch {
+                sent = false;
+            }
+
+            if (!sent) {
+                fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body,
+                    keepalive: true
+                }).catch(() => {});
+            }
+
+            window.leadSent = true;
+        };
+
+        window.syncLead = syncLead;
+
+        ['pagehide', 'visibilitychange', 'beforeunload'].forEach((evt) => {
+            window.addEventListener(evt, () => {
+                if (evt === 'visibilitychange' && document.visibilityState !== 'hidden') return;
+                syncLead(resolveContext());
+            }, { capture: true });
+        });
+    } catch {
+        // non-fatal
+    }
+})();
+
 // global auth helpers (available everywhere in script)
 const isRegisteredUser = () => !!localStorage.getItem('userEmail');
 const showRegistrationSection = ({ preferLogin = false } = {}) => {

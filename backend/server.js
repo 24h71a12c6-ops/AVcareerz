@@ -41,6 +41,71 @@ const isStrongPassword = (password) => {
   );
 };
 
+// Common instant alert utility (Telegram + Email)
+const sendInstantAlert = async (type, payload = {}) => {
+  try {
+    const { sendEmail } = require('./services/emailService');
+
+    const data = (payload && typeof payload === 'object') ? payload : {};
+    const botToken = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
+    const chatId = String(process.env.TELEGRAM_CHAT_ID || '').trim();
+    const adminTo = String(process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim() || 'info@avcareerz.com';
+
+    let emoji = '🔔';
+    let statusText = 'Notification';
+    if (type === 'partial') {
+      emoji = '⚠️';
+      statusText = 'PARTIAL LEAD (Exit)';
+    } else if (type === 'signup') {
+      emoji = '🚀';
+      statusText = 'NEW REGISTRATION (Success)';
+    } else if (type === 'login') {
+      emoji = '🔑';
+      statusText = 'USER LOGIN';
+    }
+
+    const fullName = data.fullName || data.name || 'N/A';
+    const phone = data.phone || 'N/A';
+    const email = data.email || 'N/A';
+    const source = data.source || 'Website';
+    const url = data.url ? `\n🔗 *URL:* ${data.url}` : '';
+
+    const telegramMsg = `${emoji} *${statusText}*\n━━━━━━━━━━━━━━━━━━\n👤 *Name:* ${fullName}\n📞 *Phone:* ${phone}\n📧 *Email:* ${email}\n📍 *Source:* ${source}${url}\n━━━━━━━━━━━━━━━━━━`;
+
+    const promises = [];
+
+    if (botToken && chatId) {
+      promises.push(
+        axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          chat_id: chatId,
+          text: telegramMsg,
+          parse_mode: 'Markdown'
+        })
+      );
+    } else {
+      console.warn('Telegram env keys missing; skipping Telegram alert');
+    }
+
+    promises.push(
+      sendEmail({
+        to: adminTo,
+        subject: `${emoji} ${statusText}: ${fullName || 'User'}`,
+        html: `<pre style="background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">Details:\nName: ${fullName}\nPhone: ${phone}\nEmail: ${email}\nSource: ${source}${data.url ? `\nURL: ${data.url}` : ''}</pre>`
+      })
+    );
+
+    const results = await Promise.allSettled(promises);
+    results.forEach((r, idx) => {
+      if (r.status === 'rejected') {
+        const channel = idx === 0 && botToken && chatId ? 'Telegram' : 'Email';
+        console.error(`${channel} alert failed:`, r.reason?.message || r.reason);
+      }
+    });
+  } catch (err) {
+    console.error('Alert Error:', err?.message || err);
+  }
+};
+
 // --- DATABASE INITIALIZATION ---
 async function initializeDatabase() {
   try {
@@ -154,6 +219,14 @@ app.post('/api/register', async (req, res) => {
     } catch (emailError) {
       console.error('Email error (signup):', emailError);
     }
+
+    // Instant sync alert for successful signup
+    sendInstantAlert('signup', {
+      fullName,
+      email,
+      phone,
+      source: 'Sign-up Success'
+    });
 
     // FIXED: userId: userId ani pampali (data[0].id kadu)
     return res.status(201).json({ 
@@ -476,6 +549,14 @@ app.post('/api/login', async (req, res) => {
       console.error('Login audit log error:', loginLogError?.message || loginLogError);
     }
 
+    // Instant sync alert for successful login
+    sendInstantAlert('login', {
+      fullName: rows[0].full_name,
+      email: rows[0].email,
+      phone: rows[0].phone,
+      source: 'Login Success'
+    });
+
     res.json({
       success: true,
       userId: rows[0].id,
@@ -522,36 +603,25 @@ app.post('/api/verify-reset-code', async (req, res) => {
 // Partial lead capture: silently store key fields before full form submit
 app.post('/api/partial-lead', express.text({ type: '*/*' }), async (req, res) => {
   try {
-    const { sendEmail } = require('./services/emailService');
+    let data = {};
+    if (typeof req.body === 'string') {
+      try {
+        data = JSON.parse(req.body || '{}');
+      } catch {
+        data = {};
+      }
+    } else if (req.body && typeof req.body === 'object') {
+      data = req.body;
+    }
 
-    const data = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-    console.log('Lead Received:', data);
-
-    // Keep secrets in env, not in code
-    const botToken = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
-    const chatId = String(process.env.TELEGRAM_CHAT_ID || '').trim();
-
-    const telegramMsg = `🚀 *New Partial Lead Alert!*\n━━━━━━━━━━━━━━━━━━\n👤 *Name:* ${data.fullName || data.name || 'Not provided'}\n📞 *Phone:* ${data.phone || 'Not provided'}\n📧 *Email:* ${data.email || 'Not provided'}\n📍 *Page:* ${data.source || data.page || 'Unknown'}\n━━━━━━━━━━━━━━━━━━\nCheck Dashboard for more info.`;
-
-    const adminTo = String(process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim() || 'info@avcareerz.com';
-
-    const emailPromise = sendEmail({
-      to: adminTo,
-      subject: `⚠️ [PARTIAL] Potential Lead: ${data.fullName || data.name || 'Anonymous'}`,
-      html: `<pre style="background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">${JSON.stringify(data, null, 2)}</pre>`
+    sendInstantAlert('partial', {
+      fullName: data.fullName || data.name,
+      phone: data.phone,
+      email: data.email,
+      source: data.source || data.page || 'User Exit',
+      url: data.url
     });
 
-    const telegramPromise = (botToken && chatId)
-      ? axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          chat_id: chatId,
-          text: telegramMsg,
-          parse_mode: 'Markdown'
-        })
-      : Promise.resolve();
-
-    await Promise.all([telegramPromise, emailPromise]);
-
-    console.log('✅ Alert sent to Telegram & Email!');
     return res.sendStatus(200);
   } catch (error) {
     console.error('❌ Error processing lead:', error?.message || error);
