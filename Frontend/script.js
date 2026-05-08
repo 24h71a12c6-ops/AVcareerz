@@ -417,6 +417,10 @@ const apiUrl = (path) => {
 
 // global auth helpers (available everywhere in script)
 const isRegisteredUser = () => !!localStorage.getItem('userEmail');
+const isApplicationCompleted = () => localStorage.getItem('applicationCompleted') === '1';
+const showApplicationCompletedNotice = () => {
+    window.location.href = 'application-completed.html';
+};
 const showRegistrationSection = ({ preferLogin = false } = {}) => {
     const sect = document.getElementById('registration-section');
     if (sect) {
@@ -453,6 +457,14 @@ const updateRegistrationProgressCue = () => {
     const step2 = document.getElementById('regStep2');
     if (!step1 || !step2) return;
 
+    if (isApplicationCompleted()) {
+        step1.textContent = '✅ Step 1: Register (Done)';
+        step1.style.color = '#16a34a';
+        step2.textContent = '✅ Step 2: Application Form (Done)';
+        step2.style.color = '#16a34a';
+        return;
+    }
+
     if (isRegisteredUser()) {
         step1.textContent = '✅ Step 1: Register (Done)';
         step1.style.color = '#16a34a';
@@ -466,6 +478,12 @@ const updateRegistrationProgressCue = () => {
     }
 };
 const syncRegistrationSectionForAuthState = () => {
+    if (isApplicationCompleted()) {
+        hideRegistrationSection();
+        updateRegistrationProgressCue();
+        return;
+    }
+
     if (isRegisteredUser()) {
         hideRegistrationSection();
         updateRegistrationProgressCue();
@@ -1488,6 +1506,11 @@ document.addEventListener("DOMContentLoaded", function () {
         regOverlay.hidden = true;
 
         openRegModal = () => {
+            if (isApplicationCompleted()) {
+                showApplicationCompletedNotice();
+                return;
+            }
+
             // if already signed in, don't show signup modal; take them to step 2
             if (isRegisteredUser()) {
                 window.location.href = 'next-form.html';
@@ -1611,6 +1634,17 @@ document.addEventListener("DOMContentLoaded", function () {
         // Open after ~4-5 seconds on page load ONLY if user is not logged in.
         // If user arrived from another page with #registration-section, handle that immediately.
         if (window.location.hash === '#registration-section') {
+            if (isApplicationCompleted()) {
+                showApplicationCompletedNotice();
+                try {
+                    window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                } catch {
+                    // ignore
+                }
+                hideRegistrationSection();
+                return;
+            }
+
             if (isRegisteredUser()) {
                 // Logged in users: redirect to next form
                 window.location.href = 'next-form.html';
@@ -1621,7 +1655,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else {
             // Auto-open timer only for logged-out users
-            if (!isRegisteredUser()) {
+            if (!isRegisteredUser() && !isApplicationCompleted()) {
                 regModalTimer = setTimeout(openRegModal, OPEN_DELAY_MS);
             } else {
                 // Logged in: ensure section is hidden
@@ -1654,6 +1688,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     regModalTimer = null;
                 }
             }, { once: true });
+        });
+
+        // If the application is already completed, keep users from reopening the form via any register link/button.
+        document.querySelectorAll('a[href*="registration-section"]').forEach((el) => {
+            el.addEventListener('click', (e) => {
+                if (!isApplicationCompleted()) return;
+                e.preventDefault();
+                e.stopPropagation();
+                try { e.stopImmediatePropagation(); } catch { /* ignore */ }
+                window.location.href = 'application-completed.html';
+            }, true);
         });
     }
 });
@@ -2725,6 +2770,7 @@ if (registrationForm) {
 
         try {
             const editMode = sessionStorage.getItem('editRegistration') === '1';
+            const currentUserId = sessionStorage.getItem('currentUserId') || localStorage.getItem('currentUserId') || '';
 
             // Send data to backend
             const response = await fetch(apiUrl(editMode ? '/api/update-registration' : '/api/register'), {
@@ -2736,7 +2782,8 @@ if (registrationForm) {
                     fullName,
                     email,
                     phone,
-                    password
+                    password,
+                    ...(editMode && currentUserId ? { userId: currentUserId } : {})
                 })
             });
 

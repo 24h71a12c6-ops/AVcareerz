@@ -214,6 +214,92 @@ app.post('/api/register', async (req, res) => {
     });
   }
 });
+
+// Update registration API (used by edit mode in the frontend)
+app.put('/api/update-registration', async (req, res) => {
+  try {
+    const { fullName, email, phone, password, userId } = req.body || {};
+
+    const cleanFullName = String(fullName || '').trim();
+    const cleanEmail = String(email || '').trim();
+    const cleanPhone = String(phone || '').trim();
+    const cleanPassword = String(password || '').trim();
+    const emailLc = cleanEmail.toLowerCase();
+    const cleanUserId = String(userId || '').trim();
+
+    if (!cleanFullName || !cleanEmail || !cleanPhone) {
+      return res.status(400).json({ success: false, error: 'Full name, email, and phone are required' });
+    }
+
+    let targetDoc = null;
+
+    if (cleanUserId) {
+      const doc = await db.collection('registrations').doc(cleanUserId).get();
+      if (doc.exists) targetDoc = doc;
+    }
+
+    if (!targetDoc) {
+      let snap = await db.collection('registrations')
+        .where('email_lc', '==', emailLc)
+        .limit(1)
+        .get();
+
+      if (snap.empty) {
+        snap = await db.collection('registrations')
+          .where('email', '==', cleanEmail)
+          .limit(1)
+          .get();
+      }
+
+      if (!snap.empty) {
+        targetDoc = snap.docs[0];
+      }
+    }
+
+    if (!targetDoc) {
+      return res.status(404).json({ success: false, error: 'Registration record not found' });
+    }
+
+    // Prevent accidental duplicate emails if the user changes their address during edit.
+    const currentDocId = targetDoc.id;
+    const duplicateSnap = await db.collection('registrations')
+      .where('email_lc', '==', emailLc)
+      .limit(2)
+      .get();
+
+    const duplicateExists = duplicateSnap.docs.some((doc) => doc.id !== currentDocId);
+    if (duplicateExists) {
+      return res.status(409).json({ success: false, error: 'This email is already registered. Please use a different email.' });
+    }
+
+    const updates = {
+      full_name: cleanFullName,
+      email: cleanEmail,
+      email_lc: emailLc,
+      phone: cleanPhone,
+      updated_at: new Date().toISOString()
+    };
+
+    if (cleanPassword) {
+      updates.password = cleanPassword;
+    }
+
+    await db.collection('registrations').doc(currentDocId).update(updates);
+
+    return res.json({
+      success: true,
+      message: 'Registration updated successfully',
+      userId: currentDocId
+    });
+  } catch (error) {
+    console.error('Update registration error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Registration update failed: ' + error.message
+    });
+  }
+});
+
 // Forgot Password API
 app.post('/api/forgot-password', async (req, res) => {
   try {
@@ -372,6 +458,23 @@ app.post(
       const mapFile = (field) =>
         files[field] && files[field][0] ? files[field][0].buffer : null;
 
+      const fileMeta = (field) => {
+        const file = files[field] && files[field][0] ? files[field][0] : null;
+        if (!file) return null;
+        return {
+          original_name: file.originalname || null,
+          mime_type: file.mimetype || null,
+          size: file.size || null
+        };
+      };
+
+      const uploadedFiles = {
+        resume: fileMeta('resume'),
+        transcripts: fileMeta('transcripts'),
+        passportCopy: fileMeta('passportCopy'),
+        testScoreCard: fileMeta('testScoreCard')
+      };
+
       // insert document into next_form collection
       await db.collection('next_form').add({
         user_id: userIdentifier,
@@ -400,7 +503,10 @@ app.post(
         budgetRange: budgetRange || null,
         fundingSource: fundingSource || null,
         loanStatus: loanStatus || null,
-        declaration: declarationFlag
+        declaration: declarationFlag,
+        uploaded_files: uploadedFiles,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       });
 
       try {

@@ -509,7 +509,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone Number <span class="required">*</span></label>
-                                <input type="tel" id="phone" name="phone" required autocomplete="off">
+                                <input type="tel" id="phone" name="phone" required autocomplete="off" inputmode="numeric" maxlength="10" minlength="10" pattern="[0-9]{10}" title="Enter exactly 10 digits for the phone number.">
                             </div>
                             <div class="form-group">
                                 <label for="email">Email <span class="required">*</span></label>
@@ -812,7 +812,9 @@
     const academicForm = document.getElementById('academicForm');
     const successMessage = document.getElementById('successMessage');
     const passportInput = document.getElementById('passport_id');
+    const phoneInput = document.getElementById('phone');
     const PASSPORT_REGEX = /^[A-Z][0-9]{7}$/;
+    const PHONE_REGEX = /^[0-9]{10}$/;
 
     function normalizePassportInput() {
         if (!passportInput) return;
@@ -839,6 +841,31 @@
         return true;
     }
 
+    function normalizePhoneInput() {
+        if (!phoneInput) return;
+        phoneInput.value = String(phoneInput.value || '').replace(/\D+/g, '').slice(0, 10);
+    }
+
+    function validatePhoneInput() {
+        if (!phoneInput) return true;
+
+        normalizePhoneInput();
+        const phoneValue = String(phoneInput.value || '').trim();
+
+        if (!phoneValue) {
+            phoneInput.setCustomValidity('Phone number is required.');
+            return false;
+        }
+
+        if (!PHONE_REGEX.test(phoneValue)) {
+            phoneInput.setCustomValidity('Phone number must contain exactly 10 digits.');
+            return false;
+        }
+
+        phoneInput.setCustomValidity('');
+        return true;
+    }
+
     if (passportInput) {
         passportInput.addEventListener('input', function () {
             normalizePassportInput();
@@ -851,6 +878,18 @@
         });
     }
 
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function () {
+            normalizePhoneInput();
+            validatePhoneInput();
+        });
+
+        phoneInput.addEventListener('blur', function () {
+            validatePhoneInput();
+            phoneInput.reportValidity();
+        });
+    }
+
     academicForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -858,6 +897,14 @@
         if (!validatePassportInput()) {
             passportInput.reportValidity();
             successMessage.textContent = 'Please enter a valid passport number in format A1234567.';
+            successMessage.style.color = '#ef4444';
+            successMessage.style.display = 'block';
+            return;
+        }
+
+        if (!validatePhoneInput()) {
+            phoneInput.reportValidity();
+            successMessage.textContent = 'Please enter a valid 10-digit phone number.';
             successMessage.style.color = '#ef4444';
             successMessage.style.display = 'block';
             return;
@@ -928,6 +975,12 @@
             const result = await response.json().catch(() => ({}));
             
             if (response.ok && result.success) {
+                try {
+                    localStorage.setItem('applicationCompleted', '1');
+                    sessionStorage.setItem('applicationCompleted', '1');
+                } catch {
+                    // ignore storage failures
+                }
                 window.location.href = 'congrats.html';
             } else {
                 const baseMsg = result.error || 'There was a problem submitting your registration. Please try again.';
