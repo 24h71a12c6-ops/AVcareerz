@@ -4734,14 +4734,10 @@ footer {
         flex-direction: column;
         background: var(--white);
         width: 100%;
-        padding: 3.25rem 1rem 1.25rem;
+        padding: 2rem;
         box-shadow: var(--shadow);
         transition: left 0.3s ease;
         gap: 0;
-        max-height: calc(100vh - 70px);
-        overflow-y: auto;
-        align-items: stretch;
-        position: fixed;
     }
 
     .nav-menu.active {
@@ -4750,12 +4746,7 @@ footer {
 
     .nav-menu > li {
         width: 100%;
-        margin-bottom: 0;
-        border-top: 1px solid rgba(0, 0, 0, 0.06);
-    }
-
-    .nav-menu > li:first-child {
-        border-top: 0;
+        margin-bottom: 1rem;
     }
 
     .nav-menu li a {
@@ -4764,11 +4755,6 @@ footer {
         text-align: left;
         padding: 1rem 0.9rem;
         white-space: normal;
-    }
-
-    .nav-menu .nav-dropdown > a {
-        position: relative;
-        padding-right: 2.2rem;
     }
 
     .nav-menu .nav-dropdown > a::after {
@@ -4807,30 +4793,6 @@ footer {
         padding: 0.85rem 1.75rem;
         text-align: left;
         white-space: normal;
-    }
-
-    .nav-menu .nav-menu-close {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 36px;
-        height: 36px;
-        border: 0;
-        border-radius: 999px;
-        background: rgba(0, 33, 69, 0.08);
-        color: #002145;
-        cursor: pointer;
-        z-index: 3;
-        font-size: 1.05rem;
-    }
-
-    .nav-menu .nav-menu-close:hover,
-    .nav-menu .nav-menu-close:focus-visible {
-        background: rgba(0, 33, 69, 0.14);
-        outline: none;
     }
 
     .hero-line {

@@ -609,14 +609,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const navMenu = document.getElementById('navMenu');
     if (navToggle && navMenu) {
         const spans = Array.from(navToggle.querySelectorAll('span'));
-        const navCloseBtn = document.createElement('button');
-        navCloseBtn.type = 'button';
-        navCloseBtn.className = 'nav-menu-close';
-        navCloseBtn.setAttribute('aria-label', 'Close navigation menu');
-        navCloseBtn.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
-        if (!navMenu.querySelector('.nav-menu-close')) {
-            navMenu.prepend(navCloseBtn);
-        }
 
         const isOpen = () => navMenu.classList.contains('active');
 
@@ -666,12 +658,6 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             e.stopPropagation();
             setOpen(!isOpen());
-        });
-
-        navCloseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setOpen(false);
         });
 
         navToggle.addEventListener('keydown', (e) => {
@@ -2689,32 +2675,8 @@ if (registrationForm) {
     };
 
     const showPostSignupPromptAndRedirect = () => {
-        const title = 'Account Created!';
-        const text = 'Now, please provide your study details to get started.';
-
-        if (window.Swal && typeof window.Swal.fire === 'function') {
-            window.Swal.fire({
-                title,
-                text,
-                icon: 'success',
-                confirmButtonText: 'Continue to Application Form',
-                allowOutsideClick: false,
-                timer: 8000,
-                timerProgressBar: true
-            }).then((result) => {
-                const timerDismiss = window.Swal?.DismissReason?.timer;
-                if (result?.isConfirmed || result?.dismiss === timerDismiss) {
-                    continueToApplicationForm();
-                }
-            });
-            return;
-        }
-
-        // Fallback if SweetAlert isn't loaded
-        showNotification(`${title} ${text} Redirecting to application form...`, 'success');
-        setTimeout(() => {
-            continueToApplicationForm();
-        }, 1200);
+        // Keep the helper for any other callers, but go directly to step 2.
+        continueToApplicationForm();
     };
 
     registrationForm.addEventListener('submit', async (e) => {
@@ -2878,7 +2840,7 @@ if (registrationForm) {
 
                 // 4. Direct next step UX: prompt + auto redirect to application form
                 if (!editMode) {
-                    showPostSignupPromptAndRedirect();
+                    continueToApplicationForm();
                     return;
                 }
 
