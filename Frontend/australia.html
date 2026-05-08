@@ -5,17 +5,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study in Australia - Abroad Vision Careerz</title>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+    <link rel="preload" as="image" href="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/aus1.jpg">
     <link rel="stylesheet" href="styles.css?v=20260322-1">
     <link rel="stylesheet" href="responsive.css?v=20260320-1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --dark-blue: #002147;
+            --orange: #F9A825;
+            --light-gray: #f8f9fa;
+            --text-color: #444;
+        }
+
+        .program-tag {
+            transition: all 0.3s ease;
+        }
+
+        .program-tag:hover,
+        .program-tag:active,
+        .program-tag:focus {
+            background: #F9A825;
+            color: #002147;
+            border-color: #F9A825;
+            cursor: pointer;
+        }
+
+        .country-hero {
+            position: relative;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+        }
+
+        .hero-back-btn {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .hero-back-btn:hover {
+            background: #F9A825;
+            color: #002147;
+            border-color: #F9A825;
+            transform: translateX(-5px);
+        }
+
+        .hero-back-btn i {
+            font-size: 0.8rem;
+        }
+
+        .country-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/aus1.jpg') center center / cover no-repeat;
+            z-index: 1;
+        }
+
+        .country-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 33, 71, 0.6);
+            z-index: 2;
+        }
+
+        .country-hero h1 {
+            position: relative;
+            z-index: 3;
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--dark-blue);
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--orange);
+        }
+
         .why-australia {
             text-align: center;
             padding: 60px 20px;
-            /* a little more space */
             background-color: #f9f9f9;
         }
-
 
         .why-australia p {
             color: #555;
@@ -28,7 +137,6 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
-            /* reduce gap for connected look */
             margin-top: 20px;
         }
 
@@ -36,7 +144,6 @@
             background: #fff;
             border-radius: 15px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-            /* subtle, grounded shadow */
             padding: 30px;
             width: 240px;
             transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
@@ -58,157 +165,28 @@
             font-size: 20px;
             margin-bottom: 12px;
             color: #002147;
-            /* deep blue like Top Universities */
         }
 
         .card p {
             font-size: 15px;
             color: #333;
-            /* slightly darker text for readability */
             line-height: 1.5;
         }
 
         .why-australia .cards-container {
             background-color: rgb(212, 237, 253);
-            /* very light blue background */
-            padding: 90px 0 90px 0;
-            border-radius: 28px;
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: center;
-            gap: 32px;
-            margin-top: 0;
-            width: 100vw;
-            max-width: none;
-            position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
+            padding: 70px 20px;
+            border-radius: 20px;
         }
 
-
-        /* Root Variables for consistent colors */
-        :root {
-            --dark-blue: #002147;
-            --orange: #F9A825;
-            --light-gray: #f8f9fa;
-            --text-color: #444;
-        }
-
-        .country-hero {
-            position: relative;
-            min-height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* ... mee patha styles ... */
-        }
-
-        /* Button on Hero Image */
-        .hero-back-btn {
-            position: absolute;
-            top: 30px;
-            /* Navbar kinda gap */
-            left: 40px;
-            /* Left side padding */
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.15);
-            /* Semi-transparent white */
-            backdrop-filter: blur(10px);
-            /* Modern blur effect */
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .hero-back-btn:hover {
-            background: #F9A825;
-            /* Hover chesthe Orange */
-            color: #002147;
-            /* Navy blue text */
-            border-color: #F9A825;
-            transform: translateX(-5px);
-        }
-
-        .hero-back-btn i {
-            font-size: 0.8rem;
-        }
-
-        /* Hero Content alignment fix */
-        .hero-content {
-            position: relative;
-            z-index: 3;
-            text-align: center;
-        }
-
-        .country-hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: url('https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/aus1.jpg') center center / cover no-repeat;
-            z-index: 1;
-        }
-
-        .country-hero::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 33, 71, 0.6);
-            /* Navy blue tint for hero */
-            z-index: 2;
-        }
-
-        .country-hero h1 {
-            position: relative;
-            z-index: 3;
-            font-size: clamp(2.4rem, 5vw, 4rem);
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        /* Section Title Styling */
-        .section-title {
-            text-align: center;
-            color: #002147;
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: var(--orange);
-        }
-
-        /* Container for 4 boxes in a single line */
         .country-info {
             display: flex;
             flex-wrap: nowrap;
-            /* Forced single line for desktop */
             gap: 20px;
             margin-bottom: 5rem;
             padding: 0 10px;
         }
 
-
-
-        /* University Cards */
         .university-card {
             background: #fff;
             padding: 30px;
@@ -218,11 +196,9 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
-        /* Top Universities alignment */
         .universities-section {
-            padding-left: 0;
+            padding-left: 130px;
         }
-
 
         .program-tag {
             background: #f0f4f8;
@@ -234,37 +210,38 @@
             border: 1px solid #dce4ec;
         }
 
-        /* Register Section Fix */
+        /* Australia page: keep the normal layout but remove the textured/check background */
+        body.country-page .why-australia::before,
+        body.country-page .universities-section::before,
+        body.country-page .register-section::before {
+            content: none;
+            background: none;
+            animation: none;
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
 
+        body.country-page .why-australia,
+        body.country-page .universities-section,
+        body.country-page .register-section {
+            background-image: none;
+            margin-bottom: 60px;
+        }
 
         @media (max-width: 992px) {
             .country-info {
                 grid-template-columns: 1fr;
             }
-        }
 
-        /* Program tag hover effect */
-        .program-tag {
-            transition: all 0.3s ease;
-        }
-
-        .program-tag:hover {
-            background: #F9A825;
-            /* Orange */
-            color: #002147;
-            /* Dark blue text */
-            border-color: #F9A825;
-            cursor: pointer;
-        }
-
-        .universities-section {
-            padding-left: 0;
-            margin-left: -20px;
+            .universities-section {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
         }
     </style>
 </head>
 
-<body>
+<body class="country-page">
     <div class="top-bar">
         <div class="top-left">
             <a class="contact-item" href="mailto:Info@avcareerz.com">
@@ -282,6 +259,7 @@
             <a href="#" class="social-link" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
         </div>
     </div>
+
     <header>
         <nav class="navbar">
             <div class="container">
@@ -333,135 +311,103 @@
         </div>
     </section>
 
-    <section class="country-details">
-        <!-- Why Study in Australia Section (Full Width) -->
-        </div>
-    </section>
     <section class="why-australia">
         <h2 class="section-title">Why Study in Australia</h2>
         <p>Discover the unique advantages of studying in Australia for your education and future.</p>
         <div class="cards-container">
-            <div class="card" style="width: 240px; min-width: 240px;">
+            <div class="card">
                 <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/education-icon.png" alt="">
                 <h3>Top Global Universities</h3>
-                <p>Australia is home to 7 of the world’s top 100 universities, known for academic excellence and
-                    innovation.</p>
+                <p>Australia is home to 7 of the world’s top 100 universities, known for academic excellence and innovation.</p>
             </div>
-            <div class="card" style="width: 240px; min-width: 240px;">
+            <div class="card">
                 <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/flexibility-icon.png" alt="">
                 <h3>Work While You Study</h3>
-                <p>International students can work up to 24 hours per week during semesters and full-time in holidays.
-                </p>
+                <p>International students can work up to 24 hours per week during semesters and full-time in holidays.</p>
             </div>
-            <div class="card" style="width: 240px; min-width: 240px;">
+            <div class="card">
                 <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/research-icon.png" alt="">
                 <h3>Cutting-Edge Research</h3>
                 <p>Australia is a leader in research, with breakthroughs in medicine, science, and technology.</p>
             </div>
-            <div class="card" style="width: 240px; min-width: 240px;">
+            <div class="card">
                 <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/career-icon.png" alt="">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Abroad Vision Careerz</h3>
-                    <p>Guiding Futures Beyond Borders.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="index.html#about">About Us</a></li>
-                        <li><a href="index.html#study">Study Destinations</a></li>
-                        <li><a href="visa-services.html">Visa Services</a></li>
-                        <li><a href="index.html#coaching">Coaching</a></li>
-                        <li><a href="index.html#locations">Contact Us</a></li>
-                        <li><a href="index.html#registration-section">Register Here</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section footer-social">
-                    <h4>Connect With Us</h4>
-                    <div class="social-icons">
-                        <a href="https://www.facebook.com/share/1EzwLW3uG2/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://api.whatsapp.com/send?phone=917036777567&text=Hi%20Abroad%20Vision%20Careerz" target="_blank" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://www.instagram.com/avcareerz/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="https://x.com/avcareerz" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-                            <span class="program-tag">Sciences</span>
-                            <span class="program-tag">Law</span>
-                        </div>
-                    </div>
-                    <div class="university-card">
-                        <h3>University of Melbourne</h3>
-                        <p class="location"><i class="fas fa-map-marker-alt"></i> Melbourne, Victoria</p>
-                        <p>Australia's top-ranked university with strong international reputation. Located in one of the
-                            world's most liveable cities.</p>
-                        <div class="programs">
-                            <span class="program-tag">Medicine</span>
-                            <span class="program-tag">Law</span>
-                            <span class="program-tag">Business</span>
-                            <span class="program-tag">Engineering</span>
-                        </div>
-                    </div>
-                    <div class="university-card">
-                        <h3>University of Sydney</h3>
-                        <p class="location"><i class="fas fa-map-marker-alt"></i> Sydney, New South Wales</p>
-                        <p>Australia's oldest university with beautiful sandstone architecture. Strong alumni network
-                            and industry connections.</p>
-                        <div class="programs">
-                            <span class="program-tag">Business</span>
-                            <span class="program-tag">Engineering</span>
-                            <span class="program-tag">Medicine</span>
-                            <span class="program-tag">Architecture</span>
-                        </div>
-                    </div>
-                    <div class="university-card">
-                        <h3>University of Queensland (UQ)</h3>
-                        <p class="location"><i class="fas fa-map-marker-alt"></i> Brisbane, Queensland</p>
-                        <p>Member of prestigious Group of Eight. Known for research excellence and beautiful campus.</p>
-                        <div class="programs">
-                            <span class="program-tag">Biotechnology</span>
-                            <span class="program-tag">Engineering</span>
-                            <span class="program-tag">Business</span>
-                            <span class="program-tag">Health Sciences</span>
-                        </div>
-                    </div>
-                    <div class="university-card">
-                        <h3>University of New South Wales (UNSW)</h3>
-                        <p class="location"><i class="fas fa-map-marker-alt"></i> Sydney, New South Wales</p>
-                        <p>Leading university for engineering and technology. Strong industry partnerships and
-                            innovation focus.</p>
-                        <div class="programs">
-                            <span class="program-tag">Engineering</span>
-                            <span class="program-tag">Business</span>
-                            <span class="program-tag">Computer Science</span>
-                            <span class="program-tag">Law</span>
-                        </div>
-                    </div>
-                    <div class="university-card">
-                        <h3>Monash University</h3>
-                        <p class="location"><i class="fas fa-map-marker-alt"></i> Melbourne, Victoria</p>
-                        <p>Largest university in Australia. Global presence with campuses in multiple countries.</p>
-                        <div class="programs">
-                            <span class="program-tag">Pharmacy</span>
-                            <span class="program-tag">Engineering</span>
-                            <span class="program-tag">Business</span>
-                            <span class="program-tag">Medicine</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="register-section">
-                <h2>Ready to Study in Australia?</h2>
-                <p>Start your journey today with Abroad Vision Careerz</p>
-                <a href="index.html#registration-section" class="register-cta-button">
-                    <i class="fas fa-arrow-right"></i> Register Now
-                </a>
+                <h3>Career Opportunities</h3>
+                <p>Strong post-study pathways and industry connections help international students build their future.</p>
             </div>
         </div>
     </section>
+
+    <div class="universities-section">
+        <h2 class="section-title">Top Universities in Australia</h2>
+        <div class="university-card">
+            <h3>University of Melbourne</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Melbourne, Victoria</p>
+            <p>Australia's top-ranked university with a strong international reputation and a beautiful city campus.</p>
+            <div class="programs">
+                <span class="program-tag">Medicine</span>
+                <span class="program-tag">Law</span>
+                <span class="program-tag">Business</span>
+                <span class="program-tag">Engineering</span>
+            </div>
+        </div>
+        <div class="university-card">
+            <h3>University of Sydney</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Sydney, New South Wales</p>
+            <p>Australia's oldest university, known for its iconic sandstone architecture and strong alumni network.</p>
+            <div class="programs">
+                <span class="program-tag">Business</span>
+                <span class="program-tag">Engineering</span>
+                <span class="program-tag">Medicine</span>
+                <span class="program-tag">Architecture</span>
+            </div>
+        </div>
+        <div class="university-card">
+            <h3>University of Queensland (UQ)</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Brisbane, Queensland</p>
+            <p>Member of the prestigious Group of Eight and well known for research excellence and innovation.</p>
+            <div class="programs">
+                <span class="program-tag">Biotechnology</span>
+                <span class="program-tag">Engineering</span>
+                <span class="program-tag">Business</span>
+                <span class="program-tag">Health Sciences</span>
+            </div>
+        </div>
+        <div class="university-card">
+            <h3>University of New South Wales (UNSW)</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Sydney, New South Wales</p>
+            <p>Leading university for engineering and technology with strong industry partnerships and innovation focus.</p>
+            <div class="programs">
+                <span class="program-tag">Engineering</span>
+                <span class="program-tag">Business</span>
+                <span class="program-tag">Computer Science</span>
+                <span class="program-tag">Law</span>
+            </div>
+        </div>
+        <div class="university-card">
+            <h3>Monash University</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Melbourne, Victoria</p>
+            <p>One of Australia's largest universities, with a global presence and campuses in multiple countries.</p>
+            <div class="programs">
+                <span class="program-tag">Pharmacy</span>
+                <span class="program-tag">Engineering</span>
+                <span class="program-tag">Business</span>
+                <span class="program-tag">Medicine</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="register-section">
+        <h2>Ready to Study in Australia?</h2>
+        <p>Start your journey today with Abroad Vision Careerz</p>
+        <a href="index.html#registration-section" class="register-cta-button">
+            <i class="fas fa-arrow-right"></i> Register Now
+        </a>
+    </div>
     <br>
+
+    </br>
+
     <footer>
         <div class="container">
             <div class="footer-content">

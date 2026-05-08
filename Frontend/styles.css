@@ -3685,6 +3685,118 @@ header {
     max-width: 900px !important;
 }
 
+/* Shared country-page treatment: subtle textured background like About Us */
+body.country-page {
+    background: #f7fbff;
+}
+
+body.country-page .why-usa,
+body.country-page .why-uk,
+body.country-page .why-canada,
+body.country-page .why-australia,
+body.country-page .why-germany,
+body.country-page .why-newzealand,
+body.country-page .why-italy,
+body.country-page .why-turkey,
+body.country-page .universities-section {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #fff;
+}
+
+body.country-page .why-usa::before,
+body.country-page .why-uk::before,
+body.country-page .why-canada::before,
+body.country-page .why-australia::before,
+body.country-page .why-germany::before,
+body.country-page .why-newzealand::before,
+body.country-page .why-italy::before,
+body.country-page .why-turkey::before,
+body.country-page .universities-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(0, 33, 71, 0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 33, 71, 0.09) 1px, transparent 1px),
+        linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.36) 50%, transparent 62%);
+    background-size: 40px 40px, 40px 40px, 240% 240%;
+    background-position: 0 0, 0 0, 120% 0;
+    opacity: 0.9;
+    mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+    animation: countryGridShineSweep 7s linear infinite;
+}
+
+body.country-page .why-usa > *,
+body.country-page .why-uk > *,
+body.country-page .why-canada > *,
+body.country-page .why-australia > *,
+body.country-page .why-germany > *,
+body.country-page .why-newzealand > *,
+body.country-page .why-italy > *,
+body.country-page .why-turkey > *,
+body.country-page .universities-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+body.country-page .register-section {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+body.country-page .register-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 62%);
+    background-size: 42px 42px, 42px 42px, 240% 240%;
+    background-position: 0 0, 0 0, 120% 0;
+    opacity: 0.7;
+    mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.82) 82%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.82) 82%, transparent 100%);
+    animation: countryGridShineSweep 7s linear infinite;
+}
+
+body.country-page .register-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes countryGridShineSweep {
+    0% {
+        background-position: 0 0, 0 0, 120% 0;
+    }
+    100% {
+        background-position: 0 0, 0 0, -40% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.country-page .why-usa::before,
+    body.country-page .why-uk::before,
+    body.country-page .why-canada::before,
+    body.country-page .why-australia::before,
+    body.country-page .why-germany::before,
+    body.country-page .why-newzealand::before,
+    body.country-page .why-italy::before,
+    body.country-page .why-turkey::before,
+    body.country-page .universities-section::before,
+    body.country-page .register-section::before {
+        animation: none;
+    }
+}
+
 .nav-menu li a {
     text-decoration: none;
     color: var(--text-dark);
@@ -4622,18 +4734,103 @@ footer {
         flex-direction: column;
         background: var(--white);
         width: 100%;
-        padding: 2rem;
+        padding: 3.25rem 1rem 1.25rem;
         box-shadow: var(--shadow);
         transition: left 0.3s ease;
         gap: 0;
+        max-height: calc(100vh - 70px);
+        overflow-y: auto;
+        align-items: stretch;
+        position: fixed;
     }
 
     .nav-menu.active {
         left: 0;
     }
 
-    .nav-menu li {
-        margin-bottom: 1rem;
+    .nav-menu > li {
+        width: 100%;
+        margin-bottom: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .nav-menu > li:first-child {
+        border-top: 0;
+    }
+
+    .nav-menu li a {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 1rem 0.9rem;
+        white-space: normal;
+    }
+
+    .nav-menu .nav-dropdown > a {
+        position: relative;
+        padding-right: 2.2rem;
+    }
+
+    .nav-menu .nav-dropdown > a::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    .nav-menu .dropdown-menu {
+        display: none;
+        position: static;
+        min-width: 0;
+        max-height: none;
+        overflow: visible;
+        border: 0;
+        box-shadow: none;
+        padding: 0 0 0.4rem 0;
+        margin: 0;
+        background: transparent;
+        width: 100%;
+    }
+
+    .nav-menu .nav-dropdown.is-open > .dropdown-menu {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .nav-menu .dropdown-menu li {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .nav-menu .dropdown-menu li a {
+        width: 100%;
+        display: block;
+        padding: 0.85rem 1.75rem;
+        text-align: left;
+        white-space: normal;
+    }
+
+    .nav-menu .nav-menu-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 999px;
+        background: rgba(0, 33, 69, 0.08);
+        color: #002145;
+        cursor: pointer;
+        z-index: 3;
+        font-size: 1.05rem;
+    }
+
+    .nav-menu .nav-menu-close:hover,
+    .nav-menu .nav-menu-close:focus-visible {
+        background: rgba(0, 33, 69, 0.14);
+        outline: none;
     }
 
     .hero-line {
@@ -9231,18 +9428,6 @@ body.section-focus-mode .page-section.is-blurred {
     filter: none !important;
     opacity: 1 !important;
     pointer-events: auto !important;
-}
-
-/* Faster initial render: defer paint work for below-the-fold sections */
-body > section {
-    content-visibility: auto;
-    contain-intrinsic-size: 900px;
-}
-
-body > section.hero,
-body > section#about {
-    content-visibility: visible;
-    contain-intrinsic-size: auto;
 }
 
 /* Mobile GPU relief: disable decorative custom cursor */

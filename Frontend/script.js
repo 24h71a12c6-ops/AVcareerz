@@ -609,6 +609,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const navMenu = document.getElementById('navMenu');
     if (navToggle && navMenu) {
         const spans = Array.from(navToggle.querySelectorAll('span'));
+        const navCloseBtn = document.createElement('button');
+        navCloseBtn.type = 'button';
+        navCloseBtn.className = 'nav-menu-close';
+        navCloseBtn.setAttribute('aria-label', 'Close navigation menu');
+        navCloseBtn.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+        if (!navMenu.querySelector('.nav-menu-close')) {
+            navMenu.prepend(navCloseBtn);
+        }
+
         const isOpen = () => navMenu.classList.contains('active');
 
         const closeSubmenus = () => {
@@ -657,6 +666,12 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             e.stopPropagation();
             setOpen(!isOpen());
+        });
+
+        navCloseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpen(false);
         });
 
         navToggle.addEventListener('keydown', (e) => {
@@ -1349,11 +1364,20 @@ document.addEventListener("DOMContentLoaded", function () {
     if (googleBtnContainer) {
         // Keep a visible button even if the official Google widget can't render.
         setFallbackVisible(true);
+        let googleInitAttempts = 0;
+        const MAX_GOOGLE_INIT_ATTEMPTS = 20;
 
         const initGoogle = () => {
             if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
-                console.warn('Google Identity Services script not loaded yet. Retrying...');
-                setTimeout(initGoogle, 150);
+                googleInitAttempts += 1;
+                if (googleInitAttempts < MAX_GOOGLE_INIT_ATTEMPTS) {
+                    console.warn('Google Identity Services script not loaded yet. Retrying...');
+                    setTimeout(initGoogle, 150);
+                    return;
+                }
+
+                console.warn('Google Identity Services unavailable after repeated attempts. Using fallback only.');
+                setFallbackVisible(true);
                 return;
             }
 
@@ -2119,10 +2143,30 @@ document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
         const imgs = inner.querySelectorAll('img');
         if (imgs.length === 0) { callback(); return; }
         let loaded = 0;
+        let done = false;
+        const finish = () => {
+            if (done) return;
+            done = true;
+            callback();
+        };
         imgs.forEach(img => {
-            if (img.complete) loaded++; else img.addEventListener('load', () => { loaded++; if (loaded === imgs.length) callback(); });
+            if (img.complete) {
+                loaded++;
+                if (loaded === imgs.length) finish();
+                return;
+            }
+
+            img.addEventListener('load', () => {
+                loaded++;
+                if (loaded === imgs.length) finish();
+            }, { once: true });
+
+            img.addEventListener('error', () => {
+                loaded++;
+                if (loaded === imgs.length) finish();
+            }, { once: true });
         });
-        setTimeout(callback, 800); // fallback
+        setTimeout(finish, 800); // fallback
     }
 
     window.addEventListener('resize', () => { /* container rect used each frame */ });
