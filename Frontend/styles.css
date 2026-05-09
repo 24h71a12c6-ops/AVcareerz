@@ -1406,9 +1406,9 @@ html body {
     align-items: center;
     width: 100%;
     margin: 0 auto;
-    padding: 0 90px 0 90px;
+    padding: 0 clamp(16px, 3vw, 48px);
     max-width: 100%;
-    gap: 40px;
+    gap: clamp(12px, 2vw, 28px);
 }
 
 /* Navbar layout: center container and vertically center items */
@@ -1418,7 +1418,8 @@ html body {
     gap: 12px;
     text-decoration: none;
     color: inherit;
-    margin-left: 32px;
+    margin-left: 0;
+    min-width: 0;
 }
 
 @media (max-width: 900px) {
@@ -1447,6 +1448,8 @@ html body {
     margin: 0;
     padding: 0;
     justify-content: center;
+    flex-wrap: nowrap;
+    min-width: 0;
 }
 
 .nav-menu li {
@@ -1456,13 +1459,14 @@ html body {
 .nav-menu li a {
     display: inline-flex;
     align-items: center;
-    padding: 7px 11px;
+    padding: 8px 12px;
     text-decoration: none;
     color: #22335a;
     font-family: 'Segoe UI', 'Arial', sans-serif;
-    font-size: 15px;
+    font-size: 0.96rem;
     font-weight: 500;
     letter-spacing: 0.01em;
+    white-space: nowrap;
 }
 
 /* Navbar right-side actions (profile icon + hamburger) */
@@ -1470,7 +1474,8 @@ html body {
     margin-left: auto;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    flex: 0 0 auto;
 }
 
 /* Profile icon + dropdown */
@@ -1481,8 +1486,8 @@ html body {
 }
 
 .nav-profile .profile-trigger {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 999px;
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: #ffffff;
@@ -1535,7 +1540,7 @@ html body {
     top: calc(100% + 10px);
     right: 0;
     /* Bigger dropdown card */
-    width: min(380px, calc(100vw - 24px));
+    width: min(360px, calc(100vw - 24px));
     min-width: 320px;
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.08);
@@ -8263,7 +8268,8 @@ footer {
 
 #about.about-final-revised .info-header {
     display: flex;
-    gap: 16px;
+    flex-direction: column;
+    gap: 12px;
     align-items: flex-start;
 }
 
@@ -8289,7 +8295,7 @@ footer {
 }
 
 #about.about-final-revised .info-header p {
-    margin: 4px 0 0;
+    margin: 0;
     color: #8b8f97;
     font-size: 0.98rem;
 }
@@ -8308,20 +8314,61 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 100%;
+    max-width: 620px;
 }
 
 #about.about-final-revised .feature-list-premium li {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 22px 280px minmax(0, 1fr);
+    column-gap: 10px;
+    align-items: start;
     color: #4d4f57;
     line-height: 1.5;
-    font-size: 1.05rem;
+    font-size: 0.98rem;
 }
 
 #about.about-final-revised .feature-list-premium li i {
     color: var(--orange);
     font-size: 1rem;
+}
+
+#about.about-final-revised .feature-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: right;
+    white-space: nowrap;
+}
+
+#about.about-final-revised .feature-label strong {
+    display: inline;
+}
+
+#about.about-final-revised .feature-copy {
+    min-width: 0;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    display: block;
+    padding-top: 2px;
+}
+
+@media (max-width: 768px) {
+    #about.about-final-revised .feature-list-premium li {
+        grid-template-columns: 22px 1fr;
+        align-items: start;
+    }
+
+    #about.about-final-revised .feature-label {
+        justify-content: flex-start;
+        text-align: left;
+        white-space: normal;
+    }
+
+    #about.about-final-revised .feature-copy {
+        grid-column: 2;
+    }
 }
 
 #about.about-final-revised .about-highlights-massive {

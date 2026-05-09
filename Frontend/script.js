@@ -458,7 +458,7 @@ const updateRegistrationProgressCue = () => {
     if (!step1 || !step2) return;
 
     if (isApplicationCompleted()) {
-        step1.textContent = '✅ Step 1: Register (Done)';
+        step1.textContent = '✅ Step 1: Register Form (Done)';
         step1.style.color = '#16a34a';
         step2.textContent = '✅ Step 2: Application Form (Done)';
         step2.style.color = '#16a34a';
@@ -466,14 +466,14 @@ const updateRegistrationProgressCue = () => {
     }
 
     if (isRegisteredUser()) {
-        step1.textContent = '✅ Step 1: Register (Done)';
+        step1.textContent = '✅ Step 1: Register Form (Done)';
         step1.style.color = '#16a34a';
-        step2.textContent = '🚀 Step 2: Complete Study Details';
-        step2.style.color = '#dc2626';
+        step2.textContent = '⏳ Step 2: Application Form';
+        step2.style.color = '#f59e0b';
     } else {
-        step1.textContent = '✅ Step 1: Register';
+        step1.textContent = '✅ Step 1: Register Form';
         step1.style.color = '#16a34a';
-        step2.textContent = '⏳ Step 2: Study Details';
+        step2.textContent = '⏳ Step 2: Application Form';
         step2.style.color = '#f59e0b';
     }
 };
@@ -627,8 +627,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const navMenu = document.getElementById('navMenu');
     if (navToggle && navMenu) {
         const spans = Array.from(navToggle.querySelectorAll('span'));
+        const DESKTOP_COMPACT_MAX_WIDTH = 1440;
 
         const isOpen = () => navMenu.classList.contains('active');
+        const isDesktopCompact = () => document.body.classList.contains('nav-desktop-collapsed');
 
         const closeSubmenus = () => {
             navMenu.querySelectorAll('.nav-dropdown.is-open').forEach((li) => li.classList.remove('is-open'));
@@ -663,6 +665,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         };
 
+        const syncDesktopNavMode = () => {
+            const shouldCollapse = window.innerWidth >= 769 && window.innerWidth <= DESKTOP_COMPACT_MAX_WIDTH;
+            const wasCollapsed = isDesktopCompact();
+            document.body.classList.toggle('nav-desktop-collapsed', shouldCollapse);
+
+            // If we changed modes, close the menu so the layout can recalculate cleanly.
+            if (wasCollapsed !== shouldCollapse) {
+                setOpen(false);
+            }
+        };
+
         // a11y defaults
         if (!navToggle.hasAttribute('role')) navToggle.setAttribute('role', 'button');
         if (!navToggle.hasAttribute('tabindex')) navToggle.setAttribute('tabindex', '0');
@@ -671,6 +684,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Ensure icon state matches initial menu state
         syncHamburgerIcon(isOpen());
+        syncDesktopNavMode();
 
         navToggle.addEventListener('click', (e) => {
             e.preventDefault();
@@ -726,7 +740,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 trigger.__submenuBound = true;
 
                 trigger.addEventListener('click', (e) => {
-                    const shouldIntercept = window.innerWidth <= 900 || navMenu.classList.contains('active');
+                    const shouldIntercept = window.innerWidth <= 900 || navMenu.classList.contains('active') || isDesktopCompact();
                     if (!shouldIntercept) return;
                     e.preventDefault();
                     // Important: also stop other click handlers on this same element
@@ -746,7 +760,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // If viewport becomes desktop, close the mobile menu
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && isOpen()) setOpen(false);
+            syncDesktopNavMode();
+            if (window.innerWidth > 768 && isOpen() && !isDesktopCompact()) setOpen(false);
             bindMobileSubmenu();
         });
     }

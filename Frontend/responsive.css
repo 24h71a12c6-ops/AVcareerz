@@ -20,6 +20,17 @@
 		max-width: 100%;
 		height: auto;
 	}
+
+	/* Prevent long content blocks from forcing overflow on desktops */
+	.container,
+	.hero-content,
+	.destinations-wrapper,
+	.destinations-layout,
+	.services-premium-section .container,
+	.visa-types-grid,
+	.services-big-grid {
+		min-width: 0;
+	}
 }
 
 /* ------------------------------
@@ -45,6 +56,14 @@
 	}
 }
 
+@media (min-width: 1680px) {
+	.container {
+		max-width: 1360px;
+		padding-left: 48px;
+		padding-right: 48px;
+	}
+}
+
 /* ------------------------------
 	 Navbar (desktop widths)
 	 Fix: logo/menu/profile overlap
@@ -54,10 +73,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: 18px;
+		gap: clamp(12px, 1.5vw, 24px);
 		/* Override large padding from styles.css (90px) that causes nav items to wrap */
-		padding-left: 32px;
-		padding-right: 32px;
+		padding-left: clamp(16px, 2vw, 40px);
+		padding-right: clamp(16px, 2vw, 40px);
 		flex-wrap: nowrap;
 		min-width: 0;
 	}
@@ -67,10 +86,25 @@
 		min-width: 0;
 		/* styles.css adds left margin; on desktop we rely on container padding instead */
 		margin-left: 0;
+		gap: 10px;
 	}
 
 	.logo-text {
 		min-width: 0;
+	}
+
+	.navbar-logo-img {
+		height: clamp(38px, 3vw, 54px);
+		width: auto;
+	}
+
+	.logo-name {
+		font-size: clamp(1.2rem, 1.6vw, 1.8rem);
+	}
+
+	.logo-tagline {
+		font-size: clamp(0.78rem, 0.8vw, 0.95rem);
+		white-space: nowrap;
 	}
 
 	.nav-menu {
@@ -78,33 +112,219 @@
 		min-width: 0;
 		justify-content: center;
 		flex-wrap: nowrap;
-		gap: 1.1rem;
+		gap: clamp(0.5rem, 1vw, 1.1rem);
 		margin-left: 0;
 	}
 
 	/* Keep every nav item on the same line */
 	.nav-menu li a {
 		white-space: nowrap;
-		padding: 10px 15px;
-		font-size: 1.02rem;
+		padding: 9px 12px;
+		font-size: clamp(0.9rem, 0.92vw, 1.02rem);
 		font-weight: 600;
 		border-radius: 10px;
 	}
 
+	.nav-right {
+		gap: clamp(8px, 1vw, 14px);
+	}
+
 	.nav-profile .profile-trigger {
-		width: 44px;
-		height: 44px;
+		width: 42px;
+		height: 42px;
+	}
+}
+
+@media (min-width: 769px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 720px);
+		max-width: 720px;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		white-space: nowrap;
+		flex-wrap: nowrap;
+		font-size: clamp(0.82rem, 0.9vw, 0.95rem);
+		line-height: 1.35;
+	}
+
+	#about.about-final-revised .feature-label,
+	#about.about-final-revised .feature-copy {
+		display: inline;
+		white-space: nowrap;
+	}
+
+	#about.about-final-revised .feature-label {
+		justify-content: flex-start;
+		text-align: left;
+		min-width: max-content;
+	}
+
+	#about.about-final-revised .feature-copy {
+		min-width: max-content;
+		overflow: visible;
+		text-overflow: clip;
+	}
+
+	#about.about-final-revised .feature-colon {
+		display: inline-block;
+		width: auto;
+		text-align: center;
+	}
+
+	body.nav-desktop-collapsed .navbar .container {
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	body.nav-desktop-collapsed .logo {
+		gap: 8px;
+	}
+
+	body.nav-desktop-collapsed .navbar-logo-img {
+		height: 38px;
+	}
+
+	body.nav-desktop-collapsed .logo-name {
+		font-size: 1.22rem;
+	}
+
+	body.nav-desktop-collapsed .logo-tagline {
+		display: none;
+	}
+
+	body.nav-desktop-collapsed .nav-menu {
+		display: none !important;
+	}
+
+	body.nav-desktop-collapsed .nav-toggle {
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
+	}
+
+	body.nav-desktop-collapsed .nav-right {
+		gap: 8px;
+	}
+
+	body.nav-desktop-collapsed .nav-profile .profile-trigger {
+		width: 38px;
+		height: 38px;
+	}
+
+	body.nav-desktop-collapsed .nav-toggle span {
+		background: #002145 !important;
+	}
+
+	body.nav-desktop-collapsed #navMenu {
+		display: none !important;
+		position: fixed !important;
+		top: 76px !important;
+		right: 16px !important;
+		left: auto !important;
+		width: min(86vw, 340px) !important;
+		max-height: calc(100vh - 92px) !important;
+		overflow-y: auto;
+		background: rgba(255, 255, 255, 0.94) !important;
+		backdrop-filter: blur(14px) !important;
+		-webkit-backdrop-filter: blur(14px) !important;
+		border: 1px solid rgba(15, 23, 42, 0.08) !important;
+		box-shadow: 0 18px 50px rgba(2, 6, 23, 0.22) !important;
+		border-radius: 14px !important;
+		padding: 8px 0 !important;
+		margin: 0 !important;
+		z-index: 999999 !important;
+	}
+
+	body.nav-desktop-collapsed #navMenu.active {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 0 !important;
+	}
+
+	body.nav-desktop-collapsed #navMenu > li {
+		width: 100%;
+	}
+
+	body.nav-desktop-collapsed #navMenu > li + li {
+		border-top: 1px solid rgba(15, 23, 42, 0.06);
+	}
+
+	body.nav-desktop-collapsed #navMenu > li > a {
+		display: block;
+		width: 100%;
+		padding: 12px 16px;
+		text-align: left;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	body.nav-desktop-collapsed #navMenu .nav-dropdown > a::after {
+		content: none !important;
+		display: none !important;
+	}
+
+	body.nav-desktop-collapsed #navMenu .dropdown-menu {
+		display: none !important;
+		position: static !important;
+		min-width: 0;
+		max-height: none;
+		overflow: visible;
+		border: 0;
+		box-shadow: none;
+		padding: 6px 0 10px 0;
+		margin: 0;
+		background: transparent !important;
+		width: 100%;
+	}
+
+	body.nav-desktop-collapsed #navMenu .nav-dropdown.is-open > .dropdown-menu {
+		display: flex !important;
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	body.nav-desktop-collapsed #navMenu .dropdown-menu li {
+		width: 100%;
+		margin-bottom: 0;
+	}
+
+	body.nav-desktop-collapsed #navMenu .dropdown-menu li a {
+		display: block;
+		width: 100%;
+		padding: 0.85rem 1.5rem;
+		font-weight: 600;
+	}
+}
+
+@media (min-width: 1024px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 760px);
+		max-width: 760px;
 	}
 }
 
 /* Smaller desktops (1024–1280): tighten spacing so nothing gets cut */
 @media (min-width: 1024px) and (max-width: 1280px) {
+	.navbar .container {
+		padding-left: 14px;
+		padding-right: 14px;
+		gap: 10px;
+	}
+
+	.logo {
+		gap: 8px;
+	}
+
 	.navbar-logo-img {
-		height: 40px;
+		height: 38px;
 	}
 
 	.logo-name {
-		font-size: 1.45rem;
+		font-size: 1.25rem;
 	}
 
 	.logo-tagline {
@@ -112,31 +332,44 @@
 	}
 
 	.nav-menu {
-		gap: 0.9rem;
+		gap: 0.55rem;
 	}
 
 	.nav-menu li a {
-		padding: 8px 12px;
-		font-size: 0.95rem;
+		padding: 7px 9px;
+		font-size: 0.88rem;
+	}
+
+	.nav-right {
+		gap: 8px;
+	}
+
+	.nav-profile .profile-trigger {
+		width: 38px;
+		height: 38px;
 	}
 }
 
 /* Mid-size desktops (1281–1500): avoid wrapping (e.g. "Register Here" dropping to next line) */
 @media (min-width: 1281px) and (max-width: 1500px) {
 	.nav-menu {
-		gap: 0.85rem;
+		gap: 0.9rem;
 	}
 
 	.nav-menu li a {
-		padding: 8px 12px;
-		font-size: 1rem;
+		padding: 8px 11px;
+		font-size: 0.98rem;
 	}
 }
 
 /* Large desktops (>=1600): allow a bit more breathing room */
 @media (min-width: 1600px) {
 	.nav-menu {
-		gap: 1.35rem;
+		gap: 1rem;
+	}
+
+	.nav-menu li a {
+		padding: 9px 13px;
 	}
 }
 
@@ -145,11 +378,11 @@
 	 ------------------------------ */
 @media (min-width: 1024px) {
 	.hero {
-		min-height: 640px;
+		min-height: 620px;
 	}
 
 	.hero-content {
-		max-width: 1200px;
+		max-width: 1240px;
 		margin-left: auto;
 		margin-right: auto;
 	}
@@ -159,6 +392,57 @@
 	 Common grids (desktop sizing)
 	 Keeps cards from becoming too wide on big screens.
 	 ------------------------------ */
+@media (min-width: 769px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 680px);
+		max-width: 680px;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		grid-template-columns: 22px clamp(230px, 24vw, 300px) minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 1023px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 620px);
+		max-width: 620px;
+		align-items: center;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		gap: 4px;
+		white-space: normal;
+		font-size: 0.96rem;
+		line-height: 1.45;
+	}
+
+	#about.about-final-revised .feature-label,
+	#about.about-final-revised .feature-copy {
+		display: block;
+		white-space: normal;
+	}
+
+	#about.about-final-revised .feature-label {
+		text-align: center;
+	}
+
+	#about.about-final-revised .feature-colon {
+		display: inline;
+		width: auto;
+	}
+
+	#about.about-final-revised .feature-copy {
+		padding-top: 0;
+		max-width: 100%;
+	}
+}
+
 @media (min-width: 1024px) {
 	.destinations-grid,
 	.cards-container,
@@ -166,6 +450,110 @@
 	.why-choose-grid,
 	.visa-types-grid {
 		grid-auto-rows: auto;
+	}
+
+	/* Shared desktop card spacing so content breathes on laptops and wide monitors */
+	.section-title,
+	.hero-title,
+	.hero-description,
+	.description-box,
+	.page-heading,
+	.footer-content {
+		max-width: 100%;
+	}
+
+	/* About bullets: keep the same left edge and centered colon alignment on all desktops */
+}
+
+@media (min-width: 1280px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 720px);
+		max-width: 720px;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		grid-template-columns: 22px clamp(260px, 22vw, 340px) minmax(0, 1fr);
+	}
+}
+
+@media (min-width: 1600px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 760px);
+		max-width: 760px;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		grid-template-columns: 22px clamp(280px, 20vw, 360px) minmax(0, 1fr);
+	}
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+	.services-big-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 18px;
+	}
+
+	.visa-types-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 28px 28px;
+		justify-items: center;
+	}
+
+	.destinations-layout {
+		grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+		gap: 1.8rem;
+	}
+
+	.services-premium-section .container {
+		width: min(90%, 1180px);
+	}
+
+	.description-box {
+		max-width: 100%;
+		margin-left: 0;
+	}
+}
+
+@media (min-width: 1280px) and (max-width: 1599px) {
+	.services-big-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 20px;
+	}
+
+	.visa-types-grid {
+		grid-template-columns: repeat(3, minmax(0, 300px));
+		gap: 36px 32px;
+	}
+
+	.destinations-layout {
+		grid-template-columns: minmax(620px, 1.05fr) minmax(380px, 0.95fr);
+		gap: 2rem;
+	}
+
+	.description-box {
+		max-width: 100%;
+		margin-left: 0;
+	}
+}
+
+@media (min-width: 1600px) {
+	.services-big-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 24px;
+	}
+
+	.visa-types-grid {
+		grid-template-columns: repeat(3, minmax(300px, 320px));
+		gap: 40px;
+	}
+
+	.destinations-layout {
+		grid-template-columns: minmax(700px, 1.08fr) minmax(420px, 0.92fr);
+		gap: 2.5rem;
+	}
+
+	.description-box {
+		margin-left: 0;
 	}
 }
 
@@ -193,6 +581,13 @@
 	#navToggle span {
 		display: block !important;
 		background-color: #002145 !important;
+	}
+
+	/* Keep desktop-only layout helpers from creating awkward widths if a page is opened slightly below desktop */
+	.services-big-grid,
+	.visa-types-grid,
+	.destinations-layout {
+		grid-template-columns: 1fr !important;
 	}
 }
 
