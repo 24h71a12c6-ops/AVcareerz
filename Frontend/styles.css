@@ -2309,6 +2309,12 @@ html body {
     background-attachment: fixed;
 }
 
+@media (max-width: 992px) {
+    .services-premium-section {
+        background-attachment: scroll;
+    }
+}
+
 /* Overlay color - Ippudu idi graduation girl image paina untundi */
 .background-overlay {
     position: absolute;

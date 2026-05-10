@@ -1233,6 +1233,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1';
 
+            if (isApplicationCompleted() && !forceOpenRegistration) {
+                e.preventDefault();
+                window.location.href = 'application-completed.html';
+                return;
+            }
+
             // After signup, the "Register Here" CTA should open the next form.
             // Keep pre-signup behavior (scroll/open modal) for new users.
             // In edit mode, allow opening the registration modal even for registered users.
@@ -1250,6 +1256,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Special rule: navbar "Register Here"
             if (targetId === 'registration-section') {
+                if (isApplicationCompleted() && !forceOpenRegistration) {
+                    window.location.href = 'application-completed.html';
+                    return;
+                }
+
                 if (isRegisteredUser() && !forceOpenRegistration) {
                     window.location.href = 'next-form.html';
                     return;
@@ -1295,6 +1306,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 4. SCROLL OPTIMIZATION (Throttle)
     let isScrolling = false;
+    let lastNavbarCompactState = null;
     window.addEventListener('scroll', () => {
         if (!isScrolling) {
             window.requestAnimationFrame(() => {
@@ -1303,17 +1315,17 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             isScrolling = true;
         }
-    });
+    }, { passive: true });
 
     function handleScroll() {
         if (!navbar) return;
         const scrollY = window.pageYOffset;
+        const isCompact = scrollY > 50;
 
-        // Navbar Resize
-        if (scrollY > 50) {
-            navbar.style.padding = '0.5rem 0';
-        } else {
-            navbar.style.padding = '1rem 0';
+        // Navbar Resize (only touch layout when the compact state changes)
+        if (lastNavbarCompactState !== isCompact) {
+            lastNavbarCompactState = isCompact;
+            navbar.style.padding = isCompact ? '0.5rem 0' : '1rem 0';
         }
 
         // Active Link Highlighting
@@ -1331,7 +1343,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 5. REGISTER CTA BUTTONS (Unified behavior across the site)
-    // - Registered user  => next-form.html
+    // - Completed user    => application-completed.html
+    // - Registered user   => next-form.html
     // - Not registered    => open signup modal on index, otherwise go to index.html#registration-section
     document.addEventListener('click', (e) => {
         const target = e.target;
@@ -1344,6 +1357,11 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
 
         const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
+
+        if (isApplicationCompleted()) {
+            window.location.href = 'application-completed.html';
+            return;
+        }
 
         if (isRegisteredUser()) {
             window.location.href = 'next-form.html';

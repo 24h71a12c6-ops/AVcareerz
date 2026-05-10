@@ -1088,21 +1088,71 @@
 		line-height: 1.08 !important;
 	}
 
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 520px);
+		margin-left: auto;
+		margin-right: auto;
+	}
+
 	#about.about-final-revised .feature-list-premium li {
-		display: grid !important;
-		grid-template-columns: 20px minmax(120px, 150px) minmax(0, 1fr);
-		column-gap: 10px;
-		align-items: start;
+		display: flex !important;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		text-align: center;
+		white-space: normal;
 	}
 
 	#about.about-final-revised .feature-list-premium li i {
-		margin-top: 4px;
-		justify-self: center;
+		margin-top: 0;
+		justify-self: auto;
 	}
 
-	#about.about-final-revised .feature-list-premium li strong {
+	#about.about-final-revised .feature-label,
+	#about.about-final-revised .feature-copy {
 		display: block;
+		text-align: center;
+		white-space: normal;
+	}
+
+	#about.about-final-revised .feature-label {
+		justify-content: center;
+	}
+
+	#about.about-final-revised .feature-label strong {
+		display: inline;
 		line-height: 1.35;
+	}
+
+	/* Mobile performance: keep scrolling buttery by reducing heavy visual effects */
+	.hero-glass,
+	.navbar .container,
+	body.nav-desktop-collapsed #navMenu,
+	.profile-dropdown,
+	.registration-card,
+	.reg-main-container {
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+	}
+
+	.flag-wrap img,
+	.destinations .countries-grid > .country-item,
+	.about-final-revised .about-grid::before,
+	.about-final-revised .about-grid::after,
+	.about-final-revised .feature-list-premium::before,
+	.about-final-revised .feature-list-premium::after {
+		animation: none !important;
+	}
+
+	.flag-wrap img {
+		transition: opacity 0.18s ease, transform 0.18s ease !important;
+	}
+
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.18s !important;
 	}
 }
 
