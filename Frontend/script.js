@@ -1604,13 +1604,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 8. REGISTRATION POPUP AFTER 10 SECONDS (with blurred background)
+    // 8. REGISTRATION POPUP AFTER 7 SECONDS (with blurred background)
     const regSection = document.getElementById('registration-section');
     const regOverlay = document.getElementById('regModalOverlay');
     const regCloseBtn = document.getElementById('regModalClose');
 
     if (regSection && regOverlay) {
-        const OPEN_DELAY_MS = 10000;
+        const OPEN_DELAY_MS = 7000;
         let regModalTimer = null;
         let lastScrollY = 0;
 
@@ -1746,7 +1746,7 @@ document.addEventListener("DOMContentLoaded", function () {
             window.scrollTo({ top: lastScrollY, behavior: 'auto' });
         };
 
-        // Open after ~4-5 seconds on page load ONLY if user is not logged in.
+        // Open after 7 seconds on page load ONLY if user is not logged in.
         // If user arrived from another page with #registration-section, handle that immediately.
         if (window.location.hash === '#registration-section') {
             if (isApplicationCompleted()) {
