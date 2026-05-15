@@ -71,11 +71,20 @@
             border-radius: 20px;
         }
 
+        body {
+            background-color: #fff;
+            background-image:
+                linear-gradient(rgba(0, 33, 71, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 33, 71, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0;
+        }
+
         :root {
-            --dark-blue: #002147;
+            --dark-blue: #20324a;
             --orange: #F9A825;
             --light-gray: #f8f9fa;
-            --text-color: #444;
+            --text-color: #20324a;
         }
 
         .country-hero {
@@ -135,7 +144,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(0, 33, 71, 0.6);
+            background: rgba(0, 0, 0, 0.45);
             z-index: 2;
         }
 
@@ -190,13 +199,77 @@
 
         .program-tag {
             background: #f0f4f8;
-            color: var(--dark-blue);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            color: var(--text-color);
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
             font-weight: 600;
             border: 1px solid #dce4ec;
+            display: block;
+            width: 100%;
+            min-height: 28px;
+            box-sizing: border-box;
+            line-height: 1.15;
         }
+
+        .intake-meta {
+            color: var(--orange);
+            font-weight: 800;
+            margin: 6px 0 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .course-toggle {
+            display: block;
+            width: 100%;
+            margin-top: 18px;
+        }
+
+        .course-toggle summary {
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            max-width: 100%;
+            padding: 8px 14px;
+            background: var(--dark-blue);
+            color: #fff;
+            border: 1px solid var(--dark-blue);
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-inline: auto;
+        }
+
+        .course-toggle summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .course-toggle summary:hover {
+            background: var(--dark-blue);
+            color: #fff;
+            border-color: var(--dark-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(32, 48, 64, 0.12);
+        }
+
+        .course-toggle[open] summary {
+            background: var(--dark-blue);
+            color: #fff;
+            border-color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .programs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+            margin-top: 0;
+        }
+        
 
         @media (max-width: 992px) {
             .country-info {
@@ -254,7 +327,7 @@
                             <li><a href="germany.html">Study in Germany</a></li>
                             <li><a href="newzealand.html">Study in New Zealand</a></li>
                             <li><a href="italy.html">Study in Italy</a></li>
-                            <li><a href="turkey.html">Study in Turkey</a></li>
+                            <li><a href="singapore.html">Study in Singapore</a></li>
                         </ul>
                     </li>
                     <li><a href="visa-services.html">Visa-Services</a></li>
@@ -311,81 +384,8 @@
 
     <!-- Top Universities -->
     <div class="universities-section">
-        <h2 class="section-title">Top Universities in New Zealand</h2>
-        <div class="universities-left-gap">
-
-            <div class="university-card">
-                <h3>University of Auckland</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Auckland, North Island</p>
-                <p>New Zealand's highest-ranked university. Located in the country's largest city with diverse opportunities.</p>
-                <div class="programs">
-                    <span class="program-tag">Engineering</span>
-                    <span class="program-tag">Business</span>
-                    <span class="program-tag">Medicine</span>
-                    <span class="program-tag">Law</span>
-                </div>
-            </div>
-
-            <div class="university-card">
-                <h3>University of Otago</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Dunedin, South Island</p>
-                <p>Oldest university in New Zealand. Leading institution for health sciences and research.</p>
-                <div class="programs">
-                    <span class="program-tag">Medicine</span>
-                    <span class="program-tag">Dentistry</span>
-                    <span class="program-tag">Health Sciences</span>
-                    <span class="program-tag">Sciences</span>
-                </div>
-            </div>
-
-            <div class="university-card">
-                <h3>Victoria University of Wellington</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Wellington, North Island</p>
-                <p>Located in the capital city. Strong in law, public policy, and creative arts.</p>
-                <div class="programs">
-                    <span class="program-tag">Law</span>
-                    <span class="program-tag">Public Policy</span>
-                    <span class="program-tag">Creative Arts</span>
-                    <span class="program-tag">Business</span>
-                </div>
-            </div>
-
-            <div class="university-card">
-                <h3>University of Canterbury</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Christchurch, South Island</p>
-                <p>Strong engineering programs and research facilities. Beautiful campus in garden city.</p>
-                <div class="programs">
-                    <span class="program-tag">Engineering</span>
-                    <span class="program-tag">Sciences</span>
-                    <span class="program-tag">Forestry</span>
-                    <span class="program-tag">Business</span>
-                </div>
-            </div>
-
-            <div class="university-card">
-                <h3>Massey University</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Palmerston North, North Island</p>
-                <p>Largest university by number of students. Excellence in agriculture and veterinary sciences.</p>
-                <div class="programs">
-                    <span class="program-tag">Agriculture</span>
-                    <span class="program-tag">Veterinary Science</span>
-                    <span class="program-tag">Business</span>
-                    <span class="program-tag">Aviation</span>
-                </div>
-            </div>
-
-            <div class="university-card">
-                <h3>Lincoln University</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Canterbury, South Island</p>
-                <p>Specialist land-based university. Leading programs in agriculture and environmental management.</p>
-                <div class="programs">
-                    <span class="program-tag">Agriculture</span>
-                    <span class="program-tag">Environmental Management</span>
-                    <span class="program-tag">Business</span>
-                    <span class="program-tag">Tourism</span>
-                </div>
-            </div>
-        </div>
+        <h2 class="section-title">Top 20 Universities in New Zealand</h2>
+        <div id="nzUniversitiesList"></div>
     </div>
     <!-- End left-gap wrapper for university cards -->
     <br>
@@ -433,7 +433,73 @@
             </div>
         </div>
     </footer>
-    <script src="script.js?v=20260320-1" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const courseCatalog = [
+                'Computer Science', 'Data Science', 'Artificial Intelligence', 'Machine Learning', 'Software Engineering',
+                'Cybersecurity', 'Information Systems', 'Cloud Computing', 'DevOps', 'Computer Networks',
+                'Biomedical Engineering', 'Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Aerospace Engineering',
+                'Materials Science', 'Chemical Engineering', 'Environmental Engineering', 'Robotics', 'Mechatronics',
+                'Biotechnology', 'Bioinformatics', 'Molecular Biology', 'Genetics', 'Neuroscience',
+                'Public Health', 'Nursing', 'Medicine', 'Pharmacy', 'Dentistry',
+                'Business Administration', 'MBA', 'Finance', 'Accounting', 'Marketing',
+                'Economics', 'Management', 'Entrepreneurship', 'Supply Chain Management', 'International Business',
+                'Human Resource Management', 'Operations Research', 'Statistics', 'Mathematics', 'Physics',
+                'Chemistry', 'Biochemistry', 'Applied Mathematics', 'Computational Biology', 'Architecture',
+                'Urban Planning', 'Psychology', 'Sociology', 'Political Science', 'International Relations',
+                'Law', 'Journalism', 'Media Studies', 'Communication', 'Education',
+                'Anthropology', 'History', 'Philosophy', 'Fine Arts', 'Design',
+                'Film Studies', 'Music', 'Theatre Arts', 'Environmental Science', 'Sustainability',
+                'Renewable Energy', 'Geology', 'Geography', 'Astronomy', 'Actuarial Science',
+                'Forensic Science', 'Social Work', 'Library Science', 'Hospitality Management', 'Sports Management',
+                'Public Policy', 'Theoretical Physics', 'Applied Physics'
+            ];
+
+            const universities = [
+                { name: 'University of Auckland', location: 'Auckland, North Island', description: 'New Zealand\'s highest-ranked university. Located in the country\'s largest city with diverse opportunities.' },
+                { name: 'University of Otago', location: 'Dunedin, South Island', description: 'Oldest university in New Zealand. Leading institution for health sciences and research.' },
+                { name: 'Victoria University of Wellington', location: 'Wellington, North Island', description: 'Located in the capital city. Strong in law, public policy, and creative arts.' },
+                { name: 'University of Canterbury', location: 'Christchurch, South Island', description: 'Strong engineering programs and research facilities. Beautiful campus in garden city.' },
+                { name: 'Massey University', location: 'Palmerston North, North Island', description: 'Largest university by number of students. Excellence in agriculture and veterinary sciences.' },
+                { name: 'Lincoln University', location: 'Canterbury, South Island', description: 'Specialist land-based university. Leading programs in agriculture and environmental management.' },
+                { name: 'University of Waikato', location: 'Hamilton, North Island', description: 'Research-focused university with strengths in engineering, science, and management.' },
+                { name: 'Unitec Institute of Technology', location: 'Auckland, North Island', description: 'Practical, industry-focused education with strong connections to employers.' },
+                { name: 'University of the South Pacific', location: 'Suva, South Pacific', description: 'Regional university serving the Pacific with diverse international programs.' },
+                { name: 'Auckland University of Technology (AUT)', location: 'Auckland, North Island', description: 'Modern university emphasizing practical skills and industry partnerships.' },
+                { name: 'Whitireia New Zealand', location: 'Porirua, North Island', description: 'Polytechnic offering specialized vocational and technical education.' },
+                { name: 'Ara Institute of Canterbury', location: 'Christchurch, South Island', description: 'Polytechnic focused on practical learning and regional industry needs.' },
+                { name: 'Otago Polytechnic', location: 'Dunedin, South Island', description: 'Vocational education institute with strong focus on industry training.' },
+                { name: 'Southern Institute of Technology', location: 'Invercargill, South Island', description: 'Regional polytechnic offering diverse technical and vocational programs.' },
+                { name: 'Manukau Institute of Technology', location: 'Auckland, North Island', description: 'Large polytechnic serving Auckland with vocational and academic programs.' },
+                { name: 'Bay of Plenty Polytechnic', location: 'Tauranga, North Island', description: 'Regional polytechnic with focus on practical and industry-relevant education.' },
+                { name: 'Waikato Institute of Technology', location: 'Hamilton, North Island', description: 'Polytechnic offering technical, vocational, and academic pathways.' },
+                { name: 'Taranaki Polytechnic', location: 'New Plymouth, North Island', description: 'Regional polytechnic specializing in engineering and trade training.' },
+                { name: 'Nelson Marlborough Institute of Technology', location: 'Nelson, South Island', description: 'Polytechnic focused on regional workforce development and specialized skills.' },
+                { name: 'Christchurch Polytechnic Institute of Technology (CPIT)', location: 'Christchurch, South Island', description: 'Major polytechnic offering comprehensive technical and vocational education.' }
+            ];
+
+            const list = document.getElementById('nzUniversitiesList');
+            if (!list) return;
+
+            const courseMarkup = courseCatalog.map(course => `<span class="program-tag">${course}</span>`).join('');
+
+            list.innerHTML = universities.map((uni) => `
+                <div class="university-card">
+                    <h3>${uni.name}</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> ${uni.location}</p>
+                    <p>${uni.description}</p>
+                    <p class="intake-meta">70+ Courses Available</p>
+                    <details class="course-toggle">
+                        <summary>Check Courses Here</summary>
+                        <div class="programs">
+                            ${courseMarkup}
+                        </div>
+                    </details>
+                </div>
+            `).join('');
+        });
+    </script>
+    <script src="script.js?v=20260514-1" defer></script>
 </body>
 
 </html>

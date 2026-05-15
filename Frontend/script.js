@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!section) return;
 
     const info = section.querySelector('#branch-info');
+
     const map = section.querySelector('#loc-map') || section.querySelector('#branch-map');
     const directions = section.querySelector('#direction-link');
     const callLink = section.querySelector('#call-link');
@@ -3301,3 +3302,99 @@ function playSuccessSound() {
     oscillator.stop(audioContext.currentTime + 0.5);
 }
 
+// ==========================================
+// Global Course Register Button Logic
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Capture current country context based on filename
+    const path = window.location.pathname.toLowerCase();
+    const destinationMap = {
+        'uk.html': 'UK',
+        'usa.html': 'USA',
+        'canada.html': 'Canada',
+        'australia.html': 'Australia',
+        'germany.html': 'Germany',
+        'newzealand.html': 'New Zealand',
+        'italy.html': 'Italy',
+        'singapore.html': 'Singapore'
+    };
+    for (const [file, country] of Object.entries(destinationMap)) {
+        if (path.includes(file)) {
+            break;
+        }
+    }
+
+    function setupProgramTags() {
+        const tags = [...document.querySelectorAll('.program-tag')];
+        tags.forEach((tag) => {
+            if (tag.closest('.course-item')) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'course-item';
+
+            const registerBtn = document.createElement('a');
+            registerBtn.className = 'course-register-btn';
+            registerBtn.href = 'index.html#registration-section';
+            registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
+
+            registerBtn.addEventListener('click', (e) => {
+                const alreadyRegistered = !!localStorage.getItem('userEmail')
+                    || localStorage.getItem('hasSignedUp') === '1'
+                    || localStorage.getItem('applicationCompleted') === '1';
+
+                if (alreadyRegistered) {
+                    e.preventDefault();
+                    window.location.href = 'application-completed.html';
+                }
+            });
+
+            // Insert wrapper before tag, move tag inside wrapper, append btn
+            tag.parentNode.insertBefore(wrapper, tag);
+            wrapper.appendChild(tag);
+            wrapper.appendChild(registerBtn);
+        });
+    }
+
+    // Run once for statically rendered HTML
+    setupProgramTags();
+
+    // Use MutationObserver for tags added dynamically via internal scripts
+    const observer = new MutationObserver((mutations) => {
+        let tagsFound = false;
+        mutations.forEach(mutation => {
+            if (mutation.addedNodes.length > 0) {
+                tagsFound = true;
+            }
+        });
+        if (tagsFound) {
+            setupProgramTags();
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Handle selection cleanly
+    document.addEventListener('click', (e) => {
+        const tag = e.target.closest('.program-tag');
+        if (!tag) return;
+
+        const row = tag.closest('.course-item');
+        if (!row) return;
+
+        const isSelected = row.classList.contains('selected');
+
+        // Deselect all others
+        document.querySelectorAll('.course-item.selected').forEach((item) => {
+            if (item !== row) {
+                item.classList.remove('selected');
+            }
+        });
+
+        // Toggle selection
+        if (!isSelected) {
+            row.classList.add('selected');
+        } else {
+            row.classList.remove('selected');
+        }
+    });
+});

@@ -80,6 +80,36 @@ const sendLoginCodeEmail = async (userEmail, code) => {
   });
 };
 
+// Lead / registration inquiry email for admin inbox
+const sendLeadNotificationEmail = async ({ name, email, phone, message, subject } = {}) => {
+  const receiverEmail = String(process.env.LEAD_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'abroadvisioncareerz@gmail.com').trim();
+  const safeName = escapeHtml(name || 'New Lead');
+  const safeEmail = escapeHtml(email || 'N/A');
+  const safePhone = escapeHtml(phone || 'N/A');
+  const safeMessage = escapeHtml(message || 'No message provided');
+
+  const html = `
+    <html>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background: #f7f9fc;">
+        <div style="max-width: 640px; margin: 0 auto; background: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid #e5e7eb;">
+          <h2 style="color: #2c3e50; margin-top: 0;">New Registration Details</h2>
+          <p><strong>Name:</strong> ${safeName}</p>
+          <p><strong>Email:</strong> ${safeEmail}</p>
+          <p><strong>Phone:</strong> ${safePhone}</p>
+          <p><strong>Message:</strong> ${safeMessage}</p>
+          <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+          <p style="font-size: 12px; color: #7f8c8d; margin-bottom: 0;">Sent via avcareerz system</p>
+        </div>
+      </body>
+    </html>`;
+
+  return sendEmail({
+    to: receiverEmail,
+    subject: subject || `New Lead: ${name || 'Unknown'} - avcareerz`,
+    html
+  });
+};
+
 // helper to parse admin addresses from env
 const getAdminEmailList = () => {
   const primaryAdmin = String(process.env.ADMIN_EMAIL || '').trim();
@@ -284,4 +314,5 @@ module.exports = {
   sendPasswordResetCodeEmail,
   sendPasswordChangedEmail,
   sendLoginCodeEmail,
+  sendLeadNotificationEmail,
 };

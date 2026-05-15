@@ -11,16 +11,28 @@
     <link rel="stylesheet" href="responsive.css?v=20260320-1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        body {
+            background-color: #fff;
+            background-image:
+                linear-gradient(rgba(0, 33, 71, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 33, 71, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0;
+        }
+
         .program-tag {
             transition: all 0.3s ease;
         }
 
+        /* subtle hover: only orange border, no shiny glow */
         .program-tag:hover,
         .program-tag:active,
         .program-tag:focus {
-            background: #F9A825;
-            color: #002147;
-            border-color: #F9A825;
+            background: #f0f4f8;
+            color: var(--text-color);
+            border-color: var(--orange);
+            box-shadow: none;
+            transform: translateY(-1px);
             cursor: pointer;
         }
 
@@ -73,8 +85,8 @@
         .card h3 {
             font-size: 20px;
             margin-bottom: 12px;
-            color: #002147;
-            /* deep blue like Top Universities */
+            color: var(--text-color);
+            /* neutral heading color */
         }
 
         .card p {
@@ -92,10 +104,11 @@
         }
 
         :root {
-            --dark-blue: #002147;
+            /* keep the navy value reserved for the register button only */
+            --dark-blue: #20324a; /* neutral deep slate for headings/borders */
             --orange: #F9A825;
             --light-gray: #f8f9fa;
-            --text-color: #444;
+            --text-color: #20324a;
         }
 
         .country-hero {
@@ -128,7 +141,7 @@
 
         .hero-back-btn:hover {
             background: #F9A825;
-            color: #002147;
+            color: var(--text-color);
             border-color: #F9A825;
             transform: translateX(-5px);
         }
@@ -155,7 +168,8 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(0, 33, 71, 0.6);
+            /* darker neutral overlay instead of navy tint */
+            background: rgba(0, 0, 0, 0.45);
             z-index: 2;
         }
 
@@ -210,14 +224,111 @@
             padding-left: 130px;
         }
 
+        .intake-meta {
+            color: var(--orange);
+            font-weight: 800;
+            margin: 6px 0 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .course-group {
+            margin-top: 18px;
+        }
+
+        .course-group h4 {
+            color: var(--dark-blue);
+            margin: 0 0 10px;
+            font-size: 0.95rem;
+        }
+
+        .requirements-list {
+            margin: 14px 0 0;
+            padding-left: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .fee-box {
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: #f8fbff;
+            border: 1px solid #dce4ec;
+            border-radius: 12px;
+            color: #20324a;
+        }
+
         .program-tag {
             background: #f0f4f8;
-            color: var(--dark-blue);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            color: var(--text-color);
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
             font-weight: 600;
             border: 1px solid #dce4ec;
+            display: block;
+            width: 100%;
+            min-height: 28px;
+            box-sizing: border-box;
+            line-height: 1.15;
+            transition: all 0.22s ease;
+        }
+
+
+        .course-toggle {
+            margin-top: 18px;
+        }
+
+        .course-toggle summary {
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            max-width: 100%;
+            padding: 8px 14px;
+            background: var(--dark-blue);
+            color: #fff;
+            border: 1px solid var(--dark-blue);
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .course-toggle {
+            display: block;
+            width: 100%;
+        }
+
+        .course-toggle summary {
+            margin-inline: auto;
+        }
+
+        .course-toggle summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .course-toggle summary:hover {
+            background: var(--dark-blue);
+            color: #fff;
+            border-color: var(--dark-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(32, 48, 64, 0.12);
+        }
+
+        .course-toggle[open] summary {
+            background: var(--dark-blue);
+            color: #fff;
+            border-color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .programs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+            margin-top: 0;
         }
 
 
@@ -277,7 +388,7 @@
                             <li><a href="germany.html">Study in Germany</a></li>
                             <li><a href="newzealand.html">Study in New Zealand</a></li>
                             <li><a href="italy.html">Study in Italy</a></li>
-                            <li><a href="turkey.html">Study in Turkey</a></li>
+                            <li><a href="singapore.html">Study in Singapore</a></li>
                         </ul>
                     </li>
                     <li><a href="visa-services.html">Visa-Services</a></li>
@@ -340,78 +451,433 @@
 
 
     <div class="universities-section">
-        <h2 class="section-title">Top Universities in United Kingdom</h2>
+        <h2 class="section-title">Universities &amp; Courses for Sep 2025 Intake</h2>
+
         <div class="university-card">
-            <h3>University of Oxford</h3>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> Oxford, England</p>
-            <p>Oldest university in the English-speaking world. Renowned for tutorial system and academic excellence
-                across all disciplines.</p>
-            <div class="programs">
-                <span class="program-tag">Medicine</span>
-                <span class="program-tag">Law</span>
-                <span class="program-tag">PPE</span>
-                <span class="program-tag">Sciences</span>
-            </div>
+            <h3>Teesside University</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Middleborough Campus</p>
+            <p class="intake-meta">Sep 2025 Intake • Course duration 2 years</p>
+            <details class="course-toggle">
+                <summary>Check Courses Here</summary>
+                <div class="course-group">
+                    <h4>2 Year Courses</h4>
+                    <div class="programs">
+                        <span class="program-tag">Master of Business Administration (Applied) (2 years)</span>
+                        <span class="program-tag">Master of Public Administration (Applied) (2 years)</span>
+                        <span class="program-tag">MPH Public Health (Applied) (2 years)</span>
+                        <span class="program-tag">MSc Aerospace Engineering (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Applied Artificial Intelligence (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Applied Data Science (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Artificial Intelligence (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Artificial Intelligence with Data Analytics (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Bioinformatics (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Business Intelligence and Analytics (Applied) (2 years)</span>
+                        <span class="program-tag">MSc Chemical Engineering (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Civil and Structural Engineering (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Climate Change and Sustainable Economic Development (Applied) (2 years)</span>
+                        <span class="program-tag">MSc Computer Science (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Computing (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Cyber Security (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Data Science (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Digital Business Management (Applied) (2 years)</span>
+                        <span class="program-tag">MSc Digital Forensics and Cyber Investigation (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Electrical Power and Energy Systems (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Finance and Investment (Applied) (2 years)</span>
+                        <span class="program-tag">MSc Financial Technology (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Instrumentation and Control Engineering (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc IT Project Management (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Logistics and Supply Chain Management (Applied) (2 years)</span>
+                        <span class="program-tag">MSc Mechanical Engineering (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Microbiology (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Oil and Gas Management (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Petroleum Engineering (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Project Management (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Sports Physiotherapy Studies (2 years)</span>
+                        <span class="program-tag">MSc Sustainable Energy and Clean Technology (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Sustainable Engineering Systems (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Curating (With Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Education (Applied) (2 years)</span>
+                        <span class="program-tag">MA Concept Art (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Animation (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Comics and Graphic Novels (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Digital Media and Communications (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Visual Communication (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Visual Effects (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Photography (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Multimedia Public Relations (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA International Relations (Applied) (2 years)</span>
+                        <span class="program-tag">MA International Fashion Business (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Interior Design (With Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Human Resource Management (Applied) (2 years)</span>
+                        <span class="program-tag">MA Filmmaking (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Games Design (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA Fine Art (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA 2D Animation and Stop Motion (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MA 3D Games Art (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">LLM Master of Laws (Applied) (2 years)</span>
+                        <span class="program-tag">Doctor of Criminal Justice (3 years)</span>
+                        <span class="program-tag">Doctor of Professional Practice (3 years)</span>
+                        <span class="program-tag">Doctor of Public Health (4 years)</span>
+                        <span class="program-tag">Doctor of Public Health (3 years)</span>
+                    </div>
+                </div>
+                <div class="fee-box">
+                    <strong>Requirements</strong>
+                    <ul class="requirements-list">
+                        <li>Need 70% in 11th &amp; 12th English for TUELT Waiver</li>
+                        <li>Need Average 65% in 11th &amp; 12th English - TUELT Mandatory</li>
+                        <li>Need 55% in Bachelors</li>
+                        <li>Gap Accepted up to 8 years</li>
+                    </ul>
+                    <p><strong>Tuition Fees:</strong> 20,000 GBP (Per year 10,000 GBP)</p>
+                    <p><strong>Initial Deposit:</strong> 4000 GBP</p>
+                </div>
+            </details>
         </div>
+
         <div class="university-card">
-            <h3>University of Cambridge</h3>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> Cambridge, England</p>
-            <p>World-leading research university with distinctive college system. Home to numerous Nobel laureates and
-                groundbreaking discoveries.</p>
-            <div class="programs">
-                <span class="program-tag">Engineering</span>
-                <span class="program-tag">Natural Sciences</span>
-                <span class="program-tag">Mathematics</span>
-                <span class="program-tag">Medicine</span>
-            </div>
+            <h3>Teesside University</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Middleborough Campus</p>
+            <p class="intake-meta">Sep 2025 Intake • Course duration 1 year</p>
+            <details class="course-toggle">
+                <summary>Check Courses Here</summary>
+                <div class="course-group">
+                    <h4>1 Year Courses</h4>
+                    <div class="programs">
+                        <span class="program-tag">Master of Business Administration (1 year)</span>
+                        <span class="program-tag">Master of Public Administration (1 year)</span>
+                        <span class="program-tag">MPH Public Health (1 year)</span>
+                        <span class="program-tag">MPH Public Health (1 year)</span>
+                        <span class="program-tag">MSc Accounting and Finance (1 year)</span>
+                        <span class="program-tag">MSc Aerospace Engineering (1 year)</span>
+                        <span class="program-tag">MSc Applied Artificial Intelligence (1 year)</span>
+                        <span class="program-tag">MSc Applied Data Science (1 year)</span>
+                        <span class="program-tag">MSc Artificial Intelligence (1 year)</span>
+                        <span class="program-tag">MSc Artificial Intelligence with Data Analytics (1 year)</span>
+                        <span class="program-tag">MSc Aviation Management (1 year)</span>
+                        <span class="program-tag">MSc Bioinformatics (1 year)</span>
+                        <span class="program-tag">MSc Bioprocessing and Biotherapeutics (1 year)</span>
+                        <span class="program-tag">MSc Business Intelligence and Analytics (1 year)</span>
+                        <span class="program-tag">MSc Chemical Engineering (1 year)</span>
+                        <span class="program-tag">MSc Civil and Structural Engineering (1 year)</span>
+                        <span class="program-tag">MSc Computer Science (1 year)</span>
+                        <span class="program-tag">MSc Computing (1 year)</span>
+                        <span class="program-tag">MSc Criminal Investigation (1 year)</span>
+                        <span class="program-tag">MSc Criminology (1 year)</span>
+                        <span class="program-tag">MSc Cyber Security (1 year)</span>
+                        <span class="program-tag">MSc Data Science (1 year)</span>
+                        <span class="program-tag">MSc Digital Business Management (1 year)</span>
+                        <span class="program-tag">MSc Digital Forensics and Cyber Investigation (1 year)</span>
+                        <span class="program-tag">MSc Digital Marketing (1 year)</span>
+                        <span class="program-tag">MSc Electrical Power and Energy Systems (1 year)</span>
+                        <span class="program-tag">MSc Finance and Investment (1 year)</span>
+                        <span class="program-tag">MSc Financial Technology (1 year)</span>
+                        <span class="program-tag">MSc Forensic Psychology (1 year)</span>
+                        <span class="program-tag">MSc Health Psychology (1 year)</span>
+                        <span class="program-tag">MSc Housing Innovation and Design (1 year)</span>
+                        <span class="program-tag">MSc Instrumentation and Control Engineering (1 year)</span>
+                        <span class="program-tag">MSc International Business Management (1 year)</span>
+                        <span class="program-tag">MSc International Business Management and Accountancy (1 year)</span>
+                        <span class="program-tag">MSc International Business Management and Human Resource Management (1 year)</span>
+                        <span class="program-tag">MSc International Business Management and Marketing (1 year)</span>
+                        <span class="program-tag">MSc IT Project Management (1 year)</span>
+                        <span class="program-tag">MSc Logistics and Supply Chain Management (1 year)</span>
+                        <span class="program-tag">MSc Mechanical Engineering (1 year)</span>
+                        <span class="program-tag">MSc Microbiology (1 year)</span>
+                        <span class="program-tag">MSc Oil and Gas Management (1 year)</span>
+                        <span class="program-tag">MSc Petroleum Engineering (1 year)</span>
+                        <span class="program-tag">MSc Project Management (1 year)</span>
+                        <span class="program-tag">MSc Psychology (1 year)</span>
+                        <span class="program-tag">MSc Social Research Methods (Criminology) (1 year)</span>
+                        <span class="program-tag">MSc Social Research Methods (Social Policy) (1 year)</span>
+                        <span class="program-tag">MSc Sustainable Energy and Clean Technology (1 year)</span>
+                        <span class="program-tag">MSc Sustainable Engineering Systems (1 year)</span>
+                        <span class="program-tag">LLM Legal Practice (1 year)</span>
+                        <span class="program-tag">LLM Master of Laws (1 year)</span>
+                        <span class="program-tag">MA 2D Animation and Stop Motion (1 year)</span>
+                        <span class="program-tag">MA 3D Games Art (1 year)</span>
+                        <span class="program-tag">MA Animation (1 year)</span>
+                        <span class="program-tag">MA Comics and Graphic Novels (1 year)</span>
+                        <span class="program-tag">MA Concept Art (1 year)</span>
+                        <span class="program-tag">MA Creative Writing (1 year)</span>
+                        <span class="program-tag">MA Curating (1 year)</span>
+                        <span class="program-tag">MA Design (1 year)</span>
+                        <span class="program-tag">MA Digital Media and Communications (1 year)</span>
+                        <span class="program-tag">MA Education (1 year)</span>
+                        <span class="program-tag">MA Education (Early Childhood Studies) (1 year)</span>
+                        <span class="program-tag">MA Education (Educational Leadership) (1 year)</span>
+                        <span class="program-tag">MA English Literature (1 year)</span>
+                        <span class="program-tag">MA Filmmaking (1 year)</span>
+                        <span class="program-tag">MA Fine Art (1 year)</span>
+                        <span class="program-tag">MA Games Design (1 year)</span>
+                        <span class="program-tag">MA History (1 year)</span>
+                        <span class="program-tag">MA Human Resource Management (1 year)</span>
+                        <span class="program-tag">MA Interior Design (1 year)</span>
+                        <span class="program-tag">MA International Fashion Business (1 year)</span>
+                        <span class="program-tag">MA International Relations (1 year)</span>
+                        <span class="program-tag">MA Multimedia Public Relations (1 year)</span>
+                        <span class="program-tag">MA Photography (1 year)</span>
+                        <span class="program-tag">MA Trauma Informed Practice (1 year)</span>
+                        <span class="program-tag">MA Visual Communication (1 year)</span>
+                        <span class="program-tag">MA Visual Effects (1 year)</span>
+                    </div>
+                </div>
+                <div class="fee-box">
+                    <strong>Requirements</strong>
+                    <ul class="requirements-list">
+                        <li>Need 70% in 11th &amp; 12th English for TUELT Waiver</li>
+                        <li>Need Average 65% in 11th &amp; 12th English - TUELT Mandatory</li>
+                        <li>Need 55% in Bachelors</li>
+                        <li>Gap Accepted up to 8 years</li>
+                    </ul>
+                    <p><strong>Tuition Fees:</strong> 17,000 GBP (per year 10,000)</p>
+                    <p><strong>Initial Deposit:</strong> 4000 GBP</p>
+                </div>
+            </details>
         </div>
+
         <div class="university-card">
-            <h3>Imperial College London</h3>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> London, England</p>
-            <p>Specialist institution focused on science, engineering, medicine, and business. Strong emphasis on
-                practical application.</p>
-            <div class="programs">
-                <span class="program-tag">Engineering</span>
-                <span class="program-tag">Medicine</span>
-                <span class="program-tag">Business</span>
-                <span class="program-tag">Sciences</span>
-            </div>
+            <h3>Teesside University</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> London Campus</p>
+            <p class="intake-meta">Admissions open for Sep 2025 intake</p>
+            <details class="course-toggle">
+                <summary>Check Courses Here</summary>
+                <div class="course-group">
+                    <h4>2 Year Courses</h4>
+                    <div class="programs">
+                        <span class="program-tag">MSc Data Science and Analytics (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Digital Marketing and Communications (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc Information and Cyber Security (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc FinTech (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">MSc International Management (with Advanced Practice) (2 years)</span>
+                        <span class="program-tag">Master of Business Administration Global (2 years)</span>
+                    </div>
+                </div>
+                <div class="course-group">
+                    <h4>1 Year Courses</h4>
+                    <div class="programs">
+                        <span class="program-tag">MSc Digital Marketing and Communications (1 year)</span>
+                        <span class="program-tag">MSc FinTech (1 year)</span>
+                        <span class="program-tag">MSc Information and Cyber Security (1 year)</span>
+                        <span class="program-tag">MSc International Management (1 year)</span>
+                        <span class="program-tag">MA Animation and Visual Effects (1 year)</span>
+                        <span class="program-tag">MSc Data Science and Analytics (1 year)</span>
+                    </div>
+                </div>
+                <div class="course-group">
+                    <h4>39 Month Course</h4>
+                    <div class="programs">
+                        <span class="program-tag">Doctorate of Business Administration (39 months)</span>
+                    </div>
+                </div>
+                <div class="fee-box">
+                    <strong>Requirements</strong>
+                    <ul class="requirements-list">
+                        <li>Need 70% in 11th &amp; 12th English for TUELT Waiver</li>
+                        <li>Need Average 65% in 11th &amp; 12th English - TUELT Mandatory</li>
+                        <li>Need 55% in Bachelors</li>
+                        <li>Gap Accepted up to 8 years</li>
+                    </ul>
+                    <p><strong>Tuition Fees:</strong> 1 year course: 17,000 GBP</p>
+                    <p><strong>2 years Course:</strong> 20,000 GBP (Per year 10,000 GBP)</p>
+                    <p><strong>Initial Deposit:</strong> 4000 GBP</p>
+                </div>
+            </details>
         </div>
+
         <div class="university-card">
-            <h3>London School of Economics (LSE)</h3>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> London, England</p>
-            <p>World's leading social science institution. Specializing in economics, politics, law, and social
-                sciences.</p>
-            <div class="programs">
-                <span class="program-tag">Economics</span>
-                <span class="program-tag">Politics</span>
-                <span class="program-tag">Law</span>
-                <span class="program-tag">International Relations</span>
-            </div>
+            <h3>University of Hertfordshire</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Admissions open for Sep 2025 intake</p>
+            <p class="intake-meta">Course duration 2 years</p>
+            <details class="course-toggle">
+                <summary>Check Courses Here</summary>
+                <div class="course-group">
+                    <h4>2 Year Courses</h4>
+                    <div class="programs">
+                        <span class="program-tag">Master Of Public Health with Extended Placement</span>
+                        <span class="program-tag">MSc Advanced Computer Science (With Work Placement)</span>
+                        <span class="program-tag">MSc Cyber Security (With Work Placement)</span>
+                        <span class="program-tag">MSc Data Science and Analytics (With Work Placement)</span>
+                        <span class="program-tag">MSc Data Science with Placement</span>
+                        <span class="program-tag">MSc Aerospace Engineering (18 month route)</span>
+                        <span class="program-tag">MSc Automotive Engineering (18 month route)</span>
+                        <span class="program-tag">MSc power Electronics and Control (18 month route)</span>
+                        <span class="program-tag">MSc Electronics Engineering (18 month route)</span>
+                        <span class="program-tag">MSc Supply Chain and Logistics Management (18 month route)</span>
+                        <span class="program-tag">MSc Artificial Intelligence and Robotics (With Work Placement)</span>
+                        <span class="program-tag">MSc Astrophysics with Placement</span>
+                        <span class="program-tag">MSc Cancer Immunotherapy with Placement</span>
+                        <span class="program-tag">MSc Communication and Information Engineering (18 month route)</span>
+                        <span class="program-tag">MSc Software Engineering (With Work Placement)</span>
+                        <span class="program-tag">MSc Finance and Investment Banking with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Information Business (With Work Placement)</span>
+                        <span class="program-tag">MSc International Tourism, Hospitality and Event Management with Extended Professional Practice</span>
+                        <span class="program-tag">MSc International Tourism, Hospitality and Event Management with Advanced Practice</span>
+                        <span class="program-tag">MSc Manufacturing Management (18 month route)</span>
+                        <span class="program-tag">MSc Mechanical Engineering (18 month route)</span>
+                        <span class="program-tag">MSc Medical Microbiology with Placement</span>
+                        <span class="program-tag">MSc Transport Planning with Placement</span>
+                        <span class="program-tag">MSc Molecular Biotechnology with Placement</span>
+                        <span class="program-tag">MSc Aerospace Engineering with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Automotive Engineering with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Communication and Information Engineering with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Electronics Engineering with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Mechanical Engineering with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Power Electronics and Control with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Supply Chain and Logistics Management with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Manufacturing Management with Extended Professional Practice</span>
+                        <span class="program-tag">MSc Aerospace Engineering with Advanced Project</span>
+                        <span class="program-tag">MSc Automotive Engineering with Advanced Project</span>
+                        <span class="program-tag">MSc Communication and Information Engineering with Advanced Project</span>
+                        <span class="program-tag">MSc Electronics Engineering with Advanced Project</span>
+                        <span class="program-tag">MSc Mechanical Engineering with Advanced Project</span>
+                        <span class="program-tag">MSc Power Electronics and Control with Advanced Project</span>
+                        <span class="program-tag">MSc Manufacturing Management with Advanced Project</span>
+                        <span class="program-tag">MSc Supply Chain and Logistics Management with Advanced Project</span>
+                        <span class="program-tag">MSc Strategic Marketing with Brand Leadership- Extended (Experiential Learning)</span>
+                        <span class="program-tag">MSc Strategic Marketing with Brand Leadership- Extended (Sandwich)</span>
+                        <span class="program-tag">MSc Strategic Marketing with Digital Media Management- Extended (Experiential Learning)</span>
+                        <span class="program-tag">MSc Strategic Marketing with Digital Media Management- Extended (Sandwich)</span>
+                        <span class="program-tag">MSc Strategic Marketing with Global Business Development- Extended (Experiential Learning)</span>
+                        <span class="program-tag">MSc Strategic Marketing with Global Business Development- Extended (Sandwich)</span>
+                        <span class="program-tag">MSc Theoretical Physics- Extended</span>
+                        <span class="program-tag">MA Human resource Management with Placement</span>
+                        <span class="program-tag">MA International Relations with Placement</span>
+                        <span class="program-tag">MA Journalism and Media Communications with Placement</span>
+                        <span class="program-tag">LLM Criminal Justice with Work Experience</span>
+                        <span class="program-tag">LLM Business Law with Work Experience</span>
+                        <span class="program-tag">LLM Intellectual Property and Information Law with Work Experience</span>
+                        <span class="program-tag">LLM International Commercial Law and Arbitration with Work Experience</span>
+                        <span class="program-tag">LLM International Humans Rights Law with Work Experience</span>
+                        <span class="program-tag">LLM Master of Laws with Work Experience</span>
+                        <span class="program-tag">MSc Astrophysics with Advanced Research</span>
+                        <span class="program-tag">Master Of Public Health with Advanced Research</span>
+                        <span class="program-tag">MA International Relations with Advanced Research</span>
+                        <span class="program-tag">MA Human resource Management with Advanced Research</span>
+                        <span class="program-tag">MA Journalism and Media Communications with Advanced Research</span>
+                        <span class="program-tag">MA Public Relations and Digital Communications with Advanced Research</span>
+                        <span class="program-tag">MA Education with advanced Research</span>
+                        <span class="program-tag">MSc Cancer Immunotherapy with Advanced Research</span>
+                        <span class="program-tag">MSc Data Science with Advanced Research</span>
+                        <span class="program-tag">MSc Drug Discovery and Toxicology with Advanced Research</span>
+                        <span class="program-tag">MSc Finance and Investment Banking with Advanced Research</span>
+                        <span class="program-tag">MSc Information Business with Advanced Research</span>
+                        <span class="program-tag">MSc Medical Microbiology with Advanced Research</span>
+                        <span class="program-tag">MSc Molecular Biotechnology with Advanced Research</span>
+                        <span class="program-tag">MSc Theoretical Physics with Advanced Research</span>
+                        <span class="program-tag">MSc Transport Planning with Advanced Research</span>
+                        <span class="program-tag">MSc Advanced Computer Science with Advanced Research</span>
+                        <span class="program-tag">MSc Artificial Intelligence and Robotics with Advanced Research</span>
+                        <span class="program-tag">MSc Computer Networks and Systems Security with Advanced Research</span>
+                        <span class="program-tag">MSc Cyber Security with Advanced Research</span>
+                        <span class="program-tag">MSc Data Science and Analytics with Advanced Research</span>
+                        <span class="program-tag">MSc Software Engineering with Advanced Research</span>
+                        <span class="program-tag">MSc Civil Engineering with Advanced Research</span>
+                    </div>
+                </div>
+                <div class="fee-box">
+                    <strong>Requirements</strong>
+                    <ul class="requirements-list">
+                        <li>Need Intermediate English marks: 1st year 70 &amp; 2nd year 70</li>
+                        <li>Bachelors 55% (50% for MSc Management Course)</li>
+                        <li>Gap accepted up to 5 years</li>
+                        <li>MOI accepted based on bachelors university</li>
+                        <li>IELTS: 6.0 with no band less than 5.5</li>
+                        <li>PTE: 59</li>
+                    </ul>
+                    <p><strong>Tuition fee:</strong> £18,800–£19,800</p>
+                    <p><strong>Initial deposit:</strong> 5000 GBP</p>
+                </div>
+            </details>
         </div>
+
         <div class="university-card">
-            <h3>University of Edinburgh</h3>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> Edinburgh, Scotland</p>
-            <p>Historic university known for research excellence and beautiful campus. Strong tradition in medicine and
-                sciences.</p>
-            <div class="programs">
-                <span class="program-tag">Medicine</span>
-                <span class="program-tag">AI</span>
-                <span class="program-tag">Business</span>
-                <span class="program-tag">Arts</span>
-            </div>
-        </div>
-        <div class="university-card">
-            <h3>University College London (UCL)</h3>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> London, England</p>
-            <p>London's leading multidisciplinary university. Pioneer in opening education to all and interdisciplinary
-                research.</p>
-            <div class="programs">
-                <span class="program-tag">Architecture</span>
-                <span class="program-tag">Engineering</span>
-                <span class="program-tag">Medicine</span>
-                <span class="program-tag">Law</span>
-            </div>
+            <h3>University of Hertfordshire</h3>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> Admissions open for Sep 2025 intake</p>
+            <p class="intake-meta">Course duration 1 year</p>
+            <details class="course-toggle">
+                <summary>Check Courses Here</summary>
+                <div class="course-group">
+                    <h4>1 Year Courses</h4>
+                    <div class="programs">
+                        <span class="program-tag">Masters of Business Administration (MBA)</span>
+                        <span class="program-tag">MSc Computer Science</span>
+                        <span class="program-tag">MSc Cyber Security</span>
+                        <span class="program-tag">MSc Data Science</span>
+                        <span class="program-tag">MSc Data Science and Analytics</span>
+                        <span class="program-tag">MSc Civil Engineering</span>
+                        <span class="program-tag">Master of Optometry (MOptom)</span>
+                        <span class="program-tag">Masters of Public Health</span>
+                        <span class="program-tag">MEng Aerospace Engineering</span>
+                        <span class="program-tag">MEng Aerospace Engineering with Pilot Studies</span>
+                        <span class="program-tag">MEng Aerospace Engineering with Space Technology</span>
+                        <span class="program-tag">MEng Automotive Engineering</span>
+                        <span class="program-tag">MEng Automotive Engineering with Motorsport</span>
+                        <span class="program-tag">MEng Civil Engineering</span>
+                        <span class="program-tag">MPharm Pharmacy</span>
+                        <span class="program-tag">MPhys Astrophysics</span>
+                        <span class="program-tag">MPhys Astrophysics with Space Science</span>
+                        <span class="program-tag">MPhys Physics</span>
+                        <span class="program-tag">MPhys Physics with Space Science</span>
+                        <span class="program-tag">MSc Adult Nursing</span>
+                        <span class="program-tag">MSc Advanced Computer Science</span>
+                        <span class="program-tag">MSc Aerospace Engineering (12 month route)</span>
+                        <span class="program-tag">MSc Artificial Intelligence and Robotics</span>
+                        <span class="program-tag">MSc Astrophysics</span>
+                        <span class="program-tag">MSc Audio Engineering</span>
+                        <span class="program-tag">MSc Automotive Engineering (12 month route)</span>
+                        <span class="program-tag">MSc Business Analytics and Consultancy</span>
+                        <span class="program-tag">MSc Business Psychology</span>
+                        <span class="program-tag">MSc Cancer Immunotherapy</span>
+                        <span class="program-tag">MSc Clinical Dermatology</span>
+                        <span class="program-tag">MSc Communication and Information Engineering (12 month route)</span>
+                        <span class="program-tag">MSc Drug Discovery and Toxicology</span>
+                        <span class="program-tag">MSc Electronics Engineering (12 month route)</span>
+                        <span class="program-tag">MSc Environmental Management</span>
+                        <span class="program-tag">MSc Environmental Management for Agriculture</span>
+                        <span class="program-tag">MSc Finance and Investment Banking</span>
+                        <span class="program-tag">MSc Health and Medical Education</span>
+                        <span class="program-tag">MSc Information Business</span>
+                        <span class="program-tag">MSc International Tourism, Hospitality and Event Management</span>
+                        <span class="program-tag">MSc Management</span>
+                        <span class="program-tag">MSc Management with Digital Marketing</span>
+                        <span class="program-tag">MSc Management with Logistics and Supply Chain Management</span>
+                        <span class="program-tag">MSc Management and Sustainability</span>
+                        <span class="program-tag">MSc Manufacturing Management (12 month route)</span>
+                        <span class="program-tag">MSc Mechanical Engineering (12 month route)</span>
+                        <span class="program-tag">MSc Medical Microbiology</span>
+                        <span class="program-tag">MSc Molecular Biotechnology</span>
+                        <span class="program-tag">MSc Music and Sound for Film and Games</span>
+                        <span class="program-tag">MSc Nursing (Mental Health)</span>
+                        <span class="program-tag">MSc Occupational Psychology</span>
+                        <span class="program-tag">MSc Outdoor Environmental Education</span>
+                        <span class="program-tag">MSc Pharmacovigilance</span>
+                        <span class="program-tag">MSc power Electronics and Control (12 month route)</span>
+                        <span class="program-tag">MSc Project Management</span>
+                        <span class="program-tag">MSc Psychology</span>
+                        <span class="program-tag">MSc Research in Clinical Psychology</span>
+                        <span class="program-tag">MSc Social Work</span>
+                        <span class="program-tag">MSc Software Engineering</span>
+                        <span class="program-tag">MSc Skin Integrity and Wound Management</span>
+                        <span class="program-tag">MSc Strategic Marketing with Brand Leadership</span>
+                        <span class="program-tag">MSc Strategic Marketing with Digital Media Management</span>
+                        <span class="program-tag">MSc Strategic Marketing with Global Business Development</span>
+                    </div>
+                </div>
+                <div class="fee-box">
+                    <strong>Requirements</strong>
+                    <ul class="requirements-list">
+                        <li>Need Intermediate English marks: 1st year 70 &amp; 2nd year 70</li>
+                        <li>Bachelors 55% (50% for MSc Management Course)</li>
+                        <li>Gap accepted up to 5 years</li>
+                        <li>MOI accepted based on bachelors university</li>
+                        <li>IELTS: 6.0 with no band less than 5.5</li>
+                        <li>PTE: 59</li>
+                    </ul>
+                    <p><strong>Tuition fee:</strong> £18,800–£19,800</p>
+                    <p><strong>Initial deposit:</strong> 5000 GBP</p>
+                </div>
+            </details>
         </div>
     </div>
 
@@ -459,7 +925,8 @@
             </div>
         </div>
     </footer>
-    <script src="script.js?v=20260320-1" defer></script>
+
+    <script src="script.js?v=20260514-1" defer></script>
 </body>
 
 </html>

@@ -37,19 +37,30 @@
             overflow-x: hidden;
         }
 
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='52' viewBox='0 0 52 52'%3E%3Crect x='13' y='13' width='18' height='18' rx='3' fill='none' stroke='%231e40af' stroke-opacity='.26' stroke-width='2'/%3E%3Cpath d='M18 23l4 4 8-10' fill='none' stroke='%23f9a825' stroke-opacity='.46' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-size: 52px 52px;
+            background-repeat: repeat;
+            animation: moveBg 20s linear infinite;
+            opacity: 0.34;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         body::before {
             content: '';
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(rgba(0, 33, 71, 0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 33, 71, 0.08) 1px, transparent 1px),
-                linear-gradient(rgba(249, 168, 37, 0.045) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(249, 168, 37, 0.045) 1px, transparent 1px);
-            background-size: 36px 36px, 36px 36px, 144px 144px, 144px 144px;
+                linear-gradient(rgba(0, 33, 71, 0.032) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 33, 71, 0.032) 1px, transparent 1px);
+            background-size: 48px 48px;
             mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.7) 70%, transparent 100%);
             -webkit-mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.7) 70%, transparent 100%);
-            opacity: 0.55;
+            opacity: 0.42;
             pointer-events: none;
             z-index: 0;
         }
@@ -376,6 +387,11 @@
             }
         }
 
+        @keyframes moveBg {
+            from { transform: translate(0, 0); }
+            to { transform: translate(-50px, -50px); }
+        }
+
         @keyframes cardEntrance {
             to {
                 opacity: 1;
@@ -394,6 +410,7 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
+            body::after,
             .page-heading h1,
             .page-heading p,
             .completed-card,

@@ -11,36 +11,45 @@
         max-width: 100vw !important;
         box-sizing: border-box !important;
     }
+
     .logo-container {
         display: flex !important;
         align-items: center !important;
         margin-right: auto !important;
     }
-    .brand-title, .logo-name {
+
+    .brand-title,
+    .logo-name {
         display: inline !important;
         font-size: 16px !important;
         margin-left: 8px !important;
         color: #003366 !important;
         font-weight: 700 !important;
     }
+
     .logo-tagline {
         display: none !important;
     }
+
     .nav-right {
         display: flex !important;
         align-items: center !important;
         gap: 15px !important;
         margin-left: auto !important;
     }
+
     .profile-icon {
         order: 1 !important;
     }
+
     .hamburger-icon {
         order: 2 !important;
         font-size: 28px !important;
         cursor: pointer;
     }
-    .nav-links, .nav-menu {
+
+    .nav-links,
+    .nav-menu {
         display: none !important;
         flex-direction: column !important;
         position: absolute !important;
@@ -49,9 +58,11 @@
         width: 100vw !important;
         background: #fff !important;
         z-index: 999999 !important;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
     }
-    .nav-links.active, .nav-menu.active {
+
+    .nav-links.active,
+    .nav-menu.active {
         display: flex !important;
     }
 
@@ -67,6 +78,7 @@
         align-items: center !important;
         overflow: hidden !important;
     }
+
     .country-cards-container {
         display: flex !important;
         flex-direction: row !important;
@@ -80,6 +92,7 @@
         -webkit-overflow-scrolling: touch;
         box-sizing: border-box !important;
     }
+
     .country-card {
         flex: 0 0 260px !important;
         width: 260px !important;
@@ -87,6 +100,7 @@
         margin: 0 !important;
     }
 }
+
 @media screen and (max-width: 768px) {
     .explore-destinations {
         display: flex !important;
@@ -95,6 +109,7 @@
         overflow: hidden !important;
         width: 100% !important;
     }
+
     .destinations-info-box {
         position: static !important;
         width: 90% !important;
@@ -103,6 +118,7 @@
         padding: 20px !important;
         font-size: 13px !important;
     }
+
     .destination-circle-container {
         position: relative !important;
         width: 280px !important;
@@ -111,9 +127,11 @@
         display: block !important;
         transform: scale(0.9);
     }
+
     .circle-item {
         position: absolute !important;
     }
+
     .country-cards-container {
         display: flex !important;
         flex-direction: row !important;
@@ -123,14 +141,17 @@
         gap: 15px !important;
         -webkit-overflow-scrolling: touch;
     }
+
     .country-card {
         flex: 0 0 260px !important;
         width: 260px !important;
         display: block !important;
     }
 }
+
 /* OPTIMIZED MOBILE LAYOUT FIX */
 @media screen and (max-width: 768px) {
+
     /* Top Bar */
     .top-bar {
         font-size: 10px !important;
@@ -145,29 +166,39 @@
         padding: 10px 15px !important;
         width: 100% !important;
     }
+
     .logo-container {
         display: flex !important;
         align-items: center !important;
         margin-right: auto !important;
     }
-    .brand-title, .brand-text, .logo-container span, .logo-tagline {
+
+    .brand-title,
+    .brand-text,
+    .logo-container span,
+    .logo-tagline {
         display: none !important;
     }
+
     .nav-right {
         display: flex !important;
         align-items: center !important;
         gap: 15px !important;
         margin-left: auto !important;
     }
+
     .profile-icon {
         order: 1 !important;
     }
+
     .hamburger-icon {
         order: 2 !important;
         font-size: 28px !important;
         cursor: pointer;
     }
-    .nav-links, .nav-menu {
+
+    .nav-links,
+    .nav-menu {
         display: none !important;
         flex-direction: column !important;
         position: absolute !important;
@@ -176,9 +207,11 @@
         width: 100% !important;
         background: #fff !important;
         z-index: 999999 !important;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
     }
-    .nav-links.active, .nav-menu.active {
+
+    .nav-links.active,
+    .nav-menu.active {
         display: flex !important;
     }
 
@@ -190,6 +223,7 @@
         overflow: hidden !important;
         width: 100% !important;
     }
+
     .destinations-info-box {
         position: static !important;
         width: 90% !important;
@@ -198,6 +232,7 @@
         padding: 20px !important;
         font-size: 13px !important;
     }
+
     .destination-circle-container {
         position: relative !important;
         width: 280px !important;
@@ -206,9 +241,11 @@
         display: block !important;
         transform: scale(0.9);
     }
+
     .circle-item {
         position: absolute !important;
     }
+
     .country-cards-container {
         display: flex !important;
         flex-direction: row !important;
@@ -218,26 +255,31 @@
         gap: 15px !important;
         -webkit-overflow-scrolling: touch;
     }
+
     .country-card {
         flex: 0 0 260px !important;
         width: 260px !important;
         display: block !important;
     }
+
     /* General: Prevent horizontal scroll */
-    html, body {
+    html,
+    body {
         max-width: 100vw !important;
         overflow-x: hidden !important;
     }
 }
+
 @media screen and (max-width: 768px) {
- fea6f52cf6fe042b17c59739bc7a01e391347b4a
-    .top-bar {
+    fea6f52cf6fe042b17c59739bc7a01e391347b4a .top-bar {
         font-size: 10px !important;
         padding: 4px 0 !important;
     }
 }
+
 /* FINAL HIGH-PRIORITY MOBILE FIX */
 @media screen and (max-width: 768px) {
+
     /* 1. NAVBAR ALIGNMENT: Logo Left, Icons Right */
     .navbar .container {
         display: flex !important;
@@ -248,7 +290,9 @@
     }
 
     /* Hide the Title text completely */
-    .brand-title, .brand-text, .logo-container span {
+    .brand-title,
+    .brand-text,
+    .logo-container span {
         display: none !important;
     }
 
@@ -274,7 +318,7 @@
         width: 100% !important;
         background: #ffffff !important;
         z-index: 999999 !important;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
     }
 
     /* Shows when 3-bars are clicked */
@@ -316,8 +360,10 @@
         width: 260px !important;
     }
 }
+
 /* FINAL CONSOLIDATED MOBILE FIX */
 @media screen and (max-width: 768px) {
+
     /* --- 1. TOP BAR & NAVBAR --- */
     .top-bar {
         font-size: 10px !important;
@@ -332,7 +378,9 @@
     }
 
     /* Remove text title on mobile to prevent overlapping */
-    .brand-title, .brand-text, .guiding-text {
+    .brand-title,
+    .brand-text,
+    .guiding-text {
         display: none !important;
     }
 
@@ -357,7 +405,7 @@
         width: 100% !important;
         background: #ffffff !important;
         z-index: 99999 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
         padding: 15px 0 !important;
     }
 
@@ -373,7 +421,8 @@
     }
 
     /* --- 3. DESTINATIONS SECTION --- */
-    .explore-destinations, .explore-study-destinations {
+    .explore-destinations,
+    .explore-study-destinations {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -382,7 +431,7 @@
 
     /* Blue/White Info Box: Shrunk and placed at top */
     .destinations-info-box {
-        position: static !important; 
+        position: static !important;
         width: 90% !important;
         max-width: 380px !important;
         margin: 0 auto 30px auto !important;
@@ -392,7 +441,7 @@
     /* The Flag Circle: Restored shape and scaled down */
     .destination-circle-container {
         position: relative !important;
-        width: 280px !important; 
+        width: 280px !important;
         height: 280px !important;
         margin: 0 auto 40px auto !important;
         display: block !important;
@@ -421,8 +470,10 @@
         margin: 0 !important;
     }
 }
+
 /* --- Precise Mobile Navbar & Destinations Fix --- */
 @media screen and (max-width: 768px) {
+
     /* NAVBAR: Logo/Title Left, Icons Right */
     .navbar .container {
         display: flex !important;
@@ -463,7 +514,7 @@
         width: 100% !important;
         background: #ffffff !important;
         z-index: 10000 !important;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
     }
 
     /* Active class to show buttons */
@@ -492,8 +543,10 @@
         scroll-snap-align: start !important;
     }
 }
+
 /* FINAL CONSOLIDATED MOBILE & MINIMIZED FIX */
 @media screen and (max-width: 768px) {
+
     /* NAVBAR: Logo Left, Menu Right */
     .navbar .container {
         display: flex !important;
@@ -523,7 +576,7 @@
         gap: 10px;
         padding: 20px 0;
         transition: 0.4s;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         z-index: 1000;
     }
 
@@ -553,7 +606,8 @@
     }
 
     /* CARDS: Motion Effect & Horizontal Scroll */
-    .country-cards-container, .why-choose-grid {
+    .country-cards-container,
+    .why-choose-grid {
         display: flex !important;
         flex-direction: row !important;
         overflow-x: auto !important;
@@ -568,15 +622,18 @@
         width: max-content !important;
     }
 
-    .country-card, .why-choose-card {
+    .country-card,
+    .why-choose-card {
         flex: 0 0 260px !important;
         width: 260px !important;
         margin: 0 !important;
         display: inline-block !important;
     }
 }
+
 /* --- Vertical Stack Fix for Mobile --- */
 @media screen and (max-width: 768px) {
+
     /* 1. Entire Section: Stack elements vertically */
     .explore-destinations {
         display: flex !important;
@@ -638,8 +695,10 @@
         margin: 0 !important;
     }
 }
+
 /* === Specific Mobile Fixes: Navbar, Coaching Cards, Destinations === */
 @media screen and (max-width: 768px) {
+
     /* Swap Navbar: Icons Left, Logo Right */
     .navbar .container {
         display: flex !important;
@@ -647,11 +706,13 @@
         justify-content: flex-end !important;
         gap: 15px;
     }
+
     .nav-right {
         margin-right: auto;
         display: flex;
         gap: 15px;
     }
+
     /* Fix Title: No more overlapping or strange alignment */
     .hero-section h1 {
         font-size: 22px !important;
@@ -660,8 +721,11 @@
         width: 100% !important;
         line-height: 1.3;
     }
+
     /* Stop the motion/animation that creates the 6-card overlap */
-    .coaching-cards-container, .motion-track, .marquee {
+    .coaching-cards-container,
+    .motion-track,
+    .marquee {
         display: flex !important;
         flex-direction: column !important;
         animation: none !important;
@@ -669,6 +733,7 @@
         width: 100% !important;
         height: auto !important;
     }
+
     .coaching-card {
         width: 95% !important;
         margin: 15px auto !important;
@@ -676,10 +741,13 @@
         left: 0 !important;
         display: block !important;
     }
+
     /* Hide the duplicated cards used for the motion effect */
-    .coaching-card.clone, .coaching-card:nth-child(n+4) {
+    .coaching-card.clone,
+    .coaching-card:nth-child(n+4) {
         display: none !important;
     }
+
     /* Destinations circle to grid, fix overlap with forms */
     .destination-circle-container {
         display: grid !important;
@@ -690,23 +758,29 @@
         transform: none !important;
         height: auto !important;
     }
+
     .circle-item {
         position: static !important;
         margin: 0 auto;
     }
 }
+
 /* --- Professional Responsive Styles --- */
 @media screen and (max-width: 768px) {
-    .container, .navbar .container, .footer .container {
+
+    .container,
+    .navbar .container,
+    .footer .container {
         width: 100% !important;
         max-width: 100% !important;
         padding: 0 20px !important;
         margin: 0 auto;
         box-sizing: border-box;
     }
-    .about-content, 
-    .coaching-cards, 
-    .why-choose-grid, 
+
+    .about-content,
+    .coaching-cards,
+    .why-choose-grid,
     .footer-content,
     .info-cards-container,
     .login-container {
@@ -716,21 +790,29 @@
         gap: 25px !important;
         text-align: center;
     }
-    .card, .coaching-card, .training-card, .info-box, .form-box {
+
+    .card,
+    .coaching-card,
+    .training-card,
+    .info-box,
+    .form-box {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 0 15px 0 !important;
     }
+
     .destination-circle-container {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 20px;
         transform: scale(0.9);
     }
+
     img {
         max-width: 100%;
         height: auto;
     }
+
     /* Hamburger menu styles */
     .nav-menu {
         position: fixed;
@@ -745,14 +827,17 @@
         box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
         z-index: 1000;
     }
+
     .nav-menu.active {
         left: 0;
     }
+
     .nav-toggle {
         display: block !important;
         cursor: pointer;
         z-index: 1100;
     }
+
     .nav-toggle span {
         display: block;
         width: 30px;
@@ -763,43 +848,53 @@
         transition: 0.3s;
     }
 }
+
 /* --- MOBILE RESPONSIVENESS IMPROVEMENTS --- */
 html body {
-  @media (max-width: 600px) {
-  body {
-    font-size: 16px;
-    padding: 10px;
-    /* Add more mobile styles here */
-  }
+    @media (max-width: 600px) {
+        body {
+            font-size: 16px;
+            padding: 10px;
+            /* Add more mobile styles here */
+        }
+    }
 }
-}
+
 @media (max-width: 768px) {
-    body, html {
+
+    body,
+    html {
         width: 100vw;
         max-width: 100vw;
         overflow-x: hidden;
     }
+
     .navbar .container {
         width: 100%;
         padding: 0 10px;
         box-sizing: border-box;
     }
+
     .logo {
         max-width: 140px;
     }
+
     .nav-menu {
         width: 100%;
         flex-direction: column;
         align-items: flex-start;
         padding: 0;
     }
+
     .nav-menu li a {
         padding: 12px 0;
         width: 100%;
     }
+
     .top-bar {
         padding: 0 10px;
     }
+
     .hero-glass {
         width: 100vw;
         left: 0;
@@ -809,24 +904,31 @@ html body {
         padding: 24px 0;
         box-sizing: border-box;
     }
-    .hero-content-inner, .hero-content {
+
+    .hero-content-inner,
+    .hero-content {
         width: 100%;
         max-width: 100vw;
         padding: 0 10px;
         box-sizing: border-box;
         text-align: left;
     }
-    .hero-line, .country-hero .hero-line {
+
+    .hero-line,
+    .country-hero .hero-line {
         font-size: 2rem;
         margin-bottom: 10px;
         text-align: left;
     }
-    .hero-description, .country-hero .hero-description {
+
+    .hero-description,
+    .country-hero .hero-description {
         font-size: 1rem;
         padding-left: 10px;
         max-width: 100vw;
         border-left: 3px solid #f39c12;
     }
+
     .visa-types-grid {
         display: flex;
         flex-direction: column;
@@ -835,11 +937,13 @@ html body {
         padding: 0 10px;
         box-sizing: border-box;
     }
+
     .visa-type-card {
         max-width: 100%;
         min-width: 0;
         margin: 0 auto;
     }
+
     .cards-container {
         flex-direction: column;
         gap: 24px;
@@ -847,31 +951,44 @@ html body {
         padding: 0 10px;
         box-sizing: border-box;
     }
+
     .card {
         max-width: 100%;
         min-width: 0;
         margin: 0 auto;
     }
-    .universities-section, .country-info {
+
+    .universities-section,
+    .country-info {
         width: 100%;
         padding: 0 10px;
         box-sizing: border-box;
     }
+
     .university-card {
         max-width: 100%;
         min-width: 0;
         margin: 0 auto;
     }
+
     .section-title {
         font-size: 1.5rem;
         text-align: left;
     }
-    .register-section, .why-section, .why-germany, .why-canada, .why-usa, .why-italy, .why-newzealand {
+
+    .register-section,
+    .why-section,
+    .why-germany,
+    .why-canada,
+    .why-usa,
+    .why-italy,
+    .why-newzealand {
         width: 100%;
         padding: 0 10px;
         box-sizing: border-box;
     }
 }
+
 /* --- MOBILE RESPONSIVENESS IMPROVEMENTS --- */
 @media (max-width: 768px) {
     .navbar .container {
@@ -880,81 +997,108 @@ html body {
         align-items: flex-start;
         gap: 0;
     }
+
     .logo {
         margin-left: 0;
         margin-bottom: 10px;
     }
+
     .nav-menu {
         flex-direction: column;
         gap: 0;
         width: 100%;
         align-items: flex-start;
         background: #fff;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         border-radius: 0 0 12px 12px;
         padding: 10px 0;
     }
+
     .nav-menu li a {
         padding: 12px 20px;
         width: 100%;
         font-size: 1.1rem;
     }
+
     .top-bar {
         padding: 0 10px;
         font-size: 13px;
     }
-    .hero-glass, .hero-content-inner, .hero-content {
+
+    .hero-glass,
+    .hero-content-inner,
+    .hero-content {
         width: 100vw !important;
         min-width: 0 !important;
         max-width: 100vw !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
     }
-    .hero-line, .country-hero .hero-line {
+
+    .hero-line,
+    .country-hero .hero-line {
         font-size: 2rem !important;
         padding: 0 10px;
     }
-    .hero-description, .country-hero .hero-description {
+
+    .hero-description,
+    .country-hero .hero-description {
         font-size: 1rem !important;
         padding-left: 10px !important;
         max-width: 95vw !important;
     }
+
     .visa-types-grid {
         grid-template-columns: 1fr !important;
         gap: 24px 0 !important;
     }
+
     .visa-type-card {
         max-width: 98vw !important;
         min-width: 0 !important;
     }
+
     .cards-container {
         flex-direction: column !important;
         gap: 18px !important;
         align-items: stretch !important;
     }
+
     .card {
         width: 100% !important;
         min-width: 0 !important;
         max-width: 100vw !important;
         padding: 18px 10px !important;
     }
-    .universities-section, .country-info {
+
+    .universities-section,
+    .country-info {
         padding-left: 0 !important;
         flex-direction: column !important;
         gap: 18px !important;
     }
+
     .university-card {
         padding: 18px 10px !important;
         margin-bottom: 18px !important;
     }
+
     .section-title {
         font-size: 1.5rem !important;
         padding: 0 10px !important;
     }
-    .register-section, .why-section, .why-germany, .why-canada, .why-usa, .why-italy, .why-newzealand {
+
+    .register-section,
+    .why-section,
+    .why-germany,
+    .why-canada,
+    .why-usa,
+    .why-italy,
+    .why-newzealand {
         padding: 30px 5px !important;
     }
 }
+
 /* Center hero text and animate for country pages (Visa Services) */
 .country-hero .hero-content {
     width: 100%;
@@ -972,6 +1116,7 @@ html body {
     margin: 0;
     animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
 }
+
 /* Center hero text and animate for country pages (Germany) */
 .country-hero .hero-content {
     width: 100%;
@@ -989,6 +1134,7 @@ html body {
     margin: 0;
     animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
 }
+
 /* Center hero text and animate for country pages (Italy) */
 .country-hero .hero-content {
     width: 100%;
@@ -1006,6 +1152,7 @@ html body {
     margin: 0;
     animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
 }
+
 /* Center hero text and animate for country pages (New Zealand) */
 .country-hero .hero-content {
     width: 100%;
@@ -1023,6 +1170,7 @@ html body {
     margin: 0;
     animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
 }
+
 /* Center hero text and animate for country pages */
 .country-hero .hero-content {
     width: 100%;
@@ -1040,12 +1188,14 @@ html body {
     margin: 0;
     animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
 }
+
 /* Motion effect for hero text */
 @keyframes fadeInUp {
     0% {
         opacity: 0;
         transform: translateY(40px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
@@ -1053,33 +1203,39 @@ html body {
 }
 
 .hero-line {
-        /* ...existing code... */
-        animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
+    /* ...existing code... */
+    animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
 }
 
 .hero-description {
-        /* ...existing code... */
-        animation: fadeInUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.4s both;
+    /* ...existing code... */
+    animation: fadeInUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.4s both;
 }
+
 .hero-glass {
-    background: rgba(0, 0, 0, 0.18); /* More transparent dark bar */
+    background: rgba(0, 0, 0, 0.18);
+    /* More transparent dark bar */
     backdrop-filter: blur(5px);
-    
+
     /* FIX: This forces the bar to be 100% of the browser width, 
        even if the parent is small */
-    width: 100vw; 
+    width: 100vw;
     position: relative;
     left: 50%;
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    
-    padding: 40px 0;               /* Slim height */
-    border-radius: 0;              /* Removes the box corners */
-    box-shadow: none;              /* Removes the shadow */
-    
+
+    padding: 40px 0;
+    /* Slim height */
+    border-radius: 0;
+    /* Removes the box corners */
+    box-shadow: none;
+    /* Removes the shadow */
+
     display: flex;
-    justify-content: center;       /* Centers the text wrapper inside the bar */
+    justify-content: center;
+    /* Centers the text wrapper inside the bar */
 }
 
 /* Inner container to keep text on the left */
@@ -1099,7 +1255,7 @@ html body {
     line-height: 1.1;
     margin-bottom: 20px;
     letter-spacing: 0.5px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .hero-desc-container {
@@ -1107,38 +1263,47 @@ html body {
     padding-left: 20px;
     max-width: 700px;
     opacity: 0.92;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
 .hero-description {
     font-size: 1.2rem;
     color: #fff;
-    max-width: 700px; 
+    max-width: 700px;
     padding-left: 20px;
-    border-left: 4px solid #f39c12; /* That yellow line you want */
+    border-left: 4px solid #f39c12;
+    /* That yellow line you want */
     line-height: 1.6;
 }
+
 /* Hero Section Glassmorphic Bar and Text */
 .hero-glass {
-    background: rgba(0, 0, 0, 0.45); /* Transparent dark bar */
+    background: rgba(0, 0, 0, 0.45);
+    /* Transparent dark bar */
     backdrop-filter: blur(5px);
-    width: 100vw; 
+    width: 100vw;
     position: relative;
     left: 50%;
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    padding: 40px 0;               /* Slim height */
-    border-radius: 0;              /* Removes the box corners */
-    box-shadow: none;              /* Removes the shadow */
+    padding: 40px 0;
+    /* Slim height */
+    border-radius: 0;
+    /* Removes the box corners */
+    box-shadow: none;
+    /* Removes the shadow */
     display: flex;
-    justify-content: center;       /* Centers the text wrapper inside the bar */
+    justify-content: center;
+    /* Centers the text wrapper inside the bar */
 }
 
 .hero-content-inner {
     width: 90%;
-    max-width: 1200px;             /* Aligns with your logo's position */
-    text-align: left;              /* Keeps text on the left */
+    max-width: 1200px;
+    /* Aligns with your logo's position */
+    text-align: left;
+    /* Keeps text on the left */
 }
 
 .hero-line {
@@ -1157,8 +1322,9 @@ html body {
     border-left: 4px solid #f39c12;
     line-height: 1.6;
     opacity: 0.92;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
+
 /* Visa Cards Section */
 .visa-types-grid {
     display: grid;
@@ -1237,6 +1403,7 @@ html body {
     background: orange;
     color: white;
 }
+
 .top-bar {
     position: fixed;
     top: 0;
@@ -1343,7 +1510,7 @@ html body {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: rgba(255,255,255,0.95);
+    color: rgba(255, 255, 255, 0.95);
     font-weight: 600;
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -1359,19 +1526,20 @@ html body {
 .form-group textarea {
     width: 100%;
     padding: 0.8rem;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
     font-size: 1rem;
     transition: all 0.25s ease;
-    color: #ffffff; /* input text white on orange wrapper */
+    color: #ffffff;
+    /* input text white on orange wrapper */
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.12);
     border-color: #FFB74D;
     box-shadow: 0 6px 20px rgba(255, 183, 77, 0.10);
     transform: translateY(-2px);
@@ -1384,8 +1552,9 @@ html body {
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-    background: rgba(255,255,255,0.12);
-    border-color: #FFB74D; /* softer orange */
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #FFB74D;
+    /* softer orange */
     color: #ffffff;
     box-shadow: 0 6px 18px rgba(255, 183, 77, 0.12);
 }
@@ -1396,7 +1565,7 @@ html body {
 .form-group input::placeholder,
 .form-group textarea::placeholder,
 .form-group select::placeholder {
-    color: rgba(255,255,255,0.85);
+    color: rgba(255, 255, 255, 0.85);
     opacity: 1;
 }
 
@@ -1703,7 +1872,8 @@ html body {
     align-items: center;
     justify-content: flex-start;
     padding: 16px 18px;
-    padding-right: 64px; /* room for the close button */
+    padding-right: 64px;
+    /* room for the close button */
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     background: linear-gradient(135deg, rgba(0, 33, 71, 0.06), rgba(249, 168, 37, 0.10));
 }
@@ -1914,6 +2084,7 @@ html body {
 .hero-line.animate-hero-text {
     animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.1s both;
 }
+
 .hero-description.animate-hero-text {
     animation: fadeInUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.4s both;
 }
@@ -2070,8 +2241,7 @@ html body {
 .step-content h4 {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #002147
-    ;
+    color: #002147;
     margin-bottom: 0.3rem;
 }
 
@@ -2447,7 +2617,7 @@ html body {
     .services-big-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .services-premium-section .container {
         width: 90%;
     }
@@ -2670,10 +2840,12 @@ body.reg-modal-open .reg-flex-card {
         transform: translateY(18px) scale(0.985);
         opacity: 0;
     }
+
     65% {
         transform: translateY(0) scale(1);
         opacity: 1;
     }
+
     100% {
         transform: translateY(0) scale(1);
         opacity: 1;
@@ -3038,7 +3210,8 @@ body.reg-modal-open .reg-modal-close {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 44px; /* prevents zero-height container before iframe renders */
+    min-height: 44px;
+    /* prevents zero-height container before iframe renders */
 }
 
 #googleFallbackBtn {
@@ -3179,16 +3352,18 @@ body.reg-modal-open .reg-modal-close {
 
 .flag-wrap img {
     width: 100%;
-    height: 200px; /* match visa card image height */
+    height: 200px;
+    /* match visa card image height */
     object-fit: cover;
 }
 
 /* Card Hover - View Details Orange avvali */
 .destination-card:hover {
     transform: translateY(-8px);
-    border: none; /* remove orange border */
+    border: none;
+    /* remove orange border */
     /* orange glow similar to visa cards */
-    box-shadow: 0 24px 60px rgba(249,147,38,0.18), 0 6px 18px rgba(249,147,38,0.10);
+    box-shadow: 0 24px 60px rgba(249, 147, 38, 0.18), 0 6px 18px rgba(249, 147, 38, 0.10);
 }
 
 .destination-card:hover .view-details-btn {
@@ -3470,7 +3645,8 @@ body {
 /* Header & Navbar */
 header {
     position: fixed;
-    top: 35px; /* sit below the .top-bar (35px height) so navbar is visible */
+    top: 35px;
+    /* sit below the .top-bar (35px height) so navbar is visible */
     left: 0;
     width: 100%;
     background: var(--white);
@@ -3742,15 +3918,15 @@ body.country-page .universities-section::before {
     animation: countryGridShineSweep 7s linear infinite;
 }
 
-body.country-page .why-usa > *,
-body.country-page .why-uk > *,
-body.country-page .why-canada > *,
-body.country-page .why-australia > *,
-body.country-page .why-germany > *,
-body.country-page .why-newzealand > *,
-body.country-page .why-italy > *,
-body.country-page .why-turkey > *,
-body.country-page .universities-section > * {
+body.country-page .why-usa>*,
+body.country-page .why-uk>*,
+body.country-page .why-canada>*,
+body.country-page .why-australia>*,
+body.country-page .why-germany>*,
+body.country-page .why-newzealand>*,
+body.country-page .why-italy>*,
+body.country-page .why-turkey>*,
+body.country-page .universities-section>* {
     position: relative;
     z-index: 1;
 }
@@ -3779,7 +3955,7 @@ body.country-page .register-section::before {
     animation: countryGridShineSweep 7s linear infinite;
 }
 
-body.country-page .register-section > * {
+body.country-page .register-section>* {
     position: relative;
     z-index: 1;
 }
@@ -3788,12 +3964,14 @@ body.country-page .register-section > * {
     0% {
         background-position: 0 0, 0 0, 120% 0;
     }
+
     100% {
         background-position: 0 0, 0 0, -40% 0;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     body.country-page .why-usa::before,
     body.country-page .why-uk::before,
     body.country-page .why-canada::before,
@@ -3876,10 +4054,13 @@ body.country-page .register-section > * {
 
 /* Trainings vertical infinite scroll (CSS-only) */
 :root {
-    --training-card-h: 260px; /* match .coaching-image min-height */
+    --training-card-h: 260px;
+    /* match .coaching-image min-height */
     --training-visible-count: 3;
-    --training-duration: 14s; /* adjust speed (lower = faster) */
-    --training-gap: 2.5rem; /* gap between cards (keeps previous spacing) */
+    --training-duration: 14s;
+    /* adjust speed (lower = faster) */
+    --training-gap: 2.5rem;
+    /* gap between cards (keeps previous spacing) */
 }
 
 .trainings-viewport {
@@ -3909,16 +4090,31 @@ body.country-page .register-section > * {
 }
 
 @keyframes trainings-scroll {
+
     /* move by total height of 3 cards plus the gaps between them (2 gaps) */
-    from { transform: translateY(0); }
-    to   { transform: translateY(calc(var(--training-card-h) * -3 - var(--training-gap) * 2)); }
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(calc(var(--training-card-h) * -3 - var(--training-gap) * 2));
+    }
 }
 
 /* On small screens, disable animation and show stacked cards */
 @media (max-width: 768px) {
-    .trainings-viewport { height: auto; }
-    .trainings-track { animation: none; }
-    .trainings-track .coaching-card { height: auto; flex: none; }
+    .trainings-viewport {
+        height: auto;
+    }
+
+    .trainings-track {
+        animation: none;
+    }
+
+    .trainings-track .coaching-card {
+        height: auto;
+        flex: none;
+    }
 }
 
 .coaching-card {
@@ -4393,8 +4589,9 @@ body.country-page .register-section > * {
 /* Card meeda mouse pettinappudu button orange avvali */
 .destination-card:hover {
     transform: translateY(-8px);
-    border: none; /* remove orange border */
-    box-shadow: 0 24px 60px rgba(249,147,38,0.18), 0 6px 18px rgba(249,147,38,0.10);
+    border: none;
+    /* remove orange border */
+    box-shadow: 0 24px 60px rgba(249, 147, 38, 0.18), 0 6px 18px rgba(249, 147, 38, 0.10);
 }
 
 .destination-card:hover .view-details-btn {
@@ -4755,7 +4952,7 @@ footer {
         left: 0;
     }
 
-    .nav-menu > li {
+    .nav-menu>li {
         width: 100%;
         margin-bottom: 1rem;
     }
@@ -4768,7 +4965,7 @@ footer {
         white-space: normal;
     }
 
-    .nav-menu .nav-dropdown > a::after {
+    .nav-menu .nav-dropdown>a::after {
         content: none !important;
         display: none !important;
     }
@@ -4787,7 +4984,7 @@ footer {
         width: 100%;
     }
 
-    .nav-menu .nav-dropdown.is-open > .dropdown-menu {
+    .nav-menu .nav-dropdown.is-open>.dropdown-menu {
         display: flex;
         flex-direction: column;
         align-items: stretch;
@@ -5641,7 +5838,8 @@ footer {
 .destination-card {
     min-width: 320px;
     max-width: 320px;
-    min-height: 380px; /* match visa card height */
+    min-height: 380px;
+    /* match visa card height */
     flex: 0 0 320px;
     scroll-snap-align: start;
     margin: 0;
@@ -5822,7 +6020,8 @@ footer {
     border-radius: 12px;
     color: #072a40;
     box-shadow: 0 8px 26px rgba(7, 42, 64, 0.06);
-    max-width: 700px; /* increased width to make the description box larger */
+    max-width: 700px;
+    /* increased width to make the description box larger */
 }
 
 /* smooth transition for hover effects */
@@ -5853,9 +6052,10 @@ footer {
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
-    min-height: 420px; /* decreased length */
-    box-shadow: 0 20px 50px rgba(7,42,64,0.1);
-  
+    min-height: 420px;
+    /* decreased length */
+    box-shadow: 0 20px 50px rgba(7, 42, 64, 0.1);
+
 }
 
 .promo-accent {
@@ -5884,23 +6084,52 @@ footer {
     color: #5b6b78;
 }
 
-.promo-features { list-style: none; padding: 0; margin: 0 0 18px 0; }
-.promo-features li { display:flex; align-items:center; gap:10px; margin-bottom:8px; font-weight:600; color:#23495f; }
-.promo-features li i { color: #f97316; }
-.promo-cta { display:inline-flex; align-items:center; justify-content:center; text-align:center; background: linear-gradient(180deg,#f97316,#ff8a2b); color:#fff; padding:12px 20px; border-radius:30px; text-decoration:none; font-weight:700; box-shadow:0 8px 20px rgba(249,167,42,0.18); transition: background 220ms ease, box-shadow 220ms ease, transform 160ms ease; }
+.promo-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px 0;
+}
+
+.promo-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #23495f;
+}
+
+.promo-features li i {
+    color: #f97316;
+}
+
+.promo-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(180deg, #f97316, #ff8a2b);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(249, 167, 42, 0.18);
+    transition: background 220ms ease, box-shadow 220ms ease, transform 160ms ease;
+}
 
 /* Glow effect on the description box border when hovered */
 .description-box:hover,
 .promo-card:hover {
-    box-shadow: 0 18px 50px rgba(7,42,64,0.12), 0 0 18px rgba(249,147,38,0.12);
+    box-shadow: 0 18px 50px rgba(7, 42, 64, 0.12), 0 0 18px rgba(249, 147, 38, 0.12);
     transform: translateY(-4px);
 }
 
 /* When the user hovers the box, change the CTA to the logo/navy blue */
 .description-box:hover .promo-cta,
 .promo-card:hover .promo-cta {
-    background: linear-gradient(180deg,#072a40,#0b3b5c);
-    box-shadow: 0 10px 28px rgba(7,42,64,0.18);
+    background: linear-gradient(180deg, #072a40, #0b3b5c);
+    box-shadow: 0 10px 28px rgba(7, 42, 64, 0.18);
 }
 
 /* Ensure CTA hover still has a subtle lift */
@@ -5911,25 +6140,35 @@ footer {
 /* On hovering the description/promo card: make the accent and tickmarks the brand navy */
 .description-box:hover .promo-accent,
 .promo-card:hover .promo-accent {
-    background: linear-gradient(180deg,#072a40,#0b3b5c);
-    box-shadow: 0 0 18px rgba(7,42,64,0.12);
+    background: linear-gradient(180deg, #072a40, #0b3b5c);
+    box-shadow: 0 0 18px rgba(7, 42, 64, 0.12);
 }
 
 .description-box:hover .promo-features li i,
 .promo-card:hover .promo-features li i {
     color: #072a40;
-    text-shadow: 0 0 6px rgba(7,42,64,0.10);
+    text-shadow: 0 0 6px rgba(7, 42, 64, 0.10);
     transition: color 200ms ease, text-shadow 200ms ease;
 }
 
 @media (max-width: 1000px) {
-    .promo-card { flex-direction: column; }
-    .destinations-right { flex: 0 0 auto; }
+    .promo-card {
+        flex-direction: column;
+    }
+
+    .destinations-right {
+        flex: 0 0 auto;
+    }
 }
 
 @media (max-width: 760px) {
-    .promo-accent { width: 12px; }
-    .promo-content h3 { font-size: 1.25rem; }
+    .promo-accent {
+        width: 12px;
+    }
+
+    .promo-content h3 {
+        font-size: 1.25rem;
+    }
 }
 
 .destinations-grid {
@@ -5963,10 +6202,12 @@ footer {
 /* SLIDESHOW AREA */
 .flag-wrap {
     width: 100%;
-    height: 200px; /* match visa card image height */
+    height: 200px;
+    /* match visa card image height */
     position: relative;
     overflow: hidden;
-    background-color: #f6f8fb; /* neutral background to avoid white flash */
+    background-color: #f6f8fb;
+    /* neutral background to avoid white flash */
 }
 
 .flag-wrap img {
@@ -5999,14 +6240,29 @@ footer {
 
 /* FADE ANIMATION KEYFRAMES */
 @keyframes fadeSlideshow {
+
     /* Staggered slideshow: fade in early, remain visible, then fade out.
        Delays on each img (.img1/.img2/.img3) ensure one image is visible
        while the next is fading in, preventing any blank white gap. */
-    0% { opacity: 0; }
-    8% { opacity: 1; }
-    33% { opacity: 1; }
-    41% { opacity: 0; }
-    100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+
+    8% {
+        opacity: 1;
+    }
+
+    33% {
+        opacity: 1;
+    }
+
+    41% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 /* CARD CONTENT */
@@ -6041,8 +6297,9 @@ footer {
 /* HOVER EFFECTS */
 .destination-card:hover {
     transform: translateY(-8px);
-    border: none; /* remove orange border */
-    box-shadow: 0 24px 60px rgba(249,147,38,0.18), 0 6px 18px rgba(249,147,38,0.10);
+    border: none;
+    /* remove orange border */
+    box-shadow: 0 24px 60px rgba(249, 147, 38, 0.18), 0 6px 18px rgba(249, 147, 38, 0.10);
 }
 
 .destination-card:hover .flag-wrap img {
@@ -7026,7 +7283,8 @@ footer {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    max-width: 320px; /* increased width */
+    max-width: 320px;
+    /* increased width */
     /* decreased vertical length */
     min-height: 380px;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -7040,7 +7298,8 @@ footer {
 /* IMAGE */
 .visa-card-image {
     width: 100%;
-    height: 200px; /* reduced image height to shorten cards */
+    height: 200px;
+    /* reduced image height to shorten cards */
     overflow: hidden;
 }
 
@@ -7073,7 +7332,8 @@ footer {
     margin-top: auto;
     align-self: center;
     padding: 12px 26px;
-    background: #002147;   /* normal */
+    background: #002147;
+    /* normal */
     color: white;
     text-decoration: none;
     font-weight: 600;
@@ -7082,19 +7342,21 @@ footer {
 }
 
 .get-assistance-btn:hover {
-    background: orange;     /* 🔥 hover lo orange */
-    color:white;
+    background: orange;
+    /* 🔥 hover lo orange */
+    color: white;
     transform: scale(1.05);
 }
+
 .visa-type-card {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .visa-type-card:hover {
-  box-shadow:
-    0 0 0 0 rgba(255,165,0,0),
-    0 14px 40px rgba(255,165,0,0.35);
-  transform: translateY(-6px);
+    box-shadow:
+        0 0 0 0 rgba(255, 165, 0, 0),
+        0 14px 40px rgba(255, 165, 0, 0.35);
+    transform: translateY(-6px);
 }
 
 
@@ -7105,7 +7367,11 @@ footer {
         gap: 50px 50px;
         justify-content: center;
     }
-    .visa-type-card, .visa-type-card.permanent { max-width: 320px; }
+
+    .visa-type-card,
+    .visa-type-card.permanent {
+        max-width: 320px;
+    }
 }
 
 @media (max-width: 640px) {
@@ -7125,17 +7391,21 @@ footer {
 
 /* Adjust Permanent Residency card slightly so image matches others visually */
 .visa-type-card.permanent {
-    max-width: 320px; /* a bit wider than default */
+    max-width: 320px;
+    /* a bit wider than default */
     /* keep permanent card length consistent with others */
     min-height: 380px;
 }
+
 .visa-type-card.permanent .visa-card-image {
-    height: 200px; /* match other cards' image height */
+    height: 200px;
+    /* match other cards' image height */
 }
 
 .content-section {
     padding: 40px 20px;
-    max-width: 1000px; /* Mothan section width restrict chestundi */
+    max-width: 1000px;
+    /* Mothan section width restrict chestundi */
     margin: 0 auto;
 }
 
@@ -7179,14 +7449,16 @@ footer {
     border-radius: 12px;
     border: 1px solid #edf2f7;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-    transition: all 0.4s ease; /* Smooth transition kosam */
+    transition: all 0.4s ease;
+    /* Smooth transition kosam */
     width: 100%;
     cursor: pointer;
 }
 
 /* --- Orange Hover Effect (The Magic) --- */
 .service-item:hover {
-    background-color: var(--orange); /* Box orange ga marthundi */
+    background-color: var(--orange);
+    /* Box orange ga marthundi */
     border-color: var(--orange);
     transform: translateY(-8px);
     box-shadow: 0 15px 30px rgba(249, 168, 37, 0.3);
@@ -7326,7 +7598,7 @@ footer {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 18px 40px rgba(7,42,64,0.10);
+    box-shadow: 0 18px 40px rgba(7, 42, 64, 0.10);
     border: 6px solid #fff;
 }
 
@@ -7364,7 +7636,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 18px 44px rgba(7,42,64,0.12);
+    box-shadow: 0 18px 44px rgba(7, 42, 64, 0.12);
 }
 
 .country-center .center-logo {
@@ -7395,14 +7667,45 @@ footer {
 }
 
 /* Flag background helpers kept for legacy static flags */
-.flag-usa { background-image: url('https://flagcdn.com/w80/us.png'); background-size: cover; }
-.flag-uk { background-image: url('https://flagcdn.com/w80/gb.png'); background-size: cover; }
-.flag-canada { background-image: url('https://flagcdn.com/w160/ca.png'); background-size: cover; }
-.flag-australia { background-image: url('https://flagcdn.com/w80/au.png'); background-size: cover; }
-.flag-germany { background-image: url('https://flagcdn.com/w160/de.png'); background-size: cover; }
-.flag-newzealand { background-image: url('https://flagcdn.com/w80/nz.png'); background-size: cover; }
-.flag-ireland { background-image: url('https://flagcdn.com/w80/ie.png'); background-size: cover; }
-.flag-singapore { background-image: url('https://flagcdn.com/w80/sg.png'); background-size: cover; }
+.flag-usa {
+    background-image: url('https://flagcdn.com/w80/us.png');
+    background-size: cover;
+}
+
+.flag-uk {
+    background-image: url('https://flagcdn.com/w80/gb.png');
+    background-size: cover;
+}
+
+.flag-canada {
+    background-image: url('https://flagcdn.com/w160/ca.png');
+    background-size: cover;
+}
+
+.flag-australia {
+    background-image: url('https://flagcdn.com/w80/au.png');
+    background-size: cover;
+}
+
+.flag-germany {
+    background-image: url('https://flagcdn.com/w160/de.png');
+    background-size: cover;
+}
+
+.flag-newzealand {
+    background-image: url('https://flagcdn.com/w80/nz.png');
+    background-size: cover;
+}
+
+.flag-ireland {
+    background-image: url('https://flagcdn.com/w80/ie.png');
+    background-size: cover;
+}
+
+.flag-singapore {
+    background-image: url('https://flagcdn.com/w80/sg.png');
+    background-size: cover;
+}
 
 .benefits-grid {
     display: grid;
@@ -7950,8 +8253,9 @@ footer {
 
 .destination-card:hover {
     transform: translateY(-8px);
-    border: none; /* remove orange border */
-    box-shadow: 0 24px 60px rgba(249,147,38,0.18), 0 6px 18px rgba(249,147,38,0.10);
+    border: none;
+    /* remove orange border */
+    box-shadow: 0 24px 60px rgba(249, 147, 38, 0.18), 0 6px 18px rgba(249, 147, 38, 0.10);
 }
 
 .destination-card i {
@@ -8130,6 +8434,7 @@ footer {
     0% {
         background-position: 0 0, 0 0, 120% 0;
     }
+
     100% {
         background-position: 0 0, 0 0, -40% 0;
     }
@@ -8141,7 +8446,7 @@ footer {
     }
 }
 
-#about.about-final-revised > * {
+#about.about-final-revised>* {
     position: relative;
     z-index: 1;
 }
@@ -8777,7 +9082,8 @@ footer {
 
 .destinations .destinations-grid .flag-wrap,
 .destinations-grid .flag-wrap {
-    height: 200px !important; /* image area */
+    height: 200px !important;
+    /* image area */
 }
 
 .destinations .destinations-grid .card-body,
@@ -8794,6 +9100,7 @@ footer {
 }
 
 @media (max-width: 768px) {
+
     .destinations .destinations-grid .destination-card,
     .destinations-grid .destination-card {
         width: 100% !important;
@@ -8848,7 +9155,9 @@ body.splash-active .navbar {
     pointer-events: none;
 }
 
-.splash-container { text-align: center; }
+.splash-container {
+    text-align: center;
+}
 
 .splash-container {
     text-align: center;
@@ -8874,7 +9183,7 @@ body.splash-active .navbar {
     margin-bottom: 0;
 }
 
-.word-orange { 
+.word-orange {
     color: #f39200;
 }
 
@@ -8920,34 +9229,51 @@ body.splash-active .navbar {
 
 /* Animations */
 @keyframes flightPull {
-    0% { left: 0%; }
-    100% { left: 90%; }
+    0% {
+        left: 0%;
+    }
+
+    100% {
+        left: 90%;
+    }
 }
 
 @keyframes fillProgress {
-    0% { width: 0%; }
-    100% { width: 100%; }
+    0% {
+        width: 0%;
+    }
+
+    100% {
+        width: 100%;
+    }
 }
 
 @keyframes pulseScale {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
 }
 
 @media screen and (max-width: 768px) {
     .splash-logo {
         width: 120px;
     }
-    
+
     .brand-name {
         font-size: 1.8rem;
     }
-    
+
     .tagline {
         font-size: 0.75rem;
         letter-spacing: 2px;
     }
-    
+
     .loading-wrapper {
         width: 150px;
     }
@@ -8984,7 +9310,7 @@ body.splash-active .navbar {
         linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.70));
 }
 
-.av-location-section.modern-square-location > .container {
+.av-location-section.modern-square-location>.container {
     position: relative;
     z-index: 1;
 }
@@ -9032,9 +9358,12 @@ body.splash-active .navbar {
 
 .modern-square-location .location-grid {
     display: flex;
-    gap: 50px; /* Card ki map ki madhyalo clean gap */
-    align-items: center; /* Card and Map vertical ga center avthayi */
-    padding: 44px; /* Chuttu oke rakamaina spacing */
+    gap: 50px;
+    /* Card ki map ki madhyalo clean gap */
+    align-items: center;
+    /* Card and Map vertical ga center avthayi */
+    padding: 44px;
+    /* Chuttu oke rakamaina spacing */
     background: #fff;
     border-radius: 30px;
     box-shadow: 0 18px 55px rgba(0, 33, 69, 0.08);
@@ -9046,7 +9375,8 @@ body.splash-active .navbar {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 30px; /* Prathi element madhyalo equal vertical gap */
+    gap: 30px;
+    /* Prathi element madhyalo equal vertical gap */
     padding: 0;
 }
 
@@ -9054,9 +9384,12 @@ body.splash-active .navbar {
 .modern-square-location .glass-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Elements ni top to bottom spread chestundi */
-    height: 100%; /* Map height ki match avthundi */
-    padding: 40px !important; /* Spacing pencham */
+    justify-content: space-between;
+    /* Elements ni top to bottom spread chestundi */
+    height: 100%;
+    /* Map height ki match avthundi */
+    padding: 40px !important;
+    /* Spacing pencham */
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(249, 168, 37, 0.07));
     border: 1px solid rgba(0, 33, 69, 0.08);
     border-radius: 22px;
@@ -9067,7 +9400,8 @@ body.splash-active .navbar {
     color: #002145;
     font-weight: 800;
     font-size: 34px;
-    margin: 8px 0 25px; /* Title ki tabs ki madhyalo gap */
+    margin: 8px 0 25px;
+    /* Title ki tabs ki madhyalo gap */
 }
 
 .modern-square-location .label {
@@ -9082,7 +9416,8 @@ body.splash-active .navbar {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-bottom: 18px; /* gap under Vuyyuru/Vij/Hyderabad row */
+    margin-bottom: 18px;
+    /* gap under Vuyyuru/Vij/Hyderabad row */
 }
 
 /* Loc Pills */
@@ -9098,8 +9433,10 @@ body.splash-active .navbar {
 }
 
 .modern-square-location .loc-pill.active {
-    background: #F9A825; /* Orange as requested */
-    color: #ffffff !important; /* White Text */
+    background: #F9A825;
+    /* Orange as requested */
+    color: #ffffff !important;
+    /* White Text */
     border: none;
     box-shadow: 0 10px 22px rgba(249, 168, 37, 0.30);
 }
@@ -9120,10 +9457,16 @@ body.splash-active .navbar {
 .modern-square-location .address-details {
     display: flex;
     flex-direction: column;
-    gap: 18px; /* Lines madhyalo free ga spacing */
+    gap: 18px;
+    /* Lines madhyalo free ga spacing */
 }
 
-.modern-square-location .address-details i { color: #F9A825; margin-right: 12px; font-size: 18px; margin-top: 3px; }
+.modern-square-location .address-details i {
+    color: #F9A825;
+    margin-right: 12px;
+    font-size: 18px;
+    margin-top: 3px;
+}
 
 .modern-square-location .address-details p {
     margin: 0;
@@ -9157,15 +9500,28 @@ body.splash-active .navbar {
 }
 
 @keyframes avPulseGreen {
-    0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.40); }
-    70% { transform: scale(1.0); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.0); }
-    100% { transform: scale(1.0); box-shadow: 0 0 0 14px rgba(34, 197, 94, 0.0); }
+    0% {
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.40);
+    }
+
+    70% {
+        transform: scale(1.0);
+        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.0);
+    }
+
+    100% {
+        transform: scale(1.0);
+        box-shadow: 0 0 0 14px rgba(34, 197, 94, 0.0);
+    }
 }
 
 /* Buttons */
 .modern-square-location .btn-orange-dir {
-    background: #002145 !important; /* Navy Blue */
-    color: #ffffff !important; /* White Text */
+    background: #002145 !important;
+    /* Navy Blue */
+    color: #ffffff !important;
+    /* White Text */
     padding: 14px 0;
     font-size: 16px;
     border-radius: 12px;
@@ -9181,10 +9537,12 @@ body.splash-active .navbar {
 /* New: generic navy button (used by Call Now) */
 .modern-square-location .btn-navy {
     background-color: #ffffff !important;
-    color: #002145 !important; /* Navy text */
+    color: #002145 !important;
+    /* Navy text */
     padding: 10px 14px;
     font-size: 14px;
-    border-radius: 999px; /* more curved edges */
+    border-radius: 999px;
+    /* more curved edges */
     text-decoration: none !important;
     font-weight: 700;
     display: inline-flex;
@@ -9207,7 +9565,8 @@ body.splash-active .navbar {
     color: #002145 !important;
     padding: 10px 14px;
     font-size: 14px;
-    border-radius: 999px; /* more curved edges */
+    border-radius: 999px;
+    /* more curved edges */
     text-decoration: none !important;
     font-weight: 700;
     display: inline-flex;
@@ -9248,8 +9607,10 @@ body.splash-active .navbar {
 }
 
 .modern-square-location .btn-outline-call {
-    background: #002145 !important; /* Navy Blue */
-    color: #ffffff !important; /* White Text */
+    background: #002145 !important;
+    /* Navy Blue */
+    color: #ffffff !important;
+    /* White Text */
     padding: 14px 0;
     font-size: 16px;
     border-radius: 12px;
@@ -9280,7 +9641,7 @@ body.splash-active .navbar {
 }
 
 /* Force both buttons to take exactly equal width */
-.modern-square-location .action-btns-row > a {
+.modern-square-location .action-btns-row>a {
     flex: 1 1 0;
     min-width: 0;
 }
@@ -9292,7 +9653,8 @@ body.splash-active .navbar {
 
 /* Hours line (Mon - Sat ...) */
 .modern-square-location .av-hours {
-    margin-top: 20px; /* push it a bit down */
+    margin-top: 20px;
+    /* push it a bit down */
     margin-bottom: 0;
     color: rgba(0, 33, 69, 0.90);
     font-weight: 700;
@@ -9332,25 +9694,55 @@ body.splash-active .navbar {
 }
 
 /* Square Map Wrapper */
-.modern-square-location .map-side { flex: 1.2; }
+.modern-square-location .map-side {
+    flex: 1.2;
+}
+
 .modern-square-location .square-map-wrapper {
     width: 100%;
     aspect-ratio: 1 / 1;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.modern-square-location #loc-map { width: 100%; height: 100%; border: none; display: block; transition: opacity 0.25s ease; }
+.modern-square-location #loc-map {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    transition: opacity 0.25s ease;
+}
 
 /* Mobile View */
 @media (max-width: 991px) {
-    .av-location-section.modern-square-location { padding: 40px 0; }
-    .modern-square-location .location-grid { flex-direction: column; padding: 22px; gap: 22px; }
-    .modern-square-location .map-side { order: 1; }
-    .modern-square-location .details-side { order: 2; padding: 0; }
-    .modern-square-location .glass-card { padding: 28px !important; }
-    .modern-square-location .glass-card h2 { font-size: 28px; margin-bottom: 18px; }
+    .av-location-section.modern-square-location {
+        padding: 40px 0;
+    }
+
+    .modern-square-location .location-grid {
+        flex-direction: column;
+        padding: 22px;
+        gap: 22px;
+    }
+
+    .modern-square-location .map-side {
+        order: 1;
+    }
+
+    .modern-square-location .details-side {
+        order: 2;
+        padding: 0;
+    }
+
+    .modern-square-location .glass-card {
+        padding: 28px !important;
+    }
+
+    .modern-square-location .glass-card h2 {
+        font-size: 28px;
+        margin-bottom: 18px;
+    }
 }
 
 /* ==============================
@@ -9382,7 +9774,10 @@ body.section-focus-mode .page-section.is-blurred {
 }
 
 /* Real mouse hide chesi, standard pointer setup */
-body, a, button, [onclick] {
+body,
+a,
+button,
+[onclick] {
     cursor: pointer !important;
 }
 
@@ -9452,3 +9847,67 @@ body.section-focus-mode .page-section.is-blurred {
     }
 }
 
+/* ============================================
+   Course Register Button Global Styles
+   ============================================ */
+.course-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.course-item .program-tag {
+    flex: 1;
+    width: auto;
+}
+
+.program-tag {
+    transition: all 0.3s ease;
+}
+
+.program-tag:hover,
+.program-tag:active,
+.program-tag:focus {
+    background: #f0f4f8;
+    color: var(--text-color);
+    border-color: var(--orange);
+    box-shadow: none;
+    transform: translateY(-1px);
+    cursor: pointer;
+}
+
+.course-item.selected .program-tag {
+    background: #fff;
+    border-color: var(--orange);
+    color: var(--text-color);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.course-register-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background: #002147;
+    color: #fff;
+    border: 1px solid #002147;
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.22s ease;
+}
+
+.course-register-btn:hover {
+    background: #002147;
+    border-color: #002147;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 33, 71, 0.22);
+}
+
+.course-item.selected .course-register-btn {
+    display: inline-flex;
+}

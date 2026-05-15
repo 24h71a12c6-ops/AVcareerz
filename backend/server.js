@@ -18,6 +18,7 @@ loadEnv(path.join(__dirname, '.env'), { override: !(isRender || isProduction) })
 
 // Firestore client instead of Supabase
 const db = require('./config/firebaseClient');
+const { sendLeadNotificationEmail } = require('./services/emailService');
 
 const app = express();
 app.use(cors());
@@ -173,6 +174,14 @@ app.post('/api/register', async (req, res) => {
         fullName,
         email,
         phone
+      });
+
+      await sendLeadNotificationEmail({
+        name: fullName,
+        email,
+        phone,
+        subject: 'New Registration Lead - Step 1',
+        message: 'Registration form submission'
       });
       
       // send confirmation only to non-admin addresses
@@ -540,6 +549,14 @@ app.post(
           fundingSource,
           loanStatus,
           declaration: declarationFlag ? 'Yes' : 'No'
+        });
+
+        await sendLeadNotificationEmail({
+          name: fullName,
+          email,
+          phone,
+          subject: 'New Application Detail - Step 2',
+          message: 'Application form submission'
         });
 
         // send confirmation to the user as well

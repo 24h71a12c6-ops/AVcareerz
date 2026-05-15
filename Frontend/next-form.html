@@ -38,32 +38,62 @@
         }
 
         body::after {
-            width: 320px;
-            height: 320px;
-            right: -90px;
-            bottom: 80px;
-            background: radial-gradient(circle, rgba(0, 33, 71, 0.16) 0%, rgba(0, 33, 71, 0.06) 42%, transparent 72%);
-            animation: driftBlobTwo 14s ease-in-out infinite;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            right: auto;
+            bottom: auto;
+            border-radius: 0;
+            filter: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect x='14' y='14' width='18' height='18' rx='3' fill='none' stroke='%23002147' stroke-opacity='.20' stroke-width='2'/%3E%3Cpath d='M19 24l4 4 8-10' fill='none' stroke='%23F9A825' stroke-opacity='.50' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-size: 56px 56px;
+            background-repeat: repeat;
+            animation: moveCheckboxBg 20s linear infinite;
+            opacity: 0.18;
         }
-                /* Custom checkbox styling for declaration */
-                .custom-checkbox {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.6rem;
-                    margin-top: 0.5rem;
+        /* Custom checkbox styling for declaration */
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 0.5rem 0;
+            justify-content: center; /* Center horizontally if needed */
         }
 
         .custom-checkbox input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             margin: 0;
-            accent-color: #22c55e; /* green tick */
+            flex-shrink: 0; /* Prevent the checkbox from shrinking */
+            accent-color: #22c55e;
+            cursor: pointer;
+            vertical-align: middle;
         }
 
         .custom-checkbox label {
             margin: 0;
-            line-height: 1.2;
+            line-height: 1; /* Match line height for perfect center */
+            display: flex;
+            align-items: center;
             cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+
+        #declarationError {
+            display: block;
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: -1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            min-height: 1.2rem;
         }
 
         .form-section-header {
@@ -242,105 +272,210 @@
         .form-group textarea {
             width: 100%;
             padding: 0.75rem;
-            background: rgba(255,255,255,0.12); /* translucent white to contrast on orange */
-            border: 2px solid rgba(255,255,255,0.18);
+            background: #ffffff;
+            border: 2px solid #ffffff;
             border-radius: 10px;
             font-size: 0.95rem;
             font-family: inherit;
             transition: all 0.3s ease;
-            color: #ffffff; /* input text white */
+            color: #002147;
+        }
+
+        .form-group select {
+            min-height: 52px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 3rem;
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 14px 14px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23002147'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        }
+
+        .form-group select:disabled {
+            cursor: not-allowed;
+            opacity: 1;
+            background: #ffffff;
+            color: #002147;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            background: #EAF4FF;
-            border-color:#4A90E2;
-            box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+            background: #ffffff;
+            border-color: #4A90E2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
             transform: translateY(-2px);
         }
 
         .form-group input::placeholder,
         .form-group textarea::placeholder,
         .form-group select::placeholder {
-            color: rgba(255,255,255,0.85); /* light placeholder on orange */
+            color: rgba(0, 33, 71, 0.5);
             opacity: 1;
         }
 
-        /* Filled fields style (matches other inputs) */
+        /* Filled fields style */
         .form-group input.filled,
         .form-group textarea.filled,
         .form-group select.filled {
-            background: #EAF4FF;
-            border-color: #F9A825; /* orange */
-            color: #0b1220; /* dark text */
-            box-shadow: 0 6px 18px rgba(249, 168, 37, 0.06);
+            background: #ffffff;
+            border: 2px solid #ffffff;
+            color: #002147 !important;
+            box-shadow: none;
         }
 
-        /* Select behavior: show selected value white when closed; options black when opened/focused */
-        select#gender { color: #ffffff; }
-        select#gender option { color: #0b1220; }
-        select#gender:focus { color: #0b1220; }
+        /* Standardize ALL Select fields */
+        .form-group select {
+            color: #002147;
+        }
 
-        select#city { color: #ffffff; }
-        select#city option { color: #0b1220; }
-        select#city:focus { color: #0b1220; }
-
-        select#passportStatus { color: #ffffff; }
-        select#passportStatus option { color: #0b1220; }
-        select#passportStatus:focus { color: #0b1220; }
-
-        select#highestQualification { color: #ffffff; }
-        select#highestQualification option { color: #0b1220; }
-        select#highestQualification:focus { color: #0b1220; }
-
-        select#yearOfPassing { color: #ffffff; }
-        select#yearOfPassing option { color: #0b1220; }
-        select#yearOfPassing:focus { color: #0b1220; }
-
-        select#collegeName { color: #ffffff; }
-        select#collegeName option { color: #0b1220; }
-        select#collegeName:focus { color: #0b1220; }
-
-        /* Study Abroad Preferences: ensure dropdown list items are black for readability */
-        select#preferredCountry option,
-        select#visaType option,
-        select#levelOfStudy option,
-        select#coaching option,
-        select#budgetRange option,
-        select#fundingSource option,
-        select#loanStatus option {
+        .form-group select option {
             color: #0b1220;
+            background: #ffffff !important;
         }
 
-        select#preferredCountry:focus,
-        select#visaType:focus,
-        select#levelOfStudy:focus,
-        select#coaching:focus,
-        select#budgetRange:focus,
-        select#fundingSource:focus,
-        select#loanStatus:focus {
-            color: #0b1220;
-        }
-
-        /* Ensure entered/selected values are displayed in black for readability */
-        .form-group input.filled,
-        .form-group textarea.filled,
-        .form-group select.filled,
-        .form-group input:focus,
-        .form-group textarea:focus,
         .form-group select:focus {
             color: #002147 !important;
         }
 
-        /* Ensure select options are black */
-        .form-group select option { color: #0b1220; }
+        .fixed-dropdown-shell {
+            position: relative;
+            width: 100%;
+        }
 
-        
+        .fixed-dropdown-toggle {
+            width: 100%;
+            min-height: 52px;
+            padding: 0.75rem 3rem 0.75rem 0.9rem;
+            background: #ffffff;
+            border: 2px solid #ffffff;
+            border-radius: 10px;
+            color: #002147;
+            font-size: 0.95rem;
+            font-family: inherit;
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .fixed-dropdown-toggle::after {
+            content: '\25BE';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #002147;
+            font-size: 0.75rem;
+            pointer-events: none;
+        }
+
+        .fixed-dropdown-toggle:disabled {
+            cursor: not-allowed;
+            opacity: 1;
+            background: #ffffff;
+            color: #002147;
+        }
+
+        .fixed-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 100%;
+            max-height: 280px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #ffffff;
+            border: 1px solid rgba(0, 33, 71, 0.15);
+            border-radius: 10px;
+            box-shadow: 0 14px 30px rgba(2, 24, 45, 0.18);
+            z-index: 50;
+            padding: 0.35rem 0;
+        }
+
+        .fixed-dropdown-option {
+            width: 100%;
+            display: block;
+            border: 0;
+            background: #ffffff;
+            color: #002147;
+            padding: 0.7rem 0.9rem;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            white-space: normal;
+            line-height: 1.25;
+        }
+
+        .fixed-dropdown-option:hover,
+        .fixed-dropdown-option:focus {
+            background: #f0f4ff;
+            outline: none;
+        }
+
+        .fixed-dropdown-option.is-selected {
+            background: #e7f0ff;
+            font-weight: 700;
+        }
+
+        /* Remove all specific overrides for preferredUniversity and preferredCourse to maintain global consistency */
+
+        /* Constrain dropdown size for Select University and Select Course */
+        #preferredUniversity,
+        #preferredCourse {
+            max-width: 100%;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #preferredUniversity option,
+        #preferredCourse option {
+            max-width: 100%;
+            white-space: normal;
+            padding: 8px;
+        }
+        #preferredUniversity:disabled, #preferredCourse:disabled {
+            cursor: not-allowed;
+            opacity: 1;
+            background: #ffffff !important;
+            color: #002147 !important;
+            border-color: #ffffff;
+        }
+
+        .custom-entry {
+            margin-top: 0.75rem;
+            background: #ffffff;
+            color: #002147;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 0.75rem;
+            width: 100%;
+            font-size: 0.95rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .custom-entry::placeholder {
+            color: rgba(0, 33, 71, 0.4);
+        }
+
+        .custom-entry:focus {
+            outline: none;
+            background: #ffffff;
+            color: #002147;
+            border-color: #4A90E2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
 
         h2.personal-info-title {
-            background: linear-gradient(90deg, #2C5F8D, #4A90E2);
+            background: linear-gradient(90deg, #F0F4FF, #ffffff);
             color: #002147 !important;
             padding: 12px 25px;
             border-radius: 50px;
@@ -368,40 +503,64 @@
         }
 
         .file-remove {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.95);
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            color: #ffffff;
             padding: 0.45rem 0.6rem;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.25s ease;
+            box-shadow: none;
         }
 
-        .file-remove i { font-size: 0.95rem; }
+        .file-remove:hover {
+            background: #ffffff;
+            border-color: #F9A825;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.16), 0 12px 26px rgba(0, 0, 0, 0.15);
+        }
+
+        .file-remove:hover i {
+            color: #0b1220;
+        }
+
+        .file-remove i { 
+            font-size: 0.95rem; 
+            color: #ffffff;
+        }
 
         .submit-btn, .btn-primary {
             display: block;
             width: 260px;
             max-width: 100%;
-            padding: 0.95rem 1.6rem;
+            padding: 0.9rem 1rem;
             margin: 1.5rem auto 0;
-            background: linear-gradient(90deg, #F57C00, #F9A825);
-            color: #ffffff;
-            border: none;
-            border-radius: 30px;
-            font-size: 1rem;
+            background: #ffffff;
+            color: #002147;
+            border: 2px solid #ffffff;
+            border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: 700;
+            font-family: inherit;
             cursor: pointer;
-            transition: all 0.22s ease;
-            box-shadow: 0 10px 20px rgba(245,124,0,0.12);
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
             text-align: center;
+            height: 56px;
+            line-height: 1.35;
+            box-sizing: border-box;
         }
 
         .submit-btn:hover, .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(245,124,0,0.18);
+            background: #f0f4ff;
+            border-color: #f0f4ff;
+            color: #002147;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2), 0 12px 26px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
         }
 
         .submit-btn:active, .btn-primary:active {
@@ -480,6 +639,11 @@
             50% { transform: translate(-20px, 18px) scale(1.05); }
         }
 
+        @keyframes moveCheckboxBg {
+            from { transform: translate(0, 0); }
+            to { transform: translate(-56px, -56px); }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             body::before,
             body::after,
@@ -544,7 +708,7 @@
                             <li><a href="germany.html">Study in Germany</a></li>
                             <li><a href="newzealand.html">Study in New Zealand</a></li>
                             <li><a href="italy.html">Study in Italy</a></li>
-                            <li><a href="turkey.html">Study in Turkey</a></li>
+                            <li><a href="singapore.html">Study in Singapore</a></li>
                         </ul>
                     </li>
                     <li><a href="visa-services.html">Visa-Services</a></li>
@@ -752,8 +916,32 @@
                                     <option value="Germany">Germany</option>
                                     <option value="New Zealand">New Zealand</option>
                                     <option value="Italy">Italy</option>
-                                    <option value="Turkey">Turkey</option>
+                                    <option value="Singapore">Singapore</option>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="preferredUniversity">Select University <span class="required">*</span></label>
+                                <div class="fixed-dropdown-shell">
+                                    <button type="button" id="preferredUniversityToggle" class="fixed-dropdown-toggle" disabled>Select University</button>
+                                    <div id="preferredUniversityMenu" class="fixed-dropdown-menu" hidden></div>
+                                </div>
+                                <select id="preferredUniversity" name="preferredUniversity" required disabled hidden>
+                                    <option value="">Select University</option>
+                                    <option value="__custom__">Other / Type your own</option>
+                                </select>
+                                <input type="text" id="preferredUniversityCustom" name="preferredUniversityCustom" class="custom-entry" placeholder="Type your preferred university" autocomplete="off" hidden>
+                            </div>
+                            <div class="form-group">
+                                <label for="preferredCourse">Select Course <span class="required">*</span></label>
+                                <div class="fixed-dropdown-shell">
+                                    <button type="button" id="preferredCourseToggle" class="fixed-dropdown-toggle" disabled>Select Course</button>
+                                    <div id="preferredCourseMenu" class="fixed-dropdown-menu" hidden></div>
+                                </div>
+                                <select id="preferredCourse" name="preferredCourse" required disabled hidden>
+                                    <option value="">Select Course</option>
+                                    <option value="__custom__">Other / Type your own</option>
+                                </select>
+                                <input type="text" id="preferredCourseCustom" name="preferredCourseCustom" class="custom-entry" placeholder="Type your preferred course" autocomplete="off" hidden>
                             </div>
                             <div class="form-group">
                                 <label for="visaType">Visa Type <span class="required">*</span></label>
@@ -872,6 +1060,7 @@
                                 <input type="checkbox" id="declaration" name="declaration" required>
                                 <label for="declaration">I confirm that the information provided is accurate and complete.</label>
                             </div>
+                            <div id="declarationError" style="display:none;">Please confirm the declaration before submitting.</div>
                         </div>
 
                         <button type="submit" class="btn-primary">
@@ -986,6 +1175,22 @@
     academicForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
+        const successMessage = document.getElementById('successMessage');
+        const declaration = document.getElementById('declaration');
+        const declarationError = document.getElementById('declarationError');
+
+        // Check if declaration is checked
+        if (!declaration.checked) {
+            declarationError.style.display = 'block';
+            successMessage.textContent = 'Please confirm the declaration before submitting.';
+            successMessage.style.color = '#ff4d4d';
+            successMessage.style.display = 'block';
+            declaration.focus();
+            return;
+        } else {
+            declarationError.style.display = 'none';
+        }
+
         // Passport format must be valid before proceeding.
         if (!validatePassportInput()) {
             passportInput.reportValidity();
@@ -1017,6 +1222,38 @@
         }
 
         const formData = new FormData(academicForm);
+
+        const universityChoice = formData.get('preferredUniversity');
+        if (universityChoice === '__custom__') {
+            const typedUniversity = String(universityCustomInput?.value || '').trim();
+            if (!typedUniversity) {
+                successMessage.textContent = 'Please type your preferred university.';
+                successMessage.style.color = '#ef4444';
+                successMessage.style.display = 'block';
+                return;
+            }
+            formData.set('preferredUniversity', typedUniversity);
+            const typedCourse = String(courseCustomInput?.value || '').trim();
+            if (!typedCourse) {
+                successMessage.textContent = 'Please type your preferred course.';
+                successMessage.style.color = '#ef4444';
+                successMessage.style.display = 'block';
+                return;
+            }
+            formData.set('preferredCourse', typedCourse);
+        } else {
+            const courseChoice = formData.get('preferredCourse');
+            if (courseChoice === '__custom__') {
+                const typedCourse = String(courseCustomInput?.value || '').trim();
+                if (!typedCourse) {
+                    successMessage.textContent = 'Please type your preferred course.';
+                    successMessage.style.color = '#ef4444';
+                    successMessage.style.display = 'block';
+                    return;
+                }
+                formData.set('preferredCourse', typedCourse);
+            }
+        }
 
             // Try userId first, fallback to email if userId not found
         const userId = sessionStorage.getItem('currentUserId') || localStorage.getItem('currentUserId');
@@ -1293,5 +1530,439 @@
             }
         }
     });
+</script>
+
+<script>
+    // Dependent Dropdowns: Country -> University -> Course
+    (function() {
+        const universityData = {
+            'USA': [
+                { name: 'Stanford University', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Aerospace Engineering', 'MS Chemical Engineering', 'MS Nuclear Engineering', 'MS Materials Science', 'MS Environmental Engineering', 'MBA', 'MBA/MS Dual Degree', 'MS Business Analytics', 'MS Finance', 'MS Management', 'MS Accounting', 'MS Economics', 'MS Marketing', 'MS Operations Research', 'MS Physics', 'MS Theoretical Physics', 'MS Applied Physics', 'MS Mathematics', 'MS Applied Mathematics', 'MS Statistics', 'MS Probability Theory', 'MS Geometry', 'MS Algebra', 'MS Analysis', 'MS Computational Mathematics', 'MS Physics of Complex Systems', 'MS Cosmology', 'MS Particle Physics', 'MS Quantum Mechanics', 'MS Optics', 'MS Photonics', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Control Systems', 'MS Signal Processing', 'MS Communications', 'MS Microelectronics', 'MS Power Systems', 'MS Renewable Energy', 'MS Sustainable Engineering', 'MS Environmental Science', 'MS Climate Science', 'MS Geology', 'MS Geophysics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Inorganic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Materials Chemistry', 'MS Computational Chemistry', 'MS Biochemistry', 'MS Chemical Engineering (Advanced)', 'MS Polymer Science', 'MS Nanotechnology', 'MS Biomedical Science', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Microbiology', 'MS Immunology', 'MS Neuroscience', 'MS Biophysics', 'MS Systems Biology', 'MS Bioinformatics', 'MS Computational Biology', 'MS Structural Biology', 'MS Plant Science', 'MS Animal Science', 'MS Veterinary Science', 'MS Agriculture', 'MS Food Science', 'MS Nutrition Science', 'MS Public Health', 'MS Epidemiology', 'MS Biostatistics', 'MS Health Policy', 'MS Medical Engineering', 'MS Clinical Research', 'MS Pharmaceutical Science', 'MS Medicinal Chemistry', 'MS Drug Development', 'MS Bioethics', 'MS History of Science', 'MS Philosophy of Science', 'MS Science Communication', 'MS Education', 'MS STEM Education', 'MS Law', 'LLM', 'MS Political Science', 'MS International Relations', 'MS Diplomacy', 'MS Governance', 'MS Public Administration', 'MS Public Policy', 'MS Energy Policy', 'MS Environmental Policy'] },
+                { name: 'MIT', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Aeronautics and Astronautics', 'MS Astronautics', 'MS Aerospace', 'MS Space Systems', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Control Systems', 'MS Signal Processing', 'MS Communications', 'MS Microelectronics', 'MS Power Systems', 'MS Renewable Energy', 'MS Sustainable Engineering', 'MS Environmental Engineering', 'MS Materials Science', 'MS Nanotechnology', 'MS Chemical Engineering', 'MS Nuclear Science', 'MS Plasma Science', 'MS Applied Mathematics', 'MS Physics', 'MS Theoretical Physics', 'MS Applied Physics', 'MS Astrophysics', 'MS Quantum Engineering', 'MS Photonics', 'MS Optics', 'MS Mathematics', 'MS Pure Mathematics', 'MS Statistics', 'MS Probability Theory', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Biochemistry', 'MS Biology', 'MS Molecular Biology', 'MS Biophysics', 'MS Neuroscience', 'MS Biostatistics', 'MS Systems Biology', 'MS Bioinformatics', 'MBA', 'MS Finance', 'MS Business Analytics', 'MS Management', 'MS Economics', 'MS Entrepreneurship', 'MS Operations Research', 'MS Supply Chain Management', 'MS Project Management', 'MS Strategic Management', 'MS Innovation Management', 'MS Energy Policy', 'MS Environmental Policy', 'MS Urban Planning', 'MS Transportation', 'MS Infrastructure', 'MS Construction Management', 'MS Ocean Engineering', 'MS Geotechnical Engineering', 'MS Structural Engineering', 'MS Water Resources', 'MS Hydrology', 'MS Geology', 'MS Geophysics', 'MS Environmental Science', 'MS Climate Science', 'MS Sustainability', 'LLM', 'MS Philosophy', 'MS History of Technology', 'MS Science Communication', 'MS Education', 'MS STEM Education', 'MS Health Policy', 'MS Public Health', 'MS Epidemiology', 'MS Clinical Research', 'MS Pharmaceutical Science', 'MS Drug Development', 'MS Medicinal Chemistry', 'MS Bioethics', 'MS Medical Physics', 'MS Medical Imaging', 'MS Health Technology', 'MS Biotechnology', 'MS Genetic Engineering', 'MS Synthetic Biology'] },
+                { name: 'Harvard University', courses: ['MBA', 'MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Business Analytics', 'LLM', 'MS Statistics', 'MS Applied Statistics', 'MS Biostatistics', 'MS Mathematics', 'MS Applied Mathematics', 'MS Computational Mathematics', 'MS Physics', 'MS Theoretical Physics', 'MS Applied Physics', 'MS Astrophysics', 'MS Quantum Mechanics', 'MS Optics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Biochemistry', 'MS Chemical Biology', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Microbiology', 'MS Immunology', 'MS Neuroscience', 'MS Developmental Biology', 'MS Evolution', 'MS Ecology', 'MS Plant Biology', 'MS Bioinformatics', 'MS Computational Biology', 'MS Systems Biology', 'MS Biophysics', 'MS Structural Biology', 'MS Engineering Sciences', 'MS Biomedical Engineering', 'MS Biomedical Informatics', 'MS Medical Engineering', 'MS Medical Physics', 'MS Clinical Engineering', 'MS Photonics', 'MS Materials Science', 'MS Nanotechnology', 'MS Sustainability', 'MS Environmental Science', 'MS Environmental Engineering', 'MS Climate Science', 'MS Energy Science', 'MS Renewable Energy', 'MS Nuclear Science', 'MS Plasma Physics', 'MS Astrophysics and Space Science', 'MS Cosmology', 'MS Particle Physics', 'MS High Energy Physics', 'MS Condensed Matter Physics', 'MS AMO Physics', 'MS Engineering and Public Policy', 'MS Public Policy', 'MS Health Policy', 'MS Science Policy', 'MS Technology Policy', 'MS Environmental Policy', 'MS Education', 'MS STEM Education', 'MS Finance', 'MS Economics', 'MS Management', 'MS Operations', 'MS Entrepreneurship', 'MS Innovation', 'MS Strategic Management', 'MS International Business', 'MS Supply Chain', 'MS Project Management', 'MS Leadership', 'MS Organization Development'] },
+                { name: 'UC Berkeley', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Aerospace Engineering', 'MS Chemical Engineering', 'MS Materials Science', 'MS Nuclear Engineering', 'MS Environmental Engineering', 'MS Energy Engineering', 'MS Control Systems', 'MS Signal Processing', 'MS Communications', 'MS Microelectronics', 'MS Power Systems', 'MS Renewable Energy', 'MS Smart Grid', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Autonomous Systems', 'MS Nanotechnology', 'MS Applied Mathematics', 'MS Physics', 'MS Theoretical Physics', 'MS Applied Physics', 'MS Astrophysics', 'MS Quantum Engineering', 'MS Photonics', 'MS Optics', 'MS Mathematics', 'MS Statistics', 'MS Probability', 'MS Computational Mathematics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Materials Chemistry', 'MS Biochemistry', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Biophysics', 'MS Neuroscience', 'MS Bioinformatics', 'MS Systems Biology', 'MS Computational Biology', 'MS Structural Biology', 'MBA', 'MS Finance', 'MS Business Analytics', 'MS Management', 'MS Economics', 'MS Operations Research', 'MS Environmental Policy', 'MS Energy Policy', 'MS Sustainability', 'MS Climate Science', 'MS Geology', 'MS Geophysics', 'MS Ocean Science', 'MS Planetary Science', 'MS Astronomy', 'MS Public Health', 'MS Epidemiology', 'MS Biostatistics', 'MS Clinical Research', 'MS Health Policy', 'MS Pharmaceutical Science', 'MS Drug Development', 'MS Medicinal Chemistry', 'MS Bioethics', 'MS Urban Planning', 'MS Transportation', 'MS Water Resources', 'MS Hydrology', 'MS Geotechnical Engineering', 'MS Structural Engineering', 'MS Construction Management'] },
+                { name: 'Carnegie Mellon University', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Deep Learning', 'MS Natural Language Processing', 'MS Computer Vision', 'MS Data Science', 'MS Computational Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Cloud Computing', 'MS Distributed Systems', 'MS Database Systems', 'MS Human-Computer Interaction', 'MS Game Design', 'MS Graphics', 'MS Visualization', 'MS Security and Privacy', 'MS Privacy Engineering', 'MS Secure Software Development', 'MS Information Systems', 'MS Technology Integration', 'MS Electrical Engineering', 'MS Signal Processing', 'MS Communications', 'MS Microelectronics', 'MS Power Systems', 'MS Control Systems', 'MS Robotics', 'MS Autonomous Systems', 'MS Mechanical Engineering', 'MS Advanced Manufacturing', 'MS Mechatronics', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Transportation', 'MS Structural Engineering', 'MS Materials Science', 'MS Chemical Engineering', 'MS Environmental Engineering', 'MS Energy Engineering', 'MS Nanotechnology', 'MS Physics', 'MS Applied Physics', 'MS Mathematics', 'MS Statistics', 'MS Computational Mathematics', 'MS Biology', 'MS Biochemistry', 'MS Neuroscience', 'MS Computational Biology', 'MS Bioinformatics', 'MBA', 'MS Business Administration', 'MS Finance', 'MS Business Analytics', 'MS Management', 'MS Marketing', 'MS Strategy', 'MS Operations', 'MS Entrepreneurship', 'MS Product Management', 'MS Project Management', 'MS Supply Chain', 'MS Leadership', 'MS Organizational Development', 'MS Public Policy and Management', 'MS Engineering and Public Policy', 'LLM', 'MS Law and Technology', 'MS Cybersecurity Policy'] },
+                { name: 'Princeton University', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Aerospace Engineering', 'MS Civil Engineering', 'MS Chemical Engineering', 'MS Environmental Engineering', 'MS Materials Science', 'MS Nanotechnology', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Signal Processing', 'MS Communications', 'MS Power Electronics', 'MS Renewable Energy', 'MS Smart Grid', 'MS Applied Mathematics', 'MS Physics', 'MS Theoretical Physics', 'MS Applied Physics', 'MS Quantum Engineering', 'MS Photonics', 'MS Plasma Physics', 'MS Astrophysics', 'MS Cosmology', 'MS Particle Physics', 'MS High Energy Physics', 'MS Condensed Matter', 'MS Mathematics', 'MS Pure Mathematics', 'MS Statistics', 'MS Probability', 'MS Operations Research', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Biochemistry', 'MS Chemical Biology', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Neuroscience', 'MS Biophysics', 'MS Structural Biology', 'MS Bioinformatics', 'MS Systems Biology', 'MBA', 'MS Finance', 'MS Economics', 'MS Business Analytics', 'MS Management', 'MS Operations Research (Business)', 'MS Engineering and Public Policy', 'MS Public Policy', 'MS Environmental Policy', 'MS Energy Policy', 'MS Technology Policy', 'MS Science Policy', 'MS Education', 'MS STEM Education', 'LLM', 'MS Law and Technology', 'MS Intellectual Property', 'MS International Relations', 'MS Governance'] },
+                { name: 'Yale University', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Statistics', 'MS Applied Statistics', 'MS Biostatistics', 'MS Mathematics', 'MS Applied Mathematics', 'MS Pure Mathematics', 'MS Computational Mathematics', 'MS Physics', 'MS Theoretical Physics', 'MS Applied Physics', 'MS Astrophysics', 'MS Quantum Mechanics', 'MS Photonics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Biochemistry', 'MS Inorganic Chemistry', 'MS Materials Chemistry', 'MS Chemical Biology', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Neuroscience', 'MS Biophysics', 'MS Structural Biology', 'MS Microbiology', 'MS Immunology', 'MS Developmental Biology', 'MS Evolution', 'MS Ecology', 'MS Conservation', 'MS Environmental Science', 'MS Biomedical Sciences', 'MS Clinical Research', 'MS Pharmacology', 'MS Toxicology', 'MS Public Health', 'MS Epidemiology', 'MS Health Policy', 'MS Medical Engineering', 'MS Biomedical Engineering', 'MS Engineering Sciences', 'MS Civil Engineering', 'MS Environmental Engineering', 'MS Materials Science', 'MS Nanotechnology', 'MBA', 'MS Management', 'MS Finance', 'MS Economics', 'MS Business Administration', 'MS Operations', 'MS Entrepreneurship', 'MS Innovation', 'MS Strategic Management', 'LLM', 'MS Law and Technology', 'MS Intellectual Property', 'MS International Law', 'MS Environmental Law', 'MS Health Law', 'MS History', 'MS Philosophy', 'MS Education', 'MS STEM Education', 'MS Music', 'MS Fine Arts', 'MS Architecture', 'MS Urban Design', 'MS Forestry', 'MS Geology', 'MS Geophysics', 'MS Earth Science'] },
+                { name: 'Columbia University', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Information Security', 'MS Cloud Computing', 'MS Distributed Systems', 'MS Applied Mathematics', 'MS Mathematics', 'MS Pure Mathematics', 'MS Statistics', 'MS Operations Research', 'MS Computational Mathematics', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Civil Engineering', 'MS Biomedical Engineering', 'MS Environmental Engineering', 'MS Materials Science', 'MS Chemical Engineering', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Control Systems', 'MS Signal Processing', 'MS Communications', 'MS Microelectronics', 'MS Power Systems', 'MS Renewable Energy', 'MS Energy Engineering', 'MS Nanotechnology', 'MS Physics', 'MS Applied Physics', 'MS Astrophysics', 'MS Quantum Mechanics', 'MS Photonics', 'MS Optics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Materials Chemistry', 'MS Biochemistry', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Neuroscience', 'MS Biophysics', 'MS Structural Biology', 'MS Bioinformatics', 'MS Systems Biology', 'MS Computational Biology', 'MBA', 'MS Finance', 'MS Business Analytics', 'MS Management', 'MS Economics', 'MS Accounting', 'MS International Business', 'MS Supply Chain', 'MS Project Management', 'MS Entrepreneurship', 'MS Strategic Management', 'MS Innovation', 'MS Leadership', 'MS Public Administration', 'MS Public Policy', 'MS Environmental Policy', 'MS Health Policy', 'MS Energy Policy', 'MS Sustainability', 'MS Climate Science', 'MS Geology', 'MS Geophysics', 'MS Ocean Science', 'MS Public Health', 'MS Epidemiology', 'MS Health Systems', 'MS Biostatistics', 'MS Clinical Research'] },
+                { name: 'University of Chicago', courses: ['MBA', 'MS Computer Science', 'MS Artificial Intelligence', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Statistics', 'MS Applied Statistics', 'MS Biostatistics', 'MS Mathematics', 'MS Applied Mathematics', 'MS Physics', 'MS Theoretical Physics', 'MS Astrophysics', 'MS Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Biochemistry', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Biophysics', 'MS Neuroscience', 'MS Ecology', 'MS Evolution', 'MS Computational Biology', 'MS Bioinformatics', 'MS Finance', 'MS Financial Mathematics', 'MS Computational Finance', 'MS Business Analytics', 'MS Economics', 'MS Econometrics', 'MS Management', 'MS Strategic Management', 'MS Entrepreneurship', 'MS Innovation Management', 'MS Public Policy', 'MS Environmental Policy', 'MS Energy Policy', 'MS International Relations', 'MS Governance', 'MS Public Administration', 'MS Urban Planning', 'MS Real Estate', 'MS Law and Economics', 'MS Education', 'MS History', 'MS Philosophy', 'MS Divinity', 'MS Theology', 'MS Religious Studies', 'MS Social Work', 'MS Public Health', 'MS Health Administration', 'MS Health Policy', 'MS Epidemiology', 'MS Environmental Science', 'MS Geology', 'MS Geophysics', 'MS Astronomy', 'MS Applied Physics', 'MS Operations Research', 'MS Supply Chain', 'MS Project Management'] },
+                { name: 'Northwestern University', courses: ['MBA', 'MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Information Systems', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Environmental Engineering', 'MS Chemical Engineering', 'MS Materials Science', 'MS Manufacturing Engineering', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Control Systems', 'MS Signal Processing', 'MS Communications', 'MS Microelectronics', 'MS Power Systems', 'MS Renewable Energy', 'MS Smart Grid', 'MS Nanotechnology', 'MS Physics', 'MS Applied Physics', 'MS Mathematics', 'MS Statistics', 'MS Applied Mathematics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Materials Chemistry', 'MS Biology', 'MS Molecular Biology', 'MS Biophysics', 'MS Neuroscience', 'MS Systems Biology', 'MS Biochemistry', 'MS Finance', 'MS Financial Engineering', 'MS Business Analytics', 'MS Management', 'MS Economics', 'MS Operations Research', 'MS Supply Chain', 'MS Marketing', 'MS Strategy', 'MS Entrepreneurship', 'MS Innovation', 'MS Leadership', 'MS Organizational Development', 'MS Public Policy', 'MS Environmental Policy', 'MS Energy Policy', 'MS Healthcare Administration', 'MS Health Policy', 'MS Medill Journalism', 'MS Integrated Marketing Communications', 'MS Public Relations', 'MS Strategic Communication'] },
+                { name: 'University of Pennsylvania', courses: ['MBA', 'MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Computer and Information Science', 'MS Data Science (Business)', 'MS Business Analytics', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Environmental Engineering', 'MS Systems Engineering', 'MS Materials Science', 'MS Nanotechnology', 'MS Chemical Engineering', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Autonomous Systems', 'MS Applied Mathematics', 'MS Mathematics', 'MS Statistics', 'MS Physics', 'MS Applied Physics', 'MS Astrophysics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Biochemistry', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Biophysics', 'MS Neuroscience', 'MS Structural Biology', 'MS Bioinformatics', 'MS Computational Biology', 'MS Finance', 'MS Financial Mathematics', 'MS Real Estate', 'MS Risk Management', 'MS Management', 'MS Accounting', 'MS Organizational Dynamics', 'MS Entrepreneurship', 'MS Innovation Management', 'MS Operations', 'MS Supply Chain', 'MS Project Management', 'MS Leadership', 'MS Public Administration', 'MS Public Policy', 'MS Health Policy', 'MS Environmental Policy', 'MS Energy Policy', 'MS Technology Policy', 'LLM', 'MS Law and Technology', 'MS Intellectual Property', 'MS International Law', 'MS Environmental Law', 'MS Health Law', 'MS Bioethics', 'MS Health Systems', 'MS Epidemiology', 'MS Public Health', 'MS Dental Medicine', 'MS Veterinary Medicine', 'MS Nursing', 'MS Education', 'MS Higher Education Management', 'MS STEM Education'] },
+                { name: 'Johns Hopkins University', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Information Systems', 'MS Systems Engineering', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Environmental Engineering', 'MS Chemical Engineering', 'MS Control Systems', 'MS Signal Processing', 'MS Communications', 'MS Power Systems', 'MS Renewable Energy', 'MS Advanced Manufacturing', 'MS Materials Science', 'MS Nanotechnology', 'MS Physics', 'MS Applied Physics', 'MS Mathematics', 'MS Statistics', 'MS Operations Research', 'MS Chemistry', 'MS Biochemistry', 'MS Biology', 'MS Molecular Biology', 'MS Genetics', 'MS Biophysics', 'MS Neuroscience', 'MS Bioinformatics', 'MS Computational Biology', 'MBA', 'MS Finance', 'MS Business Analytics', 'MS Management', 'MS Healthcare Administration', 'MS Health Policy', 'MS Public Health', 'MS Epidemiology', 'MS Biostatistics', 'MS Environmental Health Sciences', 'MS Occupational Health', 'MS Maternal and Child Health', 'MS Infectious Disease', 'MS Global Health', 'MS Applied Economics', 'MS Development', 'MS Environmental Science and Policy', 'MS Engineering and Public Policy', 'MS Science Policy', 'MS Cyber Security', 'MS Information Assurance', 'MS Cryptography', 'MS Network Security', 'MS Application Security', 'MS Cloud Security', 'MS Privacy Engineering', 'MS Security Architecture'] },
+                { name: 'University of Michigan', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Information Systems', 'MS Electrical Engineering', 'MS Electrical and Computer Engineering', 'MS Mechanical Engineering', 'MS Aerospace Engineering', 'MS Astronautics', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Environmental Engineering', 'MS Chemical Engineering', 'MS Materials Science', 'MS Nanotechnology', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Control Systems', 'MS Signal Processing', 'MS Communications', 'MS Microelectronics', 'MS Power Systems', 'MS Renewable Energy', 'MS Nuclear Engineering', 'MS Applied Mathematics', 'MS Mathematics', 'MS Statistics', 'MS Operations Research', 'MS Physics', 'MS Applied Physics', 'MS Astrophysics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Biochemistry', 'MS Biology', 'MS Molecular Biology', 'MS Genetics', 'MS Neuroscience', 'MS Ecology', 'MS Evolution', 'MS Bioinformatics', 'MS Computational Biology', 'MS Biophysics', 'MBA', 'MS Finance', 'MS Business Analytics', 'MS Management', 'MS Strategy', 'MS Entrepreneurship', 'MS Innovation', 'MS Operations', 'MS Supply Chain', 'MS Marketing', 'MS Real Estate', 'MS Public Administration', 'MS Public Policy', 'MS Environmental Policy', 'MS Energy Policy', 'MS Urban Planning', 'MS Transportation', 'MS Architecture', 'MS Urban Design', 'MS Education', 'MS Engineering Education', 'MS Health Management', 'MS Public Health', 'MS Epidemiology', 'MS Biostatistics', 'MS Environmental Health'] },
+                { name: 'University of Texas at Austin', courses: ['MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Information Technology', 'MS Computer Engineering', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Aerospace Engineering', 'MS Petroleum Engineering', 'MS Civil Engineering', 'MS Water Resources', 'MS Geotechnical Engineering', 'MS Environmental Engineering', 'MS Chemical Engineering', 'MS Materials Science', 'MS Nanotechnology', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Control Systems', 'MS Signal Processing', 'MS Power Systems', 'MS Renewable Energy', 'MS Energy Engineering', 'MS Nuclear Engineering', 'MS Applied Mathematics', 'MS Mathematics', 'MS Computational Mathematics', 'MS Physics', 'MS Theoretical Physics', 'MS Astrophysics', 'MS Astronomy', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Materials Chemistry', 'MS Biochemistry', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Neuroscience', 'MS Biophysics', 'MS Bioinformatics', 'MS Computational Biology', 'MS Ecology', 'MS Evolution', 'MS Geology', 'MS Geophysics', 'MS Planetary Science', 'MBA', 'MS Finance', 'MS Business Analytics', 'MS Management', 'MS Operations Research', 'MS Operations', 'MS Supply Chain', 'MS Marketing', 'MS Entrepreneurship', 'MS Innovation', 'MS Real Estate', 'MS Construction Engineering and Project Management', 'MS Public Administration', 'MS Public Policy', 'MS Environmental Policy', 'MS Energy Policy', 'MS Technology Policy', 'MS Urban Planning', 'MS Architecture', 'MS Urban Design', 'MS Landscape Architecture', 'MS Education', 'MS Engineering Education'] },
+                { name: 'Duke University', courses: ['MBA', 'MS Computer Science', 'MS Artificial Intelligence', 'MS Machine Learning', 'MS Data Science', 'MS Cybersecurity', 'MS Software Engineering', 'MS Electrical Engineering', 'MS Mechanical Engineering', 'MS Biomedical Engineering', 'MS Civil Engineering', 'MS Environmental Engineering', 'MS Chemical Engineering', 'MS Materials Science', 'MS Nanotechnology', 'MS Advanced Manufacturing', 'MS Robotics', 'MS Signal Processing', 'MS Control Systems', 'MS Power Systems', 'MS Renewable Energy', 'MS Smart Grid', 'MS Applied Mathematics', 'MS Physics', 'MS Theoretical Physics', 'MS Applied Physics', 'MS Astrophysics', 'MS Photonics', 'MS Mathematics', 'MS Statistics', 'MS Chemistry', 'MS Organic Chemistry', 'MS Physical Chemistry', 'MS Analytical Chemistry', 'MS Materials Chemistry', 'MS Biochemistry', 'MS Chemical Biology', 'MS Biology', 'MS Molecular Biology', 'MS Cell Biology', 'MS Genetics', 'MS Neuroscience', 'MS Biophysics', 'MS Structural Biology', 'MS Bioinformatics', 'MS Computational Biology', 'MS Systems Biology', 'MS Ecology', 'MS Evolution', 'MS Conservation Biology', 'MS Marine Science', 'MS Botany', 'MS Zoology', 'MS Microbiology', 'MS Immunology', 'MS Pharmacology', 'MS Physiology', 'MS Anatomy', 'MS Pathology', 'MS Clinical Research', 'MS Public Health', 'MS Epidemiology', 'MS Biostatistics', 'MS Health Policy', 'MS Finance', 'MS Business Analytics', 'MS Management', 'MS Economics', 'MS Operations Research', 'MS Supply Chain', 'MS Marketing', 'MS Strategy', 'MS Entrepreneurship', 'MS Innovation', 'MS Leadership', 'MS Public Policy', 'MS Environmental Policy', 'MS Energy Policy', 'MS Law', 'MS Environmental Law', 'MS Health Law'] }
+            ],
+            'UK': [
+                { name: 'University of Oxford', courses: ['MSc Computer Science', 'MSc Artificial Intelligence', 'MSc Machine Learning', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Engineering', 'MSc Electrical Engineering', 'MSc Mechanical Engineering', 'MSc Civil Engineering', 'MSc Chemical Engineering', 'MSc Materials Science', 'MSc Applied Mathematics', 'MSc Mathematics', 'MSc Pure Mathematics', 'MSc Statistics', 'MSc Physics', 'MSc Theoretical Physics', 'MSc Astrophysics', 'MSc Particle Physics', 'MSc Quantum Mechanics', 'MSc Optics', 'MSc Chemistry', 'MSc Organic Chemistry', 'MSc Physical Chemistry', 'MSc Analytical Chemistry', 'MSc Biochemistry', 'MSc Chemical Biology', 'MSc Biology', 'MSc Molecular Biology', 'MSc Cell Biology', 'MSc Genetics', 'MSc Neuroscience', 'MSc Biophysics', 'MSc Developmental Biology', 'MSc Evolution', 'MSc Ecology', 'MSc Plant Biology', 'MSc Conservation', 'MSc Systems Biology', 'MSc Bioinformatics', 'MSc Computational Biology', 'MSc Botany', 'MSc Zoology', 'MBA', 'MSc Finance', 'MSc Business Analytics', 'MSc Management', 'MSc Economics', 'MSc Accounting', 'MSc International Business', 'MSc Strategy', 'MSc Entrepreneurship', 'MSc Operations Research', 'MSc Public Policy', 'MSc Environmental Policy', 'MSc Energy Policy', 'MSc Climate Science', 'MSc Environmental Science', 'MSc Sustainability', 'MSc Geology', 'MSc Geophysics', 'MSc Ocean Science', 'MSc Planetary Science', 'MSc Astronomy', 'MSc Earth Science', 'MSc Geography', 'MSc Urban Planning', 'MSc Architecture', 'MSc Archaeology', 'MSc History', 'MSc Philosophy', 'MSc Education', 'MSc STEM Education', 'MSc Law', 'LLM', 'MSc Law and Economics', 'MSc International Law', 'MSc Environmental Law', 'MSc IP Law', 'MSc Medical Law', 'MSc Technology Law', 'MSc Health Sciences', 'MSc Public Health', 'MSc Epidemiology', 'MSc Clinical Research', 'MSc Pharmacology', 'MSc Toxicology', 'MSc Medical Physics', 'MSc Health Policy', 'MSc Bioethics', 'MSc Communication Studies', 'MSc Linguistics', 'MSc English Literature', 'MSc Art History', 'MSc Music', 'MSc Theology', 'MSc Religious Studies', 'MSc Modern Languages', 'MSc Medieval Studies'] },
+                { name: 'University of Cambridge', courses: ['MSc Computer Science', 'MSc Artificial Intelligence', 'MSc Machine Learning', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Advanced Computer Science', 'MSc Engineering', 'MSc Electrical Engineering', 'MSc Mechanical Engineering', 'MSc Civil Engineering', 'MSc Chemical Engineering', 'MSc Materials Science', 'MSc Manufacturing Engineering', 'MSc Applied Mathematics', 'MSc Mathematics', 'MSc Pure Mathematics', 'MSc Mathematical Physics', 'MSc Statistics', 'MSc Applied Statistics', 'MSc Probability', 'MSc Physics', 'MSc Theoretical Physics', 'MSc Applied Physics', 'MSc Astrophysics', 'MSc Cosmology', 'MSc Particle Physics', 'MSc Quantum Technology', 'MSc Photonics', 'MSc Optics', 'MSc Chemistry', 'MSc Organic Chemistry', 'MSc Physical Chemistry', 'MSc Analytical Chemistry', 'MSc Inorganic Chemistry', 'MSc Materials Chemistry', 'MSc Biochemistry', 'MSc Biology', 'MSc Molecular Biology', 'MSc Cell Biology', 'MSc Genetics', 'MSc Neuroscience', 'MSc Biophysics', 'MSc Structural Biology', 'MSc Plant Science', 'MSc Animal Science', 'MSc Ecology', 'MSc Evolution', 'MSc Conservation', 'MSc Bioinformatics', 'MSc Computational Biology', 'MSc Systems Biology', 'MBA', 'MSc Finance', 'MSc Financial Mathematics', 'MSc Business Analytics', 'MSc Management', 'MSc Economics', 'MSc Econometrics', 'MSc Accounting', 'MSc International Business', 'MSc Strategy', 'MSc Entrepreneurship', 'MSc Operations Research', 'MSc Supply Chain', 'MSc Real Estate', 'MSc Public Policy', 'MSc Environmental Policy', 'MSc Energy Policy', 'MSc Technology Policy', 'MSc Science Policy', 'MSc Environmental Science', 'MSc Climate Science', 'MSc Sustainability', 'MSc Geology', 'MSc Geophysics', 'MSc Mineralogy', 'MSc Petrology', 'MSc Geography', 'MSc Planetary Science', 'MSc Astronomy', 'MSc Ocean Science', 'MSc Earth Sciences', 'MSc Urban Planning', 'MSc Architecture', 'MSc Archaeology', 'MSc History', 'MSc Philosophy', 'MSc Education', 'MSc STEM Education', 'LLM', 'MSc Law and Economics', 'MSc International Law', 'MSc Environmental Law', 'MSc IP Law', 'MSc Technology Law', 'MSc Business Law', 'MSc Health Sciences', 'MSc Public Health', 'MSc Epidemiology', 'MSc Clinical Research', 'MSc Biostatistics'] },
+                { name: 'Imperial College London', courses: ['MSc Computer Science', 'MSc Artificial Intelligence', 'MSc Machine Learning', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Advanced Computer Science', 'MSc Computing Science', 'MSc Electrical Engineering', 'MSc Electronic Engineering', 'MSc Power Systems Engineering', 'MSc Control Systems Engineering', 'MSc Communications and Signal Processing', 'MSc Microelectronics', 'MSc Photonics and Optical Engineering', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Biomedical Engineering', 'MSc Civil Engineering', 'MSc Geotechnical Engineering', 'MSc Structural Engineering', 'MSc Infrastructure Engineering', 'MSc Water Resources Engineering', 'MSc Chemical Engineering', 'MSc Advanced Chemical Engineering', 'MSc Sustainable Energy Engineering', 'MSc Materials Science and Engineering', 'MSc Advanced Materials Science', 'MSc Nanotechnology', 'MSc Nuclear Science and Engineering', 'MSc Environmental Engineering', 'MSc Environmental Technology', 'MSc Climate Change and Natural Resources', 'MSc Physics', 'MSc Theoretical Physics', 'MSc Applied Physics', 'MSc Astrophysics', 'MSc Quantum Engineering', 'MSc Photonics', 'MSc Mathematics', 'MSc Pure Mathematics', 'MSc Applied Mathematics', 'MSc Mathematics and Finance', 'MSc Statistics', 'MSc Operations Research', 'MSc Chemistry', 'MSc Organic Chemistry', 'MSc Inorganic Chemistry', 'MSc Physical Chemistry', 'MSc Materials Chemistry', 'MSc Biochemistry', 'MSc Chemical Research', 'MSc Biology', 'MSc Molecular Biology', 'MSc Cell Biology', 'MSc Genetics', 'MSc Plant Science', 'MSc Immunology', 'MSc Neuroscience', 'MSc Bioinformatics', 'MSc Computational Biology', 'MSc Systems Biology', 'MSc Biophysics', 'MBA', 'MSc Finance', 'MSc Financial Mathematics', 'MSc Risk Management', 'MSc Business Analytics', 'MSc Management', 'MSc Strategic Management', 'MSc Innovation', 'MSc Entrepreneurship', 'MSc Supply Chain', 'MSc Project Management', 'MSc Real Estate', 'MSc Economics', 'MSc Applied Economics', 'MSc Public Policy', 'MSc Climate Change and Natural Resources (Business)', 'MSc Environmental Management', 'MSc Sustainability and Environmental Management', 'MSc Petroleum Geoscience', 'MSc Petroleum Engineering', 'MSc Reservoir Engineering', 'MSc Urban Design', 'MSc Urban Planning and Design', 'MSc Geology', 'MSc Engineering Geology', 'MSc Petroleum Geology', 'MSc Hydrogeology', 'MSc Applied Geophysics', 'MSc Health Policy', 'MSc Public Health', 'MSc Health Technology Assessment', 'MSc Medical Imaging', 'MSc Health and Safety Management'] },
+                { name: 'London School of Economics', courses: ['MSc Finance', 'MSc Financial Mathematics', 'MSc Risk and Finance', 'MSc Accounting', 'MSc Accounting and Finance', 'MSc Investments and Finance', 'MSc Behavioral and Experimental Economics', 'MSc Econometrics and Mathematical Economics', 'MSc Economics', 'MSc Economics and Philosophy', 'MSc International Economics', 'MSc Health Economics', 'MSc Environmental Economics and Climate Change', 'MSc Inequality and Social Policy', 'MBA', 'MSc International Business', 'MSc Management', 'MSc Strategic Management of International Businesses', 'MSc Business Analytics', 'MSc Business Administration', 'MSc Finance and Economics', 'MSc Organizational Psychology', 'MSc Human Resource Management', 'MSc Occupational and Organizational Psychology', 'MSc Applied Social Data Science', 'MSc Data Science', 'MSc Operations Research and Analytics', 'MSc Statistics', 'MSc Statistics (Financial Statistics)', 'MSc Statistics (Medical Statistics)', 'MSc Statistics (Social Statistics)', 'MSc Applied Social and Market Research', 'MSc Computer Science', 'MSc Data Science (Computer Science)', 'MSc Cybersecurity', 'MSc Information Systems', 'MSc Software Engineering', 'MSc Management of Information Systems', 'MSc Mathematics and Economics', 'MSc Applicable Mathematics', 'MSc Public Policy', 'MSc Environmental Policy and Regulation', 'MSc International Relations', 'MSc International History', 'MSc International Politics', 'MSc Governance and Development', 'MSc Global Politics', 'MSc Conflict Studies', 'MSc Human Geography and Urban Studies', 'MSc Human Geography', 'MSc Culture and Society', 'MSc Cultural Studies', 'MSc Gender and International Development', 'MSc Refugee and Forced Migration Studies', 'MSc Media', 'LLM', 'MSc Law and Economics', 'MSc Law and Political Theory', 'MSc Global Governance and Ethics', 'MSc International Affairs', 'MSc Development Studies', 'MSc Philosophy and Public Policy', 'MSc Social Policy', 'MSc Comparative Social Policy', 'MSc Health and Social Care', 'MSc Public Health', 'MSc Epidemiology', 'MSc Clinical Epidemiology', 'MSc Health Communication', 'MSc Political Sociology', 'MSc Sociology', 'MSc Social Research Methods', 'MSc Economic and Social History', 'MSc British Politics', 'MSc Democracy and Comparative Politics', 'MSc Diplomacy', 'MSc Energy and Environmental Management', 'MSc Urban and Regional Planning', 'MSc Land Economy', 'MSc Development Management and Policy', 'MSc History of Science', 'MSc History', 'MSc Modern History', 'MSc Intellectual History', 'MSc Social Anthropology', 'MSc Anthropology', 'MSc Human Evolution', 'MSc Digital Anthropology', 'MSc Chinese Studies', 'MSc Asian Studies', 'MSc Southeast Asia', 'MSc Middle East Studies', 'MSc Japanese Studies'] },
+                { name: 'University College London', courses: ['MSc Computer Science', 'MSc Machine Learning', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Data Intensive Science', 'MSc Web Science and Big Data Analytics', 'MSc Information Systems', 'MSc Human Computer Interaction', 'MSc Digital Media', 'MSc Games Computing', 'MSc Engineering', 'MSc Electrical Engineering', 'MSc Electronic Engineering', 'MSc Power Systems Engineering', 'MSc Communications Engineering', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Civil Engineering', 'MSc Structural Engineering', 'MSc Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Environmental Engineering', 'MSc Materials Science', 'MSc Nanotechnology', 'MSc Manufacturing and Management', 'MSc Air Quality Management', 'MSc Sustainable Energy Engineering', 'MSc Nuclear Science and Engineering', 'MSc Architecture', 'MSc Architectural History', 'MSc Urban Design', 'MSc Urbanism', 'MSc Urban Regeneration and Development', 'MSc Integrated Environmental and Water Management', 'MSc Water Supply and Sewerage Engineering', 'MSc Mathematics', 'MSc Pure Mathematics', 'MSc Applied Mathematics', 'MSc Mathematical Modeling', 'MSc Physics', 'MSc Theoretical Physics', 'MSc Applied Physics', 'MSc Astrophysics', 'MSc Photonics', 'MSc Optics and Photonics', 'MSc Quantum Engineering', 'MSc Chemistry', 'MSc Molecular and Chemical Biology', 'MSc Chemistry Research', 'MSc Biology', 'MSc Molecular Biology', 'MSc Cell and Developmental Biology', 'MSc Genetics', 'MSc Ecology and Evolutionary Biology', 'MSc Bioinformatics', 'MSc Computational Biology', 'MSc Biostatistics', 'MSc Neuroscience', 'MSc Statistics', 'MSc Applied Statistics', 'MSc Statistics (Medical Biometry)', 'MBA', 'MSc Finance', 'MSc Financial Risk Management', 'MSc Financial Engineering', 'MSc Management', 'MSc Strategic Management and Consulting', 'MSc Organizational and Work Psychology', 'MSc Business Analytics', 'MSc Economics', 'MSc Applied Economics', 'MSc Economics and Business', 'MSc International Economics', 'MSc Health Economics', 'MSc Public Policy', 'MSc Philosophy', 'MSc History', 'MSc Medical History', 'MSc Education', 'MSc STEM Education', 'MSc Language Development', 'MSc TESOL (Teaching English to Speakers of Other Languages)', 'MSc Applied Linguistics', 'LLM', 'MSc Health and Medical Law', 'MSc Intellectual Property Law', 'MSc Technology Law', 'MSc International Law', 'MSc Environmental Law', 'MSc Public International Law', 'MSc Comparative Urban Regeneration and Development', 'MSc Geography', 'MSc Human Geography', 'MSc Urban Geography', 'MSc Development Geography', 'MSc Environmental Geography', 'MSc Medical Geography', 'MSc Public Health', 'MSc Epidemiology', 'MSc Occupational Health', 'MSc Clinical Epidemiology', 'MSc Health Services Management', 'MSc Tropical Medicine', 'MSc Medical Education', 'MSc Sustainability (Chemistry)', 'MSc Geology', 'MSc Applied Geology', 'MSc Engineering Geology'] },
+                { name: 'University of Edinburgh', courses: ['MSc Computer Science', 'MSc Artificial Intelligence', 'MSc Machine Learning and Deep Learning', 'MSc Speech and Language Processing', 'MSc Data Science', 'MSc Data-Intensive Biology', 'MSc Data-Intensive Computing', 'MSc Cloud Computing Architecture', 'MSc Cyber Security and Privacy', 'MSc Software Engineering', 'MSc Software Engineering with Security', 'MSc Advanced Computer Science', 'MSc Information Technology', 'MSc Engineering', 'MSc Electrical Power Engineering', 'MSc Power Systems and High Voltage Engineering', 'MSc Electrical and Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Power Electronics and Drives', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Structural Engineering', 'MSc Civil Engineering', 'MSc Infrastructure and the Environment', 'MSc Water and Environmental Management', 'MSc Geological Engineering', 'MSc Geotechnical Engineering', 'MSc Geotechnics', 'MSc Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Molecular Genetic Engineering', 'MSc Materials Science', 'MSc Advanced Materials', 'MSc Petroleum Engineering', 'MSc Reservoir Engineering', 'MSc Geosciences', 'MSc Geology', 'MSc Engineering Geology', 'MSc Applied Geology', 'MSc Geophysics', 'MSc Seismic Imaging', 'MSc Petroleum Geoscience', 'MSc Environmental Geoscience', 'MSc Physics', 'MSc Theoretical Physics', 'MSc Photonics and Its Applications', 'MSc Photonics', 'MSc Quantum Technology', 'MSc Applied Physics', 'MSc Astrophysics', 'MSc Mathematical Physics', 'MSc Particle and Nuclear Physics', 'MSc Audio Signal Processing', 'MSc Sensor Technology and Instrumentation', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Pure Mathematics', 'MSc Mathematical Physics', 'MSc Statistics', 'MSc Applied Statistics', 'MSc Financial Mathematics', 'MSc Operational Research', 'MSc Chemistry', 'MSc Analytical Chemistry', 'MSc Chemistry', 'MSc Chemistry Research', 'MSc Molecular Pharmacology', 'MSc Pharmaceutical Chemistry', 'MSc Crystal Engineering', 'MSc Molecular Genetics', 'MSc Bioinformatics', 'MSc Computational Biology', 'MSc Systems Biology', 'MSc Plant Science', 'MSc Evolutionary Biology', 'MSc Ecology', 'MSc Biology', 'MSc Neuroscience', 'MSc Speech and Hearing Sciences', 'MBA', 'MSc Management', 'MSc Business Administration', 'MSc Finance', 'MSc Financial Risk', 'MSc Financial Modelling', 'MSc Banking and Risk', 'MSc International Business', 'MSc Entrepreneurship and Innovation', 'MSc Business Analytics', 'MSc Business and Management', 'MSc Economics', 'MSc Applied Economics', 'MSc Environmental Economics and Climate Change', 'MSc Data Science (Business)', 'MSc Public Policy and Management', 'MSc Environmental Policy and Management', 'MSc Energy Policy', 'MSc Climate Change, Society and Environment'] },
+                { name: 'University of Manchester', courses: ['MSc Computer Science', 'MSc Advanced Computer Science', 'MSc Artificial Intelligence', 'MSc Machine Learning and Neural Computing', 'MSc Data Science', 'MSc Big Data Management', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Cloud Computing Architecture', 'MSc Digital Forensics and Cyber Law', 'MSc Information Technology', 'MSc Internet of Things', 'MSc Engineering', 'MSc Electrical Engineering', 'MSc Power Systems and High Voltage Engineering', 'MSc Electrical Power Engineering', 'MSc Power Electronics and Electrical Machines', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Motorsport Engineering', 'MSc Aerospace Engineering', 'MSc Aerospace Materials', 'MSc Materials Science and Engineering', 'MSc Manufacturing Systems Engineering and Management', 'MSc Civil Engineering', 'MSc Advanced Structural Engineering', 'MSc Earthquake Engineering', 'MSc Water and Environmental Management', 'MSc Geotechnical Engineering', 'MSc Chemical Engineering', 'MSc Advanced Chemical Engineering', 'MSc Separation Processes', 'MSc Pharmaceutical Engineering', 'MSc Biomedical Engineering', 'MSc Molecular Genetic Engineering', 'MSc Renewable Energy', 'MSc Sustainable Energy Systems', 'MSc Nuclear Science and Engineering', 'MSc Microelectronics Engineering', 'MSc Microelectronics Design and Technology', 'MSc Petroleum Engineering', 'MSc Petroleum Geoscience', 'MSc Reservoir Engineering', 'MSc Geology', 'MSc Applied Geology', 'MSc Petroleum Geology', 'MSc Geophysics', 'MSc Applied Geophysics', 'MSc Hydrogeology and Contaminant Hydrogeology', 'MSc Mining Geoscience', 'MSc Physics', 'MSc Applied Physics', 'MSc Astrophysics and Cosmology', 'MSc Photonics', 'MSc Theoretical Physics', 'MSc Physics and Astrophysics', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Pure Mathematics', 'MSc Mathematical Sciences', 'MSc Mathematics and Philosophy', 'MSc Statistics', 'MSc Medical Statistics', 'MSc Finance and Accounting', 'MSc Data Science and Statistics', 'MSc Financial Mathematics', 'MSc Operational Research', 'MSc Chemistry', 'MSc Advanced Chemistry', 'MSc Organic Chemistry', 'MSc Materials Chemistry', 'MSc Analytical Chemistry', 'MSc Pharmaceutical Chemistry', 'MSc Chemistry Research', 'MSc Biology', 'MSc Molecular Biology', 'MSc Evolutionary Biology', 'MSc Microbiology', 'MSc Plant Science', 'MSc Ecology', 'MSc Environmental Bioscience', 'MSc Bioinformatics', 'MSc Computational Biology', 'MSc Biophysics', 'MSc Neuroscience', 'MSc Behavioral Neuroscience', 'MBA', 'MSc Business Administration', 'MSc Finance', 'MSc International Business', 'MSc Business Analytics', 'MSc Marketing', 'MSc International Marketing', 'MSc Management', 'MSc Organizational Psychology', 'MSc Operations Management and Logistics', 'MSc Supply Chain Management', 'MSc Economics', 'MSc Applied Economics', 'MSc Public Policy', 'MSc Environmental Economics and Climate Change', 'MSc Energy and Environmental Management', 'MSc Sustainable Development', 'MSc Urban Design', 'MSc Urban Planning', 'MSc Architecture', 'MSc Landscape Urbanism'] },
+                { name: 'University of Bristol', courses: ['MSc Computer Science', 'MSc Machine Learning and Big Data', 'MSc Data Science', 'MSc Advanced Computing', 'MSc Cybersecurity', 'MSc Engineering', 'MSc Electrical and Electronic Engineering', 'MSc Power Systems Engineering', 'MSc Renewable Energy and Power Systems', 'MSc Mechanical Engineering', 'MSc Aerospace Engineering', 'MSc Civil Engineering', 'MSc Advanced Structural Engineering', 'MSc Earthquake Engineering', 'MSc Construction Management', 'MSc Hydrology and Water Resources', 'MSc Geotechnical Engineering', 'MSc Chemical Engineering', 'MSc Advanced Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Biomaterials', 'MSc Materials Science', 'MSc Advanced Materials Science', 'MSc Microelectronics Design and Technology', 'MSc Physics', 'MSc Astrophysics', 'MSc Theoretical Physics', 'MSc Photonics', 'MSc Photonics and Quantum Technologies', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Pure Mathematics', 'MSc Statistics', 'MSc Financial Mathematics', 'MSc Chemistry', 'MSc Organic Chemistry', 'MSc Chemistry Research', 'MSc Synthesis and Catalysis', 'MSc Pharmaceutical and Fine Chemical Synthesis', 'MSc Chemical Crystallography', 'MSc Advanced Chemistry Research', 'MSc Biology', 'MSc Molecular Biology and Pathology', 'MSc Bioinformatics and Genomics', 'MSc Biophysics and Structural Biology', 'MSc Systems and Synthetic Biology', 'MSc Plant Sciences', 'MSc Ecology and Conservation', 'MSc Environmental Biology', 'MSc Evolutionary Biology', 'MSc Neuroscience', 'MBA', 'MSc Finance', 'MSc Financial Engineering', 'MSc Risk Management', 'MSc Management', 'MSc Business Administration', 'MSc Finance and Management', 'MSc Economics', 'MSc Applied Economics', 'MSc International Business and Finance', 'MSc Innovation Management', 'MSc Entrepreneurship and Innovation', 'MSc Strategic and Organizational Change', 'MSc Operations and Project Management', 'MSc Marketing and Management', 'MSc Data Science and Analytics', 'MSc Business Analytics', 'MSc Environmental Policy', 'MSc Sustainability and Environmental Management', 'MSc Energy and Environmental Management', 'MSc Geology', 'MSc Engineering Geology', 'MSc Applied Geology', 'MSc Petroleum Geoscience', 'MSc Public Health', 'MSc Epidemiology', 'MSc Health Economics', 'MSc Urban Planning', 'MSc Urban Design and Regional Planning', 'MSc Landscape Architecture', 'MSc Architecture', 'MSc Sustainable Building Design', 'MSc Education', 'MSc STEM Education', 'MSc Philosophy', 'MSc History', 'LLM', 'MSc Law and Technology'] },
+                { name: 'University of Warwick', courses: ['MSc Computer Science', 'MSc Advanced Computer Science', 'MSc Cyber Security', 'MSc Data Science', 'MSc Mathematics', 'MSc Pure Mathematics', 'MSc Applied Mathematics', 'MSc Mathematics and Finance', 'MSc Statistics', 'MSc Statistics (General)', 'MSc Data Science and Machine Learning', 'MSc Operational Research', 'MSc Physics', 'MSc Physics and Astrophysics', 'MSc Astrophysics', 'MSc Theoretical Physics', 'MSc Applied Physics', 'MSc Photonics', 'MSc Chemistry', 'MSc Chemical Research', 'MSc Chemistry with Industrial Placement', 'MSc Organic Chemistry', 'MSc Pharmaceutical Chemistry', 'MSc Catalysis and Molecular Transformation', 'MSc Advanced Chemistry Research', 'MSc Molecular Cell Biology', 'MSc Bioinformatics', 'MSc Computational Biology', 'MSc Systems Biology', 'MSc Plant and Fungal Biology', 'MSc Animal Behavior', 'MSc Ecology and Ecological Modelling', 'MSc Evolutionary Biology', 'MSc Neuroscience', 'MSc Medical Bioscience', 'MSc Engineering', 'MSc Electrical and Electronic Engineering', 'MSc Power Electronics Engineering', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Civil Engineering', 'MSc Structural Engineering and Dynamics', 'MSc Earthquake Engineering', 'MSc Chemical Engineering', 'MSc Advanced Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Materials Science and Engineering', 'MSc Manufacturing Systems Engineering', 'MSc Renewable Energy', 'MSc Sustainable Energy Systems', 'MSc Manufacturing Management and Technology', 'MSc Manufacturing and Enterprise', 'MBA', 'MSc Finance', 'MSc Financial Mathematics', 'MSc Risk', 'MSc Management', 'MSc Strategic Management and Consulting', 'MSc Business Analytics', 'MSc Economics', 'MSc Applied Economics', 'MSc Public Policy', 'MSc Social Policy and Administration', 'MSc Sociology', 'MSc Social Research Methods', 'MSc Comparative European Politics', 'MSc British Politics', 'MSc International Relations', 'MSc Global Governance', 'MSc Law', 'LLM', 'MSc Law and Technology', 'MSc Environmental Law', 'MSc Law and Economics', 'MSc Performing Arts and Intercultural Communication', 'MSc History', 'MSc English Literary Studies', 'MSc Philosophy', 'MSc Epistemology and Metaphysics', 'MSc Applied Statistics', 'MSc Health Economics', 'MSc Health Services Research', 'MSc Dementia Research', 'MSc Mental Health Research', 'MSc Cancer Research', 'MSc Clinical Trials and Therapeutic Innovation', 'MSc Public Health', 'MSc Epidemiology', 'MSc Occupational and Environmental Health', 'MSc Health and Safety Management', 'MSc Environmental Science and Technology', 'MSc Environmental Monitoring Assessment and Management', 'MSc Energy and Environmental Management', 'MSc Sustainability and Environmental Management', 'MSc Urban Planning and Design'] },
+                { name: 'University of Durham', courses: ['MSc Computer Science', 'MSc Advanced Computer Science', 'MSc Data Science', 'MSc Cybersecurity and Cryptography', 'MSc Software Engineering', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Mathematical Sciences', 'MSc Probability and Modern Statistics', 'MSc Statistics', 'MSc Financial Mathematics', 'MSc Physics', 'MSc Theoretical Physics', 'MSc Physics with Advanced Instrumentation', 'MSc Astrophysics', 'MSc Applied Physics', 'MSc Photonics', 'MSc Chemistry', 'MSc Chemistry Research', 'MSc Organic Chemistry', 'MSc Chemical Research', 'MSc Molecular Spectroscopy', 'MSc Advanced Chemistry Research', 'MSc Biology', 'MSc Molecular Biology and Bioinformatics', 'MSc Cell and Developmental Biology', 'MSc Molecular Genetics', 'MSc Neuroscience', 'MSc Computational Biology', 'MSc Ecology and Environmental Biology', 'MSc Evolution and Developmental Biology', 'MSc Biophysics', 'MSc Engineering', 'MSc Engineering: Advanced Engineering', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Civil Engineering', 'MSc Structural Engineering', 'MSc Chemical Engineering', 'MSc Advanced Chemical Engineering', 'MSc Electrical Engineering', 'MSc Electronics and Electrical Engineering', 'MSc Renewable Energy Engineering', 'MSc Materials Science and Engineering', 'MSc Energy Engineering', 'MBA', 'MSc Finance', 'MSc Financial Risk and Analytics', 'MSc Accounting and Finance', 'MSc Economics', 'MSc Applied Economics', 'MSc Management', 'MSc Human Resource Management', 'MSc Strategic Management', 'MSc International Business', 'MSc Business Analytics', 'MSc Marketing', 'MSc Service Management', 'MSc Public Policy', 'MSc Public Administration', 'MSc Public Policy and Management', 'MSc Environmental Policy', 'MSc Energy Policy', 'MSc Law', 'LLM', 'MSc Law and Technology', 'MSc Law and Economics', 'MSc Environmental Law', 'MSc Human Rights Law', 'MSc Intellectual Property Law', 'MSc History', 'MSc Medieval History', 'MSc Modern History', 'MSc History of Science', 'MSc Philosophy', 'MSc English Literary Studies', 'MSc Theological Studies', 'MSc Theology and Religion', 'MSc Anthropology', 'MSc Social Anthropology', 'MSc Archaeology', 'MSc Molecular Archaeology', 'MSc Archaeology of the Classical World', 'MSc Archaeology and Heritage Management', 'MSc Education', 'MSc STEM Education', 'MSc Geography', 'MSc Human Geography', 'MSc Environmental Geography', 'MSc Sustainable Development', 'MSc Geochemistry', 'MSc Geology', 'MSc Geophysics', 'MSc Environmental Science', 'MSc Environmental Monitoring and Management', 'MSc Climate Science', 'MSc Health Economics', 'MSc Public Health', 'MSc Epidemiology', 'MSc Health Services Management'] },
+                { name: 'Teesside University', courses: ['MSc Computer Science', 'MSc Advanced Computer Science', 'MSc Artificial Intelligence', 'MSc Machine Learning and Data Science', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Information Security', 'MSc Software Engineering', 'MSc Web Development and Technologies', 'MSc Information Technology', 'MSc Engineering', 'MSc Electrical Engineering', 'MSc Power Systems and Control', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Civil Engineering', 'MSc Construction Engineering', 'MSc Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Materials Science and Engineering', 'MSc Manufacturing Engineering', 'MSc Renewable Energy Engineering', 'MSc Engineering Project Management', 'MSc Engineering Management', 'MBA', 'MSc Management', 'MSc Business Administration', 'MSc Strategic Management', 'MSc Finance', 'MSc Financial Management', 'MSc Accounting and Finance', 'MSc Business Analytics', 'MSc Business Intelligence and Analytics', 'MSc Human Resource Management', 'MSc Organizational Psychology', 'MSc International Business', 'MSc Marketing', 'MSc Digital Marketing', 'MSc Leadership and Organizational Change', 'MSc Project Management', 'MSc Supply Chain and Operations Management', 'MSc Entrepreneurship and Small Business Management', 'MSc Economics', 'MSc Applied Economics', 'MSc Economics and Finance', 'MSc Public Policy and Governance', 'MSc Public Administration', 'MSc Urban and Regional Planning', 'MSc Urban Design', 'MSc Environmental Management', 'MSc Environmental Science', 'MSc Sustainability and Environmental Management', 'MSc Environmental and Sustainability Management', 'MSc Energy Policy and Management', 'MSc Health and Social Care Management', 'MSc Health Services Management', 'MSc Public Health', 'MSc Health Economics', 'MSc Health and Wellbeing', 'MSc Law', 'LLM', 'MSc Law and Technology', 'MSc Cybersecurity Law', 'MSc Health Law', 'MSc Employment Law', 'MSc Education', 'MSc STEM Education', 'MSc Educational Leadership and Management', 'MSc Psychology', 'MSc Applied Psychology', 'MSc Occupational Psychology', 'MSc Psychology and Organizational Psychology', 'MSc Counselling Psychology', 'MSc Communication and Media', 'MSc Digital Communication', 'MSc Public Relations', 'MSc Broadcasting', 'MSc Journalism', 'MSc English Language Studies', 'MSc Applied Linguistics', 'MSc TESOL (Teaching English to Speakers of Other Languages)', 'MSc Child and Adolescent Mental Health', 'MSc Clinical Mental Health', 'MSc Autism Spectrum Disorder', 'MSc Advanced Clinical Practice', 'MSc Advanced Nursing Practice', 'MSc Nurse Education', 'MSc Nursing Leadership and Management', 'MSc Midwifery Studies', 'MSc Allied Health Professions', 'MSc Physiotherapy', 'MSc Occupational Therapy', 'MSc Sport and Exercise Science', 'MSc Sport and Exercise Psychology', 'MSc Sports Nutrition', 'MSc Strength and Conditioning', 'MSc Tourism Management', 'MSc Hotel and Hospitality Management'] },
+                { name: 'University of Hertfordshire', courses: ['MSc Computer Science', 'MSc Advanced Computer Science', 'MSc Artificial Intelligence and Robotics', 'MSc Data Science', 'MSc Machine Learning and AI', 'MSc Cybersecurity', 'MSc Information Systems', 'MSc Software Engineering', 'MSc Web Technologies', 'MSc Information Technology Project Management', 'MSc Engineering', 'MSc Engineering Management', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Civil Engineering', 'MSc Construction Engineering and Management', 'MSc Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Environmental Engineering', 'MSc Manufacturing Systems and Management', 'MBA', 'MSc Business Administration', 'MSc Strategic Business Management', 'MSc Finance', 'MSc Financial Management', 'MSc Banking and Finance', 'MSc Accounting and Finance', 'MSc Business Analytics', 'MSc Marketing', 'MSc International Marketing', 'MSc Digital Marketing', 'MSc Human Resource Management', 'MSc Talent Development and Organizational Learning', 'MSc Leadership and Strategic Management', 'MSc Project Management', 'MSc Operations and Supply Chain Management', 'MSc International Business', 'MSc International Business and Trade', 'MSc Business and Economics', 'MSc Economics', 'MSc Applied Economics and Econometrics', 'MSc Public Policy', 'MSc Public Administration and Governance', 'MSc Urban Planning and Development', 'MSc Urban Design and Planning', 'MSc Environmental Management', 'MSc Environmental Science', 'MSc Energy and Environmental Management', 'MSc Sustainability and Environmental Management', 'MSc Health and Social Care Management', 'MSc Health Services Management', 'MSc Public Health', 'MSc Health and Wellbeing Management', 'MSc Public Health (Nutrition)', 'MSc Health Economics and Health Services Research', 'MSc Law', 'LLM', 'MSc Law and Business', 'MSc Law and Technology', 'MSc Cybersecurity Law', 'MSc Education', 'MSc Educational Leadership', 'MSc STEM Education', 'MSc Higher Education Teaching and Learning', 'MSc Psychology', 'MSc Applied Psychology', 'MSc Forensic Psychology', 'MSc Organizational Psychology', 'MSc Child Psychology', 'MSc Counselling Psychology', 'MSc Criminology', 'MSc Criminology and Criminal Justice', 'MSc Forensic Science', 'MSc Digital Forensics', 'MSc Crime and Deviance', 'MSc Applied Criminology and Criminal Justice', 'MSc Sociology', 'MSc Social Research Methods', 'MSc Media and Communication Studies', 'MSc Digital Communication', 'MSc Sports and Exercise Science', 'MSc Sports Psychology', 'MSc Sports Management', 'MSc Sport, Physical Activity and Exercise Science', 'MSc Tourism Management', 'MSc Hospitality Management', 'MSc Events Management', 'MSc Nursing', 'MSc Nursing (Adult)', 'MSc Nursing (Mental Health)', 'MSc Nursing (Child)', 'MSc Advanced Practice Nursing', 'MSc Clinical Practice', 'MSc Physiotherapy', 'MSc Occupational Therapy', 'MSc Paramedic Science', 'MSc Health and Community Care', 'MSc Social Work', 'MSc Social Work and Community Development'] },
+                { name: 'University of Nottingham', courses: ['MSc Computer Science', 'MSc Advanced Computer Science', 'MSc Artificial Intelligence and Deep Learning', 'MSc Data Science', 'MSc Cyber Security', 'MSc Software Engineering', 'MSc Computer Systems and Networking', 'MSc Information Technology', 'MSc Engineering', 'MSc Advanced Engineering Mechanics', 'MSc Electrical Engineering', 'MSc Advanced Electrical Engineering', 'MSc Electronics and Electrical Engineering', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Aerospace Engineering', 'MSc Aerospace Engineering with Advanced Composites', 'MSc Civil Engineering', 'MSc Advanced Structural Engineering', 'MSc Earthquake Engineering', 'MSc Chemical Engineering', 'MSc Advanced Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Pharmaceutical Engineering', 'MSc Environmental Engineering', 'MSc Materials Science', 'MSc Advanced Materials Science', 'MSc Manufacturing and Processes', 'MSc Manufacturing Systems and Management', 'MSc Mechanical and Manufacturing Engineering', 'MSc Renewable Energy Engineering', 'MSc Geotechnical Engineering', 'MSc Water and Environmental Management', 'MBA', 'MSc Finance', 'MSc Financial Engineering', 'MSc Risk Management', 'MSc Business Administration', 'MSc Management', 'MSc Strategic Management', 'MSc International Business', 'MSc Business Analytics', 'MSc Marketing', 'MSc Digital Marketing', 'MSc Human Resource Management', 'MSc Organizational Psychology', 'MSc Operations and Supply Chain Management', 'MSc Leadership', 'MSc Entrepreneurship and Innovation', 'MSc Project Management', 'MSc Economics', 'MSc Applied Economics', 'MSc Public Policy and Governance', 'MSc Energy Policy', 'MSc Environmental Policy and Management', 'MSc Sustainability and Environmental Management', 'MSc Physics', 'MSc Applied Physics', 'MSc Astrophysics', 'MSc Theoretical Physics', 'MSc Photonics', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Pure Mathematics', 'MSc Statistics', 'MSc Mathematical Physics', 'MSc Chemistry', 'MSc Advanced Chemistry Research', 'MSc Chemistry Research', 'MSc Organic Chemistry', 'MSc Analytical Chemistry', 'MSc Pharmaceutical Chemistry', 'MSc Synthesis and Catalysis', 'MSc Biology', 'MSc Molecular Biology', 'MSc Cell and Developmental Biology', 'MSc Molecular Genetics', 'MSc Plant Biotechnology', 'MSc Neuroscience', 'MSc Applied Neuroscience', 'MSc Immunology and Infection', 'MSc Microbiology and Infection', 'MSc Clinical Microbiology', 'MSc Plant Science', 'MSc Environmental Biology', 'MSc Ecology', 'MSc Evolutionary Biology', 'MSc Bioinformatics and Computational Biology', 'MSc Systems Biology', 'MSc Biophysics', 'MSc Medicinal Chemistry', 'MSc Pharmacy', 'MSc Clinical Pharmacy', 'MSc Pharmaceutical Sciences', 'MSc Drug Discovery and Pharmacology', 'MSc Health Economics', 'MSc Public Health', 'MSc Global Health', 'MSc Health Services Research', 'MSc Epidemiology', 'MSc Biostatistics', 'MSc Mental Health', 'MSc Nursing', 'MSc Advanced Nursing Practice', 'MSc Education', 'MSc STEM Education', 'MSc Law', 'LLM', 'MSc Law and Technology', 'MSc Intellectual Property Law', 'MSc International Law', 'MSc Environmental Law', 'MSc Urban Planning', 'MSc Urban Design and Regeneration', 'MSc Architecture', 'MSc Sustainable Architecture', 'MSc Real Estate Development and Investment', 'MSc Geography', 'MSc Urban Geography', 'MSc Geology', 'MSc Applied Geology'] },
+                { name: 'King\'s College London', courses: ['MSc Computer Science', 'MSc Advanced Computer Science', 'MSc Artificial Intelligence', 'MSc Machine Learning', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Information Security', 'MSc Cyber Security and Information Technologies', 'MSc Software Engineering', 'MSc Computing Science Research', 'MSc Engineering', 'MSc Electrical Engineering', 'MSc Electronic Engineering', 'MSc Power Systems and High Voltage Engineering', 'MSc Power Electronics and Drives', 'MSc Mechanical Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Aeronautical Engineering', 'MSc Civil Engineering', 'MSc Structural Engineering', 'MSc Civil Engineering with Advanced Structures', 'MSc Chemical Engineering', 'MSc Advanced Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Materials Science and Engineering', 'MSc Advanced Materials Science', 'MSc Sustainable Energy Engineering', 'MSc Physics', 'MSc Physics with Advanced Instrumentation', 'MSc Applied Physics', 'MSc Astrophysics', 'MSc Theoretical Physics', 'MSc Quantum Engineering', 'MSc Medical Physics', 'MSc Photonics and Optical Engineering', 'MSc Photonics', 'MSc Space Systems Engineering', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Pure Mathematics', 'MSc Mathematics and Advanced Computing', 'MSc Statistics', 'MSc Applied Statistics', 'MSc Statistics with Data Science', 'MSc Financial Mathematics', 'MSc Chemistry', 'MSc Chemistry Research', 'MSc Chemical Research', 'MSc Organic Chemistry', 'MSc Medicinal Chemistry', 'MSc Analytical Chemistry and Forensic Science', 'MSc Materials Chemistry', 'MSc Advanced Chemistry Research', 'MSc Chemistry with Biological and Medicinal Chemistry', 'MSc Biology', 'MSc Molecular Biology', 'MSc Cell and Developmental Biology', 'MSc Genetics and Molecular Pathology', 'MSc Microbiology', 'MSc Parasites and Pathogenesis', 'MSc Microbial Pathogenesis', 'MSc Immunology', 'MSc Infection and Immunity', 'MSc Vaccine Development', 'MSc Plant Science', 'MSc Neuroscience', 'MSc Behavioural and Cognitive Neuroscience', 'MSc Bioinformatics and Systems Biology', 'MSc Systems Biology', 'MSc Biophysics', 'MSc Structural Biology', 'MSc Biochemistry', 'MBA', 'MSc Finance', 'MSc Financial Risk', 'MSc Financial Mathematics and Computation', 'MSc Management', 'MSc Strategic Management and Consulting', 'MSc Business Administration', 'MSc Innovation and Entrepreneurship', 'MSc Business Analytics', 'MSc Marketing', 'MSc Psychology', 'MSc Economics', 'MSc Applied Economics', 'MSc International Relations', 'MSc Global Governance and Ethics', 'MSc Conflict Studies', 'MSc Diplomacy', 'MSc War Studies', 'MSc Public Policy', 'MSc Governance and Public Administration', 'MSc Health Policy', 'MSc Environmental Policy and Sustainability', 'MSc Energy Policy', 'MSc Urban Studies', 'MSc Urban Design', 'MSc Urban Regeneration', 'MSc Sustainable Cities and Infrastructure', 'MSc Law', 'LLM', 'MSc Law and Technology', 'MSc Intellectual Property Law', 'MSc International Law', 'MSc Medical Law and Ethics', 'MSc Bioethics and Medical Law', 'MSc Environmental Law', 'MSc European Law', 'MSc European Law and Comparative Constitutional Law', 'MSc Criminal Law', 'MSc Public International Law', 'MSc Public Law and Human Rights', 'MSc History', 'MSc Modern History', 'MSc Medical History and Science', 'MSc History of Science', 'MSc Medieval History', 'MSc Medieval Studies', 'MSc Philosophy', 'MSc Cognitive and Moral Psychology', 'MSc Theological Studies', 'MSc Theology and Philosophy of Religion', 'MSc English', 'MSc Digital Humanities', 'MSc Comparative Literature and Culture', 'MSc Modern Languages and Cultures', 'MSc Modern European Studies', 'MSc Chinese Studies', 'MSc Asia-Pacific Studies', 'MSc Education', 'MSc STEM Education', 'MSc Higher Education', 'MSc Public Health', 'MSc Global Health', 'MSc Epidemiology', 'MSc Health Services Research', 'MSc Health Economics and Policy', 'MSc Dental Public Health and Research', 'MSc Psychiatry', 'MSc Medical Science', 'MSc Clinician Scientist Training', 'MSc Nursing', 'MSc Advanced Nursing Practice', 'MSc Addiction Studies', 'MSc Counselling Studies', 'MSc Psychotherapy', 'MSc Applied Psychology', 'MSc Forensic Psychology', 'MSc Sport and Exercise Science', 'MSc Sport and Exercise Medicine', 'MSc Sports Medicine and Exercise Physiology'] },
+                { name: 'University of Glasgow', courses: ['MSc Computer Science', 'MSc Advanced Computer Science', 'MSc Artificial Intelligence and Machine Learning', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Information Technology', 'MSc Engineering', 'MSc Advanced Mechanical Engineering', 'MSc Structural Engineering', 'MSc Civil Engineering', 'MSc Water and Environmental Management', 'MSc Electrical Power Engineering', 'MSc Power Systems Engineering', 'MSc Advanced Electrical Engineering', 'MSc Electronics and Electrical Engineering', 'MSc Electrical Machines and Power Electronics', 'MSc Communications Engineering', 'MSc Mechanical Engineering', 'MSc Aerospace Engineering', 'MSc Advanced Aerospace Engineering', 'MSc Jet Engine Technology', 'MSc Chemical Engineering', 'MSc Advanced Chemical Engineering', 'MSc Biomedical Engineering', 'MSc Biomaterials and Tissue Engineering', 'MSc Environmental Engineering', 'MSc Sustainable Energy Engineering', 'MSc Energy Systems and Management', 'MSc Materials Science and Engineering', 'MSc Advanced Materials Science', 'MSc Nanotechnology and Microsystems', 'MSc Naval Architecture and Ocean Engineering', 'MSc Naval Architecture', 'MSc Marine Technology', 'MSc Subsea Engineering', 'MSc Petroleum Engineering', 'MSc Reservoir Engineering', 'MSc Petroleum Geology', 'MSc Geotechnical Engineering', 'MSc Tunnelling and Underground Space', 'MSc Manufacturing Systems Engineering', 'MSc Engineering Management', 'MSc Project Management and Engineering', 'MSc Technology Management', 'MBA', 'MSc Finance', 'MSc Quantitative Finance', 'MSc Banking and Finance', 'MSc Financial Risk Management', 'MSc Management', 'MSc Business Administration', 'MSc Strategic Management', 'MSc International Business', 'MSc Business Analytics', 'MSc Finance and Economics', 'MSc Applied Economics', 'MSc Accounting and Finance', 'MSc Human Resource Management', 'MSc Organizational Psychology', 'MSc Marketing', 'MSc Product Design and Management', 'MSc Supply Chain and Operations Management', 'MSc Entrepreneurship and Innovation', 'MSc Leadership and Organisational Change', 'MSc Service Management', 'MSc Physics', 'MSc Applied Physics', 'MSc Astrophysics and Cosmology', 'MSc Theoretical Physics', 'MSc Photonics', 'MSc Medical Physics', 'MSc Physics with Advanced Instrumentation', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Pure Mathematics', 'MSc Mathematics and Physics', 'MSc Statistics', 'MSc Applied Statistics', 'MSc Statistics (Medical Statistics)', 'MSc Operational Research and Statistics', 'MSc Chemistry', 'MSc Advanced Chemistry Research', 'MSc Chemistry Research', 'MSc Organic Chemistry', 'MSc Analytical Chemistry', 'MSc Molecular Chemistry and Materials', 'MSc Catalysis and Fine Chemicals', 'MSc Advanced Chemical Synthesis', 'MSc Chemistry with Advanced Synthesis and Catalysis', 'MSc Biology', 'MSc Molecular Biology and Pathology', 'MSc Cell and Molecular Biology', 'MSc Genetics and Molecular Pathology', 'MSc Neuroscience', 'MSc Integrative Physiology', 'MSc Plant and Fungal Biology', 'MSc Ecology and Environmental Biology', 'MSc Evolution and Environmental Change', 'MSc Bioinformatics', 'MSc Computational Biology', 'MSc Systems and Synthetic Biology', 'MSc Translational Cancer Research', 'MSc Cardiovascular Science', 'MSc Immunology', 'MSc Microbiology', 'MSc Molecular and Cellular Biology', 'MSc Veterinary Medicine', 'MSc Public Health', 'MSc Epidemiology', 'MSc Global Health', 'MSc Health Economics and Health Services Research', 'MSc Occupational and Environmental Health', 'MSc Mental Health', 'MSc Infection and Immunity', 'MSc Law', 'LLM', 'MSc Law and Technology', 'MSc Criminal Law and Criminal Justice', 'MSc Environmental Law and Sustainability', 'MSc International Law and International Relations', 'MSc European Law', 'MSc Law and Economics', 'MSc Intellectual Property Law', 'MSc Education', 'MSc STEM Education', 'MSc Geography', 'MSc Human Geography', 'MSc Urban and Regional Planning', 'MSc Urban Design', 'MSc Geology', 'MSc Applied Geology', 'MSc Engineering Geology', 'MSc Petroleum Geology', 'MSc Geophysics', 'MSc Environmental Science', 'MSc Sustainable Development', 'MSc Energy and Environmental Management', 'MSc Scottish Archaeology', 'MSc Archaeology', 'MSc Medieval Archaeology and Architecture', 'MSc History', 'MSc Historical Studies', 'MSc Modern History', 'MSc Medical History and Science', 'MSc Philosophy', 'MSc Philosophy of Physics and Cosmology', 'MSc English', 'MSc Literature and Modernity', 'MSc Creative Writing', 'MSc Modern Languages', 'MSc Translation Studies', 'MSc Asian Studies'] }
+            ],
+            'Canada': [
+                { name: 'University of Toronto', courses: ['MSc Computer Science', 'MBA', 'MSc Engineering', 'MSc Data Science', 'MSc Statistics', 'MSc Finance', 'MSc Business Analytics', 'MSc Management', 'MSc Physics', 'MSc Chemistry', 'MSc Electrical and Computer Engineering'] },
+                { name: 'University of British Columbia', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Statistics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Business and Management', 'MSc Environmental Science'] },
+                { name: 'McGill University', courses: ['MSc Computer Science', 'MBA', 'MSc Finance', 'MSc Engineering', 'MSc Data Science', 'MSc Statistics', 'MSc Physics', 'MSc Chemistry', 'MSc Biology', 'MSc Electrical and Computer Engineering', 'MSc Mechanical Engineering'] },
+                { name: 'McMaster University', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Health Sciences', 'MSc Statistics', 'MSc Physics', 'MSc Chemistry', 'MSc Business and Management', 'MSc Data Science', 'MSc Electrical and Computer Engineering', 'MSc Manufacturing Engineering'] },
+                { name: 'University of Alberta', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Business Analytics', 'MSc Data Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Chemical Engineering', 'MSc Mechanical Engineering'] },
+                { name: 'University of Montreal', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Statistics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Business Analytics', 'MSc Mechanical Engineering', 'MSc Civil Engineering'] },
+                { name: 'University of Waterloo', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Data Science', 'MSc Statistics', 'MBA', 'MSc Electrical and Computer Engineering', 'MSc Mechanical Engineering', 'MSc Chemical Engineering', 'MSc Nanotechnology', 'MSc Physics', 'MSc Mathematics'] },
+                { name: 'Western University', courses: ['MBA', 'MSc Computer Science', 'MSc Engineering', 'MSc Data Science', 'MSc Business Analytics', 'MSc Finance', 'MSc Management', 'MSc Statistics', 'MSc Information Systems', 'MSc Economics', 'MSc Social Science'] },
+                { name: 'University of Calgary', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Geomatics Engineering', 'MSc Petroleum Engineering', 'MSc Civil Engineering', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Physics', 'MSc Chemistry'] },
+                { name: 'Simon Fraser University', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Business Administration', 'MSc Statistics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Applied Mathematics', 'MSc Environmental Science'] },
+                { name: 'University of Guelph', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Agricultural Sciences', 'MSc Chemistry', 'MSc Physics', 'MSc Statistics', 'MSc Environmental Sciences', 'MBA', 'MSc Business Analytics', 'MSc Animal Bioscience', 'MSc Crop Science'] },
+                { name: 'University of Ottawa', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Business Administration', 'MSc Chemistry', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics', 'MSc Management', 'LLM'] },
+                { name: 'York University', courses: ['MBA', 'MSc Computer Science', 'MSc Engineering', 'MSc Data Science', 'MSc Business Analytics', 'MSc Finance', 'MSc Statistics', 'MSc Management', 'MSc Economics', 'LLM', 'MSc Information Systems'] },
+                { name: 'Ryerson University', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Electrical and Computer Engineering', 'MSc Mechanical Engineering', 'MSc Civil Engineering', 'MSc Aerospace Engineering', 'MSc Business Analytics', 'MSc Finance', 'MSc Business Administration'] },
+                { name: 'University of British Columbia - Okanagan', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Data Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Business Analytics', 'MSc Environmental Science', 'MBA', 'MSc Applied Science'] }
+            ],
+            'Australia': [
+                { name: 'University of Melbourne', courses: ['MSc Computer Science', 'MBA', 'MSc Engineering', 'MSc Information Technology', 'MSc Data Science', 'MSc Finance', 'MSc Business Analytics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics'] },
+                { name: 'University of Sydney', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Finance', 'MSc Data Science', 'MSc Business Analytics', 'MSc Information Systems', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics'] },
+                { name: 'Australian National University', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Economics', 'MSc Finance', 'MSc Advanced Computing'] },
+                { name: 'UNSW Sydney', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Business Analytics', 'MSc Data Science', 'MSc Finance', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Telecommunications'] },
+                { name: 'Monash University', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Information Technology', 'MSc Data Science', 'MSc Business Analytics', 'MSc Finance', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics'] },
+                { name: 'University of New South Wales', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Data Science', 'MBA', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Finance', 'MSc Business Analytics', 'MSc Information Systems'] },
+                { name: 'University of Queensland', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Finance', 'MSc Business Analytics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Information Technology'] },
+                { name: 'University of Western Australia', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Finance', 'MSc Business Analytics', 'MSc Mining Engineering'] },
+                { name: 'University of Adelaide', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Finance', 'MSc Business Analytics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Renewable Energy'] },
+                { name: 'RMIT University', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Information Technology', 'MSc Data Science', 'MSc Business Analytics', 'MSc Finance', 'MSc Project Management', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics'] },
+                { name: 'University of Technology Sydney', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Information Systems', 'MSc Finance', 'MSc Business Analytics', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics', 'MSc Cybersecurity'] },
+                { name: 'Macquarie University', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Finance', 'MSc Business Analytics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Information Systems'] },
+                { name: 'Curtin University', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Information Technology', 'MSc Finance', 'MSc Business Analytics', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics', 'MSc Petroleum Engineering'] },
+                { name: 'University of South Australia', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Finance', 'MSc Business Analytics', 'MSc Information Systems', 'MSc Project Management', 'MSc Mathematics', 'MSc Statistics', 'MSc Physics'] },
+                { name: 'Bond University', courses: ['MBA', 'MSc Computer Science', 'MSc Engineering', 'MSc Finance', 'MSc Business Analytics', 'MSc Data Science', 'MSc Information Technology', 'MSc Management', 'MSc Project Management', 'MSc Leadership', 'MSc International Business'] }
+            ],
+            'Germany': [
+                { name: 'Technical University of Munich', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Data Science', 'MSc Business Analytics', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Mathematics', 'MSc Physics', 'MSc Chemistry', 'MSc Statistics', 'MSc Management'] },
+                { name: 'Heidelberg University', courses: ['MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Biology', 'MSc Mathematics', 'MSc Statistics', 'MSc Engineering', 'MSc Data Science', 'MSc Astrophysics', 'MSc Medical Physics', 'MSc Business Administration'] },
+                { name: 'Humboldt University of Berlin', courses: ['MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Biology', 'MSc Mathematics', 'MSc Statistics', 'MSc Engineering', 'MSc Data Science', 'MSc Economics', 'MSc Management', 'MSc Business Analytics'] },
+                { name: 'RWTH Aachen', courses: ['MSc Engineering', 'MSc Computer Science', 'MSc Business Analytics', 'MSc Physics', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Chemical Engineering', 'MSc Civil Engineering', 'MSc Mathematics', 'MSc Statistics', 'MSc Advanced Materials'] },
+                { name: 'University of Bonn', courses: ['MSc Computer Science', 'MSc Mathematics', 'MSc Physics', 'MSc Chemistry', 'MSc Biology', 'MSc Statistics', 'MSc Engineering', 'MSc Data Science', 'MSc Economics', 'MSc Management', 'MSc Astronomy'] },
+                { name: 'University of Göttingen', courses: ['MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Biology', 'MSc Statistics', 'MSc Engineering', 'MSc Geophysics', 'MSc Astrophysics', 'MSc Data Science', 'MSc Management'] },
+                { name: 'University of Hamburg', courses: ['MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Engineering', 'MSc Data Science', 'MSc Business Analytics', 'MSc Economics', 'MSc Management', 'MSc Marine Science'] },
+                { name: 'University of Frankfurt', courses: ['MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Engineering', 'MSc Finance', 'MSc Economics', 'MSc Business Analytics', 'MSc Data Science', 'MSc Management'] },
+                { name: 'University of Cologne', courses: ['MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Engineering', 'MSc Data Science', 'MSc Business Analytics', 'MSc Economics', 'MSc Management', 'MSc Information Systems'] },
+                { name: 'TU Darmstadt', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Civil Engineering', 'MSc Mathematics', 'MSc Statistics', 'MSc Data Science', 'MSc Business Analytics', 'MSc Materials Science'] },
+                { name: 'University of Stuttgart', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Physics', 'MSc Mathematics', 'MSc Data Science', 'MSc Business Analytics', 'MSc Aerospace Engineering', 'MSc Automotive Engineering', 'MSc Energy Technology'] },
+                { name: 'University of Erlangen-Nuremberg', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Electrical Engineering', 'MSc Mechanical Engineering', 'MSc Data Science', 'MSc Statistics', 'MSc Business Administration', 'MSc Materials Science'] },
+                { name: 'University of Mannheim', courses: ['MBA', 'MSc Computer Science', 'MSc Economics', 'MSc Finance', 'MSc Business Analytics', 'MSc Data Science', 'MSc Statistics', 'MSc Engineering', 'MSc Management', 'MSc Information Systems', 'MSc Business Administration'] },
+                { name: 'University of Munich', courses: ['MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Engineering', 'MSc Data Science', 'MSc Business Analytics', 'MSc Economics', 'MSc Management', 'MSc Information Technology'] },
+                { name: 'Karlsruhe Institute of Technology', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Mathematics', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Civil Engineering', 'MSc Data Science', 'MSc Statistics', 'MSc Business Analytics', 'MSc Materials Science'] }
+            ],
+            'New Zealand': [
+                { name: 'University of Auckland', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Business Analytics', 'MSc Data Science', 'MSc Finance', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Information Systems'] },
+                { name: 'University of Otago', courses: ['MSc Computer Science', 'MSc Health Sciences', 'MSc Information Technology', 'MBA', 'MSc Data Science', 'MSc Finance', 'MSc Business Analytics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics'] },
+                { name: 'University of Canterbury', courses: ['MSc Engineering', 'MSc Computer Science', 'MSc Business', 'MSc Science', 'MBA', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Data Science', 'MSc Electrical Engineering'] },
+                { name: 'Victoria University of Wellington', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Information Technology', 'MSc Finance', 'MSc Business Analytics', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics', 'MSc Management'] },
+                { name: 'Massey University', courses: ['MSc Information Technology', 'MSc Business', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Finance', 'MSc Agricultural Sciences', 'MSc Chemistry', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics'] },
+                { name: 'University of Waikato', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Business Analytics', 'MSc Finance', 'MSc Information Systems', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics'] },
+                { name: 'Auckland University of Technology', courses: ['MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Information Technology', 'MSc Business Analytics', 'MSc Finance', 'MSc Management', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics'] },
+                { name: 'Lincoln University', courses: ['MSc Agricultural Sciences', 'MSc Computer Science', 'MSc Engineering', 'MBA', 'MSc Data Science', 'MSc Environmental Management', 'MSc Chemistry', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics', 'MSc Business Administration'] },
+                { name: 'Unitec Institute of Technology', courses: ['MSc Information Technology', 'MSc Engineering', 'MSc Business Administration', 'MSc Data Science', 'MSc Project Management', 'MSc Networking and Security', 'MSc Software Development', 'MSc Computer Science', 'MSc Business Analytics', 'MBA', 'MSc Finance'] },
+                { name: 'Ara Institute of Canterbury', courses: ['MSc Engineering', 'MSc Information Technology', 'MSc Business Administration', 'MSc Project Management', 'MSc Data Science', 'MSc Computer Science', 'MSc Business Analytics', 'MSc Finance', 'MSc Management', 'MSc Applied Science', 'MSc Sustainable Development'] },
+                { name: 'Wellington Institute of Technology', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Information Technology', 'MSc Business Administration', 'MSc Data Science', 'MSc Project Management', 'MSc Finance', 'MSc Business Analytics', 'MBA', 'MSc Management', 'MSc Applied Science'] },
+                { name: 'Otago Polytechnic', courses: ['MSc Engineering', 'MSc Information Technology', 'MSc Business Administration', 'MSc Health Sciences', 'MSc Data Science', 'MSc Project Management', 'MSc Computer Science', 'MSc Applied Science', 'MSc Sustainable Development', 'MSc Creative Arts', 'MSc Finance'] },
+                { name: 'Manukau Institute of Technology', courses: ['MSc Information Technology', 'MSc Engineering', 'MSc Business Administration', 'MSc Computer Science', 'MSc Data Science', 'MSc Project Management', 'MSc Finance', 'MSc Management', 'MSc Hospitality Management', 'MSc Business Analytics', 'MBA'] },
+                { name: 'Eastern Institute of Technology', courses: ['MSc Information Technology', 'MSc Engineering', 'MSc Business Administration', 'MSc Computer Science', 'MSc Data Science', 'MSc Business Analytics', 'MSc Project Management', 'MSc Finance', 'MSc Management', 'MSc Applied Science', 'MSc Health Services Management'] },
+                { name: 'Nelson Marlborough Institute of Technology', courses: ['MSc Engineering', 'MSc Information Technology', 'MSc Business Administration', 'MSc Computer Science', 'MSc Data Science', 'MSc Agriculture', 'MSc Tourism Management', 'MSc Viticulture', 'MSc Applied Science', 'MSc Project Management', 'MSc Finance'] }
+            ],
+            'Italy': [
+                { name: 'Politecnico di Milano', courses: ['MSc Engineering', 'MSc Computer Science', 'MSc Architecture', 'MSc Design', 'MSc Physics', 'MSc Mathematics', 'MSc Data Science', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Civil Engineering', 'MSc Chemical Engineering'] },
+                { name: 'University of Milan', courses: ['MSc Computer Science', 'MSc Business', 'MSc Economics', 'MSc Engineering', 'MSc Finance', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Data Science', 'MSc Management'] },
+                { name: 'Sapienza University of Rome', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Architecture', 'MSc Business', 'MSc Economics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Law', 'MSc Data Science'] },
+                { name: 'Bocconi University', courses: ['MBA', 'MSc Finance', 'MSc Economics', 'MSc Business Analytics', 'MSc Management', 'MSc Accounting', 'MSc Marketing', 'MSc Data Science', 'MSc Computer Science', 'MSc Law', 'MSc International Relations'] },
+                { name: 'University of Turin', courses: ['MSc Engineering', 'MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Data Science', 'MSc Economics', 'MSc Business Administration'] },
+                { name: 'Politecnico di Torino', courses: ['MSc Engineering', 'MSc Architecture', 'MSc Computer Science', 'MSc Physics', 'MSc Mathematics', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Civil Engineering', 'MSc Chemical Engineering', 'MSc Data Science', 'MSc Aerospace Engineering'] },
+                { name: 'University of Bologna', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Economics', 'MSc Business Administration', 'MSc Data Science', 'MSc Law', 'MSc Management'] },
+                { name: 'Università Cattolica', courses: ['MBA', 'MSc Economics', 'MSc Finance', 'MSc Business Analytics', 'MSc Computer Science', 'MSc Management', 'MSc Accounting', 'MSc Data Science', 'MSc Law', 'MSc Marketing', 'MSc International Business'] },
+                { name: 'University of Padua', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Economics', 'MSc Business Administration', 'MSc Data Science', 'MSc Law', 'MSc Management'] },
+                { name: 'University of Pisa', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Data Science', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Law', 'MSc Economics'] },
+                { name: 'University of Naples', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Data Science', 'MSc Economics', 'MSc Business Administration', 'MSc Law', 'MSc Management'] },
+                { name: 'University of Genoa', courses: ['MSc Engineering', 'MSc Computer Science', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Naval Engineering', 'MSc Data Science', 'MSc Economics', 'MSc Management'] },
+                { name: 'University of Palermo', courses: ['MSc Engineering', 'MSc Architecture', 'MSc Computer Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Economics', 'MSc Business Administration', 'MSc Data Science', 'MSc Law'] },
+                { name: 'University of Perugia', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Economics', 'MSc Business Administration', 'MSc Data Science', 'MSc Law', 'MSc Management'] },
+                { name: 'University of Venice', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Physics', 'MSc Mathematics', 'MSc Statistics', 'MSc Economics', 'MSc Business Administration', 'MSc Data Science', 'MSc Management', 'MSc Architecture', 'MSc Environmental Science'] }
+            ],
+            'Singapore': [
+                { name: 'National University of Singapore (NUS)', courses: ['MSc Computer Science', 'MSc Artificial Intelligence', 'MSc Machine Learning', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Electrical Engineering', 'MSc Mechanical Engineering', 'MSc Biomedical Engineering', 'MSc Civil Engineering', 'MBA', 'MSc Finance', 'MSc Business Analytics', 'MSc Management', 'MSc Economics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Public Health'] },
+                { name: 'Nanyang Technological University (NTU)', courses: ['MSc Computer Science', 'MSc Artificial Intelligence', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Electrical Engineering', 'MSc Mechanical Engineering', 'MSc Biomedical Engineering', 'MSc Civil Engineering', 'MSc Aerospace Engineering', 'MBA', 'MSc Finance', 'MSc Business Analytics', 'MSc Management', 'MSc Economics', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Statistics', 'MSc Materials Science'] },
+                { name: 'Singapore Management University (SMU)', courses: ['MBA', 'MSc Finance', 'MSc Business Analytics', 'MSc Management', 'MSc Economics', 'MSc Accounting', 'MSc Marketing', 'MSc Computer Science', 'MSc Data Science', 'MSc Information Systems', 'MSc Entrepreneurship', 'MSc International Business', 'MSc Law', 'LLM', 'MSc Supply Chain Management', 'MSc Human Resource Management', 'MSc Operations Research', 'MSc Statistics', 'MSc Applied Finance', 'MSc Wealth Management'] },
+                { name: 'Singapore University of Technology and Design (SUTD)', courses: ['MSc Engineering', 'MSc Computer Science', 'MSc Architecture', 'MSc Design', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Artificial Intelligence', 'MSc Engineering Product Development', 'MSc Information Systems', 'MSc Physics', 'MSc Mathematics', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Civil Engineering', 'MSc Environmental Engineering', 'MSc Robotics', 'MSc Business Analytics', 'MSc Management', 'MSc Innovation', 'MSc Sustainability'] },
+                { name: 'Singapore Institute of Technology (SIT)', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Information Technology', 'MSc Data Science', 'MSc Cybersecurity', 'MSc Software Engineering', 'MSc Mechanical Engineering', 'MSc Electrical Engineering', 'MSc Civil Engineering', 'MSc Chemical Engineering', 'MSc Business Administration', 'MSc Finance', 'MSc Management', 'MSc Hospitality Management', 'MSc Health Sciences', 'MSc Food Technology', 'MSc Pharmaceutical Science', 'MSc Sustainable Infrastructure', 'MSc Digital Communications', 'MSc Project Management'] },
+                { name: 'Temasek Polytechnic', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Information Technology', 'MSc Data Science', 'MSc Business Administration', 'MSc Finance', 'MSc Management', 'MSc Applied Science', 'MSc Design', 'MSc Hospitality Management', 'MSc Environmental Science'] },
+                { name: 'Nanyang Polytechnic', courses: ['MSc Engineering', 'MSc Information Technology', 'MSc Computer Science', 'MSc Data Science', 'MSc Business Administration', 'MSc Chemistry', 'MSc Applied Science', 'MSc Health Sciences', 'MSc Design', 'MSc Finance', 'MSc Management'] },
+                { name: 'Republic Polytechnic', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Information Technology', 'MSc Business Administration', 'MSc Data Science', 'MSc Applied Science', 'MSc Sports Science', 'MSc Health Sciences', 'MSc Design', 'MSc Finance', 'MSc Management'] },
+                { name: 'Ngee Ann Polytechnic', courses: ['MSc Engineering', 'MSc Computer Science', 'MSc Information Technology', 'MSc Business Administration', 'MSc Data Science', 'MSc Finance', 'MSc Design', 'MSc Health Sciences', 'MSc Applied Science', 'MSc Management', 'MSc Environmental Science'] },
+                { name: 'Lasalle College of the Arts', courses: ['MSc Fine Arts', 'MSc Design', 'MSc Film Studies', 'MSc Music', 'MSc Theatre Arts', 'MSc Animation', 'MSc Fashion Design', 'MSc Interior Design', 'MSc Communication Design', 'MSc Creative Writing', 'MSc Art History'] },
+                { name: 'Kaplan Higher Education', courses: ['MBA', 'MSc Business Administration', 'MSc Finance', 'MSc Management', 'MSc Marketing', 'MSc Computer Science', 'MSc Data Science', 'MSc Information Technology', 'MSc Accounting', 'MSc Human Resource Management', 'MSc Project Management'] },
+                { name: 'PSB Academy', courses: ['MSc Computer Science', 'MSc Engineering', 'MSc Business Administration', 'MSc Data Science', 'MSc Finance', 'MSc Management', 'MSc Information Technology', 'MSc Cybersecurity', 'MSc Marketing', 'MSc Accounting', 'MSc Sports Management'] },
+                { name: 'James Cook University Singapore', courses: ['MBA', 'MSc Computer Science', 'MSc Data Science', 'MSc Business Administration', 'MSc Information Technology', 'MSc Cybersecurity', 'MSc Psychology', 'MSc Environmental Science', 'MSc Tourism Management', 'MSc Finance', 'MSc Management'] },
+                { name: 'University of Chicago Booth School', courses: ['MBA', 'MSc Finance', 'MSc Business Analytics', 'MSc Management', 'MSc Economics', 'MSc Accounting', 'MSc Marketing', 'MSc Strategic Management', 'MSc Entrepreneurship', 'MSc Operations Research', 'MSc Leadership'] },
+                { name: 'ESSEC Business School Asia-Pacific', courses: ['MBA', 'MSc Finance', 'MSc Management', 'MSc Business Analytics', 'MSc Marketing', 'MSc International Business', 'MSc Luxury Brand Management', 'MSc Strategy', 'MSc Data Science', 'MSc Entrepreneurship', 'MSc Supply Chain Management'] },
+                { name: 'ERC Institute', courses: ['MSc Business Administration', 'MSc Finance', 'MSc Management', 'MSc Marketing', 'MSc Human Resource Management', 'MSc Accounting', 'MSc Computer Science', 'MSc Information Technology', 'MSc Data Science', 'MSc Project Management', 'MSc International Business'] },
+                { name: 'Acsenda School of Management', courses: ['MBA', 'MSc Management', 'MSc International Business', 'MSc Finance', 'MSc Marketing', 'MSc Human Resource Management', 'MSc Business Administration', 'MSc Project Management', 'MSc Entrepreneurship', 'MSc Strategic Management', 'MSc Leadership'] },
+                { name: 'NUS Enterprise', courses: ['MSc Entrepreneurship', 'MSc Innovation', 'MSc Technology Management', 'MSc Business Analytics', 'MSc Computer Science', 'MSc Data Science', 'MSc Finance', 'MSc Management', 'MSc Venture Creation', 'MSc Digital Business', 'MSc Strategic Innovation'] },
+                { name: 'NTU Research Foundation', courses: ['MSc Engineering', 'MSc Computer Science', 'MSc Data Science', 'MSc Physics', 'MSc Chemistry', 'MSc Mathematics', 'MSc Materials Science', 'MSc Biomedical Engineering', 'MSc Environmental Science', 'MSc Nanotechnology', 'MSc Renewable Energy'] },
+                { name: 'Lee Kuan Yew School of Public Policy', courses: ['MSc Public Policy', 'MSc Public Administration', 'MSc International Relations', 'MSc Governance', 'MSc Economics', 'MSc Development Studies', 'MSc Environmental Policy', 'MSc Health Policy', 'MSc Urban Planning', 'MSc Social Policy', 'MSc Leadership'] }
+            ]
+        };
+
+        const extraUniversityNames = {
+            'USA': ['Cornell University', 'California Institute of Technology', 'University of California, Los Angeles', 'Georgia Institute of Technology', 'University of California, San Diego'],
+            'UK': ['University of Southampton', 'University of Birmingham', 'University of Leeds', 'University of Sheffield', 'University of Exeter'],
+            'Canada': ['Queen\'s University', 'Dalhousie University', 'Concordia University', 'University of Victoria', 'University of Saskatchewan'],
+            'Australia': ['University of Newcastle', 'Deakin University', 'Griffith University', 'La Trobe University', 'Swinburne University of Technology'],
+            'Germany': ['Technical University of Berlin', 'Ludwig Maximilian University of Munich', 'Free University of Berlin', 'University of Freiburg', 'University of Tübingen'],
+            'New Zealand': ['Southern Institute of Technology', 'Whitecliffe College', 'NorthTec', 'Toi Ohomai Institute of Technology', 'The Open Polytechnic of New Zealand'],
+            'Italy': ['University of Florence', 'University of Trento', 'University of Pavia', 'University of Rome Tor Vergata', 'University of Siena']
+        };
+
+        Object.entries(extraUniversityNames).forEach(([country, names]) => {
+            if (!universityData[country] || !Array.isArray(names)) return;
+            names.forEach((name) => {
+                universityData[country].push({ name, courses: [] });
+            });
+        });
+
+        const countrySelect = document.getElementById('preferredCountry');
+        const universitySelect = document.getElementById('preferredUniversity');
+        const courseSelect = document.getElementById('preferredCourse');
+        const universityToggle = document.getElementById('preferredUniversityToggle');
+        const courseToggle = document.getElementById('preferredCourseToggle');
+        const universityMenu = document.getElementById('preferredUniversityMenu');
+        const courseMenu = document.getElementById('preferredCourseMenu');
+        const universityCustomInput = document.getElementById('preferredUniversityCustom');
+        const courseCustomInput = document.getElementById('preferredCourseCustom');
+
+        if (!countrySelect || !universitySelect || !courseSelect || !universityToggle || !courseToggle || !universityMenu || !courseMenu) return;
+
+        const courseThemes = [
+            'Computer Science', 'Artificial Intelligence', 'Machine Learning', 'Data Science', 'Cybersecurity',
+            'Software Engineering', 'Information Technology', 'Information Systems', 'Computer Engineering', 'Computer Networks',
+            'Cloud Computing', 'DevOps', 'Big Data Analytics', 'Database Systems', 'Human Computer Interaction',
+            'Web Development', 'Mobile App Development', 'Game Development', 'Digital Forensics', 'Cryptography',
+            'Electrical Engineering', 'Electronics Engineering', 'Power Systems', 'Control Systems', 'Signal Processing',
+            'Telecommunications', 'Microelectronics', 'Embedded Systems', 'Robotics', 'Mechatronics',
+            'Mechanical Engineering', 'Automotive Engineering', 'Aerospace Engineering', 'Aeronautics', 'Astronautics',
+            'Civil Engineering', 'Structural Engineering', 'Geotechnical Engineering', 'Transportation Engineering', 'Construction Management',
+            'Chemical Engineering', 'Petroleum Engineering', 'Nuclear Engineering', 'Materials Science', 'Nanotechnology',
+            'Biomedical Engineering', 'Biotechnology', 'Bioinformatics', 'Computational Biology', 'Medical Engineering',
+            'Environmental Engineering', 'Environmental Science', 'Climate Science', 'Sustainability', 'Renewable Energy',
+            'Physics', 'Applied Physics', 'Theoretical Physics', 'Astrophysics', 'Quantum Technology',
+            'Mathematics', 'Applied Mathematics', 'Pure Mathematics', 'Statistics', 'Operational Research',
+            'Chemistry', 'Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Analytical Chemistry',
+            'Biochemistry', 'Molecular Biology', 'Cell Biology', 'Genetics', 'Microbiology',
+            'Neuroscience', 'Immunology', 'Pharmacology', 'Physiology', 'Pathology',
+            'Public Health', 'Epidemiology', 'Biostatistics', 'Health Policy', 'Clinical Research',
+            'Business Administration', 'MBA', 'Finance', 'Accounting', 'Economics',
+            'Business Analytics', 'Management', 'Marketing', 'Human Resource Management', 'Supply Chain Management',
+            'Entrepreneurship', 'Project Management', 'Strategic Management', 'International Business', 'Operations Management',
+            'Public Policy', 'Public Administration', 'International Relations', 'Law', 'LLM'
+        ];
+
+        function getCoursePrefix(country) {
+            switch (country) {
+                case 'USA':
+                    return 'MS';
+                case 'UK':
+                case 'Canada':
+                case 'Australia':
+                case 'Germany':
+                case 'New Zealand':
+                case 'Italy':
+                case 'Singapore':
+                    return 'MSc';
+                default:
+                    return 'MSc';
+            }
+        }
+
+        function buildCourseCatalog(country) {
+            const prefix = getCoursePrefix(country);
+            const courses = courseThemes.map(theme => {
+                if (theme === 'MBA' || theme === 'LLM') {
+                    return theme;
+                }
+                return `${prefix} ${theme}`;
+            });
+
+            return courses.slice(0, 100);
+        }
+
+        function toggleCustomInput(inputEl, show) {
+            if (!inputEl) return;
+            inputEl.hidden = !show;
+            inputEl.required = show;
+            if (!show) {
+                inputEl.value = '';
+                inputEl.classList.remove('filled');
+            }
+        }
+
+        function getSelectLabel(selectEl) {
+            const selectedOption = selectEl.options[selectEl.selectedIndex];
+            if (!selectedOption || !selectedOption.value) {
+                return selectEl.dataset.placeholder || selectedOption?.textContent || 'Select';
+            }
+            return selectedOption.textContent;
+        }
+
+        function closeFixedDropdown(menuEl, toggleEl) {
+            if (menuEl) menuEl.hidden = true;
+            if (toggleEl) toggleEl.setAttribute('aria-expanded', 'false');
+        }
+
+        function refreshFixedDropdown(selectEl, toggleEl, menuEl) {
+            if (!selectEl || !toggleEl || !menuEl) return;
+
+            toggleEl.textContent = getSelectLabel(selectEl);
+            toggleEl.disabled = selectEl.disabled;
+
+            menuEl.innerHTML = '';
+            Array.from(selectEl.options).forEach(option => {
+                if (!option.value && option.textContent) {
+                    return;
+                }
+
+                const optionButton = document.createElement('button');
+                optionButton.type = 'button';
+                optionButton.className = 'fixed-dropdown-option';
+                if (option.value === selectEl.value) {
+                    optionButton.classList.add('is-selected');
+                }
+                optionButton.textContent = option.textContent;
+                optionButton.addEventListener('click', () => {
+                    selectEl.value = option.value;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                    closeFixedDropdown(menuEl, toggleEl);
+                });
+                menuEl.appendChild(optionButton);
+            });
+        }
+
+        function bindFixedDropdown(selectEl, toggleEl, menuEl) {
+            refreshFixedDropdown(selectEl, toggleEl, menuEl);
+
+            toggleEl.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (toggleEl.disabled) return;
+
+                const willOpen = menuEl.hidden;
+                closeAllFixedDropdowns();
+                if (willOpen) {
+                    refreshFixedDropdown(selectEl, toggleEl, menuEl);
+                    menuEl.hidden = false;
+                    toggleEl.setAttribute('aria-expanded', 'true');
+                }
+            });
+        }
+
+        function closeAllFixedDropdowns() {
+            closeFixedDropdown(universityMenu, universityToggle);
+            closeFixedDropdown(courseMenu, courseToggle);
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.fixed-dropdown-shell')) {
+                closeAllFixedDropdowns();
+            }
+        });
+
+        bindFixedDropdown(universitySelect, universityToggle, universityMenu);
+        bindFixedDropdown(courseSelect, courseToggle, courseMenu);
+
+        // When country changes, populate universities
+        countrySelect.addEventListener('change', function() {
+            const selectedCountry = this.value;
+            
+            // Clear and disable dependent selects
+            universitySelect.innerHTML = '<option value="">Select University</option>';
+            universitySelect.insertAdjacentHTML('beforeend', '<option value="__custom__">Other / Type your own</option>');
+            courseSelect.innerHTML = '<option value="">Select Course</option>';
+            courseSelect.insertAdjacentHTML('beforeend', '<option value="__custom__">Other / Type your own</option>');
+            universitySelect.disabled = true;
+            courseSelect.disabled = true;
+            toggleCustomInput(universityCustomInput, false);
+            toggleCustomInput(courseCustomInput, false);
+            refreshFixedDropdown(universitySelect, universityToggle, universityMenu);
+            refreshFixedDropdown(courseSelect, courseToggle, courseMenu);
+
+            if (selectedCountry && universityData[selectedCountry]) {
+                // Populate universities
+                universityData[selectedCountry].forEach(uni => {
+                    const option = document.createElement('option');
+                    option.value = uni.name;
+                    option.textContent = uni.name;
+                    universitySelect.appendChild(option);
+                });
+                universitySelect.disabled = false;
+                refreshFixedDropdown(universitySelect, universityToggle, universityMenu);
+            }
+        });
+
+        // When university changes, populate courses
+        universitySelect.addEventListener('change', function() {
+            const selectedCountry = countrySelect.value;
+            const selectedUniversity = this.value;
+            
+            courseSelect.innerHTML = '<option value="">Select Course</option>';
+            courseSelect.insertAdjacentHTML('beforeend', '<option value="__custom__">Other / Type your own</option>');
+            courseSelect.disabled = true;
+            refreshFixedDropdown(courseSelect, courseToggle, courseMenu);
+
+            if (selectedUniversity === '__custom__') {
+                toggleCustomInput(universityCustomInput, true);
+                toggleCustomInput(courseCustomInput, true);
+                courseSelect.disabled = true;
+                refreshFixedDropdown(courseSelect, courseToggle, courseMenu);
+                return;
+            }
+
+            toggleCustomInput(universityCustomInput, false);
+            toggleCustomInput(courseCustomInput, false);
+
+            if (selectedCountry && selectedUniversity && universityData[selectedCountry]) {
+                const courses = buildCourseCatalog(selectedCountry);
+
+                if (courses.length) {
+                    courses.forEach(course => {
+                        const option = document.createElement('option');
+                        option.value = course;
+                        option.textContent = course;
+                        courseSelect.appendChild(option);
+                    });
+                    courseSelect.disabled = false;
+                    refreshFixedDropdown(courseSelect, courseToggle, courseMenu);
+                }
+            }
+        });
+
+        courseSelect.addEventListener('change', function() {
+            if (this.value === '__custom__') {
+                toggleCustomInput(courseCustomInput, true);
+            } else {
+                toggleCustomInput(courseCustomInput, false);
+            }
+            refreshFixedDropdown(courseSelect, courseToggle, courseMenu);
+        });
+
+        // Make selects searchable/filterable with keyboard input
+        function makeSelectSearchable(selectElement) {
+            let searchText = '';
+            let searchTimeout;
+
+            selectElement.addEventListener('keydown', function(e) {
+                clearTimeout(searchTimeout);
+
+                // Allow normal navigation keys
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
+                    searchText = '';
+                    return;
+                }
+
+                // Build search text from typed characters
+                if (e.key.length === 1) {
+                    searchText += e.key.toLowerCase();
+                    e.preventDefault();
+
+                    // Find matching option
+                    const options = Array.from(selectElement.options);
+                    const matchingOption = options.find(opt => 
+                        opt.textContent.toLowerCase().startsWith(searchText) && 
+                        opt.value !== ''
+                    );
+
+                    if (matchingOption) {
+                        selectElement.value = matchingOption.value;
+                    }
+                }
+
+                // Reset search after user stops typing
+                searchTimeout = setTimeout(() => {
+                    searchText = '';
+                }, 500);
+            });
+        }
+
+        // Enable search on university and course selects
+        makeSelectSearchable(universitySelect);
+        makeSelectSearchable(courseSelect);
+
+        // Always start fresh: do not restore any previous country/university/course selection.
+        localStorage.removeItem('studyDestinationCountry');
+        sessionStorage.removeItem('studyDestinationCountry');
+    })();
 </script>
 

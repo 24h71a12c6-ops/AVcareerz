@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study in Turkey - Abroad Vision Careerz</title>
+    <title>Study in Singapore - Abroad Vision Careerz</title>
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
     <link rel="preload" as="image" href="https://res.cloudinary.com/dtorpeosf/image/upload/v1771073160/my_website_images/turkey.jpg">
     <link rel="stylesheet" href="styles.css?v=20260322-1">
@@ -79,11 +79,20 @@
 
 
         /* Root Variables for consistent colors */
+        body {
+            background-color: #fff;
+            background-image:
+                linear-gradient(rgba(0, 33, 71, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 33, 71, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0;
+        }
+
         :root {
-            --dark-blue: #002147;
+            --dark-blue: #20324a;
             --orange: #F9A825;
             --light-gray: #f8f9fa;
-            --text-color: #444;
+            --text-color: #20324a;
         }
 
         .country-hero {
@@ -152,7 +161,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(0, 33, 71, 0.6);
+            background: rgba(0, 0, 0, 0.45);
             /* Navy blue tint for hero */
             z-index: 2;
         }
@@ -216,15 +225,78 @@
 
         .program-tag {
             background: #f0f4f8;
-            color: var(--dark-blue);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            color: var(--text-color);
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
             font-weight: 600;
             border: 1px solid #dce4ec;
+            display: block;
+            width: 100%;
+            min-height: 28px;
+            box-sizing: border-box;
+            line-height: 1.15;
         }
 
-        /* Register Section Fix */
+        .intake-meta {
+            color: var(--orange);
+            font-weight: 800;
+            margin: 6px 0 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .course-toggle {
+            display: block;
+            width: 100%;
+            margin-top: 18px;
+        }
+
+        .course-toggle summary {
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            max-width: 100%;
+            padding: 8px 14px;
+            background: var(--dark-blue);
+            color: #fff;
+            border: 1px solid var(--dark-blue);
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-inline: auto;
+        }
+
+        .course-toggle summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .course-toggle summary:hover {
+            background: var(--dark-blue);
+            color: #fff;
+            border-color: var(--dark-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(32, 48, 64, 0.12);
+        }
+
+        .course-toggle[open] summary {
+            background: var(--dark-blue);
+            color: #fff;
+            border-color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .programs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+            margin-top: 0;
+        }
+
+        /* Old Program Tag Styles */
 
 
         @media (max-width: 992px) {
@@ -296,7 +368,7 @@
                             <li><a href="germany.html">Study in Germany</a></li>
                             <li><a href="newzealand.html">Study in New Zealand</a></li>
                             <li><a href="italy.html">Study in Italy</a></li>
-                            <li><a href="turkey.html">Study in Turkey</a></li>
+                            <li><a href="singapore.html">Study in Singapore</a></li>
                         </ul>
                     </li>
                     <li><a href="visa-services.html">Visa-Services</a></li>
@@ -312,7 +384,7 @@
     <section class="country-hero">
         <div class="hero-content">
             <h1 class="hero-line animate-hero-text">
-                <span>Study</span> <span>in</span> <span>Turkey</span>
+                <span>Study</span> <span>in</span> <span>Singapore</span>
             </h1>
         </div>
     </section>
@@ -324,99 +396,44 @@
         </div>
         </div>
         <section class="why-usa">
-            <h2 class="section-title">Why Study in Turkey</h2>
-            <p>Discover the advantages of studying in Turkey for your career and personal growth.</p>
+            <h2 class="section-title">Why Study in Singapore</h2>
+            <p>Singapore offers world-class education, global opportunities, and a dynamic multicultural environment for international students.</p>
             <div class="cards-container">
                 <div class="card">
                     <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/education-icon.png" alt="">
-                    <h3>High-Quality Education</h3>
-                    <p>Top universities, advanced curriculum, and research opportunities.</p>
+                    <h3>Global University Rankings</h3>
+                    <p>Home to universities consistently ranked in the world's top 20, offering internationally recognized degrees.</p>
                 </div>
                 <div class="card">
                     <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/flexibility-icon.png" alt="">
-                    <h3>Flexible Courses</h3>
-                    <p>Combine majors and minors to match your career goals.</p>
+                    <h3>Excellent Work-Study Balance</h3>
+                    <p>International students can work part-time and gain practical industry experience while studying.</p>
                 </div>
                 <div class="card">
                     <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/research-icon.png" alt="">
-                    <h3>Research Opportunities</h3>
-                    <p>Access to modern labs and innovative projects.</p>
+                    <h3>Cutting-Edge Research</h3>
+                    <p>Access to state-of-the-art facilities and world-leading research opportunities in technology and innovation.</p>
                 </div>
                 <div class="card">
                     <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/career-icon.png" alt="">
                     <h3>Career Opportunities</h3>
-                    <p>Internships, practical experience, and regional industry connections.</p>
+                    <p>Gateway to Asia's biggest job market with strong connections to multinational corporations and startups.</p>
                 </div>
                 <div class="card">
                     <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/diversity-icon.png" alt="">
-                    <h3>Cultural Diversity</h3>
-                    <p>Study in a multicultural environment and grow personally.</p>
+                    <h3>Multicultural Hub</h3>
+                    <p>Study in a diverse, vibrant international community with excellent quality of life and safety.</p>
                 </div>
             </div>
         </section>
 
         <div class="universities-section">
-            <h2 class="section-title">Top Universities in Turkey</h2>
-            <div class="university-card">
-                <h3>Bogazici University</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Istanbul, Marmara Region</p>
-                <p>Prestigious university in Istanbul, known for engineering, natural sciences, and social sciences.</p>
-                <div class="programs">
-                    <span class="program-tag">Engineering</span>
-                    <span class="program-tag">Natural Sciences</span>
-                    <span class="program-tag">Social Sciences</span>
-                    <span class="program-tag">Business</span>
-                </div>
-            </div>
-            <div class="university-card">
-                <h3>Middle East Technical University (METU)</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Ankara, Central Anatolia</p>
-                <p>Leading technical university in Ankara, strong in engineering, architecture, and natural sciences.
-                </p>
-                <div class="programs">
-                    <span class="program-tag">Engineering</span>
-                    <span class="program-tag">Architecture</span>
-                    <span class="program-tag">Natural Sciences</span>
-                    <span class="program-tag">Computer Science</span>
-                </div>
-            </div>
-            <div class="university-card">
-                <h3>Istanbul University</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Istanbul, Marmara Region</p>
-                <p>Historic university offering a wide range of programs in arts, sciences, and law.</p>
-                <div class="programs">
-                    <span class="program-tag">Arts</span>
-                    <span class="program-tag">Sciences</span>
-                    <span class="program-tag">Law</span>
-                    <span class="program-tag">Business</span>
-                </div>
-            </div>
-            <div class="university-card">
-                <h3>Koc University</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Istanbul, Marmara Region</p>
-                <p>Private university in Istanbul, known for business, engineering, and social sciences.</p>
-                <div class="programs">
-                    <span class="program-tag">Business</span>
-                    <span class="program-tag">Engineering</span>
-                    <span class="program-tag">Social Sciences</span>
-                    <span class="program-tag">Computer Science</span>
-                </div>
-            </div>
-            <div class="university-card">
-                <h3>Sabanci University</h3>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> Istanbul, Marmara Region</p>
-                <p>Innovative university with a focus on interdisciplinary education and research.</p>
-                <div class="programs">
-                    <span class="program-tag">Engineering</span>
-                    <span class="program-tag">Natural Sciences</span>
-                    <span class="program-tag">Business</span>
-                    <span class="program-tag">Computer Science</span>
-                </div>
-            </div>
+            <h2 class="section-title">Top 20 Universities in Singapore</h2>
+            <div id="sgUniversitiesList"></div>
         </div>
 
         <div class="register-section">
-            <h2>Ready to Study in Turkey?</h2>
+            <h2>Ready to Study in Singapore?</h2>
             <p>Start your journey today with Abroad Vision Careerz</p>
             <a href="index.html#registration-section" class="register-cta-button">
                 <i class="fas fa-arrow-right"></i> Register Now
@@ -459,7 +476,73 @@
             </div>
         </div>
     </footer>
-    <script src="script.js?v=20260320-1" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const courseCatalog = [
+                'Computer Science', 'Data Science', 'Artificial Intelligence', 'Machine Learning', 'Software Engineering',
+                'Cybersecurity', 'Information Systems', 'Cloud Computing', 'DevOps', 'Computer Networks',
+                'Biomedical Engineering', 'Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Aerospace Engineering',
+                'Materials Science', 'Chemical Engineering', 'Environmental Engineering', 'Robotics', 'Mechatronics',
+                'Biotechnology', 'Bioinformatics', 'Molecular Biology', 'Genetics', 'Neuroscience',
+                'Public Health', 'Nursing', 'Medicine', 'Pharmacy', 'Dentistry',
+                'Business Administration', 'MBA', 'Finance', 'Accounting', 'Marketing',
+                'Economics', 'Management', 'Entrepreneurship', 'Supply Chain Management', 'International Business',
+                'Human Resource Management', 'Operations Research', 'Statistics', 'Mathematics', 'Physics',
+                'Chemistry', 'Biochemistry', 'Applied Mathematics', 'Computational Biology', 'Architecture',
+                'Urban Planning', 'Psychology', 'Sociology', 'Political Science', 'International Relations',
+                'Law', 'Journalism', 'Media Studies', 'Communication', 'Education',
+                'Anthropology', 'History', 'Philosophy', 'Fine Arts', 'Design',
+                'Film Studies', 'Music', 'Theatre Arts', 'Environmental Science', 'Sustainability',
+                'Renewable Energy', 'Geology', 'Geography', 'Astronomy', 'Actuarial Science',
+                'Forensic Science', 'Social Work', 'Library Science', 'Hospitality Management', 'Sports Management',
+                'Public Policy', 'Theoretical Physics', 'Applied Physics'
+            ];
+
+            const universities = [
+                { name: 'National University of Singapore (NUS)', location: 'Kent Ridge, Singapore', description: 'Asia\'s top-ranked university with world-class engineering, business, and medicine programs.' },
+                { name: 'Nanyang Technological University (NTU)', location: 'Jurong, Singapore', description: 'Leading research university known for engineering, business, and technology innovation.' },
+                { name: 'Singapore Management University (SMU)', location: 'Downtown, Singapore', description: 'Premier business school with strong emphasis on entrepreneurship and innovation.' },
+                { name: 'Singapore University of Technology and Design (SUTD)', location: 'Tampines, Singapore', description: 'Specialist university focused on technology, design, and engineering innovation.' },
+                { name: 'Singapore Institute of Technology (SIT)', location: 'Greenview, Singapore', description: 'Applied learning institution specializing in engineering and technology disciplines.' },
+                { name: 'ISCED Level 6 Institutions - Temasek Polytechnic', location: 'Temasek, Singapore', description: 'Premier polytechnic offering technical and vocational education in applied fields.' },
+                { name: 'ISCED Level 6 Institutions - Nanyang Polytechnic', location: 'Ang Mo Kio, Singapore', description: 'Major polytechnic with strengths in engineering, IT, and applied sciences.' },
+                { name: 'ISCED Level 6 Institutions - Republic Polytechnic', location: 'Woodlands, Singapore', description: 'Polytechnic focused on real-world project-based learning and industry partnerships.' },
+                { name: 'ISCED Level 6 Institutions - Ngee Ann Polytechnic', location: 'Clementi, Singapore', description: 'Leading polytechnic offering diverse programs in engineering and business.' },
+                { name: 'ISCED Level 6 Institutions - Lasalle College of the Arts', location: 'Goodman Road, Singapore', description: 'Specialized arts institution known for creative and performing arts programs.' },
+                { name: 'ISCED Level 6 Institutions - Kaplan Higher Education', location: 'Various, Singapore', description: 'Private education provider offering undergraduate and postgraduate programs.' },
+                { name: 'ISCED Level 6 Institutions - PSB Academy', location: 'Multiple Campuses, Singapore', description: 'Established private institution with diverse academic and professional programs.' },
+                { name: 'ISCED Level 6 Institutions - James Cook University Singapore', location: 'Tuas South, Singapore', description: 'Australian university branch campus offering globally recognized degrees.' },
+                { name: 'ISCED Level 6 Institutions - University of Chicago Booth School', location: 'Marina Bay, Singapore', description: 'Prestigious business school with global recognition and executive programs.' },
+                { name: 'ISCED Level 6 Institutions - ESSEC Business School Asia-Pacific', location: 'Marina Bay, Singapore', description: 'French business school with emphasis on international business and management.' },
+                { name: 'ISCED Level 6 Institutions - ERC Institute', location: 'Multiple Locations, Singapore', description: 'Private institution specializing in professional development and technical training.' },
+                { name: 'ISCED Level 6 Institutions - Acsenda School of Management', location: 'Paya Lebar, Singapore', description: 'Canadian institution offering international management and business programs.' },
+                { name: 'ISCED Level 6 Institutions - Nus Enterprise', location: 'Kent Ridge, Singapore', description: 'Innovation ecosystem supporting entrepreneurship and research-based ventures.' },
+                { name: 'ISCED Level 6 Institutions - NTU Research Foundation', location: 'Jurong, Singapore', description: 'Research-focused entity fostering innovation and technology development.' },
+                { name: 'ISCED Level 6 Institutions - Lee Kuan Yew School of Public Policy', location: 'Buona Vista, Singapore', description: 'Graduate school specializing in public policy, governance, and leadership studies.' }
+            ];
+
+            const list = document.getElementById('sgUniversitiesList');
+            if (!list) return;
+
+            const courseMarkup = courseCatalog.map(course => `<span class="program-tag">${course}</span>`).join('');
+
+            list.innerHTML = universities.map((uni) => `
+                <div class="university-card">
+                    <h3>${uni.name}</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> ${uni.location}</p>
+                    <p>${uni.description}</p>
+                    <p class="intake-meta">70+ Courses Available</p>
+                    <details class="course-toggle">
+                        <summary>Check Courses Here</summary>
+                        <div class="programs">
+                            ${courseMarkup}
+                        </div>
+                    </details>
+                </div>
+            `).join('');
+        });
+    </script>
+    <script src="script.js?v=20260514-1" defer></script>
 </body>
 
 </html>
