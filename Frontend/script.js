@@ -431,7 +431,8 @@ const isApplicationCompleted = () => {
     return localStorage.getItem('applicationCompleted') === '1';
 };
 const showApplicationCompletedNotice = () => {
-    window.location.href = 'application-completed.html';
+    // application-completed page removed — use congrats as the final page
+    window.location.href = 'congrats.html';
 };
 const showRegistrationSection = ({ preferLogin = false } = {}) => {
     const sect = document.getElementById('registration-section');
@@ -1247,7 +1248,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (isApplicationCompleted() && !forceOpenRegistration) {
                 e.preventDefault();
-                window.location.href = 'application-completed.html';
+                window.location.href = 'congrats.html';
                 return;
             }
 
@@ -1269,7 +1270,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Special rule: navbar "Register Here"
             if (targetId === 'registration-section') {
                 if (isApplicationCompleted() && !forceOpenRegistration) {
-                    window.location.href = 'application-completed.html';
+                    window.location.href = 'congrats.html';
                     return;
                 }
 
@@ -1355,7 +1356,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 5. REGISTER CTA BUTTONS (Unified behavior across the site)
-    // - Completed user    => application-completed.html
+    // - Completed user    => congrats.html
     // - Registered user   => next-form.html
     // - Not registered    => open signup modal on index, otherwise go to index.html#registration-section
     document.addEventListener('click', (e) => {
@@ -1371,7 +1372,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
         if (isApplicationCompleted()) {
-            window.location.href = 'application-completed.html';
+            window.location.href = 'congrats.html';
             return;
         }
 
@@ -1811,7 +1812,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 e.preventDefault();
                 e.stopPropagation();
                 try { e.stopImmediatePropagation(); } catch { /* ignore */ }
-                window.location.href = 'application-completed.html';
+                window.location.href = 'congrats.html';
             }, true);
         });
     }
@@ -3431,7 +3432,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (alreadyRegistered) {
                     e.preventDefault();
-                    window.location.href = 'application-completed.html';
+                    window.location.href = 'congrats.html';
                 }
             });
 

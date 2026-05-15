@@ -1312,8 +1312,8 @@
                     } catch {
                         // ignore storage failures
                     }
-                    // Go to the canonical completed page
-                    window.location.href = 'application-completed.html';
+                    // Go to the canonical completed page (application-completed removed)
+                    window.location.href = 'congrats.html';
                 } else {
                 const baseMsg = result.error || 'There was a problem submitting your registration. Please try again.';
                 if (Array.isArray(result.missingFields) && result.missingFields.length) {
