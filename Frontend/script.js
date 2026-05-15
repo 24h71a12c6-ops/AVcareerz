@@ -1382,6 +1382,75 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = 'index.html#registration-section';
     });
 
+        // 5.5 GLOBAL CLICK INTERCEPTOR — enforce registration-first flow for any
+        // clickable element (anchors/buttons) so new visitors must register before
+        // accessing CTAs that start application flows. This is intentionally broad
+        // but avoids interfering with forms, modals, and external links.
+        document.addEventListener('click', (evt) => {
+            try {
+                const t = evt.target;
+                if (!(t instanceof Element)) return;
+
+                // Find the actionable element
+                const actionable = t.closest('a, button, input[type="submit"], [role="button"]');
+                if (!actionable) return;
+
+                // Don't intercept clicks inside the registration UI or inside forms
+                if (actionable.closest('#registration-section') || actionable.closest('form') || actionable.closest('.reg-modal')) return;
+
+                // Respect explicit opt-out
+                if (actionable.hasAttribute('data-no-intercept') || actionable.classList.contains('no-intercept')) return;
+
+                // For anchors, ignore mailto/tel/javascript and hash-only links and external sites
+                if (actionable.tagName === 'A') {
+                    const href = (actionable.getAttribute('href') || '').trim();
+                    if (!href) return;
+                    const lower = href.toLowerCase();
+                    if (lower.startsWith('mailto:') || lower.startsWith('tel:') || lower.startsWith('javascript:') || lower.startsWith('#')) return;
+                    if (lower.startsWith('http') && !href.includes(window.location.hostname)) return;
+                }
+
+                // Now enforce flow
+                if (isApplicationCompleted()) {
+                    evt.preventDefault();
+                    showApplicationCompletedNotice();
+                    return;
+                }
+
+                if (!isRegisteredUser()) {
+                    // Prevent navigation and show registration UI. User will continue
+                    // browsing normally after signup; on the next click the app will
+                    // send them to the application form.
+                    evt.preventDefault();
+                    // Open registration modal/section
+                    try {
+                        // If home page, open inline modal; otherwise navigate to index anchor.
+                        const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('/index.html');
+                        if (isHome && typeof openRegModal === 'function') {
+                            openRegModal();
+                        } else if (isHome) {
+                            scrollToSection('registration-section');
+                        } else {
+                            window.location.href = 'index.html#registration-section';
+                        }
+                    } catch {
+                        showRegistrationSection();
+                    }
+                    return;
+                }
+
+                if (isRegisteredUser() && !isApplicationCompleted()) {
+                    // Registered but not completed application: force user to step-2
+                    evt.preventDefault();
+                    window.location.href = 'next-form.html';
+                    return;
+                }
+            } catch (err) {
+                // Non-fatal: do not block normal clicks if interceptor throws
+                console.error('Click interceptor error:', err);
+            }
+        }, { capture: true });
+
     // 6. PHONE INPUT VALIDATION
     const phoneInput = document.getElementById('phone');
     if (phoneInput) {
@@ -2919,9 +2988,13 @@ if (registrationForm) {
                 // Keep section state aligned with current login state.
                 syncRegistrationSectionForAuthState();
 
-                // 4. Direct next step UX: prompt + auto redirect to application form
+                // 4. Direct next step UX: do NOT auto-redirect to application.
+                // Let the user continue browsing after signup; the global click
+                // interceptor below will send them to the application form when
+                // they next click a CTA/button.
                 if (!editMode) {
-                    continueToApplicationForm();
+                    try { sessionStorage.setItem('justRegistered', '1'); } catch {}
+                    showNotification('Registration successful! You can continue browsing — click any CTA to continue your application.', 'success');
                     return;
                 }
 
