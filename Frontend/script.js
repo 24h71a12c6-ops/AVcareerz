@@ -417,8 +417,19 @@ const apiUrl = (path) => {
 })();
 
 // global auth helpers (available everywhere in script)
-const isRegisteredUser = () => !!localStorage.getItem('userEmail');
-const isApplicationCompleted = () => localStorage.getItem('applicationCompleted') === '1';
+const isRegisteredUser = () => {
+    try {
+        if (localStorage.getItem('isRegistered') === 'true') return true;
+    } catch {}
+    return !!localStorage.getItem('userEmail') || localStorage.getItem('hasSignedUp') === '1';
+};
+
+const isApplicationCompleted = () => {
+    try {
+        if (localStorage.getItem('isApplicationDone') === 'true') return true;
+    } catch {}
+    return localStorage.getItem('applicationCompleted') === '1';
+};
 const showApplicationCompletedNotice = () => {
     window.location.href = 'application-completed.html';
 };
@@ -2988,13 +2999,16 @@ if (registrationForm) {
                 // Keep section state aligned with current login state.
                 syncRegistrationSectionForAuthState();
 
-                // 4. Direct next step UX: do NOT auto-redirect to application.
-                // Let the user continue browsing after signup; the global click
-                // interceptor below will send them to the application form when
-                // they next click a CTA/button.
+                // 4. Direct next step UX: Auto-redirect to application form (Step 2)
+                // as requested — mark the user as registered and take them to step 2.
                 if (!editMode) {
+                    try { localStorage.setItem('isRegistered', 'true'); } catch {};
                     try { sessionStorage.setItem('justRegistered', '1'); } catch {}
-                    showNotification('Registration successful! You can continue browsing — click any CTA to continue your application.', 'success');
+                    // Keep older compatibility keys
+                    try { localStorage.setItem('hasSignedUp', '1'); } catch {}
+                    showNotification('Registration successful! Redirecting to application form...', 'success');
+                    // Redirect immediately to application form
+                    setTimeout(() => { window.location.href = 'next-form.html'; }, 350);
                     return;
                 }
 

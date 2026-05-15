@@ -1304,15 +1304,17 @@
             
             const result = await response.json().catch(() => ({}));
             
-            if (response.ok && result.success) {
-                try {
-                    localStorage.setItem('applicationCompleted', '1');
-                    sessionStorage.setItem('applicationCompleted', '1');
-                } catch {
-                    // ignore storage failures
-                }
-                window.location.href = 'congrats.html';
-            } else {
+                if (response.ok && result.success) {
+                    try {
+                        localStorage.setItem('applicationCompleted', '1');
+                        sessionStorage.setItem('applicationCompleted', '1');
+                        localStorage.setItem('isApplicationDone', 'true');
+                    } catch {
+                        // ignore storage failures
+                    }
+                    // Go to the canonical completed page
+                    window.location.href = 'application-completed.html';
+                } else {
                 const baseMsg = result.error || 'There was a problem submitting your registration. Please try again.';
                 if (Array.isArray(result.missingFields) && result.missingFields.length) {
                     successMessage.textContent = `${baseMsg} (Missing: ${result.missingFields.join(', ')})`;
