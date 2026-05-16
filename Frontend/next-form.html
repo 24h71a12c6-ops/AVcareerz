@@ -11,47 +11,16 @@
         html, body { min-height: 100vh; margin: 0; }
 
         body {
-            background-image: none; /* removed navyblue.JPEG per request */
-            background-color: #eaf6fb; /* full-screen light blue background */
+            background-color: #fff;
+            background-image:
+                linear-gradient(rgba(0, 33, 71, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 33, 71, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0;
             overflow-x: hidden;
             position: relative;
         }
 
-        body::before,
-        body::after {
-            content: '';
-            position: fixed;
-            inset: auto;
-            pointer-events: none;
-            border-radius: 999px;
-            z-index: 0;
-            filter: blur(6px);
-        }
-
-        body::before {
-            width: 240px;
-            height: 240px;
-            left: -70px;
-            top: 140px;
-            background: radial-gradient(circle, rgba(249, 168, 37, 0.26) 0%, rgba(249, 168, 37, 0.08) 45%, transparent 72%);
-            animation: driftBlobOne 12s ease-in-out infinite;
-        }
-
-        body::after {
-            width: 100%;
-            height: 100%;
-            left: 0;
-            top: 0;
-            right: auto;
-            bottom: auto;
-            border-radius: 0;
-            filter: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect x='14' y='14' width='18' height='18' rx='3' fill='none' stroke='%23002147' stroke-opacity='.20' stroke-width='2'/%3E%3Cpath d='M19 24l4 4 8-10' fill='none' stroke='%23F9A825' stroke-opacity='.50' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-            background-size: 56px 56px;
-            background-repeat: repeat;
-            animation: moveCheckboxBg 20s linear infinite;
-            opacity: 0.18;
-        }
         /* Custom checkbox styling for declaration */
         .custom-checkbox {
             display: flex;
@@ -82,7 +51,7 @@
             text-transform: uppercase;
             font-size: 0.9rem;
             letter-spacing: 0.5px;
-            color: #ffffff;
+            color: #20324a;
         }
 
         #declarationError {
@@ -116,7 +85,7 @@
         }
 
         .form-section-header p {
-            color: #7F8C8D;
+            color: #5f6d7a;
             font-size: 1.1rem;
         }
 
@@ -156,11 +125,12 @@
         .next-form-wrapper {
             max-width: 1100px;
             margin: 0 auto;
-            background: linear-gradient(90deg, #00152e 0%, #002147 100%); /* navy gradient */
-            color: #ffffff; /* white text inside the box */
+            background: #002147;
+            color: #ffffff;
             padding: 28px;
             border-radius: 18px;
-            box-shadow: 0 18px 34px rgba(2, 24, 45, 0.12);
+            box-shadow: 0 18px 34px rgba(2, 24, 45, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             position: relative;
             transform: translateY(0);
             animation: wrapperEntrance 0.85s cubic-bezier(0.16, 1, 0.3, 1), wrapperFloat 7s ease-in-out infinite 0.9s;
@@ -180,7 +150,7 @@
             top: 16px;
             bottom: 16px;
             width: 8px;
-            background: #ffffff;
+            background: #F9A825;
             border-radius: 8px;
             opacity: 0.95;
         }
@@ -191,14 +161,14 @@
         }
 
         .next-form-card {
-            background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)); /* subtle overlay on navy */
+            background: rgba(255,255,255,0.04);
             padding: 1.5rem 2rem;
             border-radius: 12px;
-            box-shadow: 0 12px 30px rgba(2,24,45,0.12);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
             animation: fadeInUp 0.6s ease-out, softGlow 6s ease-in-out infinite;
             position: relative;
             color: #ffffff;
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
         }
 
         .form-info {
@@ -256,7 +226,7 @@
         .form-group label {
             display: block;
             margin-bottom: 0.7rem;
-            color: rgba(255,255,255,0.95);
+            color: rgba(255,255,255,0.96);
             font-weight: 600;
             font-size: 0.85rem;
             text-transform: uppercase;
@@ -272,13 +242,13 @@
         .form-group textarea {
             width: 100%;
             padding: 0.75rem;
-            background: #ffffff;
-            border: 2px solid #ffffff;
+            background: #002147;
+            border: 2px solid #002147;
             border-radius: 10px;
             font-size: 0.95rem;
             font-family: inherit;
             transition: all 0.3s ease;
-            color: #002147;
+            color: #ffffff;
         }
 
         .form-group select {
@@ -297,8 +267,8 @@
         .form-group select:disabled {
             cursor: not-allowed;
             opacity: 1;
-            background: #ffffff;
-            color: #002147;
+            background: #002147;
+            color: #ffffff;
         }
 
         .form-group input:focus,
@@ -314,7 +284,7 @@
         .form-group input::placeholder,
         .form-group textarea::placeholder,
         .form-group select::placeholder {
-            color: rgba(0, 33, 71, 0.5);
+            color: rgba(255, 255, 255, 0.82);
             opacity: 1;
         }
 
@@ -322,15 +292,15 @@
         .form-group input.filled,
         .form-group textarea.filled,
         .form-group select.filled {
-            background: #ffffff;
-            border: 2px solid #ffffff;
-            color: #002147 !important;
+            background: #002147;
+            border: 2px solid #002147;
+            color: #ffffff !important;
             box-shadow: none;
         }
 
         /* Standardize ALL Select fields */
         .form-group select {
-            color: #002147;
+            color: #ffffff;
         }
 
         .form-group select option {
@@ -351,10 +321,10 @@
             width: 100%;
             min-height: 52px;
             padding: 0.75rem 3rem 0.75rem 0.9rem;
-            background: #ffffff;
-            border: 2px solid #ffffff;
+            background: #002147;
+            border: 2px solid #002147;
             border-radius: 10px;
-            color: #002147;
+            color: #ffffff;
             font-size: 0.95rem;
             font-family: inherit;
             text-align: left;
@@ -363,13 +333,19 @@
             box-sizing: border-box;
         }
 
+        .fixed-dropdown-toggle.filled {
+            background: #002147;
+            border-color: #002147;
+            color: #ffffff;
+        }
+
         .fixed-dropdown-toggle::after {
             content: '\25BE';
             position: absolute;
             right: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #002147;
+            color: inherit;
             font-size: 0.75rem;
             pointer-events: none;
         }
@@ -377,8 +353,8 @@
         .fixed-dropdown-toggle:disabled {
             cursor: not-allowed;
             opacity: 1;
-            background: #ffffff;
-            color: #002147;
+            background: #002147;
+            color: #ffffff;
         }
 
         .fixed-dropdown-menu {
@@ -449,9 +425,9 @@
 
         .custom-entry {
             margin-top: 0.75rem;
-            background: #ffffff;
-            color: #002147;
-            border: 1px solid #e0e0e0;
+            background: #002147;
+            color: #ffffff;
+            border: 1px solid #002147;
             border-radius: 10px;
             padding: 0.75rem;
             width: 100%;
@@ -462,7 +438,7 @@
         }
 
         .custom-entry::placeholder {
-            color: rgba(0, 33, 71, 0.4);
+            color: rgba(255, 255, 255, 0.78);
         }
 
         .custom-entry:focus {
@@ -474,9 +450,15 @@
             transform: translateY(-2px);
         }
 
+        .custom-entry.filled {
+            background: #002147;
+            color: #ffffff;
+            border-color: #002147;
+        }
+
         h2.personal-info-title {
             background: linear-gradient(90deg, #F0F4FF, #ffffff);
-            color: #002147 !important;
+            color: #ffffff !important;
             padding: 12px 25px;
             border-radius: 50px;
             display: inline-block;
@@ -539,9 +521,9 @@
             max-width: 100%;
             padding: 0.9rem 1rem;
             margin: 1.5rem auto 0;
-            background: #ffffff;
-            color: #002147;
-            border: 2px solid #ffffff;
+            background: #002147;
+            color: #ffffff;
+            border: 2px solid #002147;
             border-radius: 12px;
             font-size: 0.95rem;
             font-weight: 700;
@@ -556,10 +538,10 @@
         }
 
         .submit-btn:hover, .btn-primary:hover {
-            background: #f0f4ff;
-            border-color: #f0f4ff;
-            color: #002147;
-            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2), 0 12px 26px rgba(0, 0, 0, 0.15);
+            background: #1b3558;
+            border-color: #1b3558;
+            color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 33, 71, 0.15), 0 12px 26px rgba(0, 0, 0, 0.12);
             transform: translateY(-2px);
         }
 
@@ -1791,6 +1773,7 @@
 
             toggleEl.textContent = getSelectLabel(selectEl);
             toggleEl.disabled = selectEl.disabled;
+            toggleEl.classList.toggle('filled', !!selectEl.value && selectEl.value !== '__custom__');
 
             menuEl.innerHTML = '';
             Array.from(selectEl.options).forEach(option => {
@@ -1918,6 +1901,18 @@
                 toggleCustomInput(courseCustomInput, false);
             }
             refreshFixedDropdown(courseSelect, courseToggle, courseMenu);
+        });
+
+        [universityCustomInput, courseCustomInput].forEach((inputEl) => {
+            if (!inputEl) return;
+
+            const syncCustomFilled = () => {
+                inputEl.classList.toggle('filled', String(inputEl.value || '').trim() !== '');
+            };
+
+            syncCustomFilled();
+            inputEl.addEventListener('input', syncCustomFilled);
+            inputEl.addEventListener('change', syncCustomFilled);
         });
 
         // Make selects searchable/filterable with keyboard input

@@ -771,6 +771,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         bindMobileSubmenu();
 
+        // Make sure selecting a country link always navigates and closes the menu.
+        navMenu.querySelectorAll('.dropdown-menu a').forEach((link) => {
+            if (link.__countryLinkBound) return;
+            link.__countryLinkBound = true;
+
+            link.addEventListener('click', () => {
+                const href = (link.getAttribute('href') || '').trim();
+                if (!href) return;
+
+                setOpen(false);
+                window.location.href = href;
+            });
+        });
+
         // If viewport becomes desktop, close the mobile menu
         window.addEventListener('resize', () => {
             syncDesktopNavMode();
@@ -1363,7 +1377,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const target = e.target;
         if (!(target instanceof Element)) return;
 
-        const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn, .prep-text, .register-scroll, .promo-cta');
+        const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn, .prep-text, .register-scroll, .promo-cta, .btn-primary-massive');
         if (!cta) return;
 
         // Always prevent default for CTA buttons
