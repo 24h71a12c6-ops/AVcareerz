@@ -436,6 +436,7 @@ const apiUrl = (path) => {
 // global auth helpers (available everywhere in script)
 const isRegisteredUser = () => {
     try {
+        if (sessionStorage.getItem('isSessionActive') !== 'true') return false;
         if (localStorage.getItem('isRegistered') === 'true') return true;
     } catch {}
     return !!localStorage.getItem('userEmail') || localStorage.getItem('hasSignedUp') === '1';
@@ -443,6 +444,7 @@ const isRegisteredUser = () => {
 
 const isApplicationCompleted = () => {
     try {
+        if (sessionStorage.getItem('isSessionActive') !== 'true') return false;
         if (!isRegisteredUser()) return false;
         if (localStorage.getItem('isApplicationDone') === 'true') return true;
         if (localStorage.getItem('applicationCompleted') === '1') return true;
@@ -1155,6 +1157,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 sessionStorage.removeItem('registrationData');
                 sessionStorage.removeItem('nextFormData');
                 sessionStorage.removeItem('currentUserId');
+                sessionStorage.removeItem('isSessionActive');
                 safeNotify('Logged out successfully.', 'success');
             } catch {
                 // ignore
@@ -3041,6 +3044,9 @@ if (registrationForm) {
                 // Success message
                 showNotification(editMode ? 'Details updated successfully!' : 'Registration successful!', 'success');
 
+                // Activate browser session
+                sessionStorage.setItem('isSessionActive', 'true');
+
                 if (data.userId) {
                     sessionStorage.setItem('currentUserId', data.userId);
                     localStorage.setItem('currentUserId', data.userId);
@@ -3236,6 +3242,10 @@ if (registrationForm) {
 
             if (response.ok && data.success) {
                 showNotification('Login successful!', 'success');
+                
+                // Activate browser session
+                sessionStorage.setItem('isSessionActive', 'true');
+
                 if (data.userId) {
                     sessionStorage.setItem('currentUserId', data.userId);
                     localStorage.setItem('currentUserId', data.userId);
@@ -3247,11 +3257,18 @@ if (registrationForm) {
                     localStorage.setItem('applicationCompleted', '1');
                     localStorage.setItem('isApplicationDone', 'true');
                     sessionStorage.setItem('applicationCompleted', '1');
+                    
+                    // Redirect to Already Registered page
+                    setTimeout(() => { window.location.href = 'already-registered.html'; }, 350);
                 } else {
                     localStorage.removeItem('applicationCompleted');
                     localStorage.removeItem('isApplicationDone');
                     sessionStorage.removeItem('applicationCompleted');
+                    
+                    // Redirect to Step 2 form
+                    setTimeout(() => { window.location.href = 'next-form.html'; }, 350);
                 }
+                return;
                 // hide the registration panel now that user is authenticated
                 hideRegistrationSection();
                 syncRegistrationSectionForAuthState();

@@ -1073,8 +1073,10 @@
    <br>
    
    <script>
-    // Redirect immediately if they have already completed the application forms
-    if (localStorage.getItem('isApplicationDone') === 'true' || localStorage.getItem('applicationCompleted') === '1') {
+    // Redirect immediately if not logged in/registered in the current session
+    if (sessionStorage.getItem('isSessionActive') !== 'true') {
+        window.location.href = 'index.html';
+    } else if (localStorage.getItem('isApplicationDone') === 'true' || localStorage.getItem('applicationCompleted') === '1') {
         window.location.href = 'already-registered.html';
     }
 
