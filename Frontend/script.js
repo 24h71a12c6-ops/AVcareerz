@@ -1,6 +1,23 @@
 // Splash Screen functionality
 // NOTE: Using `load` waits for ALL images to download, which can make the site feel "stuck"
 // on slower connections. We show the splash quickly and remove it on DOM ready.
+(() => {
+    try {
+        const canonicalHost = 'abroad-vision-carrerz-heg3.onrender.com';
+        const host = String(window.location.hostname || '').toLowerCase();
+
+        // If someone opens the separate Render frontend service, forward them to the
+        // backend service that serves the same frontend + API in one place.
+        if (host.endsWith('.onrender.com') && host !== canonicalHost) {
+            const target = `${window.location.protocol}//${canonicalHost}${window.location.pathname}${window.location.search}${window.location.hash}`;
+            window.location.replace(target);
+            return;
+        }
+    } catch {
+        // ignore canonical redirect issues; continue loading the page normally
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
