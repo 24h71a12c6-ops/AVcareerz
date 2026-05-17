@@ -7240,7 +7240,7 @@ footer {
 }
 
 .visa-services-page .country-hero {
-    background: linear-gradient(120deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('images/visa.JPEG') center/cover no-repeat;
+    background: linear-gradient(120deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1773251881/my_website_images/visa.JPEG') center/cover no-repeat;
 }
 
 .country-hero::after {
@@ -7557,7 +7557,7 @@ footer {
     position: relative;
     padding: 60px 0;
     text-align: center;
-    background-image: url('images/world.JPEG');
+    background-image: url('https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1773251881/my_website_images/world.JPEG');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
