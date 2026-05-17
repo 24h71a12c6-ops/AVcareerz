@@ -1292,7 +1292,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // After signup, the "Register Here" CTA should open the next form.
-            // Keep pre-signup behavior (scroll/open modal) for new users.
+            // Keep pre-signup behavior (open modal) for new users on any page.
             // In edit mode, allow opening the registration modal even for registered users.
             if (href === '#registration-section' && isRegisteredUser() && !forceOpenRegistration) {
                 e.preventDefault();
@@ -1318,15 +1318,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                if (!isHomePage) {
-                    window.location.href = 'index.html#registration-section';
-                    return;
-                }
-
-                // Home page => open the signup modal (not just scroll)
+                // Open the signup modal on the current page whenever possible.
                 if (typeof openRegModal === 'function') {
                     openRegModal();
                 } else {
+                    if (!isHomePage) {
+                        window.location.href = 'index.html#registration-section';
+                        return;
+                    }
                     scrollToSection('registration-section');
                 }
                 return;
@@ -1424,12 +1423,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            if (typeof openRegModal === 'function') {
+                openRegModal();
+                return;
+            }
+
             if (isHomePage) {
-                if (typeof openRegModal === 'function') {
-                    openRegModal();
-                } else {
-                    scrollToSection('registration-section');
-                }
+                scrollToSection('registration-section');
                 return;
             }
 
@@ -1503,9 +1503,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     evt.preventDefault();
                     // Open registration modal/section
                     try {
-                        // If home page, open inline modal; otherwise navigate to index anchor.
+                        // If the modal exists on this page, open it in-place.
                         const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('/index.html');
-                        if (isHome && typeof openRegModal === 'function') {
+                        if (typeof openRegModal === 'function') {
                             openRegModal();
                         } else if (isHome) {
                             scrollToSection('registration-section');
@@ -1672,11 +1672,58 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 8. REGISTRATION POPUP AFTER 7 SECONDS (with blurred background)
-    const regSection = document.getElementById('registration-section');
-    const regOverlay = document.getElementById('regModalOverlay');
-    const regCloseBtn = document.getElementById('regModalClose');
+    (async () => {
+        let modalInjected = false;
 
-    if (regSection && regOverlay) {
+        try {
+            const hasSection = !!document.getElementById('registration-section');
+            const hasOverlay = !!document.getElementById('regModalOverlay');
+
+            if (!hasSection || !hasOverlay) {
+                const response = await fetch('index.html', { cache: 'force-cache' });
+                if (response.ok) {
+                    const html = await response.text();
+                    const parsed = new DOMParser().parseFromString(html, 'text/html');
+                    const templateSection = parsed.getElementById('registration-section');
+                    const templateOverlay = parsed.getElementById('regModalOverlay');
+
+                    if (templateSection && !hasSection) {
+                        const cloneSection = templateSection.cloneNode(true);
+                        cloneSection.hidden = true;
+                        document.body.appendChild(cloneSection);
+                        modalInjected = true;
+                    }
+
+                    if (templateOverlay && !hasOverlay) {
+                        const cloneOverlay = templateOverlay.cloneNode(true);
+                        cloneOverlay.hidden = true;
+                        document.body.appendChild(cloneOverlay);
+                        modalInjected = true;
+                    }
+                }
+            }
+        } catch {
+            // ignore fetch / parsing issues; pages with their own modal still work
+        }
+
+        const regSection = document.getElementById('registration-section');
+        const regOverlay = document.getElementById('regModalOverlay');
+        const regCloseBtn = document.getElementById('regModalClose');
+
+        if (regSection && regOverlay) {
+        // Allow forcing the registration modal via URL for testing/debugging.
+        // Examples: index.html?openReg=1  or index.html#openReg
+        try {
+            const qs = typeof URLSearchParams !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+            const wantOpen = (qs && qs.get('openReg') === '1') || window.location.hash === '#openReg';
+            if (wantOpen) {
+                try { sessionStorage.setItem('forceOpenRegistration', '1'); } catch {}
+                // normalize to the canonical anchor so existing handlers pick it up
+                try { window.location.hash = '#registration-section'; } catch {}
+            }
+        } catch {
+            // ignore parsing errors
+        }
         const OPEN_DELAY_MS = 7000;
         let regModalTimer = null;
         let lastScrollY = 0;
@@ -1700,6 +1747,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (isModalOpen()) return;
+
+            if (modalInjected) {
+                regSection.hidden = false;
+                regOverlay.hidden = false;
+                regSection.style.removeProperty('display');
+                regOverlay.style.removeProperty('display');
+            }
 
             if (regModalTimer) {
                 clearTimeout(regModalTimer);
@@ -1803,6 +1857,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!isModalOpen()) return;
             document.body.classList.remove('reg-modal-open');
             regOverlay.hidden = true;
+            if (modalInjected) {
+                regSection.hidden = true;
+            }
 
             if (regModalTimer) {
                 clearTimeout(regModalTimer);
@@ -1813,7 +1870,7 @@ document.addEventListener("DOMContentLoaded", function () {
             window.scrollTo({ top: lastScrollY, behavior: 'auto' });
         };
 
-        // Open after 7 seconds on page load ONLY if user is not logged in.
+        // Open after 7 seconds on the home page ONLY if user is not logged in.
         // If user arrived from another page with #registration-section, handle that immediately.
         if (window.location.hash === '#registration-section') {
             if (shouldRedirectToCongrats()) {
@@ -1835,7 +1892,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 regModalTimer = null;
                 openRegModal();
             }
-        } else {
+        } else if (isHomePagePath()) {
             // Auto-open timer only for logged-out users
             if (!isRegisteredUser() && !isApplicationCompleted()) {
                 regModalTimer = setTimeout(openRegModal, OPEN_DELAY_MS);
@@ -1843,6 +1900,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Logged in: ensure section is hidden
                 hideRegistrationSection();
             }
+        } else if (modalInjected) {
+            // On non-home pages, keep the injected modal hidden until a CTA opens it.
+            hideRegistrationSection();
         }
 
         // Close interactions
@@ -1881,6 +1941,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { e.stopImmediatePropagation(); } catch { /* ignore */ }
                 window.location.href = 'congrats.html';
             }, true);
+        });
+        }
+    })();
+
+    // CLEAR SESSION BUTTON — allow users to reset stored data without DevTools
+    const clearSessionBtn = document.getElementById('clearSessionBtn');
+    if (clearSessionBtn) {
+        clearSessionBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Confirm before clearing
+            if (!confirm('This will clear your stored session data and reload the page. Continue?')) {
+                return;
+            }
+            
+            // Clear all storage
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+                console.log('✅ Session cleared successfully');
+            } catch (err) {
+                console.error('Error clearing session:', err);
+            }
+            
+            // Reload the page
+            window.location.reload();
         });
     }
 });

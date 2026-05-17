@@ -2598,6 +2598,28 @@ html body {
     color: #F9A825;
 }
 
+/* Clear Session Button — allows users to reset stored data without DevTools */
+.clear-session-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.clear-session-btn:hover {
+    color: #F9A825;
+    opacity: 0.8;
+}
+
+.clear-session-btn:active {
+    transform: scale(0.98);
+}
+
 .services-premium-section .desc-main {
     color: #dddddd;
     text-align: center;
