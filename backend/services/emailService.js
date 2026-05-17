@@ -218,7 +218,7 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
 };
 
 // Admin notification email
-const sendAdminEmail = async (user) => {
+const sendAdminEmail = async (user, customSubject = null) => {
   try {
     const rows = [];
     const titleize = (key) => String(key || '')
@@ -231,7 +231,12 @@ const sendAdminEmail = async (user) => {
     const addRow = (label, value) => {
       const v = String(value ?? '').trim();
       if (!v) return;
-      rows.push(`<p><strong>${escapeHtml(label)}:</strong> ${escapeHtml(v)}</p>`);
+      rows.push(`
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 12px 16px; font-weight: 600; color: #4a5568; width: 40%; vertical-align: top;">${escapeHtml(label)}</td>
+          <td style="padding: 12px 16px; color: #1a202c; vertical-align: top;">${escapeHtml(v)}</td>
+        </tr>
+      `);
     };
 
     Object.entries(user || {}).forEach(([key, value]) => {
@@ -244,10 +249,47 @@ const sendAdminEmail = async (user) => {
     });
 
     const html = `
-      <h2>New Student Submission</h2>
-      ${rows.length ? rows.join('\n') : '<p>(No details provided)</p>'}
-      <hr>
-      <p>Please follow up with this student.</p>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f7fafc; margin: 0; padding: 20px; }
+          .container { max-width: 650px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
+          .header { background: #002147; color: #ffffff; padding: 24px; text-align: center; }
+          .header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+          .content { padding: 32px 24px; }
+          .table-wrapper { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-top: 16px; }
+          table { width: 100%; border-collapse: collapse; text-align: left; }
+          .footer { background: #f7fafc; padding: 16px; text-align: center; font-size: 12px; color: #718096; border-top: 1px solid #e2e8f0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>New Student Submission</h1>
+          </div>
+          <div class="content">
+            <p style="margin-top: 0; margin-bottom: 20px; color: #4a5568; font-size: 16px; line-height: 1.5;">
+              A new student has submitted their detailed information. Below are the details of the submission:
+            </p>
+            <div class="table-wrapper">
+              <table>
+                <tbody>
+                  ${rows.length ? rows.join('\n') : '<tr><td colspan="2" style="padding: 16px; text-align: center; color: #a0aec0;">No details provided</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top: 24px; margin-bottom: 0; font-size: 14px; color: #718096; text-align: center;">
+              Please follow up with this student as soon as possible.
+            </p>
+          </div>
+          <div class="footer">
+            Guiding Futures Beyond Borders &bull; Abroad Vision Careerz System
+          </div>
+        </div>
+      </body>
+      </html>
     `;
 
     const adminList = getAdminEmailList();
@@ -258,7 +300,7 @@ const sendAdminEmail = async (user) => {
 
     await sendEmail({
       to: adminTo,
-      subject: `New Registration: ${user?.fullName || user?.email || 'New Lead'}`,
+      subject: customSubject || `New Registration: ${user?.fullName || user?.email || 'New Lead'}`,
       html
     });
     return true;

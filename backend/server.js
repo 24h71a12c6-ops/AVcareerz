@@ -524,7 +524,7 @@ app.post(
 
       try {
         const { sendAdminEmail, sendConfirmationEmail } = require('./services/emailService');
-        // notify admins about the completed second form
+        // notify admins about the completed second form with ALL details
         await sendAdminEmail({
           userId,
           fullName,
@@ -549,20 +549,11 @@ app.post(
           levelOfStudy,
           coaching,
           preferredIntake,
-          desiredCourse: desiredCourse || 'Not Selected',
           budgetRange,
           fundingSource,
           loanStatus,
           declaration: declarationFlag ? 'Yes' : 'No'
-        });
-
-        await sendLeadNotificationEmail({
-          name: fullName,
-          email,
-          phone,
-          subject: 'New Application Detail - Step 2',
-          message: 'Application form submission'
-        });
+        }, 'New Application Detail - Step 2');
 
         // send confirmation to the user as well
         const customMsg = 'Thank you for submitting your academic and personal details. Our team will review your application and be in touch soon.';
