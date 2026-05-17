@@ -430,9 +430,34 @@ const isApplicationCompleted = () => {
     } catch {}
     return localStorage.getItem('applicationCompleted') === '1';
 };
+// Decide whether we should redirect users to congrats page.
+// Require both the application-completed flag and that the lastUserEmail
+// matches the current userEmail to avoid stale flags from redirecting others.
+const shouldRedirectToCongrats = () => {
+    try {
+        if (!isApplicationCompleted()) return false;
+        const lastEmail = (localStorage.getItem('lastUserEmail') || '').trim();
+        const currentEmail = (localStorage.getItem('userEmail') || '').trim();
+        if (lastEmail && currentEmail && lastEmail === currentEmail) return true;
+        return false;
+    } catch {
+        return false;
+    }
+};
 const showApplicationCompletedNotice = () => {
-    // application-completed page removed — use congrats as the final page
-    window.location.href = 'congrats.html';
+    // Only redirect to congrats when it is appropriate for the current user.
+    if (shouldRedirectToCongrats()) {
+        window.location.href = 'congrats.html';
+        return;
+    }
+    // If flags are stale (different user completed earlier), clear them so the
+    // site no longer forces redirects for subsequent visitors on this browser.
+    try {
+        localStorage.removeItem('applicationCompleted');
+        localStorage.removeItem('isApplicationDone');
+    } catch {
+        // ignore storage errors
+    }
 };
 const showRegistrationSection = ({ preferLogin = false } = {}) => {
     const sect = document.getElementById('registration-section');
@@ -1260,7 +1285,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1';
 
-            if (isApplicationCompleted() && !forceOpenRegistration) {
+            if (shouldRedirectToCongrats() && !forceOpenRegistration) {
                 e.preventDefault();
                 window.location.href = 'congrats.html';
                 return;
@@ -1283,7 +1308,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Special rule: navbar "Register Here"
             if (targetId === 'registration-section') {
-                if (isApplicationCompleted() && !forceOpenRegistration) {
+                if (shouldRedirectToCongrats() && !forceOpenRegistration) {
                     window.location.href = 'congrats.html';
                     return;
                 }
@@ -1413,7 +1438,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Non-registration CTAs: keep the original flow enforcement
-        if (isApplicationCompleted()) {
+        if (shouldRedirectToCongrats()) {
             window.location.href = 'congrats.html';
             return;
         }
@@ -1465,7 +1490,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // Now enforce flow
-                if (isApplicationCompleted()) {
+                if (shouldRedirectToCongrats()) {
                     evt.preventDefault();
                     showApplicationCompletedNotice();
                     return;
@@ -1663,7 +1688,7 @@ document.addEventListener("DOMContentLoaded", function () {
         regOverlay.hidden = true;
 
         openRegModal = () => {
-            if (isApplicationCompleted()) {
+            if (shouldRedirectToCongrats()) {
                 showApplicationCompletedNotice();
                 return;
             }
@@ -1791,7 +1816,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Open after 7 seconds on page load ONLY if user is not logged in.
         // If user arrived from another page with #registration-section, handle that immediately.
         if (window.location.hash === '#registration-section') {
-            if (isApplicationCompleted()) {
+            if (shouldRedirectToCongrats()) {
                 showApplicationCompletedNotice();
                 try {
                     window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
@@ -1850,7 +1875,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // If the application is already completed, keep users from reopening the form via any register link/button.
         document.querySelectorAll('a[href*="registration-section"]').forEach((el) => {
             el.addEventListener('click', (e) => {
-                if (!isApplicationCompleted()) return;
+                if (!shouldRedirectToCongrats()) return;
                 e.preventDefault();
                 e.stopPropagation();
                 try { e.stopImmediatePropagation(); } catch { /* ignore */ }
