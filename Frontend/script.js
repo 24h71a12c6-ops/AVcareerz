@@ -1939,26 +1939,45 @@ document.addEventListener("DOMContentLoaded", function () {
             if (e.key === 'Escape') closeRegModal();
         });
 
-        // If user clicks a direct "Register Here" link before timer, don't double-open
-        document.querySelectorAll('a[href="#registration-section"], .register-scroll').forEach((el) => {
-            el.addEventListener('click', () => {
+        // Intercept clicks on all registration links/buttons to open the modal on the current page
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('a, button');
+            if (!btn) return;
+
+            const href = btn.getAttribute('href') || '';
+            const hasRegClass = btn.classList.contains('register-scroll') || 
+                                btn.classList.contains('register-cta-button') || 
+                                btn.classList.contains('get-assistance-btn') || 
+                                btn.classList.contains('btn-primary-massive') || 
+                                btn.classList.contains('promo-cta');
+
+            if (href === '#registration-section' || 
+                href === 'index.html#registration-section' || 
+                href.endsWith('#registration-section') || 
+                hasRegClass) {
+                
+                // If the application is already completed, redirect to congrats.html
+                if (shouldRedirectToCongrats()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try { e.stopImmediatePropagation(); } catch { /* ignore */ }
+                    window.location.href = 'congrats.html';
+                    return; 
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Clear the auto-open timer if it exists so it doesn't double-open
                 if (regModalTimer) {
                     clearTimeout(regModalTimer);
                     regModalTimer = null;
                 }
-            }, { once: true });
-        });
 
-        // If the application is already completed, keep users from reopening the form via any register link/button.
-        document.querySelectorAll('a[href*="registration-section"]').forEach((el) => {
-            el.addEventListener('click', (e) => {
-                if (!shouldRedirectToCongrats()) return;
-                e.preventDefault();
-                e.stopPropagation();
-                try { e.stopImmediatePropagation(); } catch { /* ignore */ }
-                window.location.href = 'congrats.html';
-            }, true);
-        });
+                // Open the modal on the current page!
+                openRegModal();
+            }
+        }, true);
         }
     })();
 
