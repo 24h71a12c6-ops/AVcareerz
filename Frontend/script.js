@@ -1529,6 +1529,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     const lower = href.toLowerCase();
                     if (lower.startsWith('mailto:') || lower.startsWith('tel:') || lower.startsWith('javascript:') || lower.startsWith('#')) return;
                     if (lower.startsWith('http') && !href.includes(window.location.hostname)) return;
+
+                    // Exclude informational pages from registration blocks! Let guests read them.
+                    const cleanPath = lower.split('?')[0].split('#')[0];
+                    const allowedPages = [
+                        'index.html', 'usa.html', 'uk.html', 'canada.html', 
+                        'australia.html', 'germany.html', 'newzealand.html', 
+                        'italy.html', 'singapore.html', 'visa-services.html', 
+                        'congrats.html', 'already-registered.html', '/'
+                    ];
+                    const isAllowed = allowedPages.some(page => cleanPath.endsWith(page) || cleanPath === page);
+                    if (isAllowed) return; // Do not intercept clicks to allowed pages
                 }
 
                 if (!isRegisteredUser()) {
