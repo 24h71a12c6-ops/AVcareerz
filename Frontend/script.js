@@ -3440,11 +3440,12 @@ document.addEventListener('DOMContentLoaded', () => {
             registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
 
             registerBtn.addEventListener('click', (e) => {
-                const alreadyRegistered = !!localStorage.getItem('userEmail')
-                    || localStorage.getItem('hasSignedUp') === '1'
-                    || localStorage.getItem('applicationCompleted') === '1';
+                // Prefer existing helpers to determine state; avoid redirecting immediately
+                // if the session was just registered (prevents accidental navigation loops).
+                const justRegistered = sessionStorage.getItem('justRegistered') === '1';
+                const alreadyRegistered = isRegisteredUser() || isApplicationCompleted();
 
-                if (alreadyRegistered) {
+                if (alreadyRegistered && !justRegistered) {
                     e.preventDefault();
                     window.location.href = 'congrats.html';
                 }
