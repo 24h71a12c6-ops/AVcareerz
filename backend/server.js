@@ -368,6 +368,7 @@ app.post(
         yearOfPassing,
         cgpa,
         preferredCountry,
+        visaStatus,
         visaType,
         visaNumber,
         levelOfStudy,
@@ -396,6 +397,7 @@ app.post(
       passport_id = asText(passport_id);
       highestQualification = asText(highestQualification);
       preferredCountry = asText(preferredCountry);
+      visaStatus = asText(visaStatus);
       visaType = asText(visaType);
       levelOfStudy = asText(levelOfStudy);
       preferredIntake = asText(preferredIntake);
@@ -446,9 +448,11 @@ app.post(
       if (!email) missingFields.push('email');
       if (!city) missingFields.push('city');
       if (!passportStatus) missingFields.push('passportStatus');
-      if (!passport_id) missingFields.push('passport_id');
+      if (passportStatus === 'Valid' && !passport_id) missingFields.push('passport_id');
       if (!highestQualification) missingFields.push('highestQualification');
       if (!preferredCountry) missingFields.push('preferredCountry');
+      if (!visaStatus) missingFields.push('visaStatus');
+      if (visaStatus === 'Valid' && !visaNumber) missingFields.push('visaNumber');
       if (!visaType) missingFields.push('visaType');
       if (!levelOfStudy) missingFields.push('levelOfStudy');
       if (!preferredIntake) missingFields.push('preferredIntake');
@@ -495,7 +499,7 @@ app.post(
         email,
         city,
         passportStatus,
-        passport_id: passport_id,
+        passport_id: passportStatus === 'Valid' ? passport_id : null,
         highestQualification,
         currentCourse: currentCourse || null,
         specialization: specialization || null,
@@ -503,8 +507,9 @@ app.post(
         yearOfPassing: yearOfPassing || null,
         cgpa: cgpa || null,
         preferredCountry,
+        visaStatus,
         visaType,
-        visaNumber: visaNumber || null,
+        visaNumber: visaStatus === 'Valid' ? visaNumber : null,
         levelOfStudy,
         coaching: coaching || null,
         preferredIntake,
@@ -531,7 +536,7 @@ app.post(
           email,
           city,
           passportStatus,
-          passport_id,
+          passportNumber: passportStatus === 'Valid' ? passport_id : 'Not Available / Applied',
           highestQualification,
           currentCourse,
           specialization,
@@ -539,8 +544,9 @@ app.post(
           yearOfPassing,
           cgpa,
           preferredCountry,
+          visaStatus,
           visaType,
-          visaNumber,
+          visaNumber: visaStatus === 'Valid' ? visaNumber : 'Not Available / Applied',
           levelOfStudy,
           coaching,
           preferredIntake,

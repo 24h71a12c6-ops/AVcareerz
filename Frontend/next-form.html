@@ -794,8 +794,8 @@
                                 </select>
                             </div>
                                 <div class="form-group">
-                                    <label for="passport_id">Passport Number <span class="required">*</span></label>
-                                    <input type="text" id="passport_id" name="passport_id" required placeholder="Format: A1234567" autocomplete="off" minlength="8" maxlength="8" pattern="[A-Za-z][0-9]{7}" title="Passport number must be 1 letter followed by 7 digits (e.g., A1234567)">
+                                    <label for="passport_id" id="passportLabel">Passport Number <span class="required">*</span></label>
+                                    <input type="text" id="passport_id" name="passport_id" placeholder="Format: A1234567" autocomplete="off" minlength="8" maxlength="8" pattern="[A-Za-z][0-9]{7}" title="Passport number must be 1 letter followed by 7 digits (e.g., A1234567)">
                                 </div>
                         </div>
 
@@ -926,6 +926,15 @@
                                 <input type="text" id="preferredCourseCustom" name="preferredCourseCustom" class="custom-entry" placeholder="Type your preferred course" autocomplete="off" hidden>
                             </div>
                             <div class="form-group">
+                                <label for="visaStatus">Visa Status <span class="required">*</span></label>
+                                <select id="visaStatus" name="visaStatus" required>
+                                    <option value="">Select Visa Status</option>
+                                    <option value="Valid">Valid</option>
+                                    <option value="Applied">Applied</option>
+                                    <option value="Not Applied">Not Applied</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="visaType">Visa Type <span class="required">*</span></label>
                                 <select id="visaType" name="visaType" required>
                                     <option value="">Select Visa Type</option>
@@ -938,7 +947,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="visaNumber">Visa Number</label>
+                                <label for="visaNumber" id="visaNumberLabel">Visa Number</label>
                                 <input type="text" id="visaNumber" name="visaNumber" placeholder="Enter Visa Number (if available)" autocomplete="off">
                             </div>
                             <div class="form-group">
@@ -1081,6 +1090,11 @@
         normalizePassportInput();
         const passportValue = String(passportInput.value || '').trim();
 
+        if (!passportInput.required && !passportValue) {
+            passportInput.setCustomValidity('');
+            return true;
+        }
+
         if (!passportValue) {
             passportInput.setCustomValidity('Passport number is required.');
             return false;
@@ -1120,6 +1134,31 @@
         return true;
     }
 
+    const passportStatus = document.getElementById('passportStatus');
+    const passportLabel = document.getElementById('passportLabel');
+
+    function updatePassportRequired() {
+        if (!passportStatus || !passportInput) return;
+        if (passportStatus.value === 'Valid') {
+            passportInput.required = true;
+            if (passportLabel) {
+                passportLabel.innerHTML = 'Passport Number <span class="required">*</span>';
+            }
+        } else {
+            passportInput.required = false;
+            passportInput.value = '';
+            passportInput.setCustomValidity('');
+            if (passportLabel) {
+                passportLabel.innerHTML = 'Passport Number (if available)';
+            }
+        }
+    }
+
+    if (passportStatus) {
+        passportStatus.addEventListener('change', updatePassportRequired);
+        updatePassportRequired();
+    }
+
     if (passportInput) {
         passportInput.addEventListener('input', function () {
             normalizePassportInput();
@@ -1130,6 +1169,32 @@
             validatePassportInput();
             passportInput.reportValidity();
         });
+    }
+
+    const visaStatus = document.getElementById('visaStatus');
+    const visaNumberInput = document.getElementById('visaNumber');
+    const visaNumberLabel = document.getElementById('visaNumberLabel');
+
+    function updateVisaRequired() {
+        if (!visaStatus || !visaNumberInput) return;
+        if (visaStatus.value === 'Valid') {
+            visaNumberInput.required = true;
+            if (visaNumberLabel) {
+                visaNumberLabel.innerHTML = 'Visa Number <span class="required">*</span>';
+            }
+        } else {
+            visaNumberInput.required = false;
+            visaNumberInput.value = '';
+            visaNumberInput.setCustomValidity('');
+            if (visaNumberLabel) {
+                visaNumberLabel.innerHTML = 'Visa Number (if available)';
+            }
+        }
+    }
+
+    if (visaStatus) {
+        visaStatus.addEventListener('change', updateVisaRequired);
+        updateVisaRequired();
     }
 
     if (phoneInput) {
