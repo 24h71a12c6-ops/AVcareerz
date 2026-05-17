@@ -80,6 +80,13 @@ const sendInstantAlert = async (type, payload = {}) => {
 
     const headerColor = type === 'partial' ? '#eab308' : '#002147';
 
+    let alertDescription = 'An alert has been triggered from the system. Details are provided below:';
+    if (type === 'partial') {
+      alertDescription = '<span style="color: #d97706; font-weight: 700; font-size: 16px; display: block; margin-bottom: 8px;">⚠️ Note to Counselor:</span> This student started filling in their details on the registration form but **exited or closed the page WITHOUT clicking the final submit button**. Please follow up with them on WhatsApp or call to help them complete their application.';
+    } else if (type === 'login') {
+      alertDescription = 'An existing student has logged back into their account.';
+    }
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -107,8 +114,8 @@ const sendInstantAlert = async (type, payload = {}) => {
             <h1>${emoji} ${statusText}</h1>
           </div>
           <div class="content">
-            <p style="margin-top: 0; color: #4a5568; font-size: 15px; line-height: 1.5;">
-              An alert has been triggered from the system. Details are provided below:
+            <p style="margin-top: 0; color: #4a5568; font-size: 15px; line-height: 1.6;">
+              ${alertDescription}
             </p>
             <div class="table-wrapper">
               <table>
