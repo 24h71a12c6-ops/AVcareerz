@@ -562,16 +562,77 @@
         }
 
         @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
+            .next-form-page {
+                padding-top: 76px; /* tighter spacing under navbar on mobile */
+            }
+
+            .next-form-wrapper {
+                padding: 20px 16px;
+                border-radius: 12px;
+                margin: 0 8px; /* slight margin to avoid screen edge touching */
+            }
+
+            .next-form-wrapper::before {
+                display: none; /* hide the absolute stripe to maximize input space */
             }
 
             .next-form-card {
-                padding: 1.5rem;
+                padding: 1.25rem 1rem;
+                border-radius: 10px;
+            }
+
+            .form-section-header {
+                margin-bottom: 1.5rem;
             }
 
             .form-section-header h1 {
-                font-size: 1.8rem;
+                font-size: 1.75rem;
+            }
+
+            .form-section-header p {
+                font-size: 0.95rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .form-group.full-width {
+                grid-column: auto; /* reset grid span for mobile column stacking */
+            }
+
+            h2.personal-info-title {
+                font-size: 1.15rem;
+                padding: 10px 16px;
+                display: block;
+                text-align: center;
+                border-radius: 20px;
+                margin-bottom: 15px;
+            }
+
+            .custom-checkbox {
+                align-items: flex-start;
+                justify-content: flex-start;
+                gap: 0.75rem;
+                margin: 1rem 0;
+            }
+
+            .custom-checkbox input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                margin-top: 2px;
+            }
+
+            .custom-checkbox label {
+                font-size: 0.82rem;
+                line-height: 1.3;
+                text-align: left;
+            }
+
+            .submit-btn, .btn-primary {
+                width: 100%; /* full width on mobile screens for better accessibility */
+                margin-top: 1rem;
             }
         }
 
