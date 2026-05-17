@@ -476,15 +476,8 @@ const isApplicationCompleted = () => {
 // Require both the application-completed flag and that the lastUserEmail
 // matches the current userEmail to avoid stale flags from redirecting others.
 const shouldRedirectToCongrats = () => {
-    try {
-        if (!isApplicationCompleted()) return false;
-        const lastEmail = (localStorage.getItem('lastUserEmail') || '').trim();
-        const currentEmail = (localStorage.getItem('userEmail') || '').trim();
-        if (lastEmail && currentEmail && lastEmail === currentEmail) return true;
-        return false;
-    } catch {
-        return false;
-    }
+    // Prevent automatic redirects to congrats.html except right after registration submission
+    return false;
 };
 const showApplicationCompletedNotice = () => {
     // Only redirect to congrats when it is appropriate for the current user.
@@ -1430,9 +1423,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 5. REGISTER CTA BUTTONS (Unified behavior across the site)
-    // - Completed user    => congrats.html
-    // - Registered user   => next-form.html
-    // - Not registered    => open signup modal on index, otherwise go to index.html#registration-section
+    // Intercept only when one of the specific registration/consultation CTAs is clicked.
     document.addEventListener('click', (e) => {
         const target = e.target;
         if (!(target instanceof Element)) return;
@@ -1440,7 +1431,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn, .prep-text, .register-scroll, .promo-cta, .btn-primary-massive');
         if (!cta) return;
 
-        // Always prevent default for CTA buttons
+        // Always prevent default for these specific CTA buttons
         e.preventDefault();
 
         // If the user has already completed both forms, show the Already Registered page!
@@ -1451,130 +1442,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
-        // If this is explicitly a registration CTA (nav 'Register Here' links, buttons that
-        // target the registration section), prefer opening the registration UI rather than
-        // immediately redirecting to congrats. This avoids blocking developers/testers who
-        // may have stale localStorage flags.
-        const href = (cta.getAttribute && cta.getAttribute('href')) || '';
-        const isRegistrationCTA = cta.classList.contains('register-scroll') || href.includes('#registration-section');
-
-        if (isRegistrationCTA) {
-            // If the user is registered, go to next-form; otherwise open registration UI.
-            if (isRegisteredUser()) {
-                window.location.href = 'next-form.html';
-                return;
-            }
-
-            if (typeof openRegModal === 'function') {
-                openRegModal();
-                return;
-            }
-
-            if (isHomePage) {
-                scrollToSection('registration-section');
-                return;
-            }
-
-            window.location.href = 'index.html#registration-section';
-            return;
-        }
-
-        // Non-registration CTAs: keep the original flow enforcement
-        if (shouldRedirectToCongrats()) {
-            window.location.href = 'congrats.html';
-            return;
-        }
-
+        // If the user is registered (Step 1 complete), go to next-form (Step 2).
         if (isRegisteredUser()) {
             window.location.href = 'next-form.html';
             return;
         }
 
-        if (isHomePage) {
-            if (typeof openRegModal === 'function') {
-                openRegModal();
-            } else {
-                scrollToSection('registration-section');
-            }
+        // Not registered: Show Step 1 registration modal or section.
+        if (typeof openRegModal === 'function') {
+            openRegModal();
             return;
         }
 
-        // Not registered + not on home page => ensure user lands on the signup modal.
+        if (isHomePage) {
+            scrollToSection('registration-section');
+            return;
+        }
+
         window.location.href = 'index.html#registration-section';
     });
 
-        // 5.5 GLOBAL CLICK INTERCEPTOR — enforce registration-first flow for any
-        // clickable element (anchors/buttons) so new visitors must register before
-        // accessing CTAs that start application flows. This is intentionally broad
-        // but avoids interfering with forms, modals, and external links.
-        document.addEventListener('click', (evt) => {
-            try {
-                const t = evt.target;
-                if (!(t instanceof Element)) return;
-
-                // Find the actionable element
-                const actionable = t.closest('a, button, input[type="submit"], [role="button"]');
-                if (!actionable) return;
-
-                // Don't intercept clicks inside the registration UI or inside forms
-                if (actionable.closest('#registration-section') || actionable.closest('form') || actionable.closest('.reg-modal')) return;
-
-                // Respect explicit opt-out
-                if (actionable.hasAttribute('data-no-intercept') || actionable.classList.contains('no-intercept')) return;
-
-                // For anchors, ignore mailto/tel/javascript and hash-only links and external sites
-                if (actionable.tagName === 'A') {
-                    const href = (actionable.getAttribute('href') || '').trim();
-                    if (!href) return;
-                    const lower = href.toLowerCase();
-                    if (lower.startsWith('mailto:') || lower.startsWith('tel:') || lower.startsWith('javascript:') || lower.startsWith('#')) return;
-                    if (lower.startsWith('http') && !href.includes(window.location.hostname)) return;
-
-                    // Exclude informational pages from registration blocks! Let guests read them.
-                    const cleanPath = lower.split('?')[0].split('#')[0];
-                    const allowedPages = [
-                        'index.html', 'usa.html', 'uk.html', 'canada.html', 
-                        'australia.html', 'germany.html', 'newzealand.html', 
-                        'italy.html', 'singapore.html', 'visa-services.html', 
-                        'congrats.html', 'already-registered.html', '/'
-                    ];
-                    const isAllowed = allowedPages.some(page => cleanPath.endsWith(page) || cleanPath === page);
-                    if (isAllowed) return; // Do not intercept clicks to allowed pages
-                }
-
-                if (!isRegisteredUser()) {
-                    // Prevent navigation and show registration UI. User will continue
-                    // browsing normally after signup; on the next click the app will
-                    // send them to the application form.
-                    evt.preventDefault();
-                    // Open registration modal/section
-                    try {
-                        // If the modal exists on this page, open it in-place.
-                        const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('/index.html');
-                        if (typeof openRegModal === 'function') {
-                            openRegModal();
-                        } else if (isHome) {
-                            scrollToSection('registration-section');
-                        } else {
-                            window.location.href = 'index.html#registration-section';
-                        }
-                    } catch {
-                        showRegistrationSection();
-                    }
-                    return;
-                }
-
-                if (isRegisteredUser() && !isApplicationCompleted()) {
-                    // Registered but not completed application: force user to step-2
-                    evt.preventDefault();
-                    window.location.href = 'next-form.html';
-                    return;
-                }
-            } catch (err) {
-                // Non-fatal: do not block normal clicks if interceptor throws
-                console.error('Click interceptor error:', err);
-            }
-        }, { capture: true });
 
     // 6. PHONE INPUT VALIDATION
     const phoneInput = document.getElementById('phone');
@@ -1985,12 +1872,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 href.endsWith('#registration-section') || 
                 hasRegClass) {
                 
-                // If the application is already completed, redirect to congrats.html
-                if (shouldRedirectToCongrats()) {
+                // If the application is already completed, redirect to already-registered.html
+                if (isApplicationCompleted()) {
                     e.preventDefault();
                     e.stopPropagation();
                     try { e.stopImmediatePropagation(); } catch { /* ignore */ }
-                    window.location.href = 'congrats.html';
+                    window.location.href = 'already-registered.html';
                     return; 
                 }
 

@@ -1410,8 +1410,13 @@
         submitBtn.disabled = true;
 
         try {
-            // Send data to Node.js backend as FormData (for file uploads)
-            const response = await fetch(apiUrl('/api/register-step2'), {
+            // Prevent re-submission if user already completed both forms
+            if (isApplicationCompleted()) {
+                window.location.href = 'already-registered.html';
+                return;
+            }
+            // Existing submission logic follows
+
                 method: 'POST',
                 body: formData
             });
