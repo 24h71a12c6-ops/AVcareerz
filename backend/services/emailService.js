@@ -82,7 +82,8 @@ const sendLoginCodeEmail = async (userEmail, code) => {
 
 // Lead / registration inquiry email for admin inbox
 const sendLeadNotificationEmail = async ({ name, email, phone, message, subject } = {}) => {
-  const receiverEmail = String(process.env.LEAD_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'abroadvisioncareerz@gmail.com').trim();
+  // Prefer explicit LEAD_RECEIVER_EMAIL or ADMIN_EMAIL; fallback to the known admin inbox.
+  const receiverEmail = String(process.env.LEAD_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'abroadvisioncarrerz@gmail.com').trim();
   const safeName = escapeHtml(name || 'New Lead');
   const safeEmail = escapeHtml(email || 'N/A');
   const safePhone = escapeHtml(phone || 'N/A');
@@ -108,6 +109,15 @@ const sendLeadNotificationEmail = async ({ name, email, phone, message, subject 
     subject: subject || `New Lead: ${name || 'Unknown'} - avcareerz`,
     html
   });
+};
+
+// Improve visibility: log when emails are successfully queued/sent (helps render logs)
+const _logEmailSend = (info, meta = {}) => {
+  try {
+    console.log('Email send result:', typeof info === 'object' ? JSON.stringify(info).slice(0, 500) : String(info), meta);
+  } catch (e) {
+    console.log('Email send result (raw):', info, meta);
+  }
 };
 
 // helper to parse admin addresses from env
