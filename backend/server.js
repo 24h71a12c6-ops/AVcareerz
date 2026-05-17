@@ -178,14 +178,7 @@ app.post('/api/register', async (req, res) => {
 
     // 3. Send Emails
     try {
-      const { sendAdminEmail, sendConfirmationEmail } = require('./services/emailService');
-      
-      await sendAdminEmail({
-        userId: userId, // Corrected here
-        fullName,
-        email,
-        phone
-      });
+      const { sendConfirmationEmail } = require('./services/emailService');
 
       await sendLeadNotificationEmail({
         name: fullName,
@@ -210,14 +203,6 @@ app.post('/api/register', async (req, res) => {
     } catch (emailError) {
       console.error('Email error (signup):', emailError);
     }
-
-    // Instant sync alert for successful signup
-    sendInstantAlert('signup', {
-      fullName,
-      email,
-      phone,
-      source: 'Sign-up Success'
-    });
 
     // FIXED: userId: userId ani pampali (data[0].id kadu)
     return res.status(201).json({ 
