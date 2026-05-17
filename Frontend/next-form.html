@@ -941,8 +941,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="visaType">Visa Type <span class="required">*</span></label>
-                                <select id="visaType" name="visaType" required>
+                                <label for="visaType" id="visaTypeLabel">Visa Type <span class="required">*</span></label>
+                                <select id="visaType" name="visaType">
                                     <option value="">Select Visa Type</option>
                                     <option value="Student">Student Visa</option>
                                     <option value="Tourist">Tourist Visa</option>
@@ -953,8 +953,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="visaNumber" id="visaNumberLabel">Visa Number</label>
-                                <input type="text" id="visaNumber" name="visaNumber" placeholder="Enter Visa Number (if available)" autocomplete="off">
+                                <label for="visaNumber" id="visaNumberLabel">Visa Number <span class="required">*</span></label>
+                                <input type="text" id="visaNumber" name="visaNumber" placeholder="Format: V12345678 (8 to 15 chars)" autocomplete="off" minlength="8" maxlength="15" pattern="[A-Za-z0-9]{8,15}" title="Visa number must be between 8 and 15 alphanumeric characters (letters/digits, e.g. V12345678)">
                             </div>
                             <div class="form-group">
                                 <label for="levelOfStudy">Intended Level of Study <span class="required">*</span></label>
@@ -979,10 +979,7 @@
                                 <label for="preferredIntake">Preferred Intake & Year <span class="required">*</span></label>
                                 <input type="text" id="preferredIntake" name="preferredIntake" required autocomplete="off">
                             </div>
-                            <div class="form-group">
-                                <label for="desiredCourse">Desired Course/Field <span class="required">*</span></label>
-                                <input type="text" id="desiredCourse" name="desiredCourse" required placeholder="e.g., MS in Computer Science, MBA, MBBS, etc." autocomplete="off">
-                            </div>
+
                             <div class="form-group">
                                 <label for="budgetRange">Budget Range (in INR/USD)</label>
                                 <select id="budgetRange" name="budgetRange">
@@ -1178,22 +1175,65 @@
     }
 
     const visaStatus = document.getElementById('visaStatus');
+    const visaTypeSelect = document.getElementById('visaType');
+    const visaTypeLabel = document.getElementById('visaTypeLabel');
     const visaNumberInput = document.getElementById('visaNumber');
     const visaNumberLabel = document.getElementById('visaNumberLabel');
+    const VISA_REGEX = /^[A-Za-z0-9]{8,15}$/;
+
+    function normalizeVisaNumberInput() {
+        if (!visaNumberInput) return;
+        visaNumberInput.value = String(visaNumberInput.value || '').toUpperCase().replace(/\s+/g, '');
+    }
+
+    function validateVisaNumberInput() {
+        if (!visaNumberInput) return true;
+
+        normalizeVisaNumberInput();
+        const visaValue = String(visaNumberInput.value || '').trim();
+
+        if (!visaNumberInput.required && !visaValue) {
+            visaNumberInput.setCustomValidity('');
+            return true;
+        }
+
+        if (!visaValue) {
+            visaNumberInput.setCustomValidity('Visa number is required.');
+            return false;
+        }
+
+        if (!VISA_REGEX.test(visaValue)) {
+            visaNumberInput.setCustomValidity('Visa number must be 8 to 15 alphanumeric characters (e.g. V12345678).');
+            return false;
+        }
+
+        visaNumberInput.setCustomValidity('');
+        return true;
+    }
 
     function updateVisaRequired() {
-        if (!visaStatus || !visaNumberInput) return;
-        if (visaStatus.value === 'Valid') {
+        if (!visaStatus || !visaNumberInput || !visaTypeSelect) return;
+        const status = visaStatus.value;
+        if (status === 'Valid' || status === 'Applied') {
             visaNumberInput.required = true;
+            visaTypeSelect.required = true;
             if (visaNumberLabel) {
                 visaNumberLabel.innerHTML = 'Visa Number <span class="required">*</span>';
+            }
+            if (visaTypeLabel) {
+                visaTypeLabel.innerHTML = 'Visa Type <span class="required">*</span>';
             }
         } else {
             visaNumberInput.required = false;
             visaNumberInput.value = '';
             visaNumberInput.setCustomValidity('');
+            visaTypeSelect.required = false;
+            visaTypeSelect.value = '';
             if (visaNumberLabel) {
                 visaNumberLabel.innerHTML = 'Visa Number (if available)';
+            }
+            if (visaTypeLabel) {
+                visaTypeLabel.innerHTML = 'Visa Type';
             }
         }
     }
@@ -1201,6 +1241,18 @@
     if (visaStatus) {
         visaStatus.addEventListener('change', updateVisaRequired);
         updateVisaRequired();
+    }
+
+    if (visaNumberInput) {
+        visaNumberInput.addEventListener('input', function () {
+            normalizeVisaNumberInput();
+            validateVisaNumberInput();
+        });
+
+        visaNumberInput.addEventListener('blur', function () {
+            validateVisaNumberInput();
+            visaNumberInput.reportValidity();
+        });
     }
 
     if (phoneInput) {
@@ -1246,6 +1298,14 @@
         if (!validatePhoneInput()) {
             phoneInput.reportValidity();
             successMessage.textContent = 'Please enter a valid 10-digit phone number.';
+            successMessage.style.color = '#ef4444';
+            successMessage.style.display = 'block';
+            return;
+        }
+
+        if (!validateVisaNumberInput()) {
+            visaNumberInput.reportValidity();
+            successMessage.textContent = 'Please enter a valid Visa Number (8 to 15 alphanumeric characters).';
             successMessage.style.color = '#ef4444';
             successMessage.style.display = 'block';
             return;
