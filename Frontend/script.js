@@ -3146,9 +3146,13 @@ if (registrationForm) {
                     try { sessionStorage.setItem('justRegistered', '1'); } catch {}
                     // Keep older compatibility keys
                     try { localStorage.setItem('hasSignedUp', '1'); } catch {}
-                    showNotification('Registration successful! Redirecting to application form...', 'success');
-                    // Redirect immediately to application form
-                    setTimeout(() => { window.location.href = 'next-form.html'; }, 350);
+                    showNotification('Registration successful!', 'success');
+                    
+                    // Force hide registration section after signup
+                    setTimeout(() => {
+                        hideRegistrationSection();
+                        syncRegistrationSectionForAuthState();
+                    }, 100);
                     return;
                 }
 
@@ -3257,17 +3261,24 @@ if (registrationForm) {
                     localStorage.setItem('applicationCompleted', '1');
                     localStorage.setItem('isApplicationDone', 'true');
                     sessionStorage.setItem('applicationCompleted', '1');
-                    
-                    // Redirect to Already Registered page
-                    setTimeout(() => { window.location.href = 'already-registered.html'; }, 350);
                 } else {
                     localStorage.removeItem('applicationCompleted');
                     localStorage.removeItem('isApplicationDone');
                     sessionStorage.removeItem('applicationCompleted');
-                    
-                    // Redirect to Step 2 form
-                    setTimeout(() => { window.location.href = 'next-form.html'; }, 350);
                 }
+
+                // Force close registration/login modal
+                const closeBtn = document.getElementById('regModalClose');
+                if (document.body.classList.contains('reg-modal-open') && closeBtn) {
+                    closeBtn.click();
+                } else if (typeof closeRegModal === 'function') {
+                    closeRegModal();
+                }
+
+                setTimeout(() => {
+                    hideRegistrationSection();
+                    syncRegistrationSectionForAuthState();
+                }, 100);
                 return;
                 // hide the registration panel now that user is authenticated
                 hideRegistrationSection();
