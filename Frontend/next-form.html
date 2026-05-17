@@ -185,7 +185,7 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 1.5rem;
         }
 
@@ -217,6 +217,9 @@
 
         .form-group {
             margin-bottom: 1.5rem;
+            min-width: 0;
+            position: relative;
+            width: 100%;
         }
 
         .form-group.full-width {
@@ -240,7 +243,10 @@
         .form-group input,
         .form-group select,
         .form-group textarea {
+            box-sizing: border-box;
             width: 100%;
+            max-width: 100%;
+            min-width: 0;
             padding: 0.75rem;
             background: #002147;
             border: 2px solid #002147;
@@ -261,7 +267,7 @@
             background-repeat: no-repeat;
             background-position: right 1rem center;
             background-size: 14px 14px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23002147'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
         }
 
         .form-group select:disabled {
