@@ -20,8 +20,19 @@ loadEnv(path.join(__dirname, '.env'), { override: !(isRender || isProduction) })
 const db = require('./config/firebaseClient');
 const { sendLeadNotificationEmail } = require('./services/emailService');
 
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Dynamically mirror the requesting origin to satisfy credentialed requests
+    if (!origin) return callback(null, true);
+    callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+};
+
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const PORT = process.env.PORT || 10000;
@@ -97,7 +108,7 @@ async function initializeDatabase() {
 initializeDatabase();
 
 // --- MIDDLEWARES ---
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
