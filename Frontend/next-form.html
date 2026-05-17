@@ -1921,6 +1921,10 @@
         function bindFixedDropdown(selectEl, toggleEl, menuEl) {
             refreshFixedDropdown(selectEl, toggleEl, menuEl);
 
+            selectEl.addEventListener('change', () => {
+                refreshFixedDropdown(selectEl, toggleEl, menuEl);
+            });
+
             toggleEl.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (toggleEl.disabled) return;
@@ -2036,47 +2040,50 @@
             inputEl.addEventListener('change', syncCustomFilled);
         });
 
-        // Make selects searchable/filterable with keyboard input
-        function makeSelectSearchable(selectElement) {
+        // Make selects searchable/filterable with keyboard input on the custom toggle button
+        function makeSelectSearchable(toggleEl, selectEl) {
             let searchText = '';
             let searchTimeout;
 
-            selectElement.addEventListener('keydown', function(e) {
-                clearTimeout(searchTimeout);
+            toggleEl.addEventListener('keydown', function(e) {
+                if (toggleEl.disabled) return;
 
-                // Allow normal navigation keys
-                if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
+                // Ignore control, command, alt keys, or normal navigation keys
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === 'Tab' || e.ctrlKey || e.metaKey || e.altKey) {
                     searchText = '';
                     return;
                 }
 
                 // Build search text from typed characters
                 if (e.key.length === 1) {
+                    clearTimeout(searchTimeout);
                     searchText += e.key.toLowerCase();
                     e.preventDefault();
 
                     // Find matching option
-                    const options = Array.from(selectElement.options);
+                    const options = Array.from(selectEl.options);
                     const matchingOption = options.find(opt => 
-                        opt.textContent.toLowerCase().startsWith(searchText) && 
-                        opt.value !== ''
+                        opt.textContent.toLowerCase().includes(searchText) && 
+                        opt.value !== '' &&
+                        opt.value !== '__custom__'
                     );
 
                     if (matchingOption) {
-                        selectElement.value = matchingOption.value;
+                        selectEl.value = matchingOption.value;
+                        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
                     }
-                }
 
-                // Reset search after user stops typing
-                searchTimeout = setTimeout(() => {
-                    searchText = '';
-                }, 500);
+                    // Reset search after user stops typing
+                    searchTimeout = setTimeout(() => {
+                        searchText = '';
+                    }, 800);
+                }
             });
         }
 
         // Enable search on university and course selects
-        makeSelectSearchable(universitySelect);
-        makeSelectSearchable(courseSelect);
+        makeSelectSearchable(universityToggle, universitySelect);
+        makeSelectSearchable(courseToggle, courseSelect);
 
         // Always start fresh: do not restore any previous country/university/course selection.
         localStorage.removeItem('studyDestinationCountry');
