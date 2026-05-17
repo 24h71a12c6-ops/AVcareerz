@@ -1413,7 +1413,8 @@
 
         try {
             // Prevent re-submission if user already completed both forms
-            if (isApplicationCompleted()) {
+            const isCompleted = localStorage.getItem('isApplicationDone') === 'true' || localStorage.getItem('applicationCompleted') === '1';
+            if (isCompleted) {
                 window.location.href = 'already-registered.html';
                 return;
             }
@@ -1447,6 +1448,7 @@
                 successMessage.style.display = 'block';
             }
         } catch (err) {
+            console.error('Submission error:', err);
             successMessage.textContent = 'Unable to connect to server. Please try again later.';
             successMessage.style.color = '#ef4444';
             successMessage.style.display = 'block';
