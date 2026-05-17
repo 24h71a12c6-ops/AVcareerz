@@ -77,12 +77,79 @@ const sendInstantAlert = async (type, payload = {}) => {
     const phone = data.phone || 'N/A';
     const email = data.email || 'N/A';
     const source = data.source || 'Website';
-    const url = data.url ? `\n🔗 *URL:* ${data.url}` : '';
+
+    const headerColor = type === 'partial' ? '#eab308' : '#002147';
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f7fafc; margin: 0; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
+          .header { background: ${headerColor}; color: #ffffff; padding: 24px; text-align: center; }
+          .header h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+          .content { padding: 32px 24px; }
+          .table-wrapper { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-top: 16px; }
+          table { width: 100%; border-collapse: collapse; text-align: left; }
+          tr { border-bottom: 1px solid #e2e8f0; }
+          tr:last-child { border-bottom: none; }
+          td { padding: 12px 16px; vertical-align: top; }
+          .label { font-weight: 600; color: #4a5568; width: 35%; }
+          .value { color: #1a202c; }
+          .footer { background: #f7fafc; padding: 16px; text-align: center; font-size: 12px; color: #718096; border-top: 1px solid #e2e8f0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>${emoji} ${statusText}</h1>
+          </div>
+          <div class="content">
+            <p style="margin-top: 0; color: #4a5568; font-size: 15px; line-height: 1.5;">
+              An alert has been triggered from the system. Details are provided below:
+            </p>
+            <div class="table-wrapper">
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="label">Name</td>
+                    <td class="value">${fullName}</td>
+                  </tr>
+                  <tr>
+                    <td class="label">Phone</td>
+                    <td class="value">${phone}</td>
+                  </tr>
+                  <tr>
+                    <td class="label">Email</td>
+                    <td class="value">${email}</td>
+                  </tr>
+                  <tr>
+                    <td class="label">Source</td>
+                    <td class="value">${source}</td>
+                  </tr>
+                  ${data.url ? `
+                  <tr>
+                    <td class="label">Page URL</td>
+                    <td class="value"><a href="${data.url}" style="color:#3b82f6;text-decoration:none;">${data.url}</a></td>
+                  </tr>` : ''}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="footer">
+            Abroad Vision Careerz Alert System &bull; Guiding Futures Beyond Borders
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
 
     await sendEmail({
       to: adminTo,
       subject: `${emoji} ${statusText}: ${fullName || 'User'}`,
-      html: `<pre style="background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">Details:\nName: ${fullName}\nPhone: ${phone}\nEmail: ${email}\nSource: ${source}${url}</pre>`
+      html
     });
   } catch (err) {
     console.error('Alert Error:', err?.message || err);
@@ -178,15 +245,14 @@ app.post('/api/register', async (req, res) => {
 
     // 3. Send Emails
     try {
-      const { sendConfirmationEmail } = require('./services/emailService');
+      const { sendAdminEmail, sendConfirmationEmail } = require('./services/emailService');
 
-      await sendLeadNotificationEmail({
-        name: fullName,
+      await sendAdminEmail({
+        userId,
+        fullName,
         email,
-        phone,
-        subject: 'New Registration Lead - Step 1',
-        message: 'Registration form submission'
-      });
+        phone
+      }, 'New Registration Lead - Step 1');
       
       // send confirmation only to non-admin addresses
       const adminPrimary = String(process.env.ADMIN_EMAIL || '').trim();
