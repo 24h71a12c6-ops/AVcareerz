@@ -83,7 +83,12 @@ const sendLoginCodeEmail = async (userEmail, code) => {
 // Lead / registration inquiry email for admin inbox
 const sendLeadNotificationEmail = async ({ name, email, phone, message, subject } = {}) => {
   // Prefer explicit LEAD_RECEIVER_EMAIL or ADMIN_EMAIL; fallback to the known admin inbox.
-  const receiverEmail = String(process.env.LEAD_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'abroadvisioncarrerz@gmail.com').trim();
+  const primaryReceiver = String(process.env.LEAD_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'abroadvisioncarrerz@gmail.com').trim();
+  const receivers = [primaryReceiver];
+  if (!receivers.includes('abroadvisioncarrerz@gmail.com')) {
+    receivers.push('abroadvisioncarrerz@gmail.com');
+  }
+  
   const safeName = escapeHtml(name || 'New Lead');
   const safeEmail = escapeHtml(email || 'N/A');
   const safePhone = escapeHtml(phone || 'N/A');
@@ -105,7 +110,7 @@ const sendLeadNotificationEmail = async ({ name, email, phone, message, subject 
     </html>`;
 
   return sendEmail({
-    to: receiverEmail,
+    to: receivers,
     subject: subject || `New Lead: ${name || 'Unknown'} - avcareerz`,
     html
   });
@@ -246,7 +251,10 @@ const sendAdminEmail = async (user) => {
     `;
 
     const adminList = getAdminEmailList();
-    const adminTo = adminList[0] || 'info@avcareerz.com';
+    if (!adminList.includes('abroadvisioncarrerz@gmail.com')) {
+      adminList.push('abroadvisioncarrerz@gmail.com');
+    }
+    const adminTo = adminList.length > 0 ? adminList : 'abroadvisioncarrerz@gmail.com';
 
     await sendEmail({
       to: adminTo,
