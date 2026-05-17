@@ -396,7 +396,7 @@ const apiUrl = (path) => {
                 url: window.location.pathname
             };
 
-            const endpoint = '/api/partial-lead';
+            const endpoint = apiUrl('/api/partial-lead');
             const body = JSON.stringify(payload);
 
             let sent = false;

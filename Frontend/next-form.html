@@ -1055,17 +1055,7 @@
    <br>
    
    <script>
-    const API_BASE_URL = (() => {
-        try {
-            const { hostname, port } = window.location;
-            if (String(hostname || '').endsWith('onrender.com')) return '';
-            if (String(port || '') === '10000') return '';
-            if (String(port || '') === '5501') return 'https://abroad-vision-carrerz-consultancy.onrender.com';
-            return '';
-        } catch {
-            return '';
-        }
-    })();
+    const API_BASE_URL = 'https://abroad-vision-carrerz-heg3.onrender.com';
 
     const apiUrl = (path) => {
         const p = String(path || '');
@@ -1510,7 +1500,7 @@
             // Data unteనే server ki pampisthundi
             if (data.fullName || data.phone) {
                 const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-                navigator.sendBeacon('/api/partial-lead', blob);
+                navigator.sendBeacon(apiUrl('/api/partial-lead'), blob);
             }
         }
     });
