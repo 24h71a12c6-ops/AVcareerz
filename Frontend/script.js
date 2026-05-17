@@ -1302,12 +1302,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1';
 
-            if (shouldRedirectToCongrats() && !forceOpenRegistration) {
-                e.preventDefault();
-                window.location.href = 'congrats.html';
-                return;
-            }
-
             // After signup, the "Register Here" CTA should open the next form.
             // Keep pre-signup behavior (open modal) for new users on any page.
             // In edit mode, allow opening the registration modal even for registered users.
@@ -1504,13 +1498,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     const lower = href.toLowerCase();
                     if (lower.startsWith('mailto:') || lower.startsWith('tel:') || lower.startsWith('javascript:') || lower.startsWith('#')) return;
                     if (lower.startsWith('http') && !href.includes(window.location.hostname)) return;
-                }
-
-                // Now enforce flow
-                if (shouldRedirectToCongrats()) {
-                    evt.preventDefault();
-                    showApplicationCompletedNotice();
-                    return;
                 }
 
                 if (!isRegisteredUser()) {
