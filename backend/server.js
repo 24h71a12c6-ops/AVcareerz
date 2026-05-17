@@ -647,9 +647,16 @@ app.post('/api/login', async (req, res) => {
       source: 'Login Success'
     });
 
+    // Check if the user has completed step 2 application
+    const nextFormSnap = await db.collection('next_form')
+      .where('email', '==', emailLc)
+      .limit(1)
+      .get();
+
     res.json({
       success: true,
       userId: rows[0].id,
+      isApplicationCompleted: !nextFormSnap.empty,
       data: {
         fullName: rows[0].full_name,
         email: rows[0].email,
@@ -659,6 +666,29 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ success: false, error: 'Login failed due to server error' });
+  }
+});
+
+// Check Application Completion Status API
+app.get('/api/check-application-status', async (req, res) => {
+  try {
+    const email = String(req.query?.email || '').trim().toLowerCase();
+    if (!email) {
+      return res.status(400).json({ success: false, error: 'Email parameter is required' });
+    }
+
+    const nextFormSnap = await db.collection('next_form')
+      .where('email', '==', email)
+      .limit(1)
+      .get();
+
+    return res.json({
+      success: true,
+      completed: !nextFormSnap.empty
+    });
+  } catch (error) {
+    console.error('Check application status error:', error);
+    return res.status(500).json({ success: false, error: 'Failed to verify application status' });
   }
 });
 

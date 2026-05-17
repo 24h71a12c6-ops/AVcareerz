@@ -444,9 +444,34 @@ const isRegisteredUser = () => {
 const isApplicationCompleted = () => {
     try {
         if (localStorage.getItem('isApplicationDone') === 'true') return true;
+        if (localStorage.getItem('applicationCompleted') === '1') return true;
     } catch {}
-    return localStorage.getItem('applicationCompleted') === '1';
+    return false;
 };
+
+// Auto-sync application completion status from the database on page load
+(async () => {
+    try {
+        const email = (localStorage.getItem('userEmail') || '').trim();
+        if (email) {
+            const res = await fetch(apiUrl(`/api/check-application-status?email=${encodeURIComponent(email)}`));
+            const data = await res.json();
+            if (res.ok && data.success) {
+                if (data.completed) {
+                    localStorage.setItem('applicationCompleted', '1');
+                    localStorage.setItem('isApplicationDone', 'true');
+                    sessionStorage.setItem('applicationCompleted', '1');
+                } else {
+                    localStorage.removeItem('applicationCompleted');
+                    localStorage.removeItem('isApplicationDone');
+                    sessionStorage.removeItem('applicationCompleted');
+                }
+            }
+        }
+    } catch (err) {
+        console.warn('Failed to sync application status:', err);
+    }
+})();
 // Decide whether we should redirect users to congrats page.
 // Require both the application-completed flag and that the lastUserEmail
 // matches the current userEmail to avoid stale flags from redirecting others.
@@ -1417,6 +1442,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Always prevent default for CTA buttons
         e.preventDefault();
+
+        // If the user has already completed both forms, show the Already Registered page!
+        if (isApplicationCompleted()) {
+            window.location.href = 'already-registered.html';
+            return;
+        }
 
         const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
@@ -3285,6 +3316,17 @@ if (registrationForm) {
                     localStorage.setItem('currentUserId', data.userId);
                 }
                 localStorage.setItem('userEmail', email);
+                
+                // Sync step 2 application completion status returned by the server on login
+                if (data.isApplicationCompleted) {
+                    localStorage.setItem('applicationCompleted', '1');
+                    localStorage.setItem('isApplicationDone', 'true');
+                    sessionStorage.setItem('applicationCompleted', '1');
+                } else {
+                    localStorage.removeItem('applicationCompleted');
+                    localStorage.removeItem('isApplicationDone');
+                    sessionStorage.removeItem('applicationCompleted');
+                }
                 // hide the registration panel now that user is authenticated
                 hideRegistrationSection();
                 syncRegistrationSectionForAuthState();

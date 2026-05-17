@@ -1073,6 +1073,11 @@
    <br>
    
    <script>
+    // Redirect immediately if they have already completed the application forms
+    if (localStorage.getItem('isApplicationDone') === 'true' || localStorage.getItem('applicationCompleted') === '1') {
+        window.location.href = 'already-registered.html';
+    }
+
     const API_BASE_URL = 'https://abroad-vision-carrerz-heg3.onrender.com';
 
     const apiUrl = (path) => {
