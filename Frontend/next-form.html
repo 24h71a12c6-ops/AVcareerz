@@ -325,7 +325,7 @@
 
         .fixed-dropdown-toggle {
             width: 100%;
-            min-height: 52px;
+            height: 52px;
             padding: 0.75rem 3rem 0.75rem 0.9rem;
             background: #002147;
             border: 2px solid #002147;
@@ -337,6 +337,9 @@
             cursor: pointer;
             position: relative;
             box-sizing: border-box;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .fixed-dropdown-toggle.filled {
@@ -389,8 +392,11 @@
             text-align: left;
             font: inherit;
             cursor: pointer;
-            white-space: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             line-height: 1.25;
+            box-sizing: border-box;
         }
 
         .fixed-dropdown-option:hover,
