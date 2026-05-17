@@ -1385,6 +1385,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
 
+        // If this is explicitly a registration CTA (nav 'Register Here' links, buttons that
+        // target the registration section), prefer opening the registration UI rather than
+        // immediately redirecting to congrats. This avoids blocking developers/testers who
+        // may have stale localStorage flags.
+        const href = (cta.getAttribute && cta.getAttribute('href')) || '';
+        const isRegistrationCTA = cta.classList.contains('register-scroll') || href.includes('#registration-section');
+
+        if (isRegistrationCTA) {
+            // If the user is registered, go to next-form; otherwise open registration UI.
+            if (isRegisteredUser()) {
+                window.location.href = 'next-form.html';
+                return;
+            }
+
+            if (isHomePage) {
+                if (typeof openRegModal === 'function') {
+                    openRegModal();
+                } else {
+                    scrollToSection('registration-section');
+                }
+                return;
+            }
+
+            window.location.href = 'index.html#registration-section';
+            return;
+        }
+
+        // Non-registration CTAs: keep the original flow enforcement
         if (isApplicationCompleted()) {
             window.location.href = 'congrats.html';
             return;
@@ -3447,7 +3475,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (alreadyRegistered && !justRegistered) {
                     e.preventDefault();
-                    window.location.href = 'congrats.html';
+                    window.location.href = 'next-form.html';
                 }
             });
 
