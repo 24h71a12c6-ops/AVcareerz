@@ -1272,6 +1272,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const sections = document.querySelectorAll('section[id]');
     const navbar = document.querySelector('.navbar');
 
+    // Cache section offsets to avoid layout thrashing during scroll events!
+    let cachedSectionOffsets = [];
+    function cacheSectionOffsets() {
+        cachedSectionOffsets = [];
+        sections.forEach(section => {
+            const id = section.getAttribute('id');
+            if (id) {
+                cachedSectionOffsets.push({
+                    id: id,
+                    top: section.offsetTop
+                });
+            }
+        });
+        cachedSectionOffsets.sort((a, b) => a.top - b.top);
+    }
+    // Calculate initial offsets
+    cacheSectionOffsets();
+    window.addEventListener('resize', () => {
+        window.requestAnimationFrame(cacheSectionOffsets);
+    }, { passive: true });
+
     // Some pages reuse this script without being index.html.
     // We treat index.html (and /) as the home page so hash links can either scroll
     // locally or redirect to index.html#... when the section isn't present.
@@ -1413,14 +1434,15 @@ document.addEventListener("DOMContentLoaded", function () {
             navbar.style.padding = isCompact ? '0.5rem 0' : '1rem 0';
         }
 
-        // Active Link Highlighting
+        // Active Link Highlighting (using high-performance cached section offsets)
         let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            if (scrollY >= (sectionTop - 100)) {
-                current = section.getAttribute('id');
+        for (let i = 0; i < cachedSectionOffsets.length; i++) {
+            if (scrollY >= (cachedSectionOffsets[i].top - 120)) {
+                current = cachedSectionOffsets[i].id;
+            } else {
+                break;
             }
-        });
+        }
 
         navLinks.forEach(link => {
             link.classList.toggle('active', link.getAttribute('href') === `#${current}`);

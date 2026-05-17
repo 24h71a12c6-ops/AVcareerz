@@ -1415,8 +1415,9 @@
                 window.location.href = 'already-registered.html';
                 return;
             }
-            // Existing submission logic follows
-
+            
+            // Send data to Node.js backend as FormData (for file uploads)
+            const response = await fetch(apiUrl('/api/register-step2'), {
                 method: 'POST',
                 body: formData
             });
