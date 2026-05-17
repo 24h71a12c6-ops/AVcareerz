@@ -452,8 +452,8 @@ app.post(
       if (!highestQualification) missingFields.push('highestQualification');
       if (!preferredCountry) missingFields.push('preferredCountry');
       if (!visaStatus) missingFields.push('visaStatus');
-      if ((visaStatus === 'Valid' || visaStatus === 'Applied') && !visaNumber) missingFields.push('visaNumber');
-      if ((visaStatus === 'Valid' || visaStatus === 'Applied') && !visaType) missingFields.push('visaType');
+      if (visaStatus === 'Valid' && !visaNumber) missingFields.push('visaNumber');
+      if (visaStatus === 'Valid' && !visaType) missingFields.push('visaType');
       if (!levelOfStudy) missingFields.push('levelOfStudy');
       if (!preferredIntake) missingFields.push('preferredIntake');
       if (!declarationFlag) missingFields.push('declaration');
@@ -508,7 +508,7 @@ app.post(
         preferredCountry,
         visaStatus,
         visaType,
-        visaNumber: (visaStatus === 'Valid' || visaStatus === 'Applied') ? visaNumber : null,
+        visaNumber: visaStatus === 'Valid' ? visaNumber : null,
         levelOfStudy,
         coaching: coaching || null,
         preferredIntake,
@@ -545,7 +545,7 @@ app.post(
           preferredCountry,
           visaStatus,
           visaType,
-          visaNumber: (visaStatus === 'Valid' || visaStatus === 'Applied') ? visaNumber : 'Not Available / Applied',
+          visaNumber: visaStatus === 'Valid' ? visaNumber : 'Not Available / Applied',
           levelOfStudy,
           coaching,
           preferredIntake,

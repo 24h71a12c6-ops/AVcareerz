@@ -1214,7 +1214,7 @@
     function updateVisaRequired() {
         if (!visaStatus || !visaNumberInput || !visaTypeSelect) return;
         const status = visaStatus.value;
-        if (status === 'Valid' || status === 'Applied') {
+        if (status === 'Valid') {
             visaNumberInput.required = true;
             visaTypeSelect.required = true;
             if (visaNumberLabel) {
