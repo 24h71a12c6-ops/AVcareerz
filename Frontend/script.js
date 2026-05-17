@@ -443,6 +443,7 @@ const isRegisteredUser = () => {
 
 const isApplicationCompleted = () => {
     try {
+        if (!isRegisteredUser()) return false;
         if (localStorage.getItem('isApplicationDone') === 'true') return true;
         if (localStorage.getItem('applicationCompleted') === '1') return true;
     } catch {}
@@ -1144,6 +1145,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             try {
                 localStorage.removeItem('userEmail');
+                localStorage.removeItem('isRegistered');
+                localStorage.removeItem('hasSignedUp');
+                localStorage.removeItem('applicationCompleted');
+                localStorage.removeItem('isApplicationDone');
                 localStorage.removeItem('registrationData');
                 localStorage.removeItem('nextFormData');
                 localStorage.removeItem('currentUserId');
