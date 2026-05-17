@@ -72,9 +72,17 @@
             border: 2px solid orange;
         }
 
-        .card img {
-            width: 60px;
+        .card-icon {
+            font-size: 3rem;
+            color: #002147;
             margin-bottom: 15px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            color: orange;
+            transform: scale(1.1);
         }
 
         .card h3 {
@@ -398,27 +406,27 @@
         <p>Discover the advantages of studying in Canada for your career and personal growth.</p>
         <div class="cards-container">
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/education-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
                 <h3>World-Renowned Institutions</h3>
                 <p>Top-ranked universities and colleges.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/flexibility-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                 <h3>Supportive Environment</h3>
                 <p>Safe, friendly, and student-focused campuses.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/research-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-flask-vial"></i></div>
                 <h3>Cutting-Edge Research</h3>
                 <p>Innovative research and technology opportunities.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/career-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-briefcase"></i></div>
                 <h3>Work & Immigration</h3>
                 <p>Post-study work permits and PR options.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/diversity-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-earth-americas"></i></div>
                 <h3>Multicultural Society</h3>
                 <p>Diverse, welcoming, and inclusive culture.</p>
             </div>

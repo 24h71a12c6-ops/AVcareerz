@@ -51,9 +51,17 @@
             border: 2px solid orange;
         }
 
-        .card img {
-            width: 60px;
+        .card-icon {
+            font-size: 3rem;
+            color: #002147;
             margin-bottom: 15px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            color: orange;
+            transform: scale(1.1);
         }
 
         .card h3 {
@@ -400,27 +408,27 @@
             <p>Singapore offers world-class education, global opportunities, and a dynamic multicultural environment for international students.</p>
             <div class="cards-container">
                 <div class="card">
-                    <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/education-icon.png" alt="">
+                    <div class="card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
                     <h3>Global University Rankings</h3>
                     <p>Home to universities consistently ranked in the world's top 20, offering internationally recognized degrees.</p>
                 </div>
                 <div class="card">
-                    <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/flexibility-icon.png" alt="">
+                    <div class="card-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                     <h3>Excellent Work-Study Balance</h3>
                     <p>International students can work part-time and gain practical industry experience while studying.</p>
                 </div>
                 <div class="card">
-                    <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/research-icon.png" alt="">
+                    <div class="card-icon"><i class="fa-solid fa-flask-vial"></i></div>
                     <h3>Cutting-Edge Research</h3>
                     <p>Access to state-of-the-art facilities and world-leading research opportunities in technology and innovation.</p>
                 </div>
                 <div class="card">
-                    <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/career-icon.png" alt="">
+                    <div class="card-icon"><i class="fa-solid fa-briefcase"></i></div>
                     <h3>Career Opportunities</h3>
                     <p>Gateway to Asia's biggest job market with strong connections to multinational corporations and startups.</p>
                 </div>
                 <div class="card">
-                    <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/diversity-icon.png" alt="">
+                    <div class="card-icon"><i class="fa-solid fa-earth-americas"></i></div>
                     <h3>Multicultural Hub</h3>
                     <p>Study in a diverse, vibrant international community with excellent quality of life and safety.</p>
                 </div>

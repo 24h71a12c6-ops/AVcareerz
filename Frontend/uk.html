@@ -77,9 +77,17 @@
             border: 2px solid orange;
         }
 
-        .card img {
-            width: 60px;
+        .card-icon {
+            font-size: 3rem;
+            color: #002147;
             margin-bottom: 15px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            color: orange;
+            transform: scale(1.1);
         }
 
         .card h3 {
@@ -420,28 +428,28 @@
         <p>Discover the advantages of studying in the UK for your career and personal growth.</p>
         <div class="cards-container">
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/education-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
                 <h3>World-Class Education</h3>
                 <p>UK universities like Oxford, Cambridge, and Imperial are globally recognized for academic excellence
                     and innovation.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/flexibility-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                 <h3>Flexible Courses</h3>
                 <p>Choose from a wide range of programs and tailor your degree to your interests and career goals.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/research-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-flask-vial"></i></div>
                 <h3>Research Opportunities</h3>
                 <p>Access to cutting-edge research, modern labs, and innovative projects in the UK.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/career-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-briefcase"></i></div>
                 <h3>Career Prospects</h3>
                 <p>Benefit from post-study work visas and strong connections to global employers in the UK.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/diversity-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-earth-americas"></i></div>
                 <h3>Cultural Diversity</h3>
                 <p>Experience a vibrant, multicultural environment and student life in the UK.</p>
             </div>

@@ -167,9 +167,17 @@
             border: 2px solid orange;
         }
 
-        .card img {
-            width: 60px;
+        .card-icon {
+            font-size: 3rem;
+            color: #002147;
             margin-bottom: 15px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            color: orange;
+            transform: scale(1.1);
         }
 
         .card h3 {
@@ -372,22 +380,22 @@
         <p>Discover the unique advantages of studying in Australia for your education and future.</p>
         <div class="cards-container">
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/education-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
                 <h3>Top Global Universities</h3>
                 <p>Australia is home to 7 of the world’s top 100 universities, known for academic excellence and innovation.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/flexibility-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                 <h3>Work While You Study</h3>
                 <p>International students can work up to 24 hours per week during semesters and full-time in holidays.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/research-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-flask-vial"></i></div>
                 <h3>Cutting-Edge Research</h3>
                 <p>Australia is a leader in research, with breakthroughs in medicine, science, and technology.</p>
             </div>
             <div class="card">
-                <img src="https://res.cloudinary.com/dtorpeosf/image/upload/v1771072042/my_website_images/career-icon.png" alt="">
+                <div class="card-icon"><i class="fa-solid fa-briefcase"></i></div>
                 <h3>Career Opportunities</h3>
                 <p>Strong post-study pathways and industry connections help international students build their future.</p>
             </div>
