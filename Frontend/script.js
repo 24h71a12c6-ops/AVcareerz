@@ -3275,14 +3275,10 @@ if (registrationForm) {
                     closeRegModal();
                 }
 
-                setTimeout(() => {
-                    hideRegistrationSection();
-                    syncRegistrationSectionForAuthState();
-                }, 100);
-                return;
                 // hide the registration panel now that user is authenticated
                 hideRegistrationSection();
                 syncRegistrationSectionForAuthState();
+                
                 // remove any #registration-section hash so it doesn't reopen
                 if (window.location.hash === '#registration-section') {
                     window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
@@ -3307,12 +3303,6 @@ if (registrationForm) {
                     if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
                 } catch {
                     // ignore
-                }
-
-                // Force hide and close modal after login
-                const closeBtn = document.getElementById('regModalClose');
-                if (document.body.classList.contains('reg-modal-open') && closeBtn) {
-                    closeBtn.click();
                 }
                 
                 // Extra enforcement: hide the section
