@@ -2212,6 +2212,7 @@ if (countryModal) {
 
 // Node-recycling infinite train for destination cards (no DOM duplication)
 document.addEventListener('DOMContentLoaded', function initDestinationsTrain() {
+    return; // Bypassed: completely disabled auto-scroll "train" carousel animation
     const section = document.querySelector('.destinations');
     if (!section) return;
     const track = section.querySelector('.destinations-grid');

@@ -9066,7 +9066,28 @@ footer {
     width: 100vw;
     margin-left: calc(50% - 50vw);
     padding: 24px 5vw 70px;
-    overflow: hidden;
+    overflow-x: auto !important;
+    scroll-behavior: smooth !important;
+    scrollbar-width: thin !important;
+}
+
+.destinations .destinations-layout .destinations-grid::-webkit-scrollbar {
+    display: block !important;
+    height: 8px !important;
+}
+
+.destinations .destinations-layout .destinations-grid::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-radius: 4px !important;
+}
+
+.destinations .destinations-layout .destinations-grid::-webkit-scrollbar-thumb {
+    background: rgba(0, 33, 71, 0.3) !important; /* Brand Navy Blue transparent */
+    border-radius: 4px !important;
+}
+
+.destinations .destinations-layout .destinations-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 33, 71, 0.6) !important;
 }
 
 .destinations .destinations-grid .flag-wrap,
