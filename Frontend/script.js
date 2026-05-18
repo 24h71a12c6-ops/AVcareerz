@@ -60,8 +60,8 @@ if (glowDot) {
         const posX = e.clientX;
         const posY = e.clientY;
 
-        glowDot.style.left = `${posX}px`;
-        glowDot.style.top = `${posY}px`;
+        // Use transform instead of top/left to avoid layout thrashing (smooth scrolling)
+        glowDot.style.transform = `translate(${posX}px, ${posY}px) translate(-50%, -50%)`;
     });
 }
 
