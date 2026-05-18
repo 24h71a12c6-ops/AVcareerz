@@ -9,6 +9,7 @@
 
 /* Desktop safety: avoid accidental horizontal overflow from legacy 100vw sections */
 @media (min-width: 1024px) {
+
 	html,
 	body {
 		max-width: 100%;
@@ -245,15 +246,15 @@
 		gap: 0 !important;
 	}
 
-	body.nav-desktop-collapsed #navMenu > li {
+	body.nav-desktop-collapsed #navMenu>li {
 		width: 100%;
 	}
 
-	body.nav-desktop-collapsed #navMenu > li + li {
+	body.nav-desktop-collapsed #navMenu>li+li {
 		border-top: 1px solid rgba(15, 23, 42, 0.06);
 	}
 
-	body.nav-desktop-collapsed #navMenu > li > a {
+	body.nav-desktop-collapsed #navMenu>li>a {
 		display: block;
 		width: 100%;
 		padding: 12px 16px;
@@ -262,7 +263,7 @@
 		font-weight: 600;
 	}
 
-	body.nav-desktop-collapsed #navMenu .nav-dropdown > a::after {
+	body.nav-desktop-collapsed #navMenu .nav-dropdown>a::after {
 		content: none !important;
 		display: none !important;
 	}
@@ -281,7 +282,7 @@
 		width: 100%;
 	}
 
-	body.nav-desktop-collapsed #navMenu .nav-dropdown.is-open > .dropdown-menu {
+	body.nav-desktop-collapsed #navMenu .nav-dropdown.is-open>.dropdown-menu {
 		display: flex !important;
 		flex-direction: column;
 		align-items: stretch;
@@ -444,6 +445,7 @@
 }
 
 @media (min-width: 1024px) {
+
 	.destinations-grid,
 	.cards-container,
 	.features-grid,
@@ -563,6 +565,7 @@
 	which moves the profile + hamburger to the left.
 	------------------------------ */
 @media (max-width: 900px) {
+
 	/* Not Bootstrap: our hamburger is #navToggle with 3 spans.
 	   Force it visible + remove any accidental arrow pseudo-elements. */
 	#navToggle,
@@ -592,6 +595,7 @@
 }
 
 @media (max-width: 768px) {
+
 	/* Hard guarantee: hamburger is visible on mobile */
 	header .navbar .container .nav-right #navToggle.nav-toggle {
 		display: flex !important;
@@ -713,7 +717,7 @@
 	}
 
 	/* When the mobile menu is open, keep the lines a bit stronger */
-	#navMenu.active ~ .nav-right #navToggle span {
+	#navMenu.active~.nav-right #navToggle span {
 		background: #002145 !important;
 		box-shadow: none !important;
 	}
@@ -748,11 +752,11 @@
 		gap: 0 !important;
 	}
 
-	#navMenu > li {
+	#navMenu>li {
 		width: 100%;
 	}
 
-	#navMenu > li > a {
+	#navMenu>li>a {
 		display: block;
 		padding: 12px 16px;
 		width: 100%;
@@ -761,19 +765,19 @@
 		font-weight: 600;
 	}
 
-	#navMenu > li + li {
+	#navMenu>li+li {
 		border-top: 1px solid rgba(15, 23, 42, 0.06);
 	}
 
 	/* Mobile: submenu should open only when the user taps Destinations/Study */
-	#navMenu .nav-dropdown > a {
+	#navMenu .nav-dropdown>a {
 		position: relative;
 		padding-right: 14px;
 	}
 
 	/* User request: remove the dropdown arrow/chevron indicator */
-	#navMenu .nav-dropdown > a::after,
-	#navMenu .nav-dropdown.is-open > a::after {
+	#navMenu .nav-dropdown>a::after,
+	#navMenu .nav-dropdown.is-open>a::after {
 		content: none !important;
 		display: none !important;
 	}
@@ -791,7 +795,7 @@
 		background: transparent !important;
 	}
 
-	#navMenu .nav-dropdown.is-open > .dropdown-menu {
+	#navMenu .nav-dropdown.is-open>.dropdown-menu {
 		display: flex !important;
 		flex-direction: column;
 		gap: 0;
@@ -812,6 +816,7 @@
 	.nav-right #navToggle {
 		order: 1;
 	}
+
 	.nav-right .nav-profile {
 		order: 2;
 	}
@@ -821,7 +826,7 @@
    Your JS toggles `.nav-dropdown.is-open` at <=900px, but without this rule the
    submenu stays `display: none` because desktop CSS only opens on :hover. */
 @media (min-width: 769px) and (max-width: 900px) {
-	#navMenu .nav-dropdown.is-open > .dropdown-menu {
+	#navMenu .nav-dropdown.is-open>.dropdown-menu {
 		display: flex;
 	}
 }
@@ -839,6 +844,7 @@
 }
 
 @media (max-width: 768px) {
+
 	/* Override legacy mobile blocks that shrink the brand title via !important */
 	.logo-name {
 		font-size: clamp(1.35rem, 5vw, 1.9rem) !important;
@@ -994,7 +1000,7 @@
 	justify-content: center;
 }
 
-.destinations .countries-grid > .country-item {
+.destinations .countries-grid>.country-item {
 	position: absolute !important;
 	left: 50% !important;
 	top: 50% !important;
@@ -1012,7 +1018,7 @@
 }
 
 /* If the JS orbit is active, disable motion-path so there is no fight over transforms */
-.destinations .countries-grid.js-orbit > .country-item {
+.destinations .countries-grid.js-orbit>.country-item {
 	offset-path: none;
 	offset-distance: 0%;
 	animation: none;
@@ -1039,16 +1045,39 @@
 }
 
 /* Stagger start positions for 8 flags */
-.destinations .countries-grid > .country-item:nth-child(1) { --i: 0; }
-.destinations .countries-grid > .country-item:nth-child(2) { --i: 1; }
-.destinations .countries-grid > .country-item:nth-child(3) { --i: 2; }
-.destinations .countries-grid > .country-item:nth-child(4) { --i: 3; }
-.destinations .countries-grid > .country-item:nth-child(5) { --i: 4; }
-.destinations .countries-grid > .country-item:nth-child(6) { --i: 5; }
-.destinations .countries-grid > .country-item:nth-child(7) { --i: 6; }
-.destinations .countries-grid > .country-item:nth-child(8) { --i: 7; }
+.destinations .countries-grid>.country-item:nth-child(1) {
+	--i: 0;
+}
 
-.destinations .countries-grid > .country-item {
+.destinations .countries-grid>.country-item:nth-child(2) {
+	--i: 1;
+}
+
+.destinations .countries-grid>.country-item:nth-child(3) {
+	--i: 2;
+}
+
+.destinations .countries-grid>.country-item:nth-child(4) {
+	--i: 3;
+}
+
+.destinations .countries-grid>.country-item:nth-child(5) {
+	--i: 4;
+}
+
+.destinations .countries-grid>.country-item:nth-child(6) {
+	--i: 5;
+}
+
+.destinations .countries-grid>.country-item:nth-child(7) {
+	--i: 6;
+}
+
+.destinations .countries-grid>.country-item:nth-child(8) {
+	--i: 7;
+}
+
+.destinations .countries-grid>.country-item {
 	animation-delay: calc(-2.25s * var(--i));
 }
 
@@ -1060,7 +1089,7 @@
 
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
-	.destinations .countries-grid > .country-item {
+	.destinations .countries-grid>.country-item {
 		animation: none;
 		offset-distance: 0%;
 	}
@@ -1137,7 +1166,7 @@
 	}
 
 	.flag-wrap img,
-	.destinations .countries-grid > .country-item,
+	.destinations .countries-grid>.country-item,
 	.about-final-revised .about-grid::before,
 	.about-final-revised .about-grid::after,
 	.about-final-revised .feature-list-premium::before,
@@ -1156,3 +1185,224 @@
 	}
 }
 
+/* ==========================================================================
+   University Cards Mobile Responsiveness & Overflow Prevention Override
+   Target Viewport: Small Screens / Typical Mobile Devices
+   ========================================================================== */
+@media (max-width: 768px) {
+
+	/* 1. Eliminate heavy desktop left padding and ensure full width */
+	.universities-section {
+		padding: 30px 16px !important;
+		margin: 0 !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+	}
+
+	/* 2. Remove gap margin on list container and use 100% width */
+	.universities-left-gap {
+		margin: 0 !important;
+		padding: 0 !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+	}
+
+	/* 3. Re-style card to fit mobile screens perfectly without clipping */
+	.university-card {
+		padding: 20px 16px !important;
+		margin: 0 0 18px 0 !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		min-width: 0 !important;
+		border-radius: 12px !important;
+		border-left-width: 4px !important;
+		box-sizing: border-box !important;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+	}
+
+	/* 4. Fine-tune card internal element sizes (headings, tags, lists) */
+	.university-card h3 {
+		font-size: 1.2rem !important;
+		line-height: 1.35 !important;
+		font-weight: 700 !important;
+		margin-bottom: 6px !important;
+	}
+
+	.university-card .location {
+		font-size: 0.82rem !important;
+		margin-bottom: 8px !important;
+		display: inline-flex !important;
+		align-items: center !important;
+		gap: 5px !important;
+	}
+
+	.university-card p {
+		font-size: 0.85rem !important;
+		line-height: 1.45 !important;
+		margin-bottom: 10px !important;
+	}
+
+	.university-card .intake-meta {
+		font-size: 0.8rem !important;
+		font-weight: 700 !important;
+		margin: 4px 0 10px 0 !important;
+	}
+
+	/* 5. details courses dropdown elements scaling */
+	.university-card .course-toggle {
+		margin-top: 12px !important;
+		width: 100% !important;
+	}
+
+	.university-card .course-toggle summary {
+		font-size: 0.82rem !important;
+		padding: 8px 16px !important;
+		border-radius: 20px !important;
+		width: fit-content !important;
+	}
+
+	.university-card .course-group {
+		margin-top: 15px !important;
+	}
+
+	.university-card .course-group h4 {
+		font-size: 0.88rem !important;
+		font-weight: 700 !important;
+		margin-bottom: 8px !important;
+	}
+
+	.university-card .requirements-list {
+		padding-left: 16px !important;
+		margin-top: 10px !important;
+	}
+
+	.university-card .requirements-list li {
+		font-size: 0.82rem !important;
+		line-height: 1.45 !important;
+		margin-bottom: 5px !important;
+	}
+
+	.university-card .fee-box {
+		margin-top: 12px !important;
+		padding: 12px 14px !important;
+		border-radius: 10px !important;
+	}
+
+	.university-card .fee-box strong {
+		font-size: 0.85rem !important;
+	}
+
+	.university-card .fee-box p {
+		font-size: 0.82rem !important;
+		margin-bottom: 4px !important;
+	}
+
+	.university-card .fee-box p:last-child {
+		margin-bottom: 0 !important;
+	}
+
+	/* 6. Programs tags styling for compact grid */
+	.university-card .programs {
+		display: grid !important;
+		grid-template-columns: 1fr !important;
+		/* clean stacked single column on mobile */
+		gap: 6px !important;
+		width: 100% !important;
+	}
+
+	.university-card .course-item {
+		display: flex !important;
+		align-items: center !important;
+		gap: 6px !important;
+		width: 100% !important;
+	}
+
+	.university-card .program-tag {
+		font-size: 0.72rem !important;
+		padding: 6px 10px !important;
+		min-height: auto !important;
+		line-height: 1.3 !important;
+		border-radius: 6px !important;
+		box-sizing: border-box !important;
+		width: 100% !important;
+	}
+
+	.university-card .course-register-btn {
+		padding: 5px 9px !important;
+		font-size: 0.7rem !important;
+		height: auto !important;
+	}
+
+	/* 7. section title styling */
+	.universities-section .section-title {
+		font-size: 1.65rem !important;
+		margin-bottom: 24px !important;
+		padding-bottom: 10px !important;
+		text-align: center !important;
+	}
+
+	.universities-section .section-title::after {
+		width: 60px !important;
+		height: 3px !important;
+	}
+}
+
+/* ==========================================================================
+   Global University Cards Compact Layout & Typography Optimization (Desktop)
+   ========================================================================== */
+.university-card {
+	padding: 16px 20px !important;
+	margin-bottom: 15px !important;
+	border-radius: 8px !important;
+	border-left-width: 5px !important;
+	max-width: 800px !important; /* Elegant, readable width on desktop viewports */
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+	box-sizing: border-box !important;
+}
+
+.university-card h3 {
+	font-size: 1.3rem !important; /* Standout, prominent university name */
+	line-height: 1.3 !important;
+	font-weight: 700 !important;
+	margin-bottom: 5px !important;
+}
+
+.university-card .location {
+	font-size: 0.8rem !important; /* Reduced size */
+	margin-bottom: 8px !important;
+}
+
+.university-card p {
+	font-size: 0.82rem !important; /* Reduced size */
+	line-height: 1.4 !important;
+	margin-bottom: 10px !important;
+}
+
+.university-card .intake-meta {
+	font-size: 0.8rem !important; /* Reduced size */
+	margin-bottom: 10px !important;
+}
+
+.university-card .course-toggle summary {
+	font-size: 0.8rem !important; /* Reduced size */
+	padding: 7px 15px !important;
+}
+
+.university-card .program-tag {
+	font-size: 0.68rem !important; /* Reduced size globally */
+}
+
+.university-card .requirements-list li {
+	font-size: 0.78rem !important; /* Reduced size */
+}
+
+.university-card .fee-box p {
+	font-size: 0.78rem !important; /* Reduced size */
+}
+
+/* ==========================================================================
+   Central Override: Force University Section Elements to use Brand Navy Blue
+   ========================================================================== */
+:root {
+	--dark-blue: #002147 !important;
+}

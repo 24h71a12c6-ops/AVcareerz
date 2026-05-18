@@ -3969,7 +3969,7 @@ body.country-page .universities-section>* {
 body.country-page .register-section {
     position: relative;
     isolation: isolate;
-    overflow: hidden;
+    overflow: visible;
 }
 
 body.country-page .register-section::before {
@@ -6249,56 +6249,10 @@ footer {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    /* Default hidden */
-    animation: fadeSlideshow 12s linear infinite;
-    animation-fill-mode: both;
-    /* 12s total duration */
-    transition: transform 0.6s ease, opacity 0.6s ease;
+    display: block;
+    transition: transform 0.6s ease;
 }
 
-/* ANIMATION TIMING FOR 3 IMAGES */
-.flag-wrap img.img1 {
-    animation-delay: 0s;
-}
-
-.flag-wrap img.img2 {
-    animation-delay: 4s;
-}
-
-.flag-wrap img.img3 {
-    animation-delay: 8s;
-}
-
-/* FADE ANIMATION KEYFRAMES */
-@keyframes fadeSlideshow {
-
-    /* Staggered slideshow: fade in early, remain visible, then fade out.
-       Delays on each img (.img1/.img2/.img3) ensure one image is visible
-       while the next is fading in, preventing any blank white gap. */
-    0% {
-        opacity: 0;
-    }
-
-    8% {
-        opacity: 1;
-    }
-
-    33% {
-        opacity: 1;
-    }
-
-    41% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
 
 /* CARD CONTENT */
 .card-body {
