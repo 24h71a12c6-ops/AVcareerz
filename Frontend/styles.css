@@ -4152,8 +4152,8 @@ body.country-page .register-section {
 
 /* Trainings vertical infinite scroll (CSS-only) */
 :root {
-    --training-card-h: 260px;
-    /* match .coaching-image min-height */
+    --training-card-h: 300px;
+    /* increased slightly so the CTA doesn't get clipped */
     --training-visible-count: 3;
     --training-duration: 14s;
     /* adjust speed (lower = faster) */
@@ -4240,7 +4240,7 @@ body.country-page .register-section {
 .coaching-image {
     position: relative;
     width: 45%;
-    min-height: 260px;
+    min-height: 300px;
     overflow: hidden;
 }
 
@@ -4267,16 +4267,18 @@ body.country-page .register-section {
 
 .coaching-body .prep-text {
     display: inline-block;
-    margin-top: 18px;
+    margin-top: 16px;
     background: #E43E16 !important;
     color: #fff !important;
     text-decoration: none;
     cursor: pointer;
-    padding: 10px 20px;
+    padding: 12px 24px;
     border-radius: 6px;
     font-weight: 700;
     box-shadow: 0 8px 20px rgba(255, 122, 0, 0.12);
     align-self: center;
+    white-space: nowrap;
+    line-height: 1.1;
     transition: background 0.15s ease, transform 0.12s ease;
 }
 
