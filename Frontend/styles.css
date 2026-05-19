@@ -3916,13 +3916,13 @@ header {
     border: 1px solid rgba(0, 0, 0, 0.08);
     list-style: none;
     flex-direction: column;
-    min-width: 220px;
-    max-height: 400px;
+    min-width: 180px;
+    max-height: 350px;
     overflow-y: auto;
-    border-radius: 12px;
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
-    padding: 8px;
-    margin-top: 0.5rem;
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    padding: 4px;
+    margin-top: 0.3rem;
     z-index: 100;
 }
 
@@ -3936,13 +3936,13 @@ header {
 
 .dropdown-menu li a {
     display: block;
-    padding: 10px 12px;
+    padding: 7px 10px;
     color: var(--text-dark);
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.95rem;
-    line-height: 1.15;
-    border-radius: 10px;
+    font-size: 0.9rem;
+    line-height: 1;
+    border-radius: 8px;
     transition: background-color 0.18s ease, color 0.18s ease;
 }
 

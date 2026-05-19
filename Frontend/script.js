@@ -1476,26 +1476,15 @@ document.addEventListener("DOMContentLoaded", function () {
         // Always prevent default for these specific CTA buttons
         e.preventDefault();
 
-        // If the user has already completed both forms, show the Already Registered page!
-        if (isApplicationCompleted()) {
-            window.location.href = 'already-registered.html';
-            return;
-        }
-
-        const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
-
-        // If the user is registered (Step 1 complete), go to next-form (Step 2).
-        if (isRegisteredUser()) {
-            window.location.href = 'next-form.html';
-            return;
-        }
-
-        // Not registered: Show Step 1 registration modal or section.
+        // Show the registration modal for all CTA clicks (same design, same popup)
         if (typeof openRegModal === 'function') {
             openRegModal();
             return;
         }
 
+        // Fallback: scroll to registration section or navigate to it
+        const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
+        
         if (isHomePage) {
             scrollToSection('registration-section');
             return;
@@ -1628,6 +1617,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 } catch {
                     // ignore
                 }
+
+                // Close the registration modal before redirecting
+                try {
+                    document.body.classList.remove('reg-modal-open');
+                    const overlay = document.getElementById('regModalOverlay');
+                    if (overlay) overlay.hidden = true;
+                    if (window.location.hash === '#registration-section') {
+                        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                    }
+                } catch {
+                    // ignore
+                }
+
+                // Check if application was already completed by this user
+                if (isApplicationCompleted()) {
+                    // User already completed application; show already-registered page
+                    window.location.href = 'already-registered.html';
+                    return;
+                }
+
+                // User successfully signed in; redirect to next-form to complete application
+                setTimeout(() => {
+                    window.location.href = 'next-form.html';
+                }, 500);
+                return;
             }
         } catch {
             // ignore decoding issues
