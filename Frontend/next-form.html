@@ -76,12 +76,18 @@
             color: #ffffff;
             font-size: 3rem;
             margin-bottom: 0.5rem;
+            letter-spacing: 0.3px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Ensure all main form h1 titles are white for readability */
         .next-form-card h1 {
             color: #ffffff;
             margin-top: 0;
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
 
         .form-section-header p {
@@ -150,7 +156,7 @@
             top: 12px;
             bottom: 12px;
             width: 10px;
-            background: #E43E16;
+            background: #ffffff;
             border-radius: 8px;
             opacity: 0.95;
         }
@@ -229,11 +235,13 @@
         .form-group label {
             display: block;
             margin-bottom: 0.7rem;
-            color: rgba(255,255,255,0.88);
-            font-weight: 600;
-            font-size: 0.85rem;
+            color: rgba(255,255,255,0.96);
+            font-weight: 700;
+            font-size: 0.84rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.7px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
 
         .required {
@@ -254,7 +262,9 @@
             font-size: 0.95rem;
             font-family: inherit;
             transition: all 0.3s ease;
-            color: rgba(255,255,255,0.84);
+            color: rgba(255,255,255,0.92);
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
 
         .form-group input:focus,
@@ -266,6 +276,7 @@
             background: #f8fbff;
             border-color: #c7d6ea;
             color: #0b1220 !important;
+            text-shadow: none;
         }
 
         .form-group select {
@@ -290,7 +301,7 @@
             cursor: not-allowed;
             opacity: 1;
             background: #0D4B75;
-            color: #ffffff;
+            color: rgba(255,255,255,0.92);
         }
 
         .form-group input:focus,
@@ -306,7 +317,7 @@
         .form-group input::placeholder,
         .form-group textarea::placeholder,
         .form-group select::placeholder {
-            color: rgba(255, 255, 255, 0.82);
+            color: rgba(255, 255, 255, 0.78);
             opacity: 1;
         }
 
@@ -322,7 +333,7 @@
 
         /* Standardize ALL Select fields */
         .form-group select {
-            color: #ffffff;
+            color: rgba(255,255,255,0.92);
         }
 
         .form-group select option {
@@ -346,7 +357,7 @@
             background: #0D4B75;
             border: 2px solid #0D4B75;
             border-radius: 10px;
-            color: rgba(255,255,255,0.84);
+            color: rgba(255,255,255,0.92);
             font-size: 0.95rem;
             font-family: inherit;
             text-align: left;
@@ -356,6 +367,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
 
         .fixed-dropdown-toggle.filled {
@@ -379,7 +392,7 @@
             cursor: not-allowed;
             opacity: 1;
             background: #0D4B75;
-            color: rgba(255,255,255,0.84);
+            color: rgba(255,255,255,0.92);
         }
 
         .fixed-dropdown-menu {
@@ -454,7 +467,7 @@
         .custom-entry {
             margin-top: 0.75rem;
             background: #0D4B75;
-            color: rgba(255,255,255,0.84);
+            color: rgba(255,255,255,0.92);
             border: 1px solid #0D4B75;
             border-radius: 10px;
             padding: 0.75rem;
@@ -463,6 +476,8 @@
             font-family: inherit;
             box-sizing: border-box;
             transition: all 0.3s ease;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
 
         .custom-entry::placeholder {
@@ -912,24 +927,32 @@
                             </div>
                             <div class="form-group">
                                 <label for="collegeName">College/University Name <span class="required">*</span></label>
-                                <select id="collegeName" name="collegeName" required>
-                                    <option value="">Select College/University</option>
-                                    <option value="IIT Hyderabad">IIT Hyderabad</option>
-                                    <option value="NIT Warangal">NIT Warangal</option>
-                                    <option value="JNTU Hyderabad">JNTU Hyderabad</option>
-                                    <option value="Osmania University">Osmania University</option>
-                                    <option value="Andhra University">Andhra University</option>
-                                    <option value="SV University Tirupati">SV University Tirupati</option>
-                                    <option value="KL University">KL University</option>
-                                    <option value="Vignan University">Vignan University</option>
-                                    <option value="GITAM University">GITAM University</option>
-                                    <option value="BITS Pilani Hyderabad">BITS Pilani Hyderabad</option>
-                                    <option value="University of Hyderabad">University of Hyderabad</option>
-                                    <option value="Kakatiya University">Kakatiya University</option>
-                                    <option value="SR University">SR University</option>
-                                    <option value="Mahindra University">Mahindra University</option>
-                                    <option value="Other">Other</option>
-                                </select>
+                                <input type="text" id="collegeName" name="collegeName" list="collegeNameOptions" placeholder="Type or select college/university" required autocomplete="off">
+                                <datalist id="collegeNameOptions">
+                                    <option value="IIT Hyderabad"></option>
+                                    <option value="JNTU Hyderabad"></option>
+                                    <option value="Osmania University"></option>
+                                    <option value="University of Hyderabad"></option>
+                                    <option value="NIT Warangal"></option>
+                                    <option value="Kakatiya University"></option>
+                                    <option value="Mahindra University"></option>
+                                    <option value="SR University"></option>
+                                    <option value="Andhra University"></option>
+                                    <option value="Andhra University College of Engineering"></option>
+                                    <option value="JNTU Kakinada"></option>
+                                    <option value="JNTU Anantapur"></option>
+                                    <option value="Sri Venkateswara University"></option>
+                                    <option value="SV University Tirupati"></option>
+                                    <option value="Krishna University"></option>
+                                    <option value="Acharya Nagarjuna University"></option>
+                                    <option value="KL University"></option>
+                                    <option value="Vignan University"></option>
+                                    <option value="GITAM University"></option>
+                                    <option value="VIT-AP University"></option>
+                                    <option value="SRM University AP"></option>
+                                    <option value="GVP College of Engineering"></option>
+                                    <option value="RVR & JC College of Engineering"></option>
+                                </datalist>
                             </div>
                             <div class="form-group">
                                 <label for="yearOfPassing">Year of Passing <span class="required">*</span></label>
