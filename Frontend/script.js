@@ -3126,6 +3126,15 @@ if (registrationForm) {
                 // 1. Store user session immediately so they are "Logged In"
                 localStorage.setItem('userEmail', email); 
                 localStorage.setItem('hasSignedUp', '1');
+                // Clear any previous completion state so first-time step-2 entry won't
+                // get treated like a fully completed application.
+                try {
+                    localStorage.removeItem('isApplicationDone');
+                    localStorage.removeItem('applicationCompleted');
+                    sessionStorage.removeItem('applicationCompleted');
+                } catch {
+                    // ignore
+                }
                 
                 // Store registration data for the next form
                 const regData = { fullName, email, phone };
@@ -3157,6 +3166,7 @@ if (registrationForm) {
                 if (!editMode) {
                     try { localStorage.setItem('isRegistered', 'true'); } catch {};
                     try { sessionStorage.setItem('justRegistered', '1'); } catch {}
+                    try { sessionStorage.setItem('pendingApplicationStep', '2'); } catch {}
                     // Keep older compatibility keys
                     try { localStorage.setItem('hasSignedUp', '1'); } catch {}
                     showNotification('Registration successful! Opening Step 2...', 'success');
@@ -3206,8 +3216,16 @@ if (registrationForm) {
             // --- Local Backup Success Fallback ---
             localStorage.setItem('userEmail', email); 
             localStorage.setItem('hasSignedUp', '1');
+            try {
+                localStorage.removeItem('isApplicationDone');
+                localStorage.removeItem('applicationCompleted');
+                sessionStorage.removeItem('applicationCompleted');
+            } catch {
+                // ignore
+            }
             try { localStorage.setItem('isRegistered', 'true'); } catch {};
             try { sessionStorage.setItem('justRegistered', '1'); } catch {}
+            try { sessionStorage.setItem('pendingApplicationStep', '2'); } catch {}
             
             const regData = { fullName, email, phone };
             sessionStorage.setItem('registrationData', JSON.stringify(regData));

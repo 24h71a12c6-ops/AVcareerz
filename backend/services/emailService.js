@@ -256,7 +256,7 @@ const sendAdminEmail = async (user, customSubject = null) => {
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f7fafc; margin: 0; padding: 20px; }
           .container { max-width: 650px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
-          .header { background: #002147; color: #ffffff; padding: 24px; text-align: center; }
+          .header { background: #0D4B75; color: #ffffff; padding: 24px; text-align: center; }
           .header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
           .content { padding: 32px 24px; }
           .table-wrapper { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-top: 16px; }

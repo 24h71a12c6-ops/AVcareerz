@@ -85,8 +85,8 @@
 	.logo {
 		flex: 0 1 auto;
 		min-width: 0;
-		/* styles.css adds left margin; on desktop we rely on container padding instead */
-		margin-left: 0;
+		/* Shift logo slightly towards the Home button */
+		margin-left: clamp(1rem, 3vw, 4rem);
 		gap: 10px;
 	}
 
@@ -95,8 +95,9 @@
 	}
 
 	.navbar-logo-img {
-		height: clamp(38px, 3vw, 54px);
+		height: clamp(44px, 3.4vw, 60px);
 		width: auto;
+		transform: translateY(5px);
 	}
 
 	.logo-name {
@@ -113,8 +114,9 @@
 		min-width: 0;
 		justify-content: center;
 		flex-wrap: nowrap;
-		gap: clamp(0.5rem, 1vw, 1.1rem);
+		gap: clamp(36px, 2.5vw, 48px);
 		margin-left: 0;
+		margin-right: 0;
 	}
 
 	/* Keep every nav item on the same line */
@@ -127,7 +129,8 @@
 	}
 
 	.nav-right {
-		gap: clamp(8px, 1vw, 14px);
+		gap: clamp(8px, 1vw, 16px);
+		margin-right: clamp(1.5rem, 3.5vw, 4.5rem);
 	}
 
 	.nav-profile .profile-trigger {
@@ -143,34 +146,13 @@
 	}
 
 	#about.about-final-revised .feature-list-premium li {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		white-space: nowrap;
-		flex-wrap: nowrap;
-		font-size: clamp(0.82rem, 0.9vw, 0.95rem);
-		line-height: 1.35;
-	}
+		#about.about-final-revised .feature-copy {
+			min-width: max-content;
+			overflow: visible;
+			text-overflow: clip;
+		}
 
-	#about.about-final-revised .feature-label,
-	#about.about-final-revised .feature-copy {
-		display: inline;
-		white-space: nowrap;
-	}
-
-	#about.about-final-revised .feature-label {
-		justify-content: flex-start;
-		text-align: left;
-		min-width: max-content;
-	}
-
-	#about.about-final-revised .feature-copy {
-		min-width: max-content;
-		overflow: visible;
-		text-overflow: clip;
-	}
-
-	#about.about-final-revised .feature-colon {
+		height: 95px !important;
 		display: inline-block;
 		width: auto;
 		text-align: center;
@@ -229,11 +211,13 @@
 		width: min(86vw, 340px) !important;
 		max-height: calc(100vh - 92px) !important;
 		overflow-y: auto;
-		background: rgba(255, 255, 255, 0.94) !important;
-		backdrop-filter: blur(14px) !important;
-		-webkit-backdrop-filter: blur(14px) !important;
-		border: 1px solid rgba(15, 23, 42, 0.08) !important;
-		box-shadow: 0 18px 50px rgba(2, 6, 23, 0.22) !important;
+		/* Make the dropdown completely opaque pure white and remove glass/blur effects */
+		background: #ffffff !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+		/* Remove outline/shadow marks so the panel appears pure white */
+		border: none !important;
+		box-shadow: none !important;
 		border-radius: 14px !important;
 		padding: 8px 0 !important;
 		margin: 0 !important;
@@ -333,7 +317,7 @@
 	}
 
 	.nav-menu {
-		gap: 0.55rem;
+		gap: 0.8rem;
 	}
 
 	.nav-menu li a {
@@ -736,11 +720,12 @@
 		overflow-x: hidden;
 		-webkit-overflow-scrolling: touch;
 		z-index: 999999 !important;
-		background: rgba(255, 255, 255, 0.92) !important;
-		backdrop-filter: blur(14px) !important;
-		-webkit-backdrop-filter: blur(14px) !important;
-		border: 1px solid rgba(15, 23, 42, 0.08) !important;
-		box-shadow: 0 18px 50px rgba(2, 6, 23, 0.22) !important;
+		/* Mobile: force pure white background and remove glass/shadow artifacts */
+		background: #ffffff !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+		border: none !important;
+		box-shadow: none !important;
 		padding: 8px 0 !important;
 		margin: 0 !important;
 		border-radius: 14px !important;
@@ -1355,54 +1340,63 @@
 	margin-bottom: 15px !important;
 	border-radius: 8px !important;
 	border-left-width: 5px !important;
-	max-width: 800px !important; /* Elegant, readable width on desktop viewports */
+	max-width: 800px !important;
+	/* Elegant, readable width on desktop viewports */
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04) !important;
 	box-sizing: border-box !important;
 }
 
 .university-card h3 {
-	font-size: 1.3rem !important; /* Standout, prominent university name */
+	font-size: 1.3rem !important;
+	/* Standout, prominent university name */
 	line-height: 1.3 !important;
 	font-weight: 700 !important;
 	margin-bottom: 5px !important;
 }
 
 .university-card .location {
-	font-size: 0.8rem !important; /* Reduced size */
+	font-size: 0.8rem !important;
+	/* Reduced size */
 	margin-bottom: 8px !important;
 }
 
 .university-card p {
-	font-size: 0.82rem !important; /* Reduced size */
+	font-size: 0.82rem !important;
+	/* Reduced size */
 	line-height: 1.4 !important;
 	margin-bottom: 10px !important;
 }
 
 .university-card .intake-meta {
-	font-size: 0.8rem !important; /* Reduced size */
+	font-size: 0.8rem !important;
+	/* Reduced size */
 	margin-bottom: 10px !important;
 }
 
 .university-card .course-toggle summary {
-	font-size: 0.8rem !important; /* Reduced size */
+	font-size: 0.8rem !important;
+	/* Reduced size */
 	padding: 7px 15px !important;
 }
 
 .university-card .program-tag {
-	font-size: 0.68rem !important; /* Reduced size globally */
+	font-size: 0.68rem !important;
+	/* Reduced size globally */
 }
 
 .university-card .requirements-list li {
-	font-size: 0.78rem !important; /* Reduced size */
+	font-size: 0.78rem !important;
+	/* Reduced size */
 }
 
 .university-card .fee-box p {
-	font-size: 0.78rem !important; /* Reduced size */
+	font-size: 0.78rem !important;
+	/* Reduced size */
 }
 
 /* ==========================================================================
    Central Override: Force University Section Elements to use Brand Navy Blue
    ========================================================================== */
 :root {
-	--dark-blue: #002147 !important;
+	--dark-blue: #0D4B75 !important;
 }

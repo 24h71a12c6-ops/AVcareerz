@@ -78,7 +78,7 @@ const sendInstantAlert = async (type, payload = {}) => {
     const email = data.email || 'N/A';
     const source = data.source || 'Website';
 
-    const headerColor = type === 'partial' ? '#eab308' : '#002147';
+    const headerColor = type === 'partial' ? '#eab308' : '#0D4B75';
 
     let alertDescription = 'An alert has been triggered from the system. Details are provided below:';
     if (type === 'partial') {
