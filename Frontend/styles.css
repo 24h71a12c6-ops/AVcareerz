@@ -2792,35 +2792,39 @@ footer,
 /* When modal is open, show as fixed overlay */
 body.reg-modal-open .reg-main-container {
     position: fixed;
-    inset: 16px;
+    inset: 0;
     z-index: 20001;
-    padding: 16px;
+    padding: 20px;
     background-color: transparent;
-    overflow-y: auto;
+    overflow: hidden; /* Prevent background scroll */
+    display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .reg-flex-card {
     display: flex;
     width: 100%;
-    max-width: 1000px;
-    /* Fixed width to prevent breaking */
+    max-width: 900px; /* Reduced width */
+    height: auto;
+    max-height: 95vh; /* Ensure it fits in viewport */
     background: #ffffff;
-    border-radius: 30px;
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(13, 75, 117, 0.1);
+    border-radius: 20px;
+    overflow: hidden; /* Scroll inside if needed */
+    box-shadow: 0 20px 40px rgba(13, 75, 117, 0.2);
+    position: relative;
 }
 
 /* Registration modal overlay + modal mode */
 .reg-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 360ms ease;
+    transition: opacity 300ms ease;
     z-index: 20000;
 }
 
@@ -2900,21 +2904,29 @@ body.reg-modal-open .reg-flex-card {
 
 .reg-modal-close {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-    border: 1px solid rgba(13, 75, 117, 0.15);
-    background: rgba(255, 255, 255, 0.95);
-    color: #0D4B75;
-    font-size: 26px;
+    top: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #ffffff;
+    color: #333;
+    font-size: 24px;
     line-height: 1;
     display: none;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 10;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.reg-modal-close:hover {
+    background: #f8f8f8;
+    color: #E43E16;
+    transform: scale(1.1);
 }
 
 body.reg-modal-open .reg-modal-close {
@@ -2930,7 +2942,7 @@ body.reg-modal-open .reg-modal-close {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-height: 550px;
+    min-height: 450px; /* Reduced from 550px */
 }
 
 .reg-illustration {
@@ -2972,7 +2984,7 @@ body.reg-modal-open .reg-modal-close {
 /* Right Side - Form Styling */
 .reg-right-side {
     flex: 1;
-    padding: 50px;
+    padding: 35px 40px; /* Reduced from 50px */
     background: white;
     display: flex;
     flex-direction: column;
@@ -2980,7 +2992,7 @@ body.reg-modal-open .reg-modal-close {
 
 .reg-header {
     color: #0D4B75 !important;
-    font-size: 2.2rem;
+    font-size: 2.8rem; /* Larger header size */
     font-weight: 800;
     margin-bottom: 5px;
 }
@@ -3162,13 +3174,15 @@ body.reg-modal-open .reg-modal-close {
 }
 
 #registration-section .reg-header {
-    font-size: 1.9rem;
+    font-size: 3rem !important;
     margin-bottom: 4px;
+    font-weight: 900;
 }
 
 #registration-section .reg-sub-header {
-    font-size: 1rem;
+    font-size: 0.95rem !important;
     margin-bottom: 20px;
+    text-transform: none;
 }
 
 #registration-section .reg-input-group {
@@ -3294,12 +3308,100 @@ body.reg-modal-open .reg-modal-close {
 
 /* Mobile View */
 @media (max-width: 992px) {
+    body.reg-modal-open .reg-main-container {
+        padding: 10px;
+        align-items: center; /* Center form on mobile if image is hidden */
+    }
+
     .reg-flex-card {
         flex-direction: column;
+        border-radius: 20px;
+        max-height: 95vh;
+        width: 100%;
+        max-width: 450px; /* Standard mobile form width */
+        margin: 0 auto;
     }
 
     .reg-left-side {
-        min-height: 300px;
+        display: none !important; /* Hide image entirely on mobile */
+    }
+
+    .reg-right-side {
+        padding: 30px 20px !important; /* Proper padding for form-only view */
+    }
+
+    .reg-header {
+        font-size: 1.8rem !important;
+        margin-bottom: 5px !important;
+    }
+
+    .reg-modal-close {
+        top: 15px;
+        right: 15px;
+        z-index: 1001;
+        background: #f0f0f0;
+        border: 1px solid #ddd;
+    }
+}
+
+/* Fixed Stepper Styles */
+.custom-stepper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    margin: 20px 0 !important;
+    width: 100% !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.step-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    background: transparent !important;
+}
+
+.step-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.step-num {
+    width: 22px !important; /* Reduced from 26px */
+    height: 22px !important;
+    background: #e5e7eb !important;
+    color: #4b5563 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important; /* Reduced from 14px */
+    font-weight: 800 !important;
+    flex-shrink: 0 !important;
+}
+
+.step-item.active .step-num {
+    background: #16a34a !important;
+    color: white !important;
+}
+
+.step-text {
+    font-size: 7px !important; /* Smaller step text */
+    font-weight: 500 !important;
+    color: #16a34a !important;
+    text-transform: none !important;
+    display: block !important;
+    line-height: 1.1 !important;
+}
+
+@media (max-width: 992px) {
+    .step-text {
+        font-size: 6px !important;
+    }
+    .custom-stepper {
+        margin: 12px 0 !important;
     }
 }
 
@@ -8720,6 +8822,20 @@ footer {
 }
 
 @media (max-width: 768px) {
+    #about.about-final-revised .about-wrapper {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    #about.about-final-revised .collage-container {
+        height: 360px;
+    }
+
+    #about.about-final-revised .info-header {
+        align-items: center;
+        text-align: center;
+    }
+
     #about.about-final-revised .feature-list-premium li {
         grid-template-columns: 22px 1fr;
         align-items: start;

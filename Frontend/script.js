@@ -540,27 +540,27 @@ const updateRegistrationProgressCue = () => {
     if (!step1 || !step2) return;
 
     if (isApplicationCompleted()) {
-        step1.textContent = 'Step 1';
+        step1.textContent = 'Step 1: complete register form';
         step1.style.color = '#16a34a';
         step1.style.opacity = '1';
-        step2.textContent = 'Step 2';
+        step2.textContent = 'Step 2: complete application form';
         step2.style.color = '#16a34a';
         step2.style.opacity = '1';
         return;
     }
 
     if (isRegisteredUser()) {
-        step1.textContent = 'Step 1';
+        step1.textContent = 'Step 1: complete register form';
         step1.style.color = '#16a34a';
         step1.style.opacity = '1';
-        step2.textContent = 'Step 2';
+        step2.textContent = 'Step 2: complete application form';
         step2.style.color = '#16a34a';
         step2.style.opacity = '1';
     } else {
-        step1.textContent = 'Step 1';
+        step1.textContent = 'Step 1: complete register form';
         step1.style.color = '#16a34a';
         step1.style.opacity = '1';
-        step2.textContent = 'Step 2';
+        step2.textContent = 'Step 2: complete application form';
         step2.style.color = '#16a34a';
         step2.style.opacity = '1';
     }
@@ -1544,7 +1544,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             try {
                 google.accounts.id.initialize({
-                    client_id: "197244342804-86t5fr3u2eqg44b9gbck58omfegnjlcl.apps.googleusercontent.com",
+                    client_id: "788852105404-mq7k0ta6pc8vbehol821fro4fohtplrg.apps.googleusercontent.com",
                     callback: handleCredentialResponse,
                     auto_select: false,
                     cancel_on_tap_outside: true

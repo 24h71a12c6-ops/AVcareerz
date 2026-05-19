@@ -210,17 +210,17 @@
           <li>
             <i class="fas fa-check"></i>
             <span class="feature-label"><strong>Strategic University Mapping :</strong></span>
-            <span class="feature-copy">Tailored selection based on profile.</span>
+            <span class="feature-copy">We thoroughly analyze your academic profile, budget, and career goals to select the perfect-fit universities tailored exclusively for you.</span>
           </li>
           <li>
             <i class="fas fa-check"></i>
             <span class="feature-label"><strong>Comprehensive Process Support :</strong></span>
-            <span class="feature-copy">End-to-end guidance and documentation.</span>
+            <span class="feature-copy">From filling out initial applications to handling complex documentation, we provide end-to-end guidance every step of the way.</span>
           </li>
           <li>
             <i class="fas fa-check"></i>
             <span class="feature-label"><strong>Expert Visa-service Assistance :</strong></span>
-            <span class="feature-copy">Precise filing and rigorous mock interview drills.</span>
+            <span class="feature-copy">We ensure precise visa filing and conduct rigorous mock interview drills to maximize your confidence and approval chances.</span>
           </li>
         </ul>
 
@@ -818,12 +818,15 @@
 
   <!--registration-->
   <section class="reg-main-container" id="registration-section">
-    <div class="reg-flex-card">
+    <div class="reg-flex-card" style="position: relative;">
+      <button type="button" class="reg-modal-close" id="regModalClose" aria-label="Close registration">
+        &times;
+      </button>
 
       <div class="reg-left-side" style="background: none; position: relative; min-height: 550px;">
         <img
-          src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1771072032/my_website_images/student-assisted.png"
-          alt="Student Assisted" decoding="async"
+          src="images/register.png"
+          alt="Register" decoding="async"
           style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;"
           loading="lazy">
         <div
@@ -841,20 +844,10 @@
       </div>
 
       <div class="reg-right-side">
-        <button type="button" class="reg-modal-close" id="regModalClose" aria-label="Close registration">
-          &times;
-        </button>
-
 
         <div id="signupPanel" class="auth-panel">
           <h1 class="reg-header" style="text-align: left; width: 100%;">Register Here</h1>
-          <p class="reg-sub-header" style="text-align: left; width: 100%;">Start your journey with us</p>
-          <div id="registrationStepper" style="text-align: left; margin: 12px 0 20px 0; font-size: 0.95rem; font-weight: 700; color: #16a34a; letter-spacing: 0.5px;">
-            <span id="regStep1">Step 1</span>
-            <span style="margin: 0 8px; opacity: 0.5;">&lt;</span>
-            <span id="regStep2">Step 2</span>
-          </div>
-
+          <p class="reg-sub-header" style="text-align: center; width: 100%;">Start your global journey today</p>
           <form id="registrationForm" class="reg-form-logic" autocomplete="off">
             <div class="reg-input-group">
               <i class="fas fa-user"></i>
