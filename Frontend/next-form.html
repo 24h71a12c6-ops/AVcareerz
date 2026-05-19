@@ -257,6 +257,17 @@
             color: #ffffff;
         }
 
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .form-group input.filled,
+        .form-group textarea.filled,
+        .form-group select.filled {
+            background: #f8fbff;
+            border-color: #c7d6ea;
+            color: #0b1220 !important;
+        }
+
         .form-group select {
             min-height: 52px;
             cursor: pointer;
@@ -268,6 +279,11 @@
             background-position: right 1rem center;
             background-size: 14px 14px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        }
+
+        .form-group select.filled,
+        .form-group select:focus {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230b1220'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
         }
 
         .form-group select:disabled {
@@ -298,9 +314,9 @@
         .form-group input.filled,
         .form-group textarea.filled,
         .form-group select.filled {
-            background: #0D4B75;
-            border: 2px solid #0D4B75;
-            color: #ffffff !important;
+            background: #f8fbff;
+            border: 2px solid #c7d6ea;
+            color: #0b1220 !important;
             box-shadow: none;
         }
 
@@ -315,7 +331,7 @@
         }
 
         .form-group select:focus {
-            color: #0D4B75 !important;
+            color: #0b1220 !important;
         }
 
         .fixed-dropdown-shell {
@@ -343,9 +359,9 @@
         }
 
         .fixed-dropdown-toggle.filled {
-            background: #0D4B75;
-            border-color: #0D4B75;
-            color: #ffffff;
+            background: #f8fbff;
+            border-color: #c7d6ea;
+            color: #0b1220;
         }
 
         .fixed-dropdown-toggle::after {
@@ -456,16 +472,16 @@
         .custom-entry:focus {
             outline: none;
             background: #ffffff;
-            color: #0D4B75;
+            color: #0b1220;
             border-color: #4A90E2;
             box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
             transform: translateY(-2px);
         }
 
         .custom-entry.filled {
-            background: #0D4B75;
-            color: #ffffff;
-            border-color: #0D4B75;
+            background: #f8fbff;
+            color: #0b1220;
+            border-color: #c7d6ea;
         }
 
         h2.personal-info-title {
