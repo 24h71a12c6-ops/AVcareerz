@@ -926,7 +926,7 @@ html body {
         font-size: 1rem;
         padding-left: 10px;
         max-width: 100vw;
-        border-left: 3px solid #f39c12;
+        border-left: 3px solid #E43E16;
     }
 
     .visa-types-grid {
@@ -1259,7 +1259,7 @@ html body {
 }
 
 .hero-desc-container {
-    border-left: 4px solid #f39c12;
+    border-left: 4px solid #E43E16;
     padding-left: 20px;
     max-width: 700px;
     opacity: 0.92;
@@ -1271,7 +1271,7 @@ html body {
     color: #fff;
     max-width: 700px;
     padding-left: 20px;
-    border-left: 4px solid #f39c12;
+    border-left: 4px solid #E43E16;
     /* That yellow line you want */
     line-height: 1.6;
 }
@@ -1319,7 +1319,7 @@ html body {
     color: #fff;
     max-width: 650px;
     padding-left: 18px;
-    border-left: 4px solid #f39c12;
+    border-left: 4px solid #E43E16;
     line-height: 1.6;
     opacity: 0.92;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
@@ -1391,7 +1391,7 @@ html body {
     margin-top: auto;
     align-self: center;
     padding: 12px 26px;
-    background: #002147;
+    background: #0D4B75;
     color: white;
     text-decoration: none;
     font-weight: 600;
@@ -1412,7 +1412,7 @@ html body {
     height: 35px;
     line-height: 35px;
 
-    background: #002147;
+    background: #0D4B75;
     padding: 0 50px;
 
     display: flex;
@@ -1452,14 +1452,14 @@ html body {
     width: 30px;
     height: 30px;
     border-radius: 999px;
-    color: #F9A825;
+    color: #E43E16;
     text-decoration: none;
     transition: transform .3s ease, color .3s ease, background-color .18s ease;
 }
 
 .top-bar .social-link:hover,
 .top-bar .contact-item:hover {
-    color: #F9A825;
+    color: #E43E16;
 }
 
 .top-bar .social-link:hover {
@@ -1499,7 +1499,7 @@ html body {
 
 .top-bar .social-links a:hover {
     transform: scale(1.2) translateY(-5px);
-    color: #F9A825;
+    color: #E43E16;
     background: rgba(255, 255, 255, 0.16);
 }
 
@@ -1660,7 +1660,7 @@ html body {
     border-radius: 999px;
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: #ffffff;
-    color: #002147;
+    color: #0D4B75;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1671,14 +1671,14 @@ html body {
 .nav-profile .profile-trigger:hover {
     transform: translateY(-1px);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.10);
-    border-color: rgba(249, 168, 37, 0.55);
+    border-color: rgba(228, 62, 22, 0.55);
 }
 
 .nav-profile .profile-avatar {
     width: 28px;
     height: 28px;
     border-radius: 999px;
-    background: #F9A825;
+    background: #E43E16;
     color: #ffffff;
     display: inline-flex;
     align-items: center;
@@ -1733,7 +1733,7 @@ html body {
     border-radius: 10px;
     /* Normal font weight (less clumsy) */
     font-weight: 500;
-    color: #002147;
+    color: #0D4B75;
     cursor: pointer;
     font-size: 0.95rem;
     line-height: 1.15;
@@ -1753,7 +1753,7 @@ html body {
 }
 
 .nav-profile .profile-item:hover {
-    background: rgba(249, 168, 37, 0.15);
+    background: rgba(228, 62, 22, 0.15);
 }
 
 /* Profile submenu (Saved details) */
@@ -1782,13 +1782,13 @@ html body {
     padding: 12px 14px;
     border-radius: 12px;
     border: 1px solid rgba(0, 0, 0, 0.08);
-    background: rgba(0, 33, 71, 0.03);
+    background: rgba(13, 75, 117, 0.03);
 }
 
 .nav-profile .profile-subtitle {
     font-size: 0.72rem;
     font-weight: 800;
-    color: rgba(0, 33, 71, 0.7);
+    color: rgba(13, 75, 117, 0.7);
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 10px;
@@ -1808,7 +1808,7 @@ html body {
 }
 
 .nav-profile .profile-saved-key {
-    color: rgba(0, 33, 71, 0.65);
+    color: rgba(13, 75, 117, 0.65);
     font-weight: 800;
     flex: 1;
 }
@@ -1834,7 +1834,7 @@ html body {
 }
 
 .nav-profile .profile-item.profile-item--secondary:hover {
-    background: rgba(249, 168, 37, 0.12);
+    background: rgba(228, 62, 22, 0.12);
 }
 
 /* Profile modal */
@@ -1875,13 +1875,13 @@ html body {
     padding-right: 64px;
     /* room for the close button */
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    background: linear-gradient(135deg, rgba(0, 33, 71, 0.06), rgba(249, 168, 37, 0.10));
+    background: linear-gradient(135deg, rgba(13, 75, 117, 0.06), rgba(228, 62, 22, 0.10));
 }
 
 .profile-modal-header h2 {
     margin: 0;
     font-size: 1.2rem;
-    color: #002147;
+    color: #0D4B75;
 }
 
 .profile-modal-close {
@@ -1891,9 +1891,9 @@ html body {
     width: 40px;
     height: 40px;
     border-radius: 999px;
-    border: 1px solid rgba(0, 33, 71, 0.15);
+    border: 1px solid rgba(13, 75, 117, 0.15);
     background: rgba(255, 255, 255, 0.95);
-    color: #002147;
+    color: #0D4B75;
     font-size: 26px;
     line-height: 1;
     display: inline-flex;
@@ -1921,7 +1921,7 @@ html body {
 
 .profile-section h3 {
     margin: 0 0 12px 0;
-    color: #002147;
+    color: #0D4B75;
     font-size: 1rem;
 }
 
@@ -1941,7 +1941,7 @@ html body {
 .profile-label {
     font-size: 0.78rem;
     font-weight: 700;
-    color: rgba(0, 33, 71, 0.7);
+    color: rgba(13, 75, 117, 0.7);
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 6px;
@@ -2009,8 +2009,8 @@ html body {
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(249, 168, 37, 0.18);
-    border: 2px solid #F9A825;
+    box-shadow: 0 8px 30px rgba(228, 62, 22, 0.18);
+    border: 2px solid #E43E16;
 }
 
 .card img {
@@ -2020,21 +2020,21 @@ html body {
 
 .card-icon {
     font-size: 3rem;
-    color: #002147;
+    color: #0D4B75;
     margin-bottom: 15px;
     display: inline-block;
     transition: all 0.3s ease;
 }
 
 .card:hover .card-icon {
-    color: #F9A825;
+    color: #E43E16;
     transform: scale(1.1);
 }
 
 .card h3 {
     font-size: 20px;
     margin-bottom: 12px;
-    color: #002147;
+    color: #0D4B75;
 }
 
 .card p {
@@ -2080,7 +2080,7 @@ html body {
 
 /* Orange info box for next-form.html */
 .form-info {
-    background: linear-gradient(90deg, #002147 0%, #F9A825 100%);
+    background: linear-gradient(90deg, #0D4B75 0%, #E43E16 100%);
     color: #fff;
     padding: 1.1em 1.5em;
     border-radius: 10px;
@@ -2090,7 +2090,7 @@ html body {
     align-items: center;
     gap: 0.7em;
     margin-bottom: 1.5em;
-    box-shadow: 0 2px 12px rgba(0, 33, 71, 0.10);
+    box-shadow: 0 2px 12px rgba(13, 75, 117, 0.10);
 }
 
 /* Performance hints */
@@ -2159,7 +2159,7 @@ html body {
 .process-title {
     font-size: 2.6rem;
     font-weight: 800;
-    color: #002147;
+    color: #0D4B75;
     text-align: center;
     margin-bottom: 2.5rem;
     letter-spacing: 1px;
@@ -2233,7 +2233,7 @@ html body {
     }
 
     .social-link:hover {
-        color: #F9A825;
+        color: #E43E16;
         /* orange on hover */
     }
 
@@ -2254,7 +2254,7 @@ html body {
 .step-content h4 {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #002147;
+    color: #0D4B75;
     margin-bottom: 0.3rem;
 }
 
@@ -2285,7 +2285,7 @@ html body {
 .countries-title {
     font-size: 2.6rem;
     font-weight: 800;
-    color: #002147;
+    color: #0D4B75;
     text-align: center;
     margin-bottom: 2rem;
     letter-spacing: 1px;
@@ -2318,7 +2318,7 @@ html body {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 33, 71, 0.6);
+    background: rgba(13, 75, 117, 0.6);
     /* Navy blue tint for hero */
     z-index: 2;
 }
@@ -2343,10 +2343,10 @@ html body {
     line-height: 1.7;
     font-weight: 400;
     letter-spacing: 0.2px;
-    text-shadow: 0 1px 8px rgba(0, 33, 71, 0.10);
-    border-left: 4px solid #F9A825;
+    text-shadow: 0 1px 8px rgba(13, 75, 117, 0.10);
+    border-left: 4px solid #E43E16;
     padding-left: 1.2em;
-    background: rgba(0, 33, 71, 0.08);
+    background: rgba(13, 75, 117, 0.08);
     border-radius: 0 8px 8px 0;
 }
 
@@ -2390,18 +2390,18 @@ html body {
     padding: 30px 20px;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    border-top: 4px solid #002147;
+    border-top: 4px solid #0D4B75;
     transition: 0.3s;
 }
 
 .info-card:hover {
     transform: translateY(-10px);
-    border-top-color: #F9A825;
+    border-top-color: #E43E16;
     /* Hover chesthe box top line orange */
 }
 
 .info-card h3 i {
-    color: #F9A825 !important;
+    color: #E43E16 !important;
     /* Icons eppudu orange lone undali */
 }
 
@@ -2436,7 +2436,7 @@ html body {
     gap: 8px;
     padding: 8px 15px;
     background: #f0f4f8;
-    color: #002147;
+    color: #0D4B75;
     text-decoration: none;
     border-radius: 20px;
     font-weight: 600;
@@ -2446,10 +2446,10 @@ html body {
 }
 
 .nav-back-btn:hover {
-    background: #F9A825;
+    background: #E43E16;
     /* Hover chesthe orange */
     color: white;
-    border-color: #F9A825;
+    border-color: #E43E16;
 }
 
 /* Nav menu items right side fixed ga undalante */
@@ -2467,14 +2467,14 @@ html body {
 /* ...existing code... */
 /* Navigation links hover effect */
 .nav-links a:hover {
-    color: #F9A825 !important;
+    color: #E43E16 !important;
     /* Orange color when mouse is hovered */
     transition: 0.3s ease;
 }
 
 /* Specific fix for active/hover line if you have any */
 .nav-links a::after {
-    background-color: #F9A825 !important;
+    background-color: #E43E16 !important;
 }
 
 /* Section Background */
@@ -2537,7 +2537,7 @@ html body {
     align-items: center;
     justify-content: center;
     border: 1px solid rgba(255, 255, 255, 0.35);
-    border-bottom: 4px solid #F9A825;
+    border-bottom: 4px solid #E43E16;
     backdrop-filter: blur(1.2px);
     box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
     transition: all 0.3s ease;
@@ -2546,21 +2546,21 @@ html body {
 
 .big-card i {
     font-size: 38px;
-    color: #F9A825;
+    color: #E43E16;
     margin-bottom: 15px;
 }
 
 .big-card span {
     font-size: 1rem;
     font-weight: 700;
-    color: #002147;
+    color: #0D4B75;
     line-height: 1.3;
 }
 
 /* Blue Hover Effect */
 .big-card:hover {
     transform: translateY(-10px) scale(1.01);
-    background: #002147;
+    background: #0D4B75;
     border-bottom-color: #ffffff;
     box-shadow: 0 18px 46px rgba(0, 0, 0, 0.52);
 }
@@ -2608,7 +2608,7 @@ html body {
 }
 
 .services-premium-section .orange {
-    color: #F9A825;
+    color: #E43E16;
 }
 
 /* Clear Session Button — allows users to reset stored data without DevTools */
@@ -2625,7 +2625,7 @@ html body {
 }
 
 .clear-session-btn:hover {
-    color: #F9A825;
+    color: #E43E16;
     opacity: 0.8;
 }
 
@@ -2671,10 +2671,9 @@ html body {
     color: #9ca3af;
 }
 
-/* 1. Footer Main Background */
 footer,
 .final-footer {
-    background-color: #00152e !important;
+    background-color: #003554 !important;
     /* Pure Dark Navy Blue */
     color: #ffffff !important;
     padding: 60px 0 30px !important;
@@ -2695,7 +2694,7 @@ footer,
 /* 3. Footer Headings */
 .footer-container h3,
 .footer-container h4 {
-    color: #F9A825 !important;
+    color: #E43E16 !important;
     /* Registration button orange tho match avtundi */
     margin-bottom: 20px;
     font-weight: 700;
@@ -2718,7 +2717,7 @@ footer,
 }
 
 .footer-links ul li a:hover {
-    color: #F9A825 !important;
+    color: #E43E16 !important;
     /* Hover chesinappudu orange */
     padding-left: 8px;
 }
@@ -2745,10 +2744,10 @@ footer,
 }
 
 .social-icons a:hover {
-    background-color: #F9A825 !important;
+    background-color: #E43E16 !important;
     /* Orange background on hover */
     transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(249, 168, 37, 0.3);
+    box-shadow: 0 10px 15px rgba(228, 62, 22, 0.3);
 }
 
 /* 6. Footer Bottom / Copyright */
@@ -2774,9 +2773,9 @@ footer,
 }
 
 .final-signup-btn:hover {
-    background-color: #e69612 !important;
+    background-color: #E43E16 !important;
     /* Koncham dark orange */
-    box-shadow: 0 10px 20px rgba(249, 168, 37, 0.4);
+    box-shadow: 0 10px 20px rgba(228, 62, 22, 0.4);
     /* Glow effect */
     transform: translateY(-2px);
     /* Paiki lechinattu untundi */
@@ -2809,7 +2808,7 @@ body.reg-modal-open .reg-main-container {
     background: #ffffff;
     border-radius: 30px;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 33, 71, 0.1);
+    box-shadow: 0 20px 40px rgba(13, 75, 117, 0.1);
 }
 
 /* Registration modal overlay + modal mode */
@@ -2906,9 +2905,9 @@ body.reg-modal-open .reg-flex-card {
     width: 40px;
     height: 40px;
     border-radius: 999px;
-    border: 1px solid rgba(0, 33, 71, 0.15);
+    border: 1px solid rgba(13, 75, 117, 0.15);
     background: rgba(255, 255, 255, 0.95);
-    color: #002147;
+    color: #0D4B75;
     font-size: 26px;
     line-height: 1;
     display: none;
@@ -2925,7 +2924,7 @@ body.reg-modal-open .reg-modal-close {
 /* Left Side - Navy Blue & Image */
 .reg-left-side {
     flex: 1;
-    background-color: #002147;
+    background-color: #0D4B75;
     /* Dark Navy Blue */
     position: relative;
     display: flex;
@@ -2958,7 +2957,7 @@ body.reg-modal-open .reg-modal-close {
 }
 
 .orange-text {
-    color: #F9A825 !important;
+    color: #E43E16 !important;
     font-size: 2.5rem;
     margin: 0;
     font-weight: 800;
@@ -2980,14 +2979,14 @@ body.reg-modal-open .reg-modal-close {
 }
 
 .reg-header {
-    color: #002147 !important;
+    color: #0D4B75 !important;
     font-size: 2.2rem;
     font-weight: 800;
     margin-bottom: 5px;
 }
 
 .reg-sub-header {
-    color: #F9A825 !important;
+    color: #E43E16 !important;
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 30px;
@@ -3010,7 +3009,7 @@ body.reg-modal-open .reg-modal-close {
 .auth-footer-btn {
     border: none;
     background: transparent;
-    color: #002147;
+    color: #0D4B75;
     font-weight: 800;
     cursor: pointer;
     text-decoration: underline;
@@ -3021,7 +3020,7 @@ body.reg-modal-open .reg-modal-close {
     margin-top: 12px;
     border: none;
     background: transparent;
-    color: #F9A825;
+    color: #E43E16;
     font-weight: 700;
     cursor: pointer;
     text-decoration: underline;
@@ -3031,7 +3030,7 @@ body.reg-modal-open .reg-modal-close {
 
 .forgot-password-link:hover,
 .forgot-back-link:hover {
-    color: #e69612;
+    color: #E43E16;
 }
 
 /* Input Boxes with Navy Blue Icons */
@@ -3045,7 +3044,7 @@ body.reg-modal-open .reg-modal-close {
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #002147;
+    color: #0D4B75;
     /* Navy Blue Icons */
 }
 
@@ -3056,7 +3055,7 @@ body.reg-modal-open .reg-modal-close {
     border-radius: 12px;
     background: #f9fafb;
     outline: none;
-    color: #002147;
+    color: #0D4B75;
     font-size: 1rem;
 }
 
@@ -3065,7 +3064,7 @@ body.reg-modal-open .reg-modal-close {
 .reg-btn-orange {
     width: 100%;
     padding: 16px;
-    background-color: #F9A825 !important;
+    background-color: #E43E16 !important;
     /* Orange */
     /* Destinations section title white */
     color: #fff !important;
@@ -3095,7 +3094,7 @@ body.reg-modal-open .reg-modal-close {
 }
 
 .reg-btn-orange:hover {
-    background-color: #e69612 !important;
+    background-color: #E43E16 !important;
     color: #fff !important;
     color: #fff !important;
     transform: translateY(-2px);
@@ -3110,7 +3109,7 @@ body.reg-modal-open .reg-modal-close {
 #registration-section .reg-btn-orange {
     padding: 11px;
     font-size: 1rem;
-    background-color: rgba(0, 33, 71, 0.92) !important;
+    background-color: rgba(13, 75, 117, 0.92) !important;
     color: #fff !important;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -3118,7 +3117,7 @@ body.reg-modal-open .reg-modal-close {
 }
 
 #registration-section .reg-btn-orange:hover {
-    background-color: #F9A825 !important;
+    background-color: #E43E16 !important;
     color: #fff !important;
     transform: translateY(-1px);
 }
@@ -3139,7 +3138,7 @@ body.reg-modal-open .reg-modal-close {
     border-radius: 10px;
     border: 1px solid #d1d5db;
     background: #ffffff;
-    color: #002147;
+    color: #0D4B75;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3149,7 +3148,7 @@ body.reg-modal-open .reg-modal-close {
 }
 
 #registration-section #googleFallbackBtn:hover {
-    border-color: #F9A825;
+    border-color: #E43E16;
     background: #f9fafb;
     transform: translateY(-1px);
 }
@@ -3268,7 +3267,7 @@ body.reg-modal-open .reg-modal-close {
     justify-content: center;
     gap: 10px;
     font-weight: 600;
-    color: #002147;
+    color: #0D4B75;
     cursor: pointer;
 }
 
@@ -3314,7 +3313,7 @@ body.reg-modal-open .reg-modal-close {
 .submit-button {
     width: 100%;
     padding: 16px;
-    background-color: #00152e !important;
+    background-color: #0D4B75 !important;
     color: white;
     border: none;
     border-radius: 10px;
@@ -3325,9 +3324,9 @@ body.reg-modal-open .reg-modal-close {
 }
 
 .submit-button:hover {
-    background-color: #F9A825 !important;
+    background-color: #E43E16 !important;
     /* Orange Hover */
-    box-shadow: 0 10px 20px rgba(249, 168, 37, 0.3);
+    box-shadow: 0 10px 20px rgba(228, 62, 22, 0.3);
 }
 
 /* Mobile responsive */
@@ -3398,11 +3397,11 @@ body.reg-modal-open .reg-modal-close {
     border: none;
     /* remove orange border */
     /* orange glow similar to visa cards */
-    box-shadow: 0 24px 60px rgba(249, 147, 38, 0.18), 0 6px 18px rgba(249, 147, 38, 0.10);
+    box-shadow: 0 24px 60px rgba(228, 62, 22, 0.18), 0 6px 18px rgba(228, 62, 22, 0.10);
 }
 
 .destination-card:hover .view-details-btn {
-    color: #F9A825 !important;
+    color: #E43E16 !important;
     /* Orange on hover */
 }
 
@@ -3410,13 +3409,13 @@ body.reg-modal-open .reg-modal-close {
     display: inline-block;
     margin-top: 10px;
     font-weight: bold;
-    color: #002147;
+    color: #0D4B75;
     transition: 0.3s;
 }
 
 /* --- 3. FOOTER (NAVY BLUE) --- */
 footer {
-    background-color: #001f4d;
+    background-color: #003554;
     /* True Navy Blue */
     color: white;
     padding: 60px 0 20px 0;
@@ -3432,7 +3431,7 @@ footer {
 /* Icons and Links Hover */
 .footer-section ul li a:hover,
 .social-icons a:hover {
-    color: #F9A825;
+    color: #E43E16;
 }
 
 .footer-bottom {
@@ -3566,7 +3565,7 @@ footer {
 
 /* --- Statistics Bar Styling --- */
 .premium-stats-bar {
-    background: linear-gradient(135deg, #F9A825 0%, #e69612 100%) !important;
+    background: linear-gradient(135deg, #E43E16 0%, #E43E16 100%) !important;
     /* Orange gradient */
     border-radius: 60px !important;
     /* Round Capsule Look */
@@ -3644,9 +3643,9 @@ footer {
     --primary-color: #4A90E2;
     --secondary-color: #5DADE2;
     --accent-color: #85C1E9;
-    --dark-blue: #2C5F8D;
-    --navy: #002147;
-    --orange: #F9A825;
+    --dark-blue: #0D4B75;
+    --navy: #0D4B75;
+    --orange: #E43E16;
     --white: #FFFFFF;
     --light-bg: #F8F9FA;
     --text-dark: #2C3E50;
@@ -3780,7 +3779,7 @@ header {
 .profile-circle {
     width: 40px;
     height: 40px;
-    background-color: #F9A825;
+    background-color: #E43E16;
     /* Orange */
     color: white;
     border-radius: 50%;
@@ -3790,13 +3789,13 @@ header {
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(249, 168, 37, 0.3);
+    box-shadow: 0 2px 8px rgba(228, 62, 22, 0.3);
     border: 2px solid transparent;
 }
 
 .profile-circle:hover {
     transform: scale(1.1);
-    background-color: #e69612;
+    background-color: #E43E16;
     border-color: #fff;
 }
 
@@ -3846,7 +3845,7 @@ header {
 }
 
 .dropdown-menu li a:hover {
-    background: #F9A825;
+    background: #E43E16;
     color: #fff;
 }
 
@@ -3875,15 +3874,15 @@ header {
 .register-cta-button {
     display: inline-block;
     margin-top: 25px;
-    padding: 15px 40px;
-    background: #F9A825;
-    color: #002147;
+    padding: 14px 36px;
+    background: #E43E16;
+    color: #ffffff;
     text-decoration: none;
     font-weight: 700;
     border-radius: 50px;
     transition: 0.3s;
     text-transform: uppercase;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -3891,20 +3890,64 @@ header {
 
 .register-cta-button:hover {
     background: #fff;
-    color: #002147;
+    color: #0D4B75;
     transform: scale(1.05);
 }
 
 /* Centralized Registration Section */
 .register-section {
     text-align: center;
-    padding: 60px;
-    background: #002147 !important;
+    padding: 40px 50px;
+    background: #0D4B75 !important;
     /* Navy Blue */
     color: #ffffff !important;
     border-radius: 20px;
-    margin: 50px auto 0 !important;
-    max-width: 900px !important;
+    margin: 40px auto 0 !important;
+    max-width: 800px !important;
+    box-sizing: border-box !important;
+}
+
+.register-section h2 {
+    font-size: 2.1rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    line-height: 1.25;
+}
+
+.register-section p {
+    font-size: 1.05rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Responsive Minimize for Registration Card */
+@media (max-width: 768px) {
+    .register-section {
+        width: calc(100% - 48px) !important; /* Leaves exactly 24px gap on both sides */
+        margin: 30px auto 0 !important; /* Perfectly centers the card horizontally */
+        padding: 20px 16px !important;
+        border-radius: 12px !important;
+        box-sizing: border-box !important;
+        display: block !important;
+    }
+    
+    .register-section h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 6px !important;
+        font-weight: 700 !important;
+        line-height: 1.3 !important;
+    }
+    
+    .register-section p {
+        font-size: 0.85rem !important;
+        line-height: 1.35 !important;
+    }
+    
+    .register-cta-button {
+        margin-top: 14px !important;
+        padding: 8px 20px !important;
+        font-size: 0.82rem !important;
+    }
 }
 
 /* Shared country-page treatment: subtle textured background like About Us */
@@ -3942,8 +3985,8 @@ body.country-page .universities-section::before {
     pointer-events: none;
     z-index: 0;
     background-image:
-        linear-gradient(rgba(0, 33, 71, 0.09) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 33, 71, 0.09) 1px, transparent 1px),
+        linear-gradient(rgba(13, 75, 117, 0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(13, 75, 117, 0.09) 1px, transparent 1px),
         linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.36) 50%, transparent 62%);
     background-size: 40px 40px, 40px 40px, 240% 240%;
     background-position: 0 0, 0 0, 120% 0;
@@ -3995,6 +4038,26 @@ body.country-page .register-section>* {
     z-index: 1;
 }
 
+/* Ensure register card is always centered on all pages (override any layout quirks) */
+.register-section,
+body.country-page .register-section {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    max-width: 900px !important;
+    width: calc(100% - 48px) !important;
+    box-sizing: border-box !important;
+}
+
+/* Nudge the register card slightly to the left on medium+ screens */
+@media (min-width: 900px) {
+    .register-section,
+    body.country-page .register-section {
+        /* Ensure the card sits exactly centered (no horizontal nudge) */
+        transform: none !important;
+    }
+}
+
 @keyframes countryGridShineSweep {
     0% {
         background-position: 0 0, 0 0, 120% 0;
@@ -4032,8 +4095,8 @@ body.country-page .register-section>* {
 }
 
 .nav-menu li a:hover {
-    color: #F9A825;
-    background: rgba(249, 168, 37, 0.12);
+    color: #E43E16;
+    background: rgba(228, 62, 22, 0.12);
     border-radius: 6px;
 }
 
@@ -4170,8 +4233,8 @@ body.country-page .register-section>* {
 }
 
 .coaching-card:hover {
-    border-color: #F9A825;
-    box-shadow: 0 18px 40px rgba(249, 168, 37, 0.18);
+    border-color: #E43E16;
+    box-shadow: 0 18px 40px rgba(228, 62, 22, 0.18);
 }
 
 .coaching-image {
@@ -4194,19 +4257,18 @@ body.country-page .register-section>* {
 }
 
 .coaching-body {
-    padding: 36px;
+    padding: 30px 36px;
     text-align: left;
     width: 55%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-bottom: 72px;
 }
 
 .coaching-body .prep-text {
     display: inline-block;
     margin-top: 18px;
-    background: #F9A825 !important;
+    background: #E43E16 !important;
     color: #fff !important;
     text-decoration: none;
     cursor: pointer;
@@ -4219,7 +4281,7 @@ body.country-page .register-section>* {
 }
 
 .coaching-body .prep-text:hover {
-    background: #e69612 !important;
+    background: #E43E16 !important;
     transform: translateY(-2px);
 }
 
@@ -4229,9 +4291,11 @@ body.country-page .register-section>* {
 }
 
 .coaching-body h3 {
+    margin-top: 15px; /* Push heading down to prevent clipping */
     margin-bottom: 12px;
     font-size: 1.6rem;
     color: #072a40;
+    line-height: 1.3;
 }
 
 .coaching-body p {
@@ -4268,9 +4332,8 @@ body.country-page .register-section>* {
 
     .coaching-body {
         width: 100%;
-        padding: 20px;
+        padding: 24px 20px;
         text-align: center;
-        padding-bottom: 52px;
     }
 
     .ribbon {
@@ -4598,7 +4661,7 @@ body.country-page .register-section>* {
 
 .card-body h3 {
     margin: 0 0 10px;
-    color: #002147;
+    color: #0D4B75;
     /* Navy Blue */
     font-size: 1.4rem;
 }
@@ -4612,7 +4675,7 @@ body.country-page .register-section>* {
 /* View Details Button */
 .view-details-btn {
     display: inline-block;
-    color: #002147;
+    color: #0D4B75;
     font-weight: 700;
     font-size: 0.9rem;
     text-transform: uppercase;
@@ -4626,11 +4689,11 @@ body.country-page .register-section>* {
     transform: translateY(-8px);
     border: none;
     /* remove orange border */
-    box-shadow: 0 24px 60px rgba(249, 147, 38, 0.18), 0 6px 18px rgba(249, 147, 38, 0.10);
+    box-shadow: 0 24px 60px rgba(228, 62, 22, 0.18), 0 6px 18px rgba(228, 62, 22, 0.10);
 }
 
 .destination-card:hover .view-details-btn {
-    color: #F9A825 !important;
+    color: #E43E16 !important;
     /* Orange Color */
     padding-left: 8px;
     /* Arrow move ayinattu kanipistundi */
@@ -4638,7 +4701,7 @@ body.country-page .register-section>* {
 
 /* --- FOOTER (NAVY BLUE) --- */
 footer {
-    background-color: #002147;
+    background-color: #003554;
     /* Navy Blue */
     color: #ffffff;
     padding: 60px 0 20px 0;
@@ -4653,7 +4716,7 @@ footer {
 
 .footer-section h3,
 .footer-section h4 {
-    color: #F9A825;
+    color: #ffffff;
     margin-bottom: 20px;
 }
 
@@ -4669,7 +4732,7 @@ footer {
 }
 
 .footer-section ul li a:hover {
-    color: #F9A825;
+    color: #E43E16;
     /* Footer links hover orange */
 }
 
@@ -4681,7 +4744,7 @@ footer {
 }
 
 .social-icons a:hover {
-    color: #F9A825;
+    color: #E43E16;
     /* Social icons hover orange */
 }
 
@@ -4882,13 +4945,13 @@ footer {
 .footer-section h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-    color: #F9A825;
+    color: #ffffff;
 }
 
 .footer-section h4 {
     font-size: 1.2rem;
     margin-bottom: 1rem;
-    color: #F9A825;
+    color: #ffffff;
 }
 
 .footer-section p {
@@ -4911,7 +4974,7 @@ footer {
 }
 
 .footer-section ul li a:hover {
-    color: #F9A825;
+    color: #E43E16;
 }
 
 .social-icons {
@@ -4942,7 +5005,7 @@ footer {
 
 .social-icons a:hover {
     background: rgba(255, 255, 255, 0.16);
-    color: #F9A825;
+    color: #E43E16;
     transform: translateY(-3px);
 }
 
@@ -6095,7 +6158,7 @@ footer {
 
 .promo-accent {
     width: 18px;
-    background: linear-gradient(180deg, #ff9f1c, #f97316);
+    background: linear-gradient(180deg, #E43E16, #E43E16);
     transition: background 220ms ease, box-shadow 220ms ease, transform 180ms ease;
 }
 
@@ -6135,7 +6198,7 @@ footer {
 }
 
 .promo-features li i {
-    color: #f97316;
+    color: #E43E16;
 }
 
 .promo-cta {
@@ -6143,20 +6206,20 @@ footer {
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: linear-gradient(180deg, #f97316, #ff8a2b);
+    background: linear-gradient(180deg, #E43E16, #E43E16);
     color: #fff;
     padding: 12px 20px;
     border-radius: 30px;
     text-decoration: none;
     font-weight: 700;
-    box-shadow: 0 8px 20px rgba(249, 167, 42, 0.18);
+    box-shadow: 0 8px 20px rgba(228, 62, 22, 0.18);
     transition: background 220ms ease, box-shadow 220ms ease, transform 160ms ease;
 }
 
 /* Glow effect on the description box border when hovered */
 .description-box:hover,
 .promo-card:hover {
-    box-shadow: 0 18px 50px rgba(7, 42, 64, 0.12), 0 0 18px rgba(249, 147, 38, 0.12);
+    box-shadow: 0 18px 50px rgba(7, 42, 64, 0.12), 0 0 18px rgba(228, 62, 22, 0.12);
     transform: translateY(-4px);
 }
 
@@ -6288,7 +6351,7 @@ footer {
     transform: translateY(-8px);
     border: none;
     /* remove orange border */
-    box-shadow: 0 24px 60px rgba(249, 147, 38, 0.18), 0 6px 18px rgba(249, 147, 38, 0.10);
+    box-shadow: 0 24px 60px rgba(228, 62, 22, 0.18), 0 6px 18px rgba(228, 62, 22, 0.10);
 }
 
 .destination-card:hover .flag-wrap img {
@@ -6436,7 +6499,7 @@ footer {
     justify-content: center;
     padding: 1rem;
     transform: translateY(-5px);
-    border-color: #F9A825 !important;
+    border-color: #E43E16 !important;
     /* Orange, force for visibility */
 }
 
@@ -6625,16 +6688,16 @@ footer {
     background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
     color: var(--white);
     box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-    border: 2px solid #002147;
+    border: 2px solid #0D4B75;
     border-radius: 8px;
     transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(249, 168, 37, 0.25);
-    border-color: #F9A825;
-    background: linear-gradient(135deg, #F9A825 0%, #e69612 100%);
+    box-shadow: 0 6px 20px rgba(228, 62, 22, 0.25);
+    border-color: #E43E16;
+    background: linear-gradient(135deg, #E43E16 0%, #E43E16 100%);
     color: #fff;
 }
 
@@ -6644,7 +6707,7 @@ footer {
     text-align: center;
     font-size: 2.6rem;
     font-weight: 800;
-    color: #002147;
+    color: #0D4B75;
     margin-bottom: 1.2rem;
     letter-spacing: 1px;
 }
@@ -7321,7 +7384,7 @@ footer {
     margin-top: auto;
     align-self: center;
     padding: 12px 26px;
-    background: #002147;
+    background: #0D4B75;
     /* normal */
     color: white;
     text-decoration: none;
@@ -7450,7 +7513,7 @@ footer {
     /* Box orange ga marthundi */
     border-color: var(--orange);
     transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(249, 168, 37, 0.3);
+    box-shadow: 0 15px 30px rgba(228, 62, 22, 0.3);
 }
 
 /* Hover chesinappudu Icons mariyu Text white avvali */
@@ -8244,7 +8307,7 @@ footer {
     transform: translateY(-8px);
     border: none;
     /* remove orange border */
-    box-shadow: 0 24px 60px rgba(249, 147, 38, 0.18), 0 6px 18px rgba(249, 147, 38, 0.10);
+    box-shadow: 0 24px 60px rgba(228, 62, 22, 0.18), 0 6px 18px rgba(228, 62, 22, 0.10);
 }
 
 .destination-card i {
@@ -8386,8 +8449,8 @@ footer {
 
 /* About Us - final revised layout */
 #about.about-final-revised {
-    --navy: #002147;
-    --orange: #F9A825;
+    --navy: #0D4B75;
+    --orange: #E43E16;
     min-height: 100vh;
     padding: 70px 5%;
     font-family: 'Inter', sans-serif;
@@ -8408,8 +8471,8 @@ footer {
     pointer-events: none;
     z-index: 0;
     background-image:
-        linear-gradient(rgba(0, 33, 71, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 33, 71, 0.1) 1px, transparent 1px),
+        linear-gradient(rgba(13, 75, 117, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(13, 75, 117, 0.1) 1px, transparent 1px),
         linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.32) 50%, transparent 62%);
     background-size: 40px 40px, 40px 40px, 240% 240%;
     background-position: 0 0, 0 0, 120% 0;
@@ -8546,8 +8609,8 @@ footer {
     display: flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 0 12px 28px rgba(0, 33, 71, 0.18);
-    border: 1px solid rgba(0, 33, 71, 0.08);
+    box-shadow: 0 12px 28px rgba(13, 75, 117, 0.18);
+    border: 1px solid rgba(13, 75, 117, 0.08);
     z-index: 10;
 }
 
@@ -8579,7 +8642,7 @@ footer {
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(249, 168, 37, 0.12);
+    background: rgba(228, 62, 22, 0.12);
     color: var(--orange);
 }
 
@@ -8728,7 +8791,7 @@ footer {
     width: 250px;
     text-align: center;
     align-self: center;
-    box-shadow: 0 12px 24px rgba(0, 33, 71, 0.18);
+    box-shadow: 0 12px 24px rgba(13, 75, 117, 0.18);
     transition: 0.3s;
 }
 
@@ -8860,7 +8923,7 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 33, 71, 0.3);
+    background: rgba(13, 75, 117, 0.3);
     /* Navy blue tinted overlay */
     backdrop-filter: blur(4px);
     z-index: 20000;
@@ -8881,7 +8944,7 @@ footer {
     /* Hidden by default */
     width: 320px;
     height: 100%;
-    background: #002147;
+    background: #0D4B75;
     /* Navy Blue */
     color: #fff;
     z-index: 20001;
@@ -9068,12 +9131,11 @@ footer {
     padding: 24px 5vw 70px;
     overflow-x: auto !important;
     scroll-behavior: smooth !important;
-    scrollbar-width: thin !important;
+    scrollbar-width: none !important;
 }
 
 .destinations .destinations-layout .destinations-grid::-webkit-scrollbar {
-    display: block !important;
-    height: 8px !important;
+    display: none !important;
 }
 
 .destinations .destinations-layout .destinations-grid::-webkit-scrollbar-track {
@@ -9082,12 +9144,13 @@ footer {
 }
 
 .destinations .destinations-layout .destinations-grid::-webkit-scrollbar-thumb {
-    background: rgba(0, 33, 71, 0.3) !important; /* Brand Navy Blue transparent */
+    background: rgba(13, 75, 117, 0.3) !important;
+    /* Brand Navy Blue transparent */
     border-radius: 4px !important;
 }
 
 .destinations .destinations-layout .destinations-grid::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 33, 71, 0.6) !important;
+    background: rgba(13, 75, 117, 0.6) !important;
 }
 
 .destinations .destinations-grid .flag-wrap,
@@ -9181,13 +9244,73 @@ body.splash-active .navbar {
     margin: 0 auto;
 }
 
+/* Cinematic splash overrides */
+#splash-screen.cinematic {
+    background: #ffffff;
+}
+
+/* Cinematic: sharp left-to-right reveal */
+#splash-screen.cinematic .splash-container {
+    animation: none;
+    overflow: hidden;
+}
+
+#splash-screen.cinematic .splash-logo {
+    width: clamp(260px, 44vw, 720px);
+    transform-origin: left center;
+    /* slower, cinematic duration */
+    animation: cinematicLogo 3.6s cubic-bezier(.22, .9, .3, 1) both;
+    will-change: transform, opacity, filter, clip-path;
+    /* start fully clipped (hidden) on the right */
+    -webkit-clip-path: inset(0 100% 0 0);
+    clip-path: inset(0 100% 0 0);
+}
+
+@keyframes cinematicLogo {
+    0% {
+        opacity: 0;
+        transform: translateX(-60%) scale(0.82);
+        filter: blur(1px);
+        clip-path: inset(0 100% 0 0);
+    }
+
+    25% {
+        opacity: 1;
+        transform: translateX(-18%) scale(1.06);
+        filter: blur(0);
+        clip-path: inset(0 48% 0 0);
+    }
+
+    60% {
+        transform: translateX(6%) scale(1.02);
+        clip-path: inset(0 8% 0 0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: none;
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #splash-screen.cinematic .splash-logo {
+        animation: none !important;
+        -webkit-clip-path: none !important;
+        clip-path: none !important;
+        transform: none !important;
+        filter: none !important;
+    }
+}
+
 .brand-group {
     /* Logo ki title ki gap thagginche main point idi */
     margin-top: -15px;
 }
 
 .brand-name {
-    color: #002147;
+    color: #0D4B75;
     font-size: 2.8rem;
     font-weight: 700;
     margin-bottom: 0;
@@ -9198,7 +9321,7 @@ body.splash-active .navbar {
 }
 
 .tagline {
-    color: #002147;
+    color: #0D4B75;
     font-size: 1rem;
     letter-spacing: 2px;
     margin-top: 2px;
@@ -9233,7 +9356,7 @@ body.splash-active .navbar {
 .loading-fill {
     width: 0%;
     height: 100%;
-    background: linear-gradient(to right, #002147, #f39200);
+    background: linear-gradient(to right, #0D4B75, #f39200);
     animation: fillProgress 0.9s linear forwards;
 }
 
@@ -9291,7 +9414,7 @@ body.splash-active .navbar {
 
 /* ------------------------------
     Location / Map (Modern Square: big square map + clean glass card)
-    Brand colors: Orange #F9A825, Navy #002145
+    Brand colors: Orange #E43E16, Navy #002145
     ------------------------------ */
 .av-location-section {
     background: #fcfcfc;
@@ -9316,7 +9439,7 @@ body.splash-active .navbar {
     inset: 0;
     pointer-events: none;
     background:
-        radial-gradient(900px 520px at 20% 30%, rgba(249, 168, 37, 0.14), rgba(249, 168, 37, 0) 60%),
+        radial-gradient(900px 520px at 20% 30%, rgba(228, 62, 22, 0.14), rgba(228, 62, 22, 0) 60%),
         linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.70));
 }
 
@@ -9334,7 +9457,7 @@ body.splash-active .navbar {
 
 .modern-square-location .av-location-header .badge-orange {
     display: inline-block;
-    color: #F9A825;
+    color: #E43E16;
     font-weight: 800;
     letter-spacing: 1.6px;
     font-size: 12px;
@@ -9361,9 +9484,9 @@ body.splash-active .navbar {
     width: 86px;
     height: 4px;
     border-radius: 999px;
-    background: #F9A825;
+    background: #E43E16;
     margin: 0 auto;
-    box-shadow: 0 10px 25px rgba(249, 168, 37, 0.25);
+    box-shadow: 0 10px 25px rgba(228, 62, 22, 0.25);
 }
 
 .modern-square-location .location-grid {
@@ -9400,7 +9523,7 @@ body.splash-active .navbar {
     /* Map height ki match avthundi */
     padding: 40px !important;
     /* Spacing pencham */
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(249, 168, 37, 0.07));
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(228, 62, 22, 0.07));
     border: 1px solid rgba(0, 33, 69, 0.08);
     border-radius: 22px;
     box-shadow: 0 16px 40px rgba(0, 33, 69, 0.08);
@@ -9415,7 +9538,7 @@ body.splash-active .navbar {
 }
 
 .modern-square-location .label {
-    color: #F9A825;
+    color: #E43E16;
     font-weight: 700;
     font-size: 12px;
     letter-spacing: 1px;
@@ -9443,23 +9566,23 @@ body.splash-active .navbar {
 }
 
 .modern-square-location .loc-pill.active {
-    background: #F9A825;
+    background: #E43E16;
     /* Orange as requested */
     color: #ffffff !important;
     /* White Text */
     border: none;
-    box-shadow: 0 10px 22px rgba(249, 168, 37, 0.30);
+    box-shadow: 0 10px 22px rgba(228, 62, 22, 0.30);
 }
 
 .modern-square-location .loc-pill:hover {
     transform: translateY(-1px);
-    border-color: rgba(249, 168, 37, 0.55);
+    border-color: rgba(228, 62, 22, 0.55);
     box-shadow: 0 10px 22px rgba(0, 33, 69, 0.06);
 }
 
 .modern-square-location .loc-pill:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(249, 168, 37, 0.35), 0 10px 22px rgba(0, 33, 69, 0.06);
+    box-shadow: 0 0 0 3px rgba(228, 62, 22, 0.35), 0 10px 22px rgba(0, 33, 69, 0.06);
 }
 
 /* Icons & Text */
@@ -9472,7 +9595,7 @@ body.splash-active .navbar {
 }
 
 .modern-square-location .address-details i {
-    color: #F9A825;
+    color: #E43E16;
     margin-right: 12px;
     font-size: 18px;
     margin-top: 3px;
@@ -9674,7 +9797,7 @@ body.splash-active .navbar {
 }
 
 .modern-square-location .av-hours i {
-    color: #F9A825;
+    color: #E43E16;
 }
 
 /* Mobile: stack with equal gap */
@@ -9801,7 +9924,7 @@ body {
 .cursor-dot-glow {
     width: 12px;
     height: 12px;
-    background-color: #F9A825;
+    background-color: #E43E16;
     position: fixed;
     top: 0;
     left: 0;
@@ -9809,7 +9932,7 @@ body {
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
-    box-shadow: 0 0 6px 2px rgba(249, 168, 37, 0.35);
+    box-shadow: 0 0 6px 2px rgba(228, 62, 22, 0.35);
     margin-left: 2px;
     margin-top: 1px;
     transition: transform 0.1s ease-out;
@@ -9900,9 +10023,9 @@ body.section-focus-mode .page-section.is-blurred {
     gap: 6px;
     padding: 6px 10px;
     border-radius: 5px;
-    background: #002147;
+    background: #0D4B75;
     color: #fff;
-    border: 1px solid #002147;
+    border: 1px solid #0D4B75;
     text-decoration: none;
     font-size: 0.68rem;
     font-weight: 700;
@@ -9912,12 +10035,132 @@ body.section-focus-mode .page-section.is-blurred {
 }
 
 .course-register-btn:hover {
-    background: #002147;
-    border-color: #002147;
+    background: #0D4B75;
+    border-color: #0D4B75;
     transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0, 33, 71, 0.22);
+    box-shadow: 0 6px 14px rgba(13, 75, 117, 0.22);
 }
 
 .course-item.selected .course-register-btn {
     display: inline-flex;
+}
+
+/* Responsive adjustments for Visa Application Process Chain in visa-services.html */
+@media (max-width: 768px) {
+    .chain-content-row {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        padding: 0 15px !important;
+    }
+    
+    .chain-content-row .step-content {
+        max-width: 100% !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        text-align: center !important;
+        background: #f8fafc !important;
+        padding: 24px 20px !important;
+        border-radius: 16px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+        box-sizing: border-box !important;
+    }
+
+    .chain-content-row .step-content h4 {
+        font-size: 1.3rem !important;
+        margin-bottom: 8px !important;
+        color: #0D4B75 !important;
+        font-weight: 700 !important;
+    }
+
+    .chain-content-row .step-content p {
+        font-size: 0.95rem !important;
+        line-height: 1.5 !important;
+        color: #4b5563 !important;
+        margin: 0 !important;
+    }
+
+    .chain-arrow {
+        transform: rotate(90deg) !important;
+        font-size: 1.8rem !important;
+        margin: 10px 0 !important;
+        color: #E43E16 !important; /* Premium corporate orange accent */
+    }
+    
+    /* Process section custom titles padding */
+    .process-title {
+        font-size: 2.1rem !important;
+        margin-bottom: 1.5rem !important;
+        padding: 0 10px !important;
+    }
+}
+
+/* Registration modal split layout: equal halves for image and form */
+.reg-flex-card {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+    box-shadow: 0 8px 28px rgba(13,75,117,0.12);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.reg-left-side,
+.reg-right-side {
+    flex: 1 1 50%;
+    min-width: 0; /* allow content to shrink cleanly */
+    position: relative;
+}
+
+.reg-left-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* nudge image toward the form so composition feels balanced */
+    object-position: 60% center;
+    display: block;
+}
+
+.reg-text-overlay h2,
+.reg-text-overlay .orange-text,
+.reg-text-overlay p {
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+}
+
+.reg-right-side {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 34px 34px;
+}
+
+/* Slightly reduce overall form card width inside right side */
+.reg-right-side .auth-panel {
+    width: 100%;
+    max-width: 420px;
+}
+
+/* Mobile: stack vertically and restore spacing */
+@media (max-width: 900px) {
+    .reg-flex-card {
+        flex-direction: column;
+        max-width: calc(100% - 32px);
+        margin: 16px auto;
+        border-radius: 12px;
+    }
+
+    .reg-left-side,
+    .reg-right-side {
+        flex: none;
+        width: 100%;
+    }
+
+    .reg-right-side {
+        padding: 20px;
+    }
 }
