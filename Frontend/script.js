@@ -25,6 +25,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // If the splash has the `cinematic` class, force a 3s cinematic duration.
     if (!splash) return;
 
+    const shouldSkipSplash = (() => {
+        try {
+            const skipAfterSignin = sessionStorage.getItem('skipSplashAfterSignIn') === '1' || localStorage.getItem('skipSplashAfterSignIn') === '1';
+            if (skipAfterSignin) {
+                sessionStorage.removeItem('skipSplashAfterSignIn');
+                localStorage.removeItem('skipSplashAfterSignIn');
+                return true;
+            }
+        } catch {
+            // ignore
+        }
+        return false;
+    })();
+
+    if (shouldSkipSplash) {
+        try {
+            splash.remove();
+            body?.classList.remove('splash-active');
+            document.documentElement.classList.remove('splash-loading');
+        } catch {
+            // ignore
+        }
+        return;
+    }
+
     let SPLASH_DURATION_MS = (splash.classList && splash.classList.contains('cinematic')) ? 3000 : 700;
     const SPLASH_FADE_MS = 220;
 
@@ -1676,6 +1701,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Set a flag to prevent modals from opening on the next page
                 try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch { }
                 try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch { }
+                try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch { }
+                try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch { }
 
                 // Check if application was already completed by this user
                 if (isApplicationCompleted()) {
