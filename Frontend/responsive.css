@@ -685,6 +685,34 @@
 		touch-action: manipulation;
 	}
 
+	/* Remove the light-blue tap flash on mobile for all interactive elements */
+	a,
+	button,
+	input,
+	select,
+	textarea,
+	label,
+	summary,
+	[role="button"],
+	[onclick],
+	.nav-link,
+	.nav-menu a,
+	.social-links a,
+	.social-link,
+	.top-bar a,
+	.top-bar span.contact-item,
+	.cta-button,
+	.register-cta-button,
+	.prep-text,
+	.register-btn,
+	.register-scroll,
+	.promo-cta,
+	.btn-primary,
+	.btn-primary-massive {
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+
 	/* Keyboard accessibility (no visible box on tap/click; only on keyboard focus) */
 	#navToggle:focus-visible {
 		border-radius: 10px;
