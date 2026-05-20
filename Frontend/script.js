@@ -1553,6 +1553,56 @@ document.addEventListener("DOMContentLoaded", function () {
         updateProfileBadge();
     })();
 
+// Safety fallback: if profile icon wasn't injected (rare DOM timing/layout cases),
+// insert a minimal profile trigger after load so the navbar shows the account icon.
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        if (document.querySelector('.nav-profile')) return; // already present
+
+        const navbar = document.querySelector('.navbar .container') || document.querySelector('.navbar');
+        if (!navbar) return;
+
+        let navRight = navbar.querySelector('.nav-right');
+        if (!navRight) {
+            navRight = document.createElement('div');
+            navRight.className = 'nav-right';
+            navbar.appendChild(navRight);
+        }
+
+        const profile = document.createElement('div');
+        profile.className = 'nav-profile';
+        profile.setAttribute('data-profile-menu', 'true');
+        profile.innerHTML = `
+            <button type="button" class="profile-trigger" aria-haspopup="menu" aria-expanded="false" title="Account" aria-label="Account">
+                <span class="profile-avatar" data-avatar>
+                    <span class="avatar-initial" data-avatar-initial hidden>U</span>
+                    <i class="fa-solid fa-user avatar-icon" data-avatar-icon aria-hidden="true"></i>
+                </span>
+            </button>
+            <div class="profile-dropdown" role="menu">
+                <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
+                <button type="button" class="profile-item" data-action="profile" role="menuitem">Profile</button>
+                <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
+            </div>
+        `;
+
+        // append profile before hamburger if present
+        const toggle = navbar.querySelector('#navToggle');
+        if (toggle && toggle.parentElement === navRight) navRight.insertBefore(profile, toggle);
+        else navRight.appendChild(profile);
+
+        // Small hydration: attach click to open profile modal or auth flow
+        profile.querySelector('.profile-trigger')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isOpen = profile.classList.toggle('is-open');
+            profile.querySelector('.profile-trigger')?.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        // Update avatar state immediately
+        if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
+    } catch (err) { /* ignore fallback errors */ }
+});
+
     // 3. SMOOTH SCROLL & NAVIGATION
     const navLinks = document.querySelectorAll('.nav-menu a, .register-scroll');
     const sections = document.querySelectorAll('section[id]');
