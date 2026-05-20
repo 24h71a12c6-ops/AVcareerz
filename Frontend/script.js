@@ -100,6 +100,25 @@ document.addEventListener('DOMContentLoaded', () => {
             // ignore
         }
     }, Math.max(2200, SPLASH_DURATION_MS + SPLASH_FADE_MS + 500));
+
+    // Extra guarantee: force-remove the splash after an explicit timeout so it
+    // never remains stuck. Use slightly above the cinematic duration so users
+    // always see a 3s reveal when cinematic is present.
+    try {
+        const FORCE_REMOVE_MS = (splash && splash.classList && splash.classList.contains('cinematic')) ? 3200 : 1200;
+        setTimeout(() => {
+            try {
+                const s2 = document.getElementById('splash-screen');
+                if (s2 && s2.parentNode) s2.parentNode.removeChild(s2);
+                body?.classList.remove('splash-active');
+                document.documentElement.classList.remove('splash-loading');
+            } catch {
+                // ignore
+            }
+        }, FORCE_REMOVE_MS);
+    } catch {
+        // ignore
+    }
 });
 
 const glowDot = document.querySelector('.cursor-dot-glow');
