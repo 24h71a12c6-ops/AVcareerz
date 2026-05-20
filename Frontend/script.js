@@ -21,53 +21,37 @@
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
-    
-    // Check if user is already registered - if so, skip splash entirely
-    const userEmail = localStorage.getItem('userEmail');
-    const hasSignedUp = localStorage.getItem('hasSignedUp') === '1';
-    const isAlreadyRegistered = !!userEmail || hasSignedUp;
-    
+    // Show splash on every page load (both new and returning users).
     // If the splash has the `cinematic` class, force a 3s cinematic duration.
-    let SPLASH_DURATION_MS;
-    if (isAlreadyRegistered) {
-        // Skip splash for registered users
-        SPLASH_DURATION_MS = 0;
-    } else if (splash.classList && splash.classList.contains('cinematic')) {
-        SPLASH_DURATION_MS = 3000; // 3.0 seconds cinematic for new users
-    } else {
-        SPLASH_DURATION_MS = 700;
-    }
-    const SPLASH_FADE_MS = 220;
-
     if (!splash) return;
 
-    // Only show splash for new/unregistered users
-    if (!isAlreadyRegistered) {
-        body?.classList.add('splash-active');
-    }
+    let SPLASH_DURATION_MS = (splash.classList && splash.classList.contains('cinematic')) ? 3000 : 700;
+    const SPLASH_FADE_MS = 220;
+
+    // Always add the active class so CSS animations run consistently
+    body?.classList.add('splash-active');
 
     // Short splash (fast open)
     setTimeout(() => {
-        if (isAlreadyRegistered) {
-            // For registered users, remove splash immediately without fade
-            splash.remove();
-            body?.classList.remove('splash-active');
-            return;
-        }
-        
-        splash.classList.add('fade-away');
+        try {
+            splash.classList.add('fade-away');
 
-        setTimeout(() => {
-            splash.remove();
-            body?.classList.remove('splash-active');
-        }, SPLASH_FADE_MS);
+            setTimeout(() => {
+                try {
+                    if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+                } catch (e) { /* ignore */ }
+                body?.classList.remove('splash-active');
+            }, SPLASH_FADE_MS);
+        } catch (err) {
+            // ignore
+        }
     }, SPLASH_DURATION_MS);
 
     // Failsafe: never block the page on the splash for too long.
     setTimeout(() => {
         try {
-            if (!document.getElementById('splash-screen')) return;
-            splash.remove();
+            const s = document.getElementById('splash-screen');
+            if (s && s.parentNode) s.parentNode.removeChild(s);
             body?.classList.remove('splash-active');
         } catch {
             // ignore
