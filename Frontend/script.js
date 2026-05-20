@@ -91,6 +91,12 @@ document.addEventListener('av:show-registration', () => {
         if (typeof isApplicationCompleted === 'function' && isApplicationCompleted()) return;
         if (typeof isRegisteredUser === 'function' && isRegisteredUser()) return;
 
+        // Prefer the modal opener if available
+        if (typeof openRegModal === 'function') {
+            openRegModal();
+            return;
+        }
+
         if (typeof showRegistrationSection === 'function') {
             showRegistrationSection({ preferLogin: false });
         } else {
@@ -98,7 +104,10 @@ document.addEventListener('av:show-registration', () => {
             let attempts = 0;
             const t = setInterval(() => {
                 attempts += 1;
-                if (typeof showRegistrationSection === 'function') {
+                if (typeof openRegModal === 'function') {
+                    openRegModal();
+                    clearInterval(t);
+                } else if (typeof showRegistrationSection === 'function') {
                     showRegistrationSection({ preferLogin: false });
                     clearInterval(t);
                 } else if (attempts > 10) {
@@ -757,16 +766,31 @@ const showApplicationCompletedNotice = () => {
     }
 };
 const showRegistrationSection = ({ preferLogin = false } = {}) => {
+    // Prefer using the full modal opener when available so overlay and
+    // modal state are handled consistently.
+    try {
+        if (typeof openRegModal === 'function') {
+            openRegModal();
+            if (typeof setAuthMode === 'function') setAuthMode(preferLogin ? 'login' : 'signup');
+            return;
+        }
+    } catch (e) {
+        // fall through to fallback behavior
+    }
+
     const sect = document.getElementById('registration-section');
     if (sect) {
         sect.hidden = false;
-        // Clear any previous hard-hide override.
         sect.style.removeProperty('display');
     }
 
     const overlay = document.getElementById('regModalOverlay');
-    if (overlay) overlay.hidden = true;
-    document.body.classList.remove('reg-modal-open');
+    if (overlay) {
+        overlay.hidden = false;
+        overlay.style.removeProperty('display');
+    }
+    // Add class so CSS shows overlay and blurs background
+    document.body.classList.add('reg-modal-open');
 
     // If auth panels are already initialized, pick the right card.
     if (typeof setAuthMode === 'function') {
