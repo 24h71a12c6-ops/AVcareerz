@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
                 } catch (e) { /* ignore */ }
                 body?.classList.remove('splash-active');
-            }, SPLASH_FADE_MS);
+                document.documentElement.classList.remove('splash-loading');
+                }, SPLASH_FADE_MS);
         } catch (err) {
             // ignore
         }
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const s = document.getElementById('splash-screen');
             if (s && s.parentNode) s.parentNode.removeChild(s);
             body?.classList.remove('splash-active');
+                document.documentElement.classList.remove('splash-loading');
         } catch {
             // ignore
         }
@@ -457,6 +459,46 @@ const isApplicationCompleted = () => {
     if (localStorage.getItem('isApplicationDone') === 'true') return true;
     if (localStorage.getItem('applicationCompleted') === '1') return true;
     return false;
+};
+
+const fetchApplicationCompletedForEmail = async (email) => {
+    const safeEmail = String(email || '').trim();
+    if (!safeEmail) return null;
+
+    try {
+        const res = await fetch(apiUrl(`/api/check-application-status?email=${encodeURIComponent(safeEmail)}`));
+        const data = await res.json();
+        if (res.ok && data && data.success) {
+            return !!data.completed;
+        }
+    } catch (err) {
+        console.warn('Failed to fetch application status for', safeEmail, err);
+    }
+
+    return null;
+};
+
+const routeSignedInUserToCorrectPage = async () => {
+    const email = String(localStorage.getItem('userEmail') || '').trim();
+    if (!email) return false;
+
+    // Use cached flags first, then confirm with the backend if needed.
+    let completed = isApplicationCompleted();
+    if (!completed) {
+        const remoteCompleted = await fetchApplicationCompletedForEmail(email);
+        if (remoteCompleted === true) {
+            completed = true;
+            try {
+                localStorage.setItem('applicationCompleted', '1');
+                localStorage.setItem('isApplicationDone', 'true');
+            } catch {
+                // ignore
+            }
+        }
+    }
+
+    window.location.href = completed ? 'already-registered.html' : 'next-form.html';
+    return true;
 };
 
 // Auto-sync application completion status from the database on page load
@@ -1727,16 +1769,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.classList.remove('reg-modal-open');
         regOverlay.hidden = true;
 
-        openRegModal = () => {
-            // For registered users, show appropriate page based on application status
+        openRegModal = async () => {
+            // For registered users, go straight to the correct page for this email.
             if (isRegisteredUser()) {
-                if (isApplicationCompleted()) {
-                    // User already completed application
-                    window.location.href = 'already-registered.html';
-                } else {
-                    // User registered but hasn't completed application
-                    window.location.href = 'next-form.html';
-                }
+                await routeSignedInUserToCorrectPage();
                 return;
             }
 
@@ -1947,6 +1983,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     return; 
                 }
 
+                if (isRegisteredUser()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try { e.stopImmediatePropagation(); } catch { /* ignore */ }
+                    void routeSignedInUserToCorrectPage();
+                    return;
+                }
+
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -1957,7 +2001,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // Open the modal on the current page!
-                openRegModal();
+                void openRegModal();
             }
         }, true);
         }
