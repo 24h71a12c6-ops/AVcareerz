@@ -18,6 +18,71 @@
     }
 })();
 
+// Preemptive splash blocker: inject a short-lived CSS rule and MutationObserver
+// as early as possible so the splash cannot remain visible or be re-inserted
+// for long periods (covers environments where other scripts re-add the splash
+// or paint/paint stalls cause it to freeze). This is intentionally temporary
+// (removed after a timeout) so new users still see the intended cinematic.
+try {
+    (function preemptiveSplashBlock() {
+        const MAX_BLOCK_MS = 35000; // protect against long 33s+ stuck splash
+
+        // Inject blocking style
+        try {
+            const style = document.createElement('style');
+            style.id = 'splash-blocker-style';
+            style.textContent = '#splash-screen{display:none !important; opacity:0 !important; visibility:hidden !important; pointer-events:none !important;}';
+            (document.head || document.documentElement).appendChild(style);
+        } catch (e) {
+            /* ignore */
+        }
+
+        const removeSplashImmediate = () => {
+            try {
+                const s = document.getElementById('splash-screen');
+                if (s && s.parentNode) s.parentNode.removeChild(s);
+                document.body.classList.remove('splash-active');
+                document.documentElement.classList.remove('splash-loading');
+            } catch (err) { /* ignore */ }
+        };
+
+        // Observe and remove any splash nodes that get added during the protected window
+        try {
+            const mo = new MutationObserver((mutations) => {
+                for (const m of mutations) {
+                    if (!m.addedNodes) continue;
+                    for (const n of m.addedNodes) {
+                        try {
+                            if (n && n.id === 'splash-screen') {
+                                // remove and keep the blocker style in place
+                                if (n.parentNode) n.parentNode.removeChild(n);
+                            }
+                        } catch {}
+                    }
+                }
+            });
+
+            mo.observe(document.documentElement || document, { childList: true, subtree: true });
+
+            // Stop observing and remove the blocking style after MAX_BLOCK_MS
+            setTimeout(() => {
+                try { mo.disconnect(); } catch {}
+                try {
+                    const st = document.getElementById('splash-blocker-style');
+                    if (st && st.parentNode) st.parentNode.removeChild(st);
+                } catch {}
+            }, MAX_BLOCK_MS);
+        } catch (e) {
+            // ignore observer installation errors
+        }
+
+        // One-off immediate cleanup in case splash is already present
+        removeSplashImmediate();
+    })();
+} catch (e) {
+    // ignore
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
