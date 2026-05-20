@@ -39,6 +39,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return false;
     })();
 
+    // HOTFIX: If the user is already registered/signed-in, skip the cinematic splash
+    // entirely — this prevents returning users from seeing the splash when they
+    // sign-in with Google or click CTAs. New users will still see the cinematic.
+    try {
+        if (isRegisteredUser()) {
+            try {
+                if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+            } catch (e) {}
+            body?.classList.remove('splash-active');
+            document.documentElement.classList.remove('splash-loading');
+            return;
+        }
+    } catch {
+        // ignore
+    }
+
     if (shouldSkipSplash) {
         try {
             splash.remove();
