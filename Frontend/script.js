@@ -19,9 +19,9 @@
 })();
 
 // Preemptive splash protection: allow the intended cinematic to run for a
-// short time (3s), but after a small delay automatically hide/remove the
-// splash if it remains (covers the reported 33s stuck case). This avoids
-// hiding it immediately while preserving protection against long stalls.
+// short time (3s), then remove it as a fallback if it is still present.
+// This avoids hiding it immediately while preserving protection against
+// long stalls.
 try {
     (function preemptiveSplashBlock() {
         const WAIT_BEFORE_BLOCK_MS = 3500; // allow cinematic to run ~3s
@@ -70,33 +70,63 @@ try {
                     } catch {}
                 }, MAX_BLOCK_MS);
 
-                // One-off cleanup immediately after installing blocker
-                removeSplash();
+                // One-off cleanup only after the cinematic window has elapsed.
+                setTimeout(removeSplash, 50);
             } catch (e) {
                 // ignore
             }
         };
 
-        // Delay installer so the 3s cinematic can show for new users
-        try { setTimeout(installBlocker, WAIT_BEFORE_BLOCK_MS); } catch {}
+        // Delay installer so the 3s cinematic can show for new users.
+        // Add a tiny cushion so the splash has time to finish its fade.
+        try { setTimeout(installBlocker, WAIT_BEFORE_BLOCK_MS + 250); } catch {}
     })();
 } catch (e) {
     // ignore
 }
 
+// Recover scheduled registration popup if the inline script set sessionStorage but
+// the custom event was missed (e.g., script load ordering). This will open the
+// modal after the remaining time when appropriate.
+try {
+    (function recoverScheduledPopup() {
+        const should = sessionStorage.getItem('av:shouldShowRegistration') === '1';
+        const at = parseInt(sessionStorage.getItem('av:showRegistrationAt') || '0', 10) || 0;
+        if (!should || !at) return;
+        // Ignore stale schedules from previous visits in the same tab.
+        if (at <= Date.now() - 1000) {
+            try { sessionStorage.removeItem('av:shouldShowRegistration'); sessionStorage.removeItem('av:showRegistrationAt'); sessionStorage.removeItem('forceOpenRegistration'); } catch {}
+            return;
+        }
+        const remaining = Math.max(0, at - Date.now());
+        // Only attempt if on home page
+        try {
+            const path = String(window.location.pathname || '').toLowerCase();
+            const isHome = path === '/' || path.endsWith('/index.html');
+            if (!isHome) return;
+        } catch {
+            // ignore
+        }
+
+        // Only for logged-out users without completed application
+        try {
+            if (typeof isRegisteredUser === 'function' && isRegisteredUser()) return;
+            if (typeof isApplicationCompleted === 'function' && isApplicationCompleted()) return;
+        } catch {}
+
+        setTimeout(() => {
+            try {
+                if (typeof openRegModal === 'function') openRegModal();
+                else document.dispatchEvent(new Event('av:show-registration'));
+            } catch (e) { /* ignore */ }
+            try { sessionStorage.removeItem('av:shouldShowRegistration'); sessionStorage.removeItem('av:showRegistrationAt'); sessionStorage.removeItem('forceOpenRegistration'); } catch {}
+        }, remaining + 50);
+    })();
+} catch (e) { /* ignore */ }
+
 // Listen for the inline event to show the registration modal after the site opens
 document.addEventListener('av:show-registration', () => {
     try {
-        // Only show if user isn't already application-completed
-        if (typeof isApplicationCompleted === 'function' && isApplicationCompleted()) return;
-        if (typeof isRegisteredUser === 'function' && isRegisteredUser()) return;
-
-        // Prefer the modal opener if available
-        if (typeof openRegModal === 'function') {
-            openRegModal();
-            return;
-        }
-
         if (typeof showRegistrationSection === 'function') {
             showRegistrationSection({ preferLogin: false });
         } else {
@@ -104,10 +134,7 @@ document.addEventListener('av:show-registration', () => {
             let attempts = 0;
             const t = setInterval(() => {
                 attempts += 1;
-                if (typeof openRegModal === 'function') {
-                    openRegModal();
-                    clearInterval(t);
-                } else if (typeof showRegistrationSection === 'function') {
+                if (typeof showRegistrationSection === 'function') {
                     showRegistrationSection({ preferLogin: false });
                     clearInterval(t);
                 } else if (attempts > 10) {
@@ -115,6 +142,7 @@ document.addEventListener('av:show-registration', () => {
                 }
             }, 300);
         }
+        try { sessionStorage.removeItem('av:shouldShowRegistration'); sessionStorage.removeItem('av:showRegistrationAt'); } catch {}
     } catch (e) { /* ignore */ }
 });
 
@@ -138,22 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return false;
     })();
-
-    // HOTFIX: If the user is already registered/signed-in, skip the cinematic splash
-    // entirely — this prevents returning users from seeing the splash when they
-    // sign-in with Google or click CTAs. New users will still see the cinematic.
-    try {
-        if (isRegisteredUser()) {
-            try {
-                if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
-            } catch (e) {}
-            body?.classList.remove('splash-active');
-            document.documentElement.classList.remove('splash-loading');
-            return;
-        }
-    } catch {
-        // ignore
-    }
 
     if (shouldSkipSplash) {
         try {
@@ -240,9 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Run once immediately (best-effort)
-        ensureSplashRemoved();
-
         const mo = new MutationObserver((entries) => {
             for (const e of entries) {
                 if (e.addedNodes && e.addedNodes.length) {
@@ -260,6 +269,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Safety: disconnect after 10s to avoid keeping observer forever
         setTimeout(() => { try { mo.disconnect(); } catch {} }, 10000);
+
+        // After the 3-second cinematic, make one best-effort cleanup if the
+        // splash somehow still exists.
+        setTimeout(() => { try { ensureSplashRemoved(); } catch {} }, 3250);
     } catch (err) {
         // ignore observer errors
     }
@@ -789,7 +802,7 @@ const showRegistrationSection = ({ preferLogin = false } = {}) => {
         overlay.hidden = false;
         overlay.style.removeProperty('display');
     }
-    // Add class so CSS shows overlay and blurs background
+    // Ensure modal body class is present so CSS shows overlay and blurs background
     document.body.classList.add('reg-modal-open');
 
     // If auth panels are already initialized, pick the right card.
@@ -797,6 +810,7 @@ const showRegistrationSection = ({ preferLogin = false } = {}) => {
         setAuthMode(preferLogin ? 'login' : 'signup');
     }
 };
+try { window.showRegistrationSection = showRegistrationSection; } catch {}
 const hideRegistrationSection = () => {
     const sect = document.getElementById('registration-section');
     if (sect) {
@@ -1474,44 +1488,56 @@ document.addEventListener("DOMContentLoaded", function () {
         navbars.forEach((navbarEl) => {
             const host = navbarEl.querySelector('.container') || navbarEl;
             if (!host) return;
-            if (host.querySelector('[data-profile-menu="true"]')) return;
 
-            // Ensure a right-side wrapper so the icon stays on the right even on mobile
+            // Ensure a right-side wrapper so the icon stays on the right even on mobile.
+            // Prefer inserting it after the main nav menu so it visually sits on the
+            // right side; falling back to append at end if menu not found.
             let navRight = host.querySelector('.nav-right');
             if (!navRight) {
                 navRight = document.createElement('div');
                 navRight.className = 'nav-right';
-                host.appendChild(navRight);
+                const navMenu = host.querySelector('#navMenu, .nav-menu');
+                if (navMenu && navMenu.parentElement === host) {
+                    // insert after navMenu
+                    host.insertBefore(navRight, navMenu.nextSibling);
+                } else {
+                    host.appendChild(navRight);
+                }
             }
 
-            // Move existing hamburger into the right wrapper if present
+            // Move existing hamburger into the right wrapper if present, so it
+            // remains at the far right on small screens.
             const toggle = host.querySelector('#navToggle');
             if (toggle && toggle.parentElement !== navRight) {
                 navRight.appendChild(toggle);
             }
 
-            const profile = document.createElement('div');
-            profile.className = 'nav-profile';
-            profile.setAttribute('data-profile-menu', 'true');
-            profile.innerHTML = `
-                <button type="button" class="profile-trigger" aria-haspopup="menu" aria-expanded="false" title="Account" aria-label="Account">
-                    <span class="profile-avatar" data-avatar>
-                        <span class="avatar-initial" data-avatar-initial hidden>U</span>
-                        <i class="fa-solid fa-user avatar-icon" data-avatar-icon aria-hidden="true"></i>
-                    </span>
-                </button>
-                <div class="profile-dropdown" role="menu">
-                    <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
-                    <button type="button" class="profile-item" data-action="profile" role="menuitem">Profile</button>
-                    <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
-                </div>
-            `;
+            let profile = host.querySelector('[data-profile-menu="true"]');
+            if (!profile) {
+                profile = document.createElement('div');
+                profile.className = 'nav-profile';
+                profile.setAttribute('data-profile-menu', 'true');
+                profile.innerHTML = `
+                    <button type="button" class="profile-trigger" aria-haspopup="menu" aria-expanded="false" title="Account" aria-label="Account">
+                        <span class="profile-avatar" data-avatar>
+                            <span class="avatar-initial" data-avatar-initial hidden>U</span>
+                            <i class="fa-solid fa-user avatar-icon" data-avatar-icon aria-hidden="true"></i>
+                        </span>
+                    </button>
+                    <div class="profile-dropdown" role="menu">
+                        <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
+                        <button type="button" class="profile-item" data-action="profile" role="menuitem">Profile</button>
+                        <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
+                    </div>
+                `;
+            }
 
             // Put profile before hamburger (if any) so hamburger stays last
             if (toggle && toggle.parentElement === navRight) {
-                navRight.insertBefore(profile, toggle);
+                if (profile.parentElement !== navRight) navRight.insertBefore(profile, toggle);
+                else navRight.insertBefore(profile, toggle);
             } else {
-                navRight.appendChild(profile);
+                if (profile.parentElement !== navRight) navRight.appendChild(profile);
             }
 
             const trigger = profile.querySelector('.profile-trigger');
@@ -1552,56 +1578,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Initial render
         updateProfileBadge();
     })();
-
-// Safety fallback: if profile icon wasn't injected (rare DOM timing/layout cases),
-// insert a minimal profile trigger after load so the navbar shows the account icon.
-document.addEventListener('DOMContentLoaded', () => {
-    try {
-        if (document.querySelector('.nav-profile')) return; // already present
-
-        const navbar = document.querySelector('.navbar .container') || document.querySelector('.navbar');
-        if (!navbar) return;
-
-        let navRight = navbar.querySelector('.nav-right');
-        if (!navRight) {
-            navRight = document.createElement('div');
-            navRight.className = 'nav-right';
-            navbar.appendChild(navRight);
-        }
-
-        const profile = document.createElement('div');
-        profile.className = 'nav-profile';
-        profile.setAttribute('data-profile-menu', 'true');
-        profile.innerHTML = `
-            <button type="button" class="profile-trigger" aria-haspopup="menu" aria-expanded="false" title="Account" aria-label="Account">
-                <span class="profile-avatar" data-avatar>
-                    <span class="avatar-initial" data-avatar-initial hidden>U</span>
-                    <i class="fa-solid fa-user avatar-icon" data-avatar-icon aria-hidden="true"></i>
-                </span>
-            </button>
-            <div class="profile-dropdown" role="menu">
-                <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
-                <button type="button" class="profile-item" data-action="profile" role="menuitem">Profile</button>
-                <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
-            </div>
-        `;
-
-        // append profile before hamburger if present
-        const toggle = navbar.querySelector('#navToggle');
-        if (toggle && toggle.parentElement === navRight) navRight.insertBefore(profile, toggle);
-        else navRight.appendChild(profile);
-
-        // Small hydration: attach click to open profile modal or auth flow
-        profile.querySelector('.profile-trigger')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            const isOpen = profile.classList.toggle('is-open');
-            profile.querySelector('.profile-trigger')?.setAttribute('aria-expanded', String(isOpen));
-        });
-
-        // Update avatar state immediately
-        if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
-    } catch (err) { /* ignore fallback errors */ }
-});
 
     // 3. SMOOTH SCROLL & NAVIGATION
     const navLinks = document.querySelectorAll('.nav-menu a, .register-scroll');
@@ -1910,7 +1886,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function handleCredentialResponse(response) {
+    async function handleCredentialResponse(response) {
         console.log("Encoded JWT ID token: " + response.credential);
         showNotification('Successfully signed in with Google!', 'success');
 
@@ -2058,8 +2034,9 @@ document.addEventListener('DOMContentLoaded', () => {
         regOverlay.hidden = true;
 
         openRegModal = async () => {
+            const forceOpen = sessionStorage.getItem('forceOpenRegistration') === '1';
             // For registered users, go straight to the correct page for this email.
-            if (isRegisteredUser()) {
+            if (isRegisteredUser() && !forceOpen) {
                 await routeSignedInUserToCorrectPage();
                 return;
             }
