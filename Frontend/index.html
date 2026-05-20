@@ -48,6 +48,43 @@
     document.documentElement.classList.add('splash-loading');
   </script>
 
+  <script>
+    // Inline safety timer: ensure splash is removed after ~3s so it cannot get stuck.
+    (function() {
+      try {
+        const HIDE_MS = 3000; // show cinematic for 3s
+        const HIDE_FADE_MS = 220;
+        const POPUP_MS = 7000; // show registration popup after 7s
+
+        setTimeout(() => {
+          try {
+            const s = document.getElementById('splash-screen');
+            if (s) {
+              s.classList.add('fade-away');
+              setTimeout(() => {
+                try { if (s && s.parentNode) s.parentNode.removeChild(s); } catch {}
+                try { document.body.classList.remove('splash-active'); } catch {}
+                try { document.documentElement.classList.remove('splash-loading'); } catch {}
+              }, HIDE_FADE_MS);
+            } else {
+              try { document.body.classList.remove('splash-active'); } catch {}
+              try { document.documentElement.classList.remove('splash-loading'); } catch {}
+            }
+          } catch (e) { /* ignore */ }
+        }, HIDE_MS);
+
+        // Schedule registration popup event after POPUP_MS. We dispatch a custom
+        // event so page scripts can respond when they're ready.
+        setTimeout(() => {
+          try {
+            const ev = new Event('av:show-registration');
+            document.dispatchEvent(ev);
+          } catch (e) { /* ignore */ }
+        }, POPUP_MS);
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+
   <div class="top-bar">
     <!-- LEFT -->
     <div class="top-left">

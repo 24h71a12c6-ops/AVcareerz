@@ -18,70 +18,96 @@
     }
 })();
 
-// Preemptive splash blocker: inject a short-lived CSS rule and MutationObserver
-// as early as possible so the splash cannot remain visible or be re-inserted
-// for long periods (covers environments where other scripts re-add the splash
-// or paint/paint stalls cause it to freeze). This is intentionally temporary
-// (removed after a timeout) so new users still see the intended cinematic.
+// Preemptive splash protection: allow the intended cinematic to run for a
+// short time (3s), but after a small delay automatically hide/remove the
+// splash if it remains (covers the reported 33s stuck case). This avoids
+// hiding it immediately while preserving protection against long stalls.
 try {
     (function preemptiveSplashBlock() {
-        const MAX_BLOCK_MS = 35000; // protect against long 33s+ stuck splash
+        const WAIT_BEFORE_BLOCK_MS = 3500; // allow cinematic to run ~3s
+        const MAX_BLOCK_MS = 35000; // overall observer lifetime
 
-        // Inject blocking style
-        try {
-            const style = document.createElement('style');
-            style.id = 'splash-blocker-style';
-            style.textContent = '#splash-screen{display:none !important; opacity:0 !important; visibility:hidden !important; pointer-events:none !important;}';
-            (document.head || document.documentElement).appendChild(style);
-        } catch (e) {
-            /* ignore */
-        }
-
-        const removeSplashImmediate = () => {
+        const installBlocker = () => {
             try {
-                const s = document.getElementById('splash-screen');
-                if (s && s.parentNode) s.parentNode.removeChild(s);
-                document.body.classList.remove('splash-active');
-                document.documentElement.classList.remove('splash-loading');
-            } catch (err) { /* ignore */ }
+                // Inject blocking style
+                const style = document.createElement('style');
+                style.id = 'splash-blocker-style';
+                style.textContent = '#splash-screen{display:none !important; opacity:0 !important; visibility:hidden !important; pointer-events:none !important;}';
+                (document.head || document.documentElement).appendChild(style);
+            } catch (e) { /* ignore */ }
+
+            const removeSplash = () => {
+                try {
+                    const s = document.getElementById('splash-screen');
+                    if (s && s.parentNode) s.parentNode.removeChild(s);
+                    document.body.classList.remove('splash-active');
+                    document.documentElement.classList.remove('splash-loading');
+                } catch (err) { /* ignore */ }
+            };
+
+            try {
+                const mo = new MutationObserver((mutations) => {
+                    for (const m of mutations) {
+                        if (!m.addedNodes) continue;
+                        for (const n of m.addedNodes) {
+                            try {
+                                if (n && n.id === 'splash-screen') {
+                                    if (n.parentNode) n.parentNode.removeChild(n);
+                                }
+                            } catch {}
+                        }
+                    }
+                });
+
+                mo.observe(document.documentElement || document, { childList: true, subtree: true });
+
+                // Stop observing and remove the blocking style after MAX_BLOCK_MS
+                setTimeout(() => {
+                    try { mo.disconnect(); } catch {}
+                    try {
+                        const st = document.getElementById('splash-blocker-style');
+                        if (st && st.parentNode) st.parentNode.removeChild(st);
+                    } catch {}
+                }, MAX_BLOCK_MS);
+
+                // One-off cleanup immediately after installing blocker
+                removeSplash();
+            } catch (e) {
+                // ignore
+            }
         };
 
-        // Observe and remove any splash nodes that get added during the protected window
-        try {
-            const mo = new MutationObserver((mutations) => {
-                for (const m of mutations) {
-                    if (!m.addedNodes) continue;
-                    for (const n of m.addedNodes) {
-                        try {
-                            if (n && n.id === 'splash-screen') {
-                                // remove and keep the blocker style in place
-                                if (n.parentNode) n.parentNode.removeChild(n);
-                            }
-                        } catch {}
-                    }
-                }
-            });
-
-            mo.observe(document.documentElement || document, { childList: true, subtree: true });
-
-            // Stop observing and remove the blocking style after MAX_BLOCK_MS
-            setTimeout(() => {
-                try { mo.disconnect(); } catch {}
-                try {
-                    const st = document.getElementById('splash-blocker-style');
-                    if (st && st.parentNode) st.parentNode.removeChild(st);
-                } catch {}
-            }, MAX_BLOCK_MS);
-        } catch (e) {
-            // ignore observer installation errors
-        }
-
-        // One-off immediate cleanup in case splash is already present
-        removeSplashImmediate();
+        // Delay installer so the 3s cinematic can show for new users
+        try { setTimeout(installBlocker, WAIT_BEFORE_BLOCK_MS); } catch {}
     })();
 } catch (e) {
     // ignore
 }
+
+// Listen for the inline event to show the registration modal after the site opens
+document.addEventListener('av:show-registration', () => {
+    try {
+        // Only show if user isn't already application-completed
+        if (typeof isApplicationCompleted === 'function' && isApplicationCompleted()) return;
+        if (typeof isRegisteredUser === 'function' && isRegisteredUser()) return;
+
+        if (typeof showRegistrationSection === 'function') {
+            showRegistrationSection({ preferLogin: false });
+        } else {
+            // If function not yet defined, retry a few times
+            let attempts = 0;
+            const t = setInterval(() => {
+                attempts += 1;
+                if (typeof showRegistrationSection === 'function') {
+                    showRegistrationSection({ preferLogin: false });
+                    clearInterval(t);
+                } else if (attempts > 10) {
+                    clearInterval(t);
+                }
+            }, 300);
+        }
+    } catch (e) { /* ignore */ }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
