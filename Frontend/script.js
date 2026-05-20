@@ -1630,6 +1630,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     // ignore
                 }
 
+                // Set a flag to prevent modals from opening on the next page
+                try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch { }
+                try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch { }
+
                 // Check if application was already completed by this user
                 if (isApplicationCompleted()) {
                     // User already completed application; show already-registered page
@@ -1638,9 +1642,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // User successfully signed in; redirect to next-form to complete application
-                setTimeout(() => {
-                    window.location.href = 'next-form.html';
-                }, 500);
+                // Immediately redirect with minimal delay to avoid splash screens
+                window.location.href = 'next-form.html';
                 return;
             }
         } catch {
