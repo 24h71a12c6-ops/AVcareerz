@@ -21,8 +21,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const body = document.body;
-    // Show very short splash only once per tab session so site feels instant on open.
-    const hasShownSplash = sessionStorage.getItem('av_splash_shown') === '1';
     
     // Check if user is already registered - if so, skip splash entirely
     const userEmail = localStorage.getItem('userEmail');
@@ -37,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (splash.classList && splash.classList.contains('cinematic')) {
         SPLASH_DURATION_MS = 3000; // 3.0 seconds cinematic for new users
     } else {
-        SPLASH_DURATION_MS = hasShownSplash ? 120 : 700;
+        SPLASH_DURATION_MS = 700;
     }
     const SPLASH_FADE_MS = 220;
 
@@ -46,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Only show splash for new/unregistered users
     if (!isAlreadyRegistered) {
         body?.classList.add('splash-active');
-        sessionStorage.setItem('av_splash_shown', '1');
     }
 
     // Short splash (fast open)
