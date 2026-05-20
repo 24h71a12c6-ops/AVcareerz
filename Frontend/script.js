@@ -677,20 +677,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (isNewSession) {
             sessionStorage.setItem('sessionActive', 'true');
 
-            // Clear auth + profile cache so the profile icon doesn't show previous login details
-            // before the user logs in again.
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('currentUserId');
-            localStorage.removeItem('hasSignedUp');
-
-            localStorage.removeItem('registrationData');
-            localStorage.removeItem('nextFormData');
-            localStorage.removeItem('showLoginAfterLogout');
-            localStorage.removeItem('lastUserEmail');
-
-            sessionStorage.removeItem('currentUserId');
-            sessionStorage.removeItem('registrationData');
-            sessionStorage.removeItem('nextFormData');
+            // Don’t clear persistent auth (userEmail/hasSignedUp) on new session —
+            // that caused returning users to be treated as logged out and re-open
+            // the registration modal unexpectedly. Only clear transient form data.
+            try { localStorage.removeItem('registrationData'); } catch {}
+            try { localStorage.removeItem('nextFormData'); } catch {}
+            try { localStorage.removeItem('showLoginAfterLogout'); } catch {}
+            try { sessionStorage.removeItem('registrationData'); } catch {}
+            try { sessionStorage.removeItem('nextFormData'); } catch {}
         }
     } catch {
         // ignore if storage inaccessible
@@ -1719,17 +1713,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch { }
                 try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch { }
 
-                // Check if application was already completed by this user
-                if (isApplicationCompleted()) {
-                    // User already completed application; show already-registered page
-                    window.location.href = 'already-registered.html';
+                // Verify application completion status from the backend to avoid
+                // relying on potentially stale localStorage flags.
+                try {
+                    const remoteCompleted = await fetchApplicationCompletedForEmail(email);
+                    // Set skip flags to avoid splash/modal on the next page
+                    try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
+                    try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
+                    try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+                    try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+
+                    const target = remoteCompleted === true ? 'already-registered.html' : 'next-form.html';
+                    try { window.location.replace(target); } catch { window.location.href = target; }
+                    return;
+                } catch (err) {
+                    // If remote check fails, fall back to local flags to avoid blocking the user
+                    const fallbackTarget = isApplicationCompleted() ? 'already-registered.html' : 'next-form.html';
+                    try { window.location.replace(fallbackTarget); } catch { window.location.href = fallbackTarget; }
                     return;
                 }
-
-                // User successfully signed in; redirect to next-form to complete application
-                // Immediately redirect with minimal delay to avoid splash screens
-                window.location.href = 'next-form.html';
-                return;
             }
         } catch {
             // ignore decoding issues
