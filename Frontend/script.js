@@ -119,6 +119,50 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {
         // ignore
     }
+
+    // Robustness: observe DOM mutations and remove the splash if it somehow
+    // reappears or remains. This helps on browsers where rendering/paint stalls
+    // or when other scripts re-insert the splash element.
+    try {
+        const ensureSplashRemoved = () => {
+            try {
+                const s = document.getElementById('splash-screen');
+                if (s && s.parentNode) {
+                    s.parentNode.removeChild(s);
+                    console.log('splash: removed by MutationObserver/ensureSplashRemoved');
+                }
+                document.body.classList.remove('splash-active');
+                document.documentElement.classList.remove('splash-loading');
+                return true;
+            } catch (err) {
+                console.warn('splash: ensure removal failed', err);
+                return false;
+            }
+        };
+
+        // Run once immediately (best-effort)
+        ensureSplashRemoved();
+
+        const mo = new MutationObserver((entries) => {
+            for (const e of entries) {
+                if (e.addedNodes && e.addedNodes.length) {
+                    for (const n of e.addedNodes) {
+                        if (n && n.id === 'splash-screen') {
+                            // remove it synchronously
+                            ensureSplashRemoved();
+                        }
+                    }
+                }
+            }
+        });
+
+        mo.observe(document.documentElement || document, { childList: true, subtree: true });
+
+        // Safety: disconnect after 10s to avoid keeping observer forever
+        setTimeout(() => { try { mo.disconnect(); } catch {} }, 10000);
+    } catch (err) {
+        // ignore observer errors
+    }
 });
 
 const glowDot = document.querySelector('.cursor-dot-glow');
