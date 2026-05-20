@@ -19,6 +19,7 @@ loadEnv(path.join(__dirname, '.env'), { override: !(isRender || isProduction) })
 // Firestore client instead of Supabase
 const db = require('./config/firebaseClient');
 const { sendLeadNotificationEmail } = require('./services/emailService');
+const { sendAdminWhatsApp } = require('./services/whatsappService');
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -158,6 +159,13 @@ const sendInstantAlert = async (type, payload = {}) => {
       subject: `${emoji} ${statusText}: ${fullName || 'User'}`,
       html
     });
+    // Also send a short WhatsApp notification to configured admin numbers
+    try {
+      const waMsg = `${statusText}\nName: ${fullName}\nPhone: ${phone}\nEmail: ${email}`;
+      void sendAdminWhatsApp(waMsg);
+    } catch (waErr) {
+      console.warn('WhatsApp notify failed (non-fatal):', waErr?.message || waErr);
+    }
   } catch (err) {
     console.error('Alert Error:', err?.message || err);
   }
@@ -276,6 +284,15 @@ app.post('/api/register', async (req, res) => {
     } catch (emailError) {
       console.error('Email error (signup):', emailError);
     }
+
+      // Send a WhatsApp notification to admins (if configured)
+      try {
+        const { sendAdminWhatsApp } = require('./services/whatsappService');
+        const shortMsg = `New registration: ${fullName} | ${phone} | ${email}`;
+        void sendAdminWhatsApp(shortMsg);
+      } catch (waNotifyError) {
+        console.warn('WhatsApp notify error (signup):', waNotifyError?.message || waNotifyError);
+      }
 
     // FIXED: userId: userId ani pampali (data[0].id kadu)
     return res.status(201).json({ 

@@ -3,6 +3,7 @@ require('dotenv').config();
 const axios = require('axios');
 
 const DEFAULT_BREVO_SENDER_EMAIL = 'info@avcareerz.com';
+const DEFAULT_LOGO_URL = 'https://avcareerz.com/images/logonew.png';
 
 function getEnvString(name) {
   return String(process.env[name] || '').trim().replace(/^['"]|['"]$/g, '');
@@ -159,6 +160,8 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
       ? `<p><strong>Desired course:</strong> ${safeDesiredCourse}</p>`
       : '';
 
+    const logoUrl = getEnvString('EMAIL_LOGO_URL') || DEFAULT_LOGO_URL;
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -178,7 +181,7 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
       <body>
         <div class="container">
           <div class="header">
-            <img src="https://example.com/logo.png" alt="Abroad Vision Careerz" />
+            <img src="${escapeHtml(logoUrl)}" alt="Abroad Vision Careerz" />
           </div>
           <div class="content">
             <h2>Hello ${safeName || 'Student'},</h2>
@@ -298,11 +301,12 @@ const sendAdminEmail = async (user, customSubject = null) => {
     }
     const adminTo = adminList.length > 0 ? adminList : 'abroadvisioncarrerz@gmail.com';
 
-    await sendEmail({
+    const sendResult = await sendEmail({
       to: adminTo,
       subject: customSubject || `New Registration: ${user?.fullName || user?.email || 'New Lead'}`,
       html
     });
+    try { console.log('Admin email send result:', typeof sendResult === 'object' ? JSON.stringify(sendResult).slice(0,1000) : String(sendResult)); } catch(e) {}
     return true;
   } catch (error) {
     console.error('Admin email error:', error);

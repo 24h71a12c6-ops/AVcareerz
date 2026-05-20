@@ -522,7 +522,22 @@ const routeSignedInUserToCorrectPage = async () => {
         }
     }
 
-    window.location.href = completed ? 'already-registered.html' : 'next-form.html';
+    // Prevent splash/modal from showing on the next page load when we are
+    // intentionally navigating the signed-in user.
+    try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
+    try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
+    try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+    try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+
+    // Use replace so back-button doesn't return to the intermediate state that
+    // might re-trigger modal/splash logic in some browsers.
+    const target = completed ? 'already-registered.html' : 'next-form.html';
+    try {
+        window.location.replace(target);
+    } catch (e) {
+        // Fallback
+        window.location.href = target;
+    }
     return true;
 };
 
