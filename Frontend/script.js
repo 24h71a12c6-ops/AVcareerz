@@ -23,10 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
     // Show very short splash only once per tab session so site feels instant on open.
     const hasShownSplash = sessionStorage.getItem('av_splash_shown') === '1';
+    
+    // Check if user is already registered - if so, skip splash entirely
+    const userEmail = localStorage.getItem('userEmail');
+    const hasSignedUp = localStorage.getItem('hasSignedUp') === '1';
+    const isAlreadyRegistered = !!userEmail || hasSignedUp;
+    
     // If the splash has the `cinematic` class, force a 3s cinematic duration.
     let SPLASH_DURATION_MS;
-    if (splash.classList && splash.classList.contains('cinematic')) {
-        SPLASH_DURATION_MS = 3000; // 3.0 seconds cinematic
+    if (isAlreadyRegistered) {
+        // Skip splash for registered users
+        SPLASH_DURATION_MS = 0;
+    } else if (splash.classList && splash.classList.contains('cinematic')) {
+        SPLASH_DURATION_MS = 3000; // 3.0 seconds cinematic for new users
     } else {
         SPLASH_DURATION_MS = hasShownSplash ? 120 : 700;
     }
@@ -34,11 +43,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!splash) return;
 
-    body?.classList.add('splash-active');
-    sessionStorage.setItem('av_splash_shown', '1');
+    // Only show splash for new/unregistered users
+    if (!isAlreadyRegistered) {
+        body?.classList.add('splash-active');
+        sessionStorage.setItem('av_splash_shown', '1');
+    }
 
     // Short splash (fast open)
     setTimeout(() => {
+        if (isAlreadyRegistered) {
+            // For registered users, remove splash immediately without fade
+            splash.remove();
+            body?.classList.remove('splash-active');
+            return;
+        }
+        
         splash.classList.add('fade-away');
 
         setTimeout(() => {
@@ -441,20 +460,21 @@ const apiUrl = (path) => {
 
 // global auth helpers (available everywhere in script)
 const isRegisteredUser = () => {
+    // Check primary registration indicators first (don't require session to be active)
+    if (!!localStorage.getItem('userEmail') || localStorage.getItem('hasSignedUp') === '1') return true;
+    // Also check legacy flags
     try {
-        if (sessionStorage.getItem('isSessionActive') !== 'true') return false;
         if (localStorage.getItem('isRegistered') === 'true') return true;
     } catch {}
-    return !!localStorage.getItem('userEmail') || localStorage.getItem('hasSignedUp') === '1';
+    return false;
 };
 
 const isApplicationCompleted = () => {
-    try {
-        if (sessionStorage.getItem('isSessionActive') !== 'true') return false;
-        if (!isRegisteredUser()) return false;
-        if (localStorage.getItem('isApplicationDone') === 'true') return true;
-        if (localStorage.getItem('applicationCompleted') === '1') return true;
-    } catch {}
+    // Check if user is registered first
+    if (!isRegisteredUser()) return false;
+    // Check if application is done
+    if (localStorage.getItem('isApplicationDone') === 'true') return true;
+    if (localStorage.getItem('applicationCompleted') === '1') return true;
     return false;
 };
 
@@ -1727,14 +1747,20 @@ document.addEventListener("DOMContentLoaded", function () {
         regOverlay.hidden = true;
 
         openRegModal = () => {
-            if (shouldRedirectToCongrats()) {
-                showApplicationCompletedNotice();
+            // For registered users, show appropriate page based on application status
+            if (isRegisteredUser()) {
+                if (isApplicationCompleted()) {
+                    // User already completed application
+                    window.location.href = 'already-registered.html';
+                } else {
+                    // User registered but hasn't completed application
+                    window.location.href = 'next-form.html';
+                }
                 return;
             }
 
-            // if already signed in, don't show signup modal; take them to step 2
-            if (isRegisteredUser()) {
-                window.location.href = 'next-form.html';
+            if (shouldRedirectToCongrats()) {
+                showApplicationCompletedNotice();
                 return;
             }
 
