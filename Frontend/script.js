@@ -795,6 +795,13 @@ const hasStoredProfileData = (email) => {
     return false;
 };
 
+const hasMeaningfulAccountData = (profile) => {
+    if (!profile || typeof profile !== 'object' || Array.isArray(profile)) return false;
+
+    const hasEntries = (value) => !!(value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length > 0);
+    return !!(profile.completed || hasEntries(profile.registrationData) || hasEntries(profile.nextFormData));
+};
+
 const hydrateProfileFromServer = async (email) => {
     const safeEmail = String(email || '').trim();
     if (!safeEmail) return null;
@@ -858,6 +865,9 @@ const routeSignedInUserToCorrectPage = async () => {
     // Hydrate from server to learn if the user already has saved registration/next-form data.
     const hydrated = await hydrateProfileFromServer(email);
 
+    // Treat any saved profile/application data as an existing account.
+    const hasAccountData = hasMeaningfulAccountData(hydrated) || hasStoredProfileData(email);
+
     // Use cached flags first, then confirm with the backend if needed.
     let completed = isApplicationCompleted();
     if (hydrated && typeof hydrated.completed === 'boolean') {
@@ -884,19 +894,9 @@ const routeSignedInUserToCorrectPage = async () => {
 
     // Use replace so back-button doesn't return to the intermediate state that
     // might re-trigger modal/splash logic in some browsers.
-    // If the server returned any registration or next-form data for this email,
-    // treat the user as returning and send them to the already-registered page.
-    let target = 'next-form.html';
-    try {
-        const hasServerData = !!(hydrated && (
-            (hydrated.registrationData && Object.keys(hydrated.registrationData).length > 0) ||
-            (hydrated.nextFormData && Object.keys(hydrated.nextFormData).length > 0)
-        ));
-        const hasCachedProfileData = hasStoredProfileData(email);
-        if (completed || hasServerData || hasCachedProfileData) target = 'already-registered.html';
-    } catch (e) {
-        if (completed) target = 'already-registered.html';
-    }
+    // Returning users with any saved data should land on the already-registered page.
+    // Brand-new Google sign-ins should continue to the step-2 form.
+    const target = (completed || hasAccountData) ? 'already-registered.html' : 'next-form.html';
     try {
         window.location.replace(target);
     } catch (e) {
@@ -2098,10 +2098,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
                 try { localStorage.setItem('lastUserEmail', email); } catch { }
                 try { localStorage.setItem('hasSignedUp', '1'); } catch { }
-                const registrationPayload = { fullName, email, phone: '' };
-                sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
-                localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
-                sessionStorage.setItem('justRegistered', '1');
 
                 try {
                     if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
@@ -2119,7 +2115,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 } catch (e) { /* ignore */ }
 
-                await hydrateProfileFromServer(email);
+                const profile = await hydrateProfileFromServer(email);
+                const hasAccountData = hasMeaningfulAccountData(profile) || hasStoredProfileData(email);
 
                 // Close the registration modal before redirecting
                 try {
@@ -2153,11 +2150,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
                 try { localStorage.setItem('isSessionActive', 'true'); } catch {}
 
-                // IMPORTANT:
-                // Google sign-in should not auto-navigate to already-registered.html.
-                // We only hydrate the stored profile here. The CTA buttons are the
-                // only place where returning users should be routed to that page.
-                // Keep the user on the current page after sign-in.
+                // Clear the temporary "just registered" flag so returning Google users
+                // can still be routed correctly by the CTA buttons.
+                try { sessionStorage.removeItem('justRegistered'); } catch { }
+
+                if (!hasAccountData) {
+                    const registrationPayload = { fullName, email, phone: '' };
+                    try {
+                        sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+                        localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+                    } catch {
+                        // ignore storage failures
+                    }
+
+                    try {
+                        window.location.replace('next-form.html');
+                    } catch {
+                        window.location.href = 'next-form.html';
+                    }
+                    return;
+                }
+
+                // Returning Google users stay on the website normally.
+                // Their CTA clicks are handled by the shared routing helpers.
                 return;
             }
         } catch {
