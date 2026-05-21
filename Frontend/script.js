@@ -1964,6 +1964,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn, .prep-text, .register-scroll, .promo-cta, .btn-primary-massive');
         if (!cta) return;
 
+        // Returning/registered users should go straight to their correct page
+        // instead of reopening the registration modal.
+        try {
+            if (typeof isRegisteredUser === 'function' && isRegisteredUser()) {
+                e.preventDefault();
+                void routeSignedInUserToCorrectPage();
+                return;
+            }
+        } catch {
+            // fall through to the modal behavior if the helper is unavailable
+        }
+
         // Always prevent default for these specific CTA buttons
         e.preventDefault();
 

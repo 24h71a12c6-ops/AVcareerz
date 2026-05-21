@@ -252,7 +252,9 @@ app.post('/api/register', async (req, res) => {
       email_lc: emailLc,
       phone: phone,
       password: password,
-      created_at: new Date().toISOString()
+      registration_status: 'step1_complete',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     });
 
     // FIXED: data ni object ga access cheyalasindhi (No [0])
@@ -582,6 +584,7 @@ app.post(
         nationality,
         phone,
         email,
+        email_lc: email,
         city,
         passportStatus,
         passport_id: passportStatus === 'Valid' ? passport_id : null,
@@ -607,6 +610,46 @@ app.post(
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       });
+
+      // Mark the original registration record as fully completed so future
+      // Google sign-ins can reliably route the user to already-registered.html.
+      try {
+        let registrationDocId = '';
+        if (userId) {
+          const candidateRef = db.collection('registrations').doc(userId);
+          const candidateSnap = await candidateRef.get();
+          if (candidateSnap.exists) {
+            registrationDocId = userId;
+          }
+        }
+
+        if (!registrationDocId) {
+          let regSnap = await db.collection('registrations')
+            .where('email_lc', '==', email)
+            .limit(1)
+            .get();
+
+          if (regSnap.empty) {
+            regSnap = await db.collection('registrations')
+              .where('email', '==', email)
+              .limit(1)
+              .get();
+          }
+
+          if (!regSnap.empty) {
+            registrationDocId = regSnap.docs[0].id;
+          }
+        }
+
+        if (registrationDocId) {
+          await db.collection('registrations').doc(registrationDocId).update({
+            registration_status: 'fully_registered',
+            updated_at: new Date().toISOString()
+          });
+        }
+      } catch (statusUpdateError) {
+        console.warn('Could not mark registration as fully completed:', statusUpdateError?.message || statusUpdateError);
+      }
 
       try {
         const { sendAdminEmail, sendConfirmationEmail } = require('./services/emailService');
@@ -735,14 +778,17 @@ app.post('/api/login', async (req, res) => {
 
     // Check if the user has completed step 2 application
     const nextFormSnap = await db.collection('next_form')
-      .where('email', '==', emailLc)
+      .where('email_lc', '==', emailLc)
       .limit(1)
       .get();
+
+    const registrationStatus = String(rows[0]?.registration_status || '').toLowerCase();
+    const isFullyRegistered = registrationStatus === 'fully_registered' || !nextFormSnap.empty;
 
     res.json({
       success: true,
       userId: rows[0].id,
-      isApplicationCompleted: !nextFormSnap.empty,
+      isApplicationCompleted: isFullyRegistered,
       data: {
         fullName: rows[0].full_name,
         email: rows[0].email,
@@ -799,6 +845,7 @@ app.get('/api/check-application-status', async (req, res) => {
 
     const registrationDoc = !fallbackRegistrationSnap.empty ? fallbackRegistrationSnap.docs[0].data() : null;
     const nextFormDoc = !nextFormSnap.empty ? nextFormSnap.docs[0].data() : null;
+    const registrationStatus = String(registrationDoc?.registration_status || '').toLowerCase();
 
     const registrationData = registrationDoc ? {
       fullName: registrationDoc.full_name || registrationDoc.fullName || '',
@@ -819,7 +866,7 @@ app.get('/api/check-application-status', async (req, res) => {
 
     return res.json({
       success: true,
-      completed: !nextFormSnap.empty,
+      completed: registrationStatus === 'fully_registered' || !nextFormSnap.empty,
       registrationData,
       nextFormData,
     });
@@ -1039,9 +1086,9 @@ app.post('/api/oauth-signin', async (req, res) => {
       }
 
       let nextSnap = await db.collection('next_form')
-        .where('email', '==', emailLc)
-        .limit(1)
-        .get();
+          .where('email_lc', '==', emailLc)
+          .limit(1)
+          .get();
 
       if (nextSnap.empty && emailRaw !== emailLc) {
         nextSnap = await db.collection('next_form')
