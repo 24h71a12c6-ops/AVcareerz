@@ -1,3 +1,38 @@
+/* Global mobile touch cleanup:
+   prevent the browser's blue tap flash/highlight from covering the whole site
+   when users tap buttons, links, selects, or custom dropdowns on phones. */
+html,
+body,
+a,
+button,
+input,
+select,
+textarea,
+label,
+summary,
+[role="button"],
+[onclick] {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+input,
+textarea,
+select {
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+button,
+a,
+label,
+summary,
+[role="button"],
+[onclick] {
+    touch-action: manipulation;
+}
+
 @media screen and (max-width: 768px) {
 
 
