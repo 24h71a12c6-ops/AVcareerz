@@ -1683,7 +1683,8 @@ document.addEventListener("DOMContentLoaded", function () {
             // In edit mode, allow opening the registration modal even for registered users.
             if (href === '#registration-section' && isRegisteredUser() && !forceOpenRegistration) {
                 e.preventDefault();
-                window.location.href = 'next-form.html';
+                // Route the signed-in user to the correct page (already-registered or next-form)
+                try { void routeSignedInUserToCorrectPage(); } catch { window.location.href = 'next-form.html'; }
                 return;
             }
 
@@ -1701,7 +1702,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 if (isRegisteredUser() && !forceOpenRegistration) {
-                    window.location.href = 'next-form.html';
+                    try { void routeSignedInUserToCorrectPage(); } catch { window.location.href = 'next-form.html'; }
                     return;
                 }
 
