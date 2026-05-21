@@ -763,14 +763,49 @@ app.get('/api/check-application-status', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Email parameter is required' });
     }
 
-    const nextFormSnap = await db.collection('next_form')
-      .where('email', '==', email)
+    const registrationSnap = await db.collection('registrations')
+      .where('email_lc', '==', email)
       .limit(1)
       .get();
 
+    const fallbackRegistrationSnap = registrationSnap.empty
+      ? await db.collection('registrations')
+          .where('email', '==', email)
+          .limit(1)
+          .get()
+      : registrationSnap;
+
+    const nextFormSnap = await db.collection('next_form')
+      .where('email', '==', email)
+      .orderBy('created_at', 'desc')
+      .limit(1)
+      .get();
+
+    const registrationDoc = !fallbackRegistrationSnap.empty ? fallbackRegistrationSnap.docs[0].data() : null;
+    const nextFormDoc = !nextFormSnap.empty ? nextFormSnap.docs[0].data() : null;
+
+    const registrationData = registrationDoc ? {
+      fullName: registrationDoc.full_name || registrationDoc.fullName || '',
+      email: registrationDoc.email || email,
+      phone: registrationDoc.phone || '',
+    } : {};
+
+    const nextFormData = nextFormDoc ? Object.fromEntries(
+      Object.entries(nextFormDoc).filter(([key, value]) => {
+        if (!key) return false;
+        const lower = String(key).toLowerCase();
+        if (['uploaded_files', 'created_at', 'updated_at', 'email_lc', 'user_id', 'password'].includes(lower)) return false;
+        if (value === null || value === undefined) return false;
+        if (typeof value === 'object') return false;
+        return String(value).trim().length > 0;
+      })
+    ) : {};
+
     return res.json({
       success: true,
-      completed: !nextFormSnap.empty
+      completed: !nextFormSnap.empty,
+      registrationData,
+      nextFormData,
     });
   } catch (error) {
     console.error('Check application status error:', error);

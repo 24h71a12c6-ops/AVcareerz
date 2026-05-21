@@ -715,6 +715,78 @@ const fetchApplicationCompletedForEmail = async (email) => {
     return null;
 };
 
+const sanitizeProfileRecord = (input) => {
+    if (!input || typeof input !== 'object' || Array.isArray(input)) return {};
+
+    const skipKeys = new Set(['uploaded_files', 'created_at', 'updated_at', 'email_lc', 'user_id', 'password', 'id']);
+    const output = {};
+
+    Object.entries(input).forEach(([key, value]) => {
+        if (!key) return;
+        const lowerKey = String(key).toLowerCase();
+        if (skipKeys.has(lowerKey)) return;
+        if (value === null || value === undefined) return;
+        if (typeof value === 'object') return;
+
+        const str = String(value).trim();
+        if (!str) return;
+        output[key] = value;
+    });
+
+    return output;
+};
+
+const hydrateProfileFromServer = async (email) => {
+    const safeEmail = String(email || '').trim();
+    if (!safeEmail) return null;
+
+    try {
+        const res = await fetch(apiUrl(`/api/check-application-status?email=${encodeURIComponent(safeEmail)}`));
+        const data = await res.json();
+        if (!res.ok || !data || !data.success) return null;
+
+        const registrationData = sanitizeProfileRecord(data.registrationData || {});
+        const nextFormData = sanitizeProfileRecord(data.nextFormData || {});
+
+        if (Object.keys(registrationData).length > 0) {
+            if (!registrationData.email) registrationData.email = safeEmail;
+            sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
+            localStorage.setItem('registrationData', JSON.stringify(registrationData));
+        }
+
+        if (Object.keys(nextFormData).length > 0) {
+            sessionStorage.setItem('nextFormData', JSON.stringify(nextFormData));
+            localStorage.setItem('nextFormData', JSON.stringify(nextFormData));
+        }
+
+        if (data.completed) {
+            localStorage.setItem('applicationCompleted', '1');
+            localStorage.setItem('isApplicationDone', 'true');
+            sessionStorage.setItem('applicationCompleted', '1');
+        } else {
+            localStorage.removeItem('applicationCompleted');
+            localStorage.removeItem('isApplicationDone');
+            sessionStorage.removeItem('applicationCompleted');
+        }
+
+        if (safeEmail) {
+            localStorage.setItem('userEmail', safeEmail);
+            try { localStorage.setItem('lastUserEmail', safeEmail); } catch { }
+        }
+
+        try {
+            if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
+        } catch {
+            // ignore
+        }
+
+        return { completed: !!data.completed, registrationData, nextFormData };
+    } catch (error) {
+        console.warn('Failed to hydrate profile data for', safeEmail, error);
+        return null;
+    }
+};
+
 const routeSignedInUserToCorrectPage = async () => {
     const email = String(localStorage.getItem('userEmail') || '').trim();
     if (!email) return false;
@@ -723,6 +795,8 @@ const routeSignedInUserToCorrectPage = async () => {
     // do not bounce back to the home page and re-trigger splash/popup flows.
     try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
     try { localStorage.setItem('isSessionActive', 'true'); } catch {}
+
+    await hydrateProfileFromServer(email);
 
     // Use cached flags first, then confirm with the backend if needed.
     let completed = isApplicationCompleted();
@@ -1942,6 +2016,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 } catch {
                     // ignore
                 }
+
+                await hydrateProfileFromServer(email);
 
                 // Close the registration modal before redirecting
                 try {
@@ -3728,6 +3804,8 @@ if (registrationForm) {
                 } catch {
                     // ignore
                 }
+
+                await hydrateProfileFromServer(email);
                 
                 // Extra enforcement: hide the section
                 setTimeout(() => {
@@ -3792,6 +3870,8 @@ if (registrationForm) {
             try {
                 if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
             } catch {}
+
+                await hydrateProfileFromServer(email);
             
             setTimeout(() => {
                 hideRegistrationSection();
