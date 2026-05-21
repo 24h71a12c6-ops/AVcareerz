@@ -1959,25 +1959,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { sessionStorage.removeItem('av:showRegistrationAt'); } catch {}
                 try { sessionStorage.removeItem('forceOpenRegistration'); } catch {}
 
-                // Verify application completion status from the backend to avoid
-                // relying on potentially stale localStorage flags.
-                try {
-                    const remoteCompleted = await fetchApplicationCompletedForEmail(email);
-                    // Set skip flags to avoid splash/modal on the next page
-                    try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
-                    try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
-                    try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
-                    try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+                // Clear any scheduled registration popup immediately so it cannot
+                // reopen while we perform the authoritative routing below.
+                try { sessionStorage.removeItem('av:shouldShowRegistration'); } catch {}
+                try { sessionStorage.removeItem('av:showRegistrationAt'); } catch {}
+                try { sessionStorage.removeItem('forceOpenRegistration'); } catch {}
 
-                    const target = remoteCompleted === true ? 'already-registered.html' : 'next-form.html';
-                    try { window.location.replace(target); } catch { window.location.href = target; }
-                    return;
+                // Ensure splash/modal skip flags are set so intermediate navigation
+                // does not re-trigger the splash or modal UI.
+                try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
+                try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
+                try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+                try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+
+                // Use the centralized router which will consult the backend to
+                // determine whether to send the user to `already-registered.html`
+                // or `next-form.html`. Using replace prevents back-button races.
+                try {
+                    await routeSignedInUserToCorrectPage();
                 } catch (err) {
-                    // If remote check fails, fall back to local flags to avoid blocking the user
+                    // As a last resort, fallback to the local cached flags.
                     const fallbackTarget = isApplicationCompleted() ? 'already-registered.html' : 'next-form.html';
                     try { window.location.replace(fallbackTarget); } catch { window.location.href = fallbackTarget; }
-                    return;
                 }
+                return;
             }
         } catch {
             // ignore decoding issues
