@@ -2135,27 +2135,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
                 try { localStorage.setItem('isSessionActive', 'true'); } catch {}
 
-                // Check the backend. If this email already completed the application,
-                // stay on the homepage and keep the site normal.
-                let completed = isApplicationCompleted();
-                try {
-                    const remoteCompleted = await fetchApplicationCompletedForEmail(email);
-                    if (remoteCompleted === true) completed = true;
-                    if (remoteCompleted === false) completed = false;
-                } catch {
-                    // ignore fetch failures; rely on cached state
-                }
-
-                if (completed) {
-                    return;
-                }
-
-                // Incomplete/new users go to step 2.
-                try {
-                    await routeSignedInUserToCorrectPage();
-                } catch (err) {
-                    try { window.location.replace('next-form.html'); } catch { window.location.href = 'next-form.html'; }
-                }
+                // IMPORTANT:
+                // Google sign-in should not auto-navigate to already-registered.html.
+                // We only hydrate the stored profile here. The CTA buttons are the
+                // only place where returning users should be routed to that page.
+                // Keep the user on the current page after sign-in.
                 return;
             }
         } catch {
