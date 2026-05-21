@@ -80,32 +80,37 @@
           } catch (e) { /* ignore */ }
         }, HIDE_MS);
 
-        // Schedule registration popup event after POPUP_MS. Also set a session
-        // flag with scheduled time so deferred scripts that missed the event
-        // can still detect and open the modal.
+        // Schedule registration popup event after POPUP_MS only for users who
+        // are not already signed in. Check localStorage for simple client-side
+        // indicators (userEmail / hasSignedUp / isRegistered). If the client
+        // appears signed-in, do not schedule the popup so returning users are
+        // not asked to register again.
         try {
-          const at = Date.now() + POPUP_MS;
-          sessionStorage.setItem('av:shouldShowRegistration', '1');
-          sessionStorage.setItem('av:showRegistrationAt', String(at));
-        } catch (e) { /* ignore */ }
+          const currentlySignedIn = !!(localStorage.getItem('userEmail') || localStorage.getItem('hasSignedUp') === '1' || localStorage.getItem('isRegistered') === '1');
+          if (!currentlySignedIn) {
+            const at = Date.now() + POPUP_MS;
+            sessionStorage.setItem('av:shouldShowRegistration', '1');
+            sessionStorage.setItem('av:showRegistrationAt', String(at));
 
-        setTimeout(() => {
-          try {
-            sessionStorage.setItem('forceOpenRegistration', '1');
-            const ev = new Event('av:show-registration');
-            document.dispatchEvent(ev);
-          } catch (e) { /* ignore */ }
-          try {
-            sessionStorage.setItem('forceOpenRegistration', '1');
-            if (typeof window.__openRegModal === 'function') {
-              window.__openRegModal();
-            } else if (typeof window.showRegistrationSection === 'function') {
-              window.showRegistrationSection({ preferLogin: false });
-            }
-          } catch (e) { /* ignore */ }
-          // Keep the schedule flags for recovery; script.js clears them after
-          // it actually opens the popup.
-        }, POPUP_MS);
+            setTimeout(() => {
+              try {
+                sessionStorage.setItem('forceOpenRegistration', '1');
+                const ev = new Event('av:show-registration');
+                document.dispatchEvent(ev);
+              } catch (e) { /* ignore */ }
+              try {
+                sessionStorage.setItem('forceOpenRegistration', '1');
+                if (typeof window.__openRegModal === 'function') {
+                  window.__openRegModal();
+                } else if (typeof window.showRegistrationSection === 'function') {
+                  window.showRegistrationSection({ preferLogin: false });
+                }
+              } catch (e) { /* ignore */ }
+              // Keep the schedule flags for recovery; script.js clears them after
+              // it actually opens the popup.
+            }, POPUP_MS);
+          }
+        } catch (e) { /* ignore */ }
       } catch (e) { /* ignore */ }
     })();
   </script>
