@@ -558,7 +558,15 @@ document.addEventListener('DOMContentLoaded', () => {
 // Define the backend service URL for connection
 
 const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-heg3.onrender.com';
-const API_BASE_URL = BACKEND_SERVICE_URL;
+const API_BASE_URL = (() => {
+    try {
+        const override = String(window.__BACKEND_BASE_URL || '').trim();
+        if (override) return override.replace(/\/+$/, '');
+    } catch {
+        // ignore and fall back to production backend
+    }
+    return BACKEND_SERVICE_URL;
+})();
 
 // --- Supabase Auth (for password reset only) ---
 const SUPABASE_URL = 'https://qokwtutsouipqkkijbdo.supabase.co';
@@ -2031,13 +2039,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     // ignore
                 }
 
-                // Notify backend about this OAuth sign-in so admins receive an email/WhatsApp alert
+                // Notify backend about this OAuth sign-in so admins receive an email/WhatsApp alert.
+                // Await the request so navigation cannot abort it before the payload reaches the server.
                 try {
-                    void fetch(apiUrl('/api/oauth-signin'), {
+                    await fetch(apiUrl('/api/oauth-signin'), {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email, fullName, provider: 'google' })
-                    }).catch(() => {});
+                    });
                 } catch (e) { /* ignore */ }
 
                 await hydrateProfileFromServer(email);

@@ -1258,7 +1258,15 @@
         window.location.href = 'already-registered.html';
     }
 
-    const API_BASE_URL = 'https://abroad-vision-carrerz-heg3.onrender.com';
+    const API_BASE_URL = (() => {
+        try {
+            const override = String(window.__BACKEND_BASE_URL || '').trim();
+            if (override) return override.replace(/\/+$/, '');
+        } catch {
+            // ignore and fall back to production backend
+        }
+        return 'https://abroad-vision-carrerz-heg3.onrender.com';
+    })();
 
     const apiUrl = (path) => {
         const p = String(path || '');
