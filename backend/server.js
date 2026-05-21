@@ -959,3 +959,49 @@ app.get('*', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+// OAuth / Social sign-in notification (e.g., Google Sign-In)
+app.post('/api/oauth-signin', async (req, res) => {
+  try {
+    const { email, fullName, provider } = req.body || {};
+    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
+
+    const emailLc = String(email).trim().toLowerCase();
+
+    // Record a login_details row for audit
+    try {
+      const forwardedFor = String(req.headers['x-forwarded-for'] || '').trim();
+      const clientIp = forwardedFor ? forwardedFor.split(',')[0].trim() : (req.ip || req.socket?.remoteAddress || null);
+      const userAgent = String(req.headers['user-agent'] || '').trim() || null;
+
+      await db.collection('login_details').add({
+        full_name: fullName || null,
+        email: emailLc,
+        login_at: new Date().toISOString(),
+        ip_address: clientIp,
+        user_agent: userAgent,
+        provider: provider || 'google',
+        source: 'oauth'
+      });
+    } catch (auditErr) {
+      console.warn('OAuth signin audit log error:', auditErr?.message || auditErr);
+    }
+
+    // Send admin alert (email + WhatsApp) to notify admin of sign-in
+    try {
+      await sendInstantAlert('login', {
+        fullName: fullName || 'N/A',
+        email: emailLc,
+        phone: 'N/A',
+        source: `OAuth (${provider || 'google'})`
+      });
+    } catch (notifyErr) {
+      console.warn('OAuth signin notify error:', notifyErr?.message || notifyErr);
+    }
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('OAuth signin error:', error);
+    return res.status(500).json({ success: false, error: 'OAuth signin failed' });
+  }
+});

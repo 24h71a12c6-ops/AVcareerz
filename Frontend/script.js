@@ -2031,6 +2031,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     // ignore
                 }
 
+                // Notify backend about this OAuth sign-in so admins receive an email/WhatsApp alert
+                try {
+                    void fetch(apiUrl('/api/oauth-signin'), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, fullName, provider: 'google' })
+                    }).catch(() => {});
+                } catch (e) { /* ignore */ }
+
                 await hydrateProfileFromServer(email);
 
                 // Close the registration modal before redirecting
