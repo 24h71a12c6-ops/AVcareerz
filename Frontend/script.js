@@ -2089,15 +2089,18 @@ document.addEventListener("DOMContentLoaded", function () {
             const parts = String(response.credential || '').split('.');
             const payload = parts.length >= 2 ? parts[1] : '';
             const json = payload ? JSON.parse(decodeURIComponent(escape(atob(payload.replace(/-/g, '+').replace(/_/g, '/'))))) : null;
-            const email = json?.email || '';
+            const email = String(json?.email || '').trim();
+            const emailLc = email.toLowerCase();
             const fullName = json?.name || '';
 
-            if (email) {
-                localStorage.setItem('userEmail', email);
+            if (emailLc) {
+                localStorage.setItem('userEmail', emailLc);
                 // User is signed in again; don't keep showing the login card on reopen.
                 try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
-                try { localStorage.setItem('lastUserEmail', email); } catch { }
+                try { localStorage.setItem('lastUserEmail', emailLc); } catch { }
                 try { localStorage.setItem('hasSignedUp', '1'); } catch { }
+
+                let oauthHasExistingAccount = null;
 
                 try {
                     if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
@@ -2108,15 +2111,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Notify backend about this OAuth sign-in so admins receive an email/WhatsApp alert.
                 // Await the request so navigation cannot abort it before the payload reaches the server.
                 try {
-                    await fetch(apiUrl('/api/oauth-signin'), {
+                    const oauthRes = await fetch(apiUrl('/api/oauth-signin'), {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, fullName, provider: 'google' })
+                        body: JSON.stringify({ email: emailLc, fullName, provider: 'google' })
                     });
+
+                    const oauthData = await oauthRes.json().catch(() => ({}));
+                    if (oauthRes.ok && oauthData && oauthData.success) {
+                        oauthHasExistingAccount = !!oauthData.hasExistingAccount;
+                    }
                 } catch (e) { /* ignore */ }
 
-                const profile = await hydrateProfileFromServer(email);
-                const hasAccountData = hasMeaningfulAccountData(profile) || hasStoredProfileData(email);
+                const profile = await hydrateProfileFromServer(emailLc);
+                const hasAccountData = (oauthHasExistingAccount === true) || hasMeaningfulAccountData(profile) || hasStoredProfileData(emailLc);
 
                 // Close the registration modal before redirecting
                 try {
@@ -2154,8 +2162,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 // can still be routed correctly by the CTA buttons.
                 try { sessionStorage.removeItem('justRegistered'); } catch { }
 
-                if (!hasAccountData) {
-                    const registrationPayload = { fullName, email, phone: '' };
+                // Auto-route to next-form only when backend confirms this is a new account
+                // and profile status fetch succeeded (avoid false redirects for old users).
+                const shouldAutoRouteToNextForm = (oauthHasExistingAccount === false) && profile !== null && !hasAccountData;
+
+                if (shouldAutoRouteToNextForm) {
+                    const registrationPayload = { fullName, email: emailLc, phone: '' };
                     try {
                         sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
                         localStorage.setItem('registrationData', JSON.stringify(registrationPayload));

@@ -758,35 +758,51 @@ app.post('/api/login', async (req, res) => {
 // Check Application Completion Status API
 app.get('/api/check-application-status', async (req, res) => {
   try {
-    const email = String(req.query?.email || '').trim().toLowerCase();
-    if (!email) {
+    const emailRaw = String(req.query?.email || '').trim();
+    const emailLc = emailRaw.toLowerCase();
+    if (!emailRaw) {
       return res.status(400).json({ success: false, error: 'Email parameter is required' });
     }
 
     const registrationSnap = await db.collection('registrations')
-      .where('email_lc', '==', email)
+      .where('email_lc', '==', emailLc)
       .limit(1)
       .get();
 
-    const fallbackRegistrationSnap = registrationSnap.empty
-      ? await db.collection('registrations')
-          .where('email', '==', email)
-          .limit(1)
-          .get()
-      : registrationSnap;
+    let fallbackRegistrationSnap = registrationSnap;
+    if (fallbackRegistrationSnap.empty) {
+      fallbackRegistrationSnap = await db.collection('registrations')
+        .where('email', '==', emailRaw)
+        .limit(1)
+        .get();
+    }
+    if (fallbackRegistrationSnap.empty && emailRaw !== emailLc) {
+      fallbackRegistrationSnap = await db.collection('registrations')
+        .where('email', '==', emailLc)
+        .limit(1)
+        .get();
+    }
 
-    const nextFormSnap = await db.collection('next_form')
-      .where('email', '==', email)
+    let nextFormSnap = await db.collection('next_form')
+      .where('email', '==', emailLc)
       .orderBy('created_at', 'desc')
       .limit(1)
       .get();
+
+    if (nextFormSnap.empty && emailRaw !== emailLc) {
+      nextFormSnap = await db.collection('next_form')
+        .where('email', '==', emailRaw)
+        .orderBy('created_at', 'desc')
+        .limit(1)
+        .get();
+    }
 
     const registrationDoc = !fallbackRegistrationSnap.empty ? fallbackRegistrationSnap.docs[0].data() : null;
     const nextFormDoc = !nextFormSnap.empty ? nextFormSnap.docs[0].data() : null;
 
     const registrationData = registrationDoc ? {
       fullName: registrationDoc.full_name || registrationDoc.fullName || '',
-      email: registrationDoc.email || email,
+      email: registrationDoc.email || emailRaw || emailLc,
       phone: registrationDoc.phone || '',
     } : {};
 
@@ -966,7 +982,8 @@ app.post('/api/oauth-signin', async (req, res) => {
     const { email, fullName, provider } = req.body || {};
     if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
 
-    const emailLc = String(email).trim().toLowerCase();
+    const emailRaw = String(email).trim();
+    const emailLc = emailRaw.toLowerCase();
 
     // Record a login_details row for audit
     try {
@@ -999,7 +1016,46 @@ app.post('/api/oauth-signin', async (req, res) => {
       console.warn('OAuth signin notify error:', notifyErr?.message || notifyErr);
     }
 
-    return res.json({ success: true });
+    // Tell frontend if this Google account already has any record (step1 or step2)
+    // so it can avoid incorrectly pushing old users to next-form.
+    let hasExistingAccount = false;
+    try {
+      let regSnap = await db.collection('registrations')
+        .where('email_lc', '==', emailLc)
+        .limit(1)
+        .get();
+
+      if (regSnap.empty) {
+        regSnap = await db.collection('registrations')
+          .where('email', '==', emailRaw)
+          .limit(1)
+          .get();
+      }
+      if (regSnap.empty && emailRaw !== emailLc) {
+        regSnap = await db.collection('registrations')
+          .where('email', '==', emailLc)
+          .limit(1)
+          .get();
+      }
+
+      let nextSnap = await db.collection('next_form')
+        .where('email', '==', emailLc)
+        .limit(1)
+        .get();
+
+      if (nextSnap.empty && emailRaw !== emailLc) {
+        nextSnap = await db.collection('next_form')
+          .where('email', '==', emailRaw)
+          .limit(1)
+          .get();
+      }
+
+      hasExistingAccount = !regSnap.empty || !nextSnap.empty;
+    } catch (existErr) {
+      console.warn('OAuth signin existing-account check failed:', existErr?.message || existErr);
+    }
+
+    return res.json({ success: true, hasExistingAccount });
   } catch (error) {
     console.error('OAuth signin error:', error);
     return res.status(500).json({ success: false, error: 'OAuth signin failed' });
