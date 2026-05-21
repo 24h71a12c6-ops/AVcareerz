@@ -762,6 +762,39 @@ const sanitizeProfileRecord = (input) => {
     return output;
 };
 
+const hasStoredProfileData = (email) => {
+    const currentEmail = String(email || localStorage.getItem('userEmail') || '').trim().toLowerCase();
+    const keys = ['registrationData', 'nextFormData'];
+
+    for (const key of keys) {
+        try {
+            const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
+            if (!raw) continue;
+
+            const parsed = JSON.parse(raw);
+            if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) continue;
+
+            const entries = Object.entries(parsed).filter(([name, value]) => {
+                if (!name) return false;
+                if (value === null || value === undefined) return false;
+                if (typeof value === 'object') return false;
+                return String(value).trim().length > 0;
+            });
+
+            if (!entries.length) continue;
+
+            const storedEmail = String(parsed.email || parsed.userEmail || '').trim().toLowerCase();
+            if (!currentEmail || !storedEmail || storedEmail === currentEmail) {
+                return true;
+            }
+        } catch {
+            // ignore malformed cached data
+        }
+    }
+
+    return false;
+};
+
 const hydrateProfileFromServer = async (email) => {
     const safeEmail = String(email || '').trim();
     if (!safeEmail) return null;
@@ -859,7 +892,8 @@ const routeSignedInUserToCorrectPage = async () => {
             (hydrated.registrationData && Object.keys(hydrated.registrationData).length > 0) ||
             (hydrated.nextFormData && Object.keys(hydrated.nextFormData).length > 0)
         ));
-        if (completed || hasServerData) target = 'already-registered.html';
+        const hasCachedProfileData = hasStoredProfileData(email);
+        if (completed || hasServerData || hasCachedProfileData) target = 'already-registered.html';
     } catch (e) {
         if (completed) target = 'already-registered.html';
     }
