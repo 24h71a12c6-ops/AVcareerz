@@ -88,8 +88,19 @@ try {
 // Recover scheduled registration popup if the inline script set sessionStorage but
 // the custom event was missed (e.g., script load ordering). This will open the
 // modal after the remaining time when appropriate.
-try {
-    (function recoverScheduledPopup() {
+    try {
+        (function recoverScheduledPopup() {
+            // If a recent sign-in flow asked us to skip modals on the next
+            // load, respect that and clear the skip flag.
+            try {
+                const skipModal = sessionStorage.getItem('skipModalOnNextPageLoad') === '1' || localStorage.getItem('skipModalOnNextPageLoad') === '1';
+                if (skipModal) {
+                    try { sessionStorage.removeItem('skipModalOnNextPageLoad'); } catch {}
+                    try { localStorage.removeItem('skipModalOnNextPageLoad'); } catch {}
+                    return;
+                }
+            } catch {}
+
         const should = sessionStorage.getItem('av:shouldShowRegistration') === '1';
         const at = parseInt(sessionStorage.getItem('av:showRegistrationAt') || '0', 10) || 0;
         if (!should || !at) return;
@@ -127,6 +138,15 @@ try {
 // Listen for the inline event to show the registration modal after the site opens
 document.addEventListener('av:show-registration', () => {
     try {
+        // If a sign-in flow recently set a skip flag, don't open the modal.
+        try {
+            const skipModal = sessionStorage.getItem('skipModalOnNextPageLoad') === '1' || localStorage.getItem('skipModalOnNextPageLoad') === '1';
+            if (skipModal) {
+                try { sessionStorage.removeItem('skipModalOnNextPageLoad'); } catch {}
+                try { localStorage.removeItem('skipModalOnNextPageLoad'); } catch {}
+                return;
+            }
+        } catch {}
         if (typeof showRegistrationSection === 'function') {
             showRegistrationSection({ preferLogin: false });
         } else {
@@ -1932,6 +1952,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch { }
                 try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch { }
                 try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch { }
+
+                // Clear any scheduled registration popup so it doesn't re-open
+                try { sessionStorage.removeItem('av:shouldShowRegistration'); } catch {}
+                try { sessionStorage.removeItem('av:showRegistrationAt'); } catch {}
+                try { sessionStorage.removeItem('forceOpenRegistration'); } catch {}
 
                 // Verify application completion status from the backend to avoid
                 // relying on potentially stale localStorage flags.
