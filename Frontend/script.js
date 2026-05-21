@@ -89,6 +89,24 @@ try {
 // the custom event was missed (e.g., script load ordering). This will open the
 // modal after the remaining time when appropriate.
     try {
+
+    // If this is a new browser/tab session (no isSessionActive), clear any
+    // previously cached profile data so the site appears fresh until the user
+    // explicitly signs in. This ensures the profile modal shows no stale data
+    // on every new open unless the user authenticates during the session.
+    try {
+        const isSessionActive = sessionStorage.getItem('isSessionActive') === 'true';
+        const showLoginAfterLogout = localStorage.getItem('showLoginAfterLogout') === '1';
+        if (!isSessionActive && !showLoginAfterLogout) {
+            try { sessionStorage.removeItem('registrationData'); } catch {}
+            try { sessionStorage.removeItem('nextFormData'); } catch {}
+            try { sessionStorage.removeItem('currentUserId'); } catch {}
+            try { localStorage.removeItem('registrationData'); } catch {}
+            try { localStorage.removeItem('nextFormData'); } catch {}
+            try { localStorage.removeItem('currentUserId'); } catch {}
+        }
+    } catch {}
+
         (function recoverScheduledPopup() {
             // If a recent sign-in flow asked us to skip modals on the next
             // load, respect that and clear the skip flag.
