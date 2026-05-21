@@ -1054,18 +1054,36 @@ document.addEventListener("DOMContentLoaded", function () {
     // For a *fresh* experience on each new browser/tab session, clear persisted auth/profile
     // keys from localStorage ONLY once per session (so navigation within the same tab still works).
     try {
-        const isNewSession = !sessionStorage.getItem('sessionActive');
-        if (isNewSession) {
-            sessionStorage.setItem('sessionActive', 'true');
+        const isFreshTabLoad = !sessionStorage.getItem('freshProfileResetDone');
+        if (isFreshTabLoad) sessionStorage.setItem('freshProfileResetDone', '1');
 
-            // Don’t clear persistent auth (userEmail/hasSignedUp) on new session —
-            // that caused returning users to be treated as logged out and re-open
-            // the registration modal unexpectedly. Only clear transient form data.
+        const isNewSession = isFreshTabLoad;
+        if (isNewSession) {
+            // Fresh browser/tab open should start clean: clear any old profile,
+            // auth, and step-state leftovers so the site never shows stale data.
             try { localStorage.removeItem('registrationData'); } catch {}
             try { localStorage.removeItem('nextFormData'); } catch {}
             try { localStorage.removeItem('showLoginAfterLogout'); } catch {}
+            try { localStorage.removeItem('userEmail'); } catch {}
+            try { localStorage.removeItem('lastUserEmail'); } catch {}
+            try { localStorage.removeItem('hasSignedUp'); } catch {}
+            try { localStorage.removeItem('isRegistered'); } catch {}
+            try { localStorage.removeItem('applicationCompleted'); } catch {}
+            try { localStorage.removeItem('isApplicationDone'); } catch {}
+            try { localStorage.removeItem('isSessionActive'); } catch {}
+            try { localStorage.removeItem('skipModalOnNextPageLoad'); } catch {}
+            try { localStorage.removeItem('skipSplashAfterSignIn'); } catch {}
             try { sessionStorage.removeItem('registrationData'); } catch {}
             try { sessionStorage.removeItem('nextFormData'); } catch {}
+            try { sessionStorage.removeItem('userEmail'); } catch {}
+            try { sessionStorage.removeItem('lastUserEmail'); } catch {}
+            try { sessionStorage.removeItem('hasSignedUp'); } catch {}
+            try { sessionStorage.removeItem('isRegistered'); } catch {}
+            try { sessionStorage.removeItem('applicationCompleted'); } catch {}
+            try { sessionStorage.removeItem('isApplicationDone'); } catch {}
+            try { sessionStorage.removeItem('isSessionActive'); } catch {}
+            try { sessionStorage.removeItem('skipModalOnNextPageLoad'); } catch {}
+            try { sessionStorage.removeItem('skipSplashAfterSignIn'); } catch {}
         }
     } catch {
         // ignore if storage inaccessible
