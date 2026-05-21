@@ -1966,28 +1966,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 try { sessionStorage.removeItem('av:showRegistrationAt'); } catch {}
                 try { sessionStorage.removeItem('forceOpenRegistration'); } catch {}
 
-                // Clear any scheduled registration popup immediately so it cannot
-                // reopen while we perform the authoritative routing below.
+                // Clear any scheduled registration popup so it doesn't re-open.
                 try { sessionStorage.removeItem('av:shouldShowRegistration'); } catch {}
                 try { sessionStorage.removeItem('av:showRegistrationAt'); } catch {}
                 try { sessionStorage.removeItem('forceOpenRegistration'); } catch {}
 
-                // Ensure splash/modal skip flags are set so intermediate navigation
-                // does not re-trigger the splash or modal UI.
-                try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
-                try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
-                try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
-                try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+                // Keep the session active so the site doesn't bounce back to the home splash flow.
+                try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
+                try { localStorage.setItem('isSessionActive', 'true'); } catch {}
 
-                // Use the centralized router which will consult the backend to
-                // determine whether to send the user to `already-registered.html`
-                // or `next-form.html`. Using replace prevents back-button races.
+                // Check the backend. If this email already completed the application,
+                // stay on the homepage and keep the site normal.
+                let completed = isApplicationCompleted();
+                try {
+                    const remoteCompleted = await fetchApplicationCompletedForEmail(email);
+                    if (remoteCompleted === true) completed = true;
+                    if (remoteCompleted === false) completed = false;
+                } catch {
+                    // ignore fetch failures; rely on cached state
+                }
+
+                if (completed) {
+                    return;
+                }
+
+                // Incomplete/new users go to step 2.
                 try {
                     await routeSignedInUserToCorrectPage();
                 } catch (err) {
-                    // As a last resort, fallback to the local cached flags.
-                    const fallbackTarget = isApplicationCompleted() ? 'already-registered.html' : 'next-form.html';
-                    try { window.location.replace(fallbackTarget); } catch { window.location.href = fallbackTarget; }
+                    try { window.location.replace('next-form.html'); } catch { window.location.href = 'next-form.html'; }
                 }
                 return;
             }
@@ -2223,8 +2230,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (isRegisteredUser()) {
-                // Logged in users: redirect to next form
-                window.location.href = 'next-form.html';
+                // Logged in users: route to the correct destination (completed users stay on home).
+                void routeSignedInUserToCorrectPage();
             } else {
                 // Not logged in: open signup modal
                 regModalTimer = null;
@@ -4069,7 +4076,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (alreadyRegistered && !justRegistered) {
                     e.preventDefault();
-                    window.location.href = 'next-form.html';
+                    void routeSignedInUserToCorrectPage();
                 }
             });
 
