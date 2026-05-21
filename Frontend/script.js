@@ -796,11 +796,14 @@ const routeSignedInUserToCorrectPage = async () => {
     try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
     try { localStorage.setItem('isSessionActive', 'true'); } catch {}
 
-    await hydrateProfileFromServer(email);
+    // Hydrate from server to learn if the user already has saved registration/next-form data.
+    const hydrated = await hydrateProfileFromServer(email);
 
     // Use cached flags first, then confirm with the backend if needed.
     let completed = isApplicationCompleted();
-    if (!completed) {
+    if (hydrated && typeof hydrated.completed === 'boolean') {
+        completed = !!hydrated.completed;
+    } else if (!completed) {
         const remoteCompleted = await fetchApplicationCompletedForEmail(email);
         if (remoteCompleted === true) {
             completed = true;
@@ -822,7 +825,18 @@ const routeSignedInUserToCorrectPage = async () => {
 
     // Use replace so back-button doesn't return to the intermediate state that
     // might re-trigger modal/splash logic in some browsers.
-    const target = completed ? 'already-registered.html' : 'next-form.html';
+    // If the server returned any registration or next-form data for this email,
+    // treat the user as returning and send them to the already-registered page.
+    let target = 'next-form.html';
+    try {
+        const hasServerData = !!(hydrated && (
+            (hydrated.registrationData && Object.keys(hydrated.registrationData).length > 0) ||
+            (hydrated.nextFormData && Object.keys(hydrated.nextFormData).length > 0)
+        ));
+        if (completed || hasServerData) target = 'already-registered.html';
+    } catch (e) {
+        if (completed) target = 'already-registered.html';
+    }
     try {
         window.location.replace(target);
     } catch (e) {

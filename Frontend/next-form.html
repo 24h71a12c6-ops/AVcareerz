@@ -992,32 +992,35 @@
                             </div>
                             <div class="form-group">
                                 <label for="collegeName">College/University Name <span class="required">*</span></label>
-                                <input type="text" id="collegeName" name="collegeName" list="collegeNameOptions" placeholder="Type or select college/university" required autocomplete="off">
-                                <datalist id="collegeNameOptions">
-                                    <option value="IIT Hyderabad"></option>
-                                    <option value="JNTU Hyderabad"></option>
-                                    <option value="Osmania University"></option>
-                                    <option value="University of Hyderabad"></option>
-                                    <option value="NIT Warangal"></option>
-                                    <option value="Kakatiya University"></option>
-                                    <option value="Mahindra University"></option>
-                                    <option value="SR University"></option>
-                                    <option value="Andhra University"></option>
-                                    <option value="Andhra University College of Engineering"></option>
-                                    <option value="JNTU Kakinada"></option>
-                                    <option value="JNTU Anantapur"></option>
-                                    <option value="Sri Venkateswara University"></option>
-                                    <option value="SV University Tirupati"></option>
-                                    <option value="Krishna University"></option>
-                                    <option value="Acharya Nagarjuna University"></option>
-                                    <option value="KL University"></option>
-                                    <option value="Vignan University"></option>
-                                    <option value="GITAM University"></option>
-                                    <option value="VIT-AP University"></option>
-                                    <option value="SRM University AP"></option>
-                                    <option value="GVP College of Engineering"></option>
-                                    <option value="RVR & JC College of Engineering"></option>
-                                </datalist>
+                                <!-- Replaced browser datalist with a custom-styled dropdown so it matches other selects -->
+                                <div class="fixed-dropdown-shell">
+                                    <input type="text" id="collegeName" name="collegeName" placeholder="Type or select college/university" required autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox">
+                                    <div id="collegeNameMenu" class="fixed-dropdown-menu" role="listbox" aria-label="College suggestions">
+                                        <button type="button" class="fixed-dropdown-option">IIT Hyderabad</button>
+                                        <button type="button" class="fixed-dropdown-option">JNTU Hyderabad</button>
+                                        <button type="button" class="fixed-dropdown-option">Osmania University</button>
+                                        <button type="button" class="fixed-dropdown-option">University of Hyderabad</button>
+                                        <button type="button" class="fixed-dropdown-option">NIT Warangal</button>
+                                        <button type="button" class="fixed-dropdown-option">Kakatiya University</button>
+                                        <button type="button" class="fixed-dropdown-option">Mahindra University</button>
+                                        <button type="button" class="fixed-dropdown-option">SR University</button>
+                                        <button type="button" class="fixed-dropdown-option">Andhra University</button>
+                                        <button type="button" class="fixed-dropdown-option">Andhra University College of Engineering</button>
+                                        <button type="button" class="fixed-dropdown-option">JNTU Kakinada</button>
+                                        <button type="button" class="fixed-dropdown-option">JNTU Anantapur</button>
+                                        <button type="button" class="fixed-dropdown-option">Sri Venkateswara University</button>
+                                        <button type="button" class="fixed-dropdown-option">SV University Tirupati</button>
+                                        <button type="button" class="fixed-dropdown-option">Krishna University</button>
+                                        <button type="button" class="fixed-dropdown-option">Acharya Nagarjuna University</button>
+                                        <button type="button" class="fixed-dropdown-option">KL University</button>
+                                        <button type="button" class="fixed-dropdown-option">Vignan University</button>
+                                        <button type="button" class="fixed-dropdown-option">GITAM University</button>
+                                        <button type="button" class="fixed-dropdown-option">VIT-AP University</button>
+                                        <button type="button" class="fixed-dropdown-option">SRM University AP</button>
+                                        <button type="button" class="fixed-dropdown-option">GVP College of Engineering</button>
+                                        <button type="button" class="fixed-dropdown-option">RVR &amp; JC College of Engineering</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="yearOfPassing">Year of Passing <span class="required">*</span></label>
@@ -1847,6 +1850,58 @@
             }
         }
     });
+</script>
+
+<script>
+// Custom behaviour for collegeName fixed dropdown (replace datalist)
+(function(){
+    const input = document.getElementById('collegeName');
+    const menu = document.getElementById('collegeNameMenu');
+    if (!input || !menu) return;
+
+    const options = Array.from(menu.querySelectorAll('.fixed-dropdown-option'));
+
+    function syncFilled() {
+        input.classList.toggle('filled', String(input.value || '').trim() !== '');
+    }
+
+    function filterOptions() {
+        const q = String(input.value || '').trim().toLowerCase();
+        let any = false;
+        options.forEach(btn => {
+            const txt = (btn.textContent || '').toLowerCase();
+            const match = q === '' || txt.includes(q);
+            btn.style.display = match ? 'block' : 'none';
+            if (match) any = true;
+        });
+        menu.hidden = !any;
+    }
+
+    options.forEach(btn => btn.addEventListener('click', () => {
+        input.value = btn.textContent;
+        syncFilled();
+        menu.hidden = true;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    }));
+
+    input.addEventListener('input', () => {
+        syncFilled();
+        filterOptions();
+    });
+
+    input.addEventListener('focus', () => {
+        filterOptions();
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.fixed-dropdown-shell')) {
+            menu.hidden = true;
+        }
+    });
+
+    // start hidden
+    menu.hidden = true;
+})();
 </script>
 
 <script>
