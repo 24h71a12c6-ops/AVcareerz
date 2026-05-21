@@ -719,6 +719,11 @@ const routeSignedInUserToCorrectPage = async () => {
     const email = String(localStorage.getItem('userEmail') || '').trim();
     if (!email) return false;
 
+    // Mark the session active so step pages (next-form / already-registered / congrats)
+    // do not bounce back to the home page and re-trigger splash/popup flows.
+    try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
+    try { localStorage.setItem('isSessionActive', 'true'); } catch {}
+
     // Use cached flags first, then confirm with the backend if needed.
     let completed = isApplicationCompleted();
     if (!completed) {
@@ -3346,6 +3351,8 @@ if (registrationForm) {
 
     const continueToApplicationForm = () => {
         sessionStorage.setItem('pendingApplicationStep', '2');
+        sessionStorage.setItem('isSessionActive', 'true');
+        try { localStorage.setItem('isSessionActive', 'true'); } catch {}
         window.location.href = 'next-form.html';
     };
 
