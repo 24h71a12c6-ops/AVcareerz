@@ -1676,7 +1676,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // (submenu triggers are handled above)
 
-            const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1';
+            // Honor any explicit skip flags (set after sign-in) so a lingering
+            // `forceOpenRegistration` cannot reopen the modal for a just-signed-in user.
+            const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1' && !(sessionStorage.getItem('skipModalOnNextPageLoad') === '1' || localStorage.getItem('skipModalOnNextPageLoad') === '1');
 
             // After signup, the "Register Here" CTA should open the next form.
             // Keep pre-signup behavior (open modal) for new users on any page.
