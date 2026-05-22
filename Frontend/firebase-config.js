@@ -59,9 +59,7 @@
         sessionStorage.setItem('isSessionActive', 'true');
       }
 
-      setTimeout(() => {
-        window.location.href = 'next-form.html';
-      }, 1000);
+      window.location.replace('next-form.html');
     } catch (error) {
       console.error('Google sign-in failed:', error);
       alert('Google sign-in failed. Please try again.');

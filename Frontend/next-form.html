@@ -1584,9 +1584,7 @@
         successMessage.style.color = '#22c55e';
         successMessage.style.display = 'block';
 
-        setTimeout(() => {
-            window.location.href = 'congrats.html';
-        }, 1000);
+        window.location.replace('congrats.html');
 
         if (submitBtn) {
             submitBtn.innerHTML = originalText;

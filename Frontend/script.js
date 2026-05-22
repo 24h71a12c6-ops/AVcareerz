@@ -2021,13 +2021,75 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 7. GOOGLE SIGN-IN INITIALIZATION
+    const googleBtnContainer = document.getElementById('googleBtn');
     const googleFallbackBtn = document.getElementById('googleFallbackBtn');
+
+    const setFallbackVisible = (visible) => {
+        if (!googleFallbackBtn) return;
+        googleFallbackBtn.style.display = visible ? 'flex' : 'none';
+    };
+
+    if (googleBtnContainer) {
+        setFallbackVisible(true);
+        let googleInitAttempts = 0;
+        const MAX_GOOGLE_INIT_ATTEMPTS = 20;
+
+        const initGoogle = () => {
+            if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
+                googleInitAttempts += 1;
+                if (googleInitAttempts < MAX_GOOGLE_INIT_ATTEMPTS) {
+                    setTimeout(initGoogle, 150);
+                    return;
+                }
+
+                setFallbackVisible(true);
+                return;
+            }
+
+            try {
+                google.accounts.id.initialize({
+                    client_id: '788852105404-mq7k0ta6pc8vbehol821fro4fohtplrg.apps.googleusercontent.com',
+                    callback: handleCredentialResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: true
+                });
+
+                google.accounts.id.renderButton(
+                    googleBtnContainer,
+                    {
+                        type: 'standard',
+                        shape: 'rectangular',
+                        theme: 'outline',
+                        size: 'medium',
+                        text: 'signin_with',
+                        logo_alignment: 'left',
+                        width: 280
+                    }
+                );
+
+                setTimeout(() => {
+                    const rendered = !!googleBtnContainer.querySelector('iframe, div[role="button"]');
+                    setFallbackVisible(!rendered);
+                }, 500);
+            } catch (err) {
+                console.error('Google Sign-In render failed:', err);
+                setFallbackVisible(true);
+            }
+        };
+
+        initGoogle();
+    }
 
     if (googleFallbackBtn) {
         googleFallbackBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            if (typeof signInWithGoogle === 'function') {
-                void signInWithGoogle();
+
+            if (typeof google !== 'undefined' && google.accounts && google.accounts.id && typeof google.accounts.id.prompt === 'function') {
+                try {
+                    google.accounts.id.prompt();
+                } catch (err) {
+                    console.error('Google One Tap prompt failed:', err);
+                }
             }
         });
     }
@@ -2043,9 +2105,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.setItem('isSessionActive', 'true');
             }
 
-            setTimeout(() => {
-                window.location.href = 'next-form.html';
-            }, 1000);
+            window.location.replace('next-form.html');
         } catch (err) {
             console.error('Google sign-in callback failed:', err);
             window.location.href = 'next-form.html';
