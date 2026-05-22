@@ -831,14 +831,12 @@ app.get('/api/check-application-status', async (req, res) => {
 
     let nextFormSnap = await db.collection('next_form')
       .where('email', '==', emailLc)
-      .orderBy('created_at', 'desc')
       .limit(1)
       .get();
 
     if (nextFormSnap.empty && emailRaw !== emailLc) {
       nextFormSnap = await db.collection('next_form')
         .where('email', '==', emailRaw)
-        .orderBy('created_at', 'desc')
         .limit(1)
         .get();
     }
