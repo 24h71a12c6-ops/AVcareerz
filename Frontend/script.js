@@ -2129,6 +2129,8 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const decoded = typeof decodeJwtResponse === 'function' ? decodeJwtResponse(response?.credential) : {};
             const email = String(decoded?.email || '').trim().toLowerCase();
+            const fullName = String(decoded?.name || decoded?.full_name || '').trim();
+            const photoURL = String(decoded?.picture || '').trim();
 
             if (email) {
                 localStorage.setItem('userEmail', email);
@@ -2166,25 +2168,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 document.body.appendChild(banner);
 
-                // Also attempt to create/update a minimal user record in Firestore so sign-ins are tracked.
+                // Also attempt to sync the Google sign-in with the backend so the
+                // Firestore record and emails are handled server-side.
                 try {
-                    const profile = decoded || {};
-                    const emailToWrite = String(profile.email || localStorage.getItem('userEmail') || '').trim().toLowerCase();
-                    if (typeof db !== 'undefined' && emailToWrite) {
-                        try {
-                            await db.collection('users').doc(emailToWrite).set({
-                                email: emailToWrite,
-                                displayName: profile.name || profile.full_name || '',
-                                photoURL: profile.picture || '',
-                                lastSignIn: firebase.firestore.FieldValue.serverTimestamp(),
+                    if (email) {
+                        const syncResponse = await fetch(apiUrl('/api/google-signin'), {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email,
+                                fullName,
+                                photoURL,
                                 provider: 'google'
-                            }, { merge: true });
-                        } catch (err) {
-                            console.warn('Failed to write user record to Firestore after GIS sign-in:', err);
+                            })
+                        });
+
+                        if (!syncResponse.ok) {
+                            console.warn('Google sign-in sync request failed:', syncResponse.status);
                         }
                     }
                 } catch (err) {
-                    // ignore Firestore write errors here
+                    console.warn('Failed to sync Google sign-in with backend:', err);
                 }
 
                 // Redirect almost immediately so UX is fast but the message briefly appears.

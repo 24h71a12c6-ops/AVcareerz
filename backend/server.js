@@ -801,6 +801,73 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// Google Sign-In sync: store profile + send user/admin emails
+app.post('/api/google-signin', async (req, res) => {
+  try {
+    const emailRaw = String(req.body?.email || '').trim();
+    const emailLc = emailRaw.toLowerCase();
+    const fullName = String(req.body?.fullName || req.body?.name || '').trim();
+    const photoURL = String(req.body?.photoURL || req.body?.picture || '').trim();
+
+    if (!emailRaw) {
+      return res.status(400).json({ success: false, error: 'Email is required' });
+    }
+
+    const profileData = {
+      email: emailRaw,
+      email_lc: emailLc,
+      full_name: fullName || null,
+      photoURL: photoURL || null,
+      provider: 'google',
+      source: 'google-signin',
+      is_google_user: true,
+      updated_at: new Date().toISOString()
+    };
+
+    await db.collection('users').doc(emailLc).set(profileData, { merge: true });
+    await db.collection('sign_in_with_google').doc(emailLc).set({
+      ...profileData,
+      signed_in_at: new Date().toISOString()
+    }, { merge: true });
+
+    const { sendGoogleSignInSuccessEmail, sendAdminEmail } = require('./services/emailService');
+    const signedInAt = new Date().toISOString();
+
+    const userMailPromise = sendGoogleSignInSuccessEmail(
+      emailRaw,
+      fullName || 'User',
+      {
+        provider: 'Google',
+        signedInAt,
+        nextStep: 'Please complete the application form to continue your study abroad journey.'
+      }
+    );
+    const adminMailPromise = sendAdminEmail({
+      fullName: fullName || 'Google User',
+      email: emailRaw,
+      photoURL: photoURL || '',
+      provider: 'google',
+      source: 'Google Sign-In',
+      signInMethod: 'Google',
+      signedInAt,
+      isGoogleSignIn: true,
+      note: 'User signed in with Google and should be guided to complete the application form.'
+    }, 'New Google Sign-In Received');
+
+    const [userMailResult, adminMailResult] = await Promise.allSettled([userMailPromise, adminMailPromise]);
+
+    return res.json({
+      success: true,
+      saved: true,
+      userEmailStatus: userMailResult.status,
+      adminEmailStatus: adminMailResult.status
+    });
+  } catch (error) {
+    console.error('Google sign-in sync error:', error);
+    return res.status(500).json({ success: false, error: 'Failed to sync Google sign-in' });
+  }
+});
+
 // Check Application Completion Status API
 app.get('/api/check-application-status', async (req, res) => {
   try {

@@ -220,6 +220,74 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
   }
 };
 
+// Google sign-in success email for users
+const sendGoogleSignInSuccessEmail = async (userEmail, userName, extra = {}) => {
+  try {
+    const adminList = getAdminEmailList();
+    if (adminList.includes(String(userEmail || '').trim())) {
+      console.log('Google sign-in success email skipped for admin address:', userEmail);
+      return true;
+    }
+
+    const safeName = escapeHtml(userName || 'Student');
+    const safeEmail = escapeHtml(userEmail || '');
+    const safeSignedInAt = extra?.signedInAt ? escapeHtml(extra.signedInAt) : '';
+    const safeProvider = escapeHtml(extra?.provider || 'Google');
+    const safeNextStep = escapeHtml(extra?.nextStep || 'Please complete the application form to continue your study abroad journey.');
+    const logoUrl = getEnvString('EMAIL_LOGO_URL') || DEFAULT_LOGO_URL;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8" />
+        <title>Google Sign-In Successful</title>
+        <style>
+          body { font-family: Arial, sans-serif; background: #f4f4f7; margin:0; padding:0; }
+          .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; }
+          .header { text-align: center; padding-bottom: 20px; }
+          .header img { max-width: 150px; }
+          .content { color: #333333; line-height: 1.6; }
+          .footer { font-size: 12px; color: #777777; text-align: center; padding-top: 20px; }
+          .button { display: inline-block; padding: 10px 20px; margin-top: 20px; background: #0D4B75; color: #ffffff; text-decoration: none; border-radius: 4px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img src="${escapeHtml(logoUrl)}" alt="Abroad Vision Careerz" />
+          </div>
+          <div class="content">
+            <h2>Welcome ${safeName},</h2>
+            <p>You have successfully signed in with <strong>${safeProvider}</strong> at <strong>Abroad Vision Careerz</strong>.</p>
+            <p><strong>Email:</strong> ${safeEmail}</p>
+            ${safeSignedInAt ? `<p><strong>Signed in at:</strong> ${safeSignedInAt}</p>` : ''}
+            <p>${safeNextStep}</p>
+            <p>Once you complete the form, our team will review your application and guide you through the next steps.</p>
+            <a href="https://yourdomain.example.com" class="button">Continue Your Journey</a>
+            <p>Best regards,<br><strong>Abroad Vision Careerz Team</strong></p>
+          </div>
+          <div class="footer">
+            <p>Guiding Futures Beyond Borders</p>
+            <p>If this wasn’t you, please contact support immediately.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    await sendEmail({
+      to: userEmail,
+      subject: 'Google Sign-In Successful - Abroad Vision Careerz',
+      html
+    });
+    return true;
+  } catch (error) {
+    console.error('Google sign-in success email error:', error);
+    return false;
+  }
+};
+
 // Admin notification email
 const sendAdminEmail = async (user, customSubject = null) => {
   try {
@@ -374,6 +442,7 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
 module.exports = {
   sendEmail,
   sendConfirmationEmail,
+  sendGoogleSignInSuccessEmail,
   sendAdminEmail,
   sendPasswordResetCodeEmail,
   sendPasswordChangedEmail,
