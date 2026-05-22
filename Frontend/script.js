@@ -1856,13 +1856,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // In edit mode, allow opening the registration modal even for registered users.
             if (href === '#registration-section' && isRegisteredUser() && !forceOpenRegistration) {
                 e.preventDefault();
-                // If the user has already been marked old, never send them to next-form.
-                if (localStorage.getItem('userStatus') === 'old' || localStorage.getItem('isRegisteredUser') === 'true') {
-                    window.location.href = 'already-registered.html';
-                    return;
-                }
-
-                // Otherwise use the shared routing helper for fresh/new sessions.
+                // Route the signed-in user to the correct page (already-registered or next-form)
                 try { void routeSignedInUserToCorrectPage(); } catch { window.location.href = 'next-form.html'; }
                 return;
             }
@@ -1881,11 +1875,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 if (isRegisteredUser() && !forceOpenRegistration) {
-                    if (localStorage.getItem('userStatus') === 'old' || localStorage.getItem('isRegisteredUser') === 'true') {
-                        window.location.href = 'already-registered.html';
-                        return;
-                    }
-
                     try { void routeSignedInUserToCorrectPage(); } catch { window.location.href = 'next-form.html'; }
                     return;
                 }
@@ -1978,36 +1967,47 @@ document.addEventListener("DOMContentLoaded", function () {
         // Always prevent default for these specific CTA buttons and delegate to
         // the unified handler which attempts a live Firestore check when possible.
         e.preventDefault();
-        void handleCTAClick(e);
+        void handleCTAClick();
     });
 
-    // Centralized CTA handler: prefer live Firestore verification when the
-    // Firebase client is available. Falls back to existing server-backed
-    // routing helpers when Firebase isn't present.
-    async function handleCTAClick(event) {
-        if (event && event.preventDefault) event.preventDefault();
+    // Centralized CTA handler: keep routing simple and driven by local state.
+    async function handleCTAClick() {
+        try {
+            const completed = localStorage.getItem('formSubmittedSuccessfully') === 'true'
+                || localStorage.getItem('isApplicationDone') === 'true'
+                || localStorage.getItem('applicationCompleted') === '1';
 
-        // If Firebase is authenticated, check real-time document data
-        if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
-            const user = firebase.auth().currentUser;
-            try {
-                const doc = await window.db.collection("next_form").doc(user.uid).get();
-
-                if (doc.exists && doc.data().status === "old") {
-                    console.log("Verified old user record found. Routing to already-registered.");
-                    window.location.href = "already-registered.html";
-                    return;
-                }
-            } catch (err) {
-                console.error("Firestore transaction failed, running fallback strategy:", err);
+            if (completed) {
+                window.location.href = 'already-registered.html';
+                return;
             }
-        }
 
-        // Backup fallback: if userStatus local cache says old, route them correctly
-        if (localStorage.getItem('userStatus') === 'old') {
-            window.location.href = "already-registered.html";
-        } else {
-            window.location.href = "next-form.html";
+            const email = String(localStorage.getItem('userEmail') || '').trim();
+            if (email) {
+                window.location.href = 'next-form.html';
+                return;
+            }
+
+            if (typeof signInWithGoogle === 'function') {
+                await signInWithGoogle();
+                return;
+            }
+
+            if (typeof openRegModal === 'function') {
+                openRegModal();
+                return;
+            }
+
+            const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
+            if (isHomePage) {
+                scrollToSection('registration-section');
+                return;
+            }
+
+            window.location.href = 'index.html#registration-section';
+        } catch (err) {
+            console.error('handleCTAClick unexpected error:', err);
+            window.location.href = 'next-form.html';
         }
     }
 
@@ -2021,154 +2021,35 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 7. GOOGLE SIGN-IN INITIALIZATION
-    const googleBtnContainer = document.getElementById('googleBtn');
     const googleFallbackBtn = document.getElementById('googleFallbackBtn');
-
-    const setFallbackVisible = (visible) => {
-        if (!googleFallbackBtn) return;
-        googleFallbackBtn.style.display = visible ? 'flex' : 'none';
-    };
-
-    if (googleBtnContainer) {
-        // Keep a visible button even if the official Google widget can't render.
-        setFallbackVisible(true);
-        let googleInitAttempts = 0;
-        const MAX_GOOGLE_INIT_ATTEMPTS = 20;
-
-        const initGoogle = () => {
-            if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
-                googleInitAttempts += 1;
-                if (googleInitAttempts < MAX_GOOGLE_INIT_ATTEMPTS) {
-                    console.warn('Google Identity Services script not loaded yet. Retrying...');
-                    setTimeout(initGoogle, 150);
-                    return;
-                }
-
-                console.warn('Google Identity Services unavailable after repeated attempts. Using fallback only.');
-                setFallbackVisible(true);
-                return;
-            }
-
-            try {
-                google.accounts.id.initialize({
-                    client_id: "788852105404-mq7k0ta6pc8vbehol821fro4fohtplrg.apps.googleusercontent.com",
-                    callback: handleCredentialResponse,
-                    auto_select: false,
-                    cancel_on_tap_outside: true
-                });
-
-                google.accounts.id.renderButton(
-                    googleBtnContainer,
-                    {
-                        type: "standard",
-                        shape: "rectangular",
-                        theme: "outline",
-                        size: "medium",
-                        text: "signin_with",
-                        logo_alignment: "left",
-                        width: 280
-                    }
-                );
-
-                // Hide fallback only if the official button actually rendered.
-                setTimeout(() => {
-                    const rendered = !!googleBtnContainer.querySelector('iframe, div[role="button"]');
-                    setFallbackVisible(!rendered);
-                    if (!rendered) {
-                        showNotification('Google sign-in is not available on this site/origin. If testing locally, use https://abroad-vision-carrerz-consultancy.onrender.com (not file://) and add your domain to Google OAuth “Authorized JavaScript origins”.', 'info');
-                    }
-                }, 500);
-
-            } catch (err) {
-                console.error('Google Sign-In render failed:', err);
-                setFallbackVisible(true);
-                showNotification('Google sign-in could not be loaded. Please use email signup for now.', 'error');
-            }
-        };
-
-        initGoogle();
-    }
 
     if (googleFallbackBtn) {
         googleFallbackBtn.addEventListener('click', (e) => {
             e.preventDefault();
-
-            if (typeof google !== 'undefined' && google.accounts && google.accounts.id && typeof google.accounts.id.prompt === 'function') {
-                // Try One Tap as a fallback trigger.
-                try {
-                    google.accounts.id.prompt();
-                } catch (err) {
-                    console.error('Google One Tap prompt failed:', err);
-                    showNotification('Google sign-in is not available on this origin. Please use email signup.', 'info');
-                }
-            } else {
-                showNotification('Google sign-in is not available (blocked/offline). Please use email signup.', 'info');
+            if (typeof signInWithGoogle === 'function') {
+                void signInWithGoogle();
             }
         });
     }
 
-    function handleCredentialResponse(response) {
-        // 1. Decode your Google JWT token like you normally do
-        const responsePayload = decodeJwtResponse(response.credential);
-        console.log("Google Sign-In successful for:", responsePayload.email);
+    async function handleCredentialResponse(response) {
+        try {
+            const decoded = typeof decodeJwtResponse === 'function' ? decodeJwtResponse(response?.credential) : {};
+            const email = String(decoded?.email || '').trim().toLowerCase();
 
-        // Save email to localStorage for standard server fallback sync
-        localStorage.setItem("userEmail", responsePayload.email);
+            if (email) {
+                localStorage.setItem('userEmail', email);
+                sessionStorage.setItem('isSessionActive', 'true');
+                localStorage.setItem('isSessionActive', 'true');
+            }
 
-        // 2. CRITICAL FIX: Authenticate into Firebase using the Google ID Token
-        if (typeof firebase !== 'undefined') {
-            const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
-
-            firebase.auth().signInWithCredential(credential).then((result) => {
-                const user = result.user;
-                console.log("Firebase Auth synchronized successfully! UID:", user.uid);
-
-                // 3. Now check Firestore using the authenticated UID
-                const userRef = window.db.collection("next_form").doc(user.uid);
-
-                userRef.get().then((doc) => {
-                    if (doc.exists && doc.data().status === "old") {
-                        console.log("Old user found in database. Keeping on home page.");
-                        localStorage.setItem("userStatus", "old");
-                        localStorage.setItem("isRegisteredUser", "true");
-                        // Stay on home page. Profile data can hydrate safely.
-                    } else {
-                        console.log("New user context. Routing to next-form.");
-                        localStorage.setItem("userStatus", "new");
-
-                        // Provision a new document for them if it doesn't exist
-                        userRef.set({
-                            status: "new",
-                            email: user.email,
-                            name: user.displayName || "User",
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then(() => {
-                            window.location.href = "next-form.html?googleSignIn=1";
-                        });
-                    }
-                }).catch(error => {
-                    console.error("Firestore database lookup error:", error);
-                    window.location.href = "next-form.html"; // Safe fallback
-                });
-
-            }).catch((error) => {
-                console.error("Failed to link Google credential to Firebase Auth:", error);
-                window.location.href = "next-form.html";
-            });
-        } else {
-            // Fallback if SDK fails to load entirely
-            window.location.href = "next-form.html";
+            setTimeout(() => {
+                window.location.href = 'next-form.html';
+            }, 1000);
+        } catch (err) {
+            console.error('Google sign-in callback failed:', err);
+            window.location.href = 'next-form.html';
         }
-    }
-
-    // Helper to safely parse the JWT payload from Google Identity Services
-    function decodeJwtResponse(token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-            return '%' + ('0' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
     }
 
     // 8. REGISTRATION POPUP AFTER 7 SECONDS (with blurred background)

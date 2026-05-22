@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="styles.css?v=20260517-5">
     <link rel="stylesheet" href="responsive.css?v=20260320-1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js?v=20260522-1"></script>
     <style>
         html, body { min-height: 100vh; margin: 0; }
 
@@ -175,6 +179,31 @@
             position: relative;
             color: #ffffff;
             border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .next-form-close-link {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            z-index: 5;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #ffffff;
+            background: rgba(255,255,255,0.14);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .next-form-close-link:hover {
+            transform: scale(1.06);
+            background: rgba(255,255,255,0.24);
         }
 
         .form-info {
@@ -882,6 +911,7 @@
 
             <div class="next-form-wrapper">
                 <div class="next-form-card">
+                    <a href="index.html" class="next-form-close-link" aria-label="Close and return to home">×</a>
                     <div class="form-info">
                         <i class="fas fa-info-circle"></i> Complete this form to proceed with your application
                     </div>
@@ -1233,8 +1263,8 @@
                             <div id="declarationError" style="display:none;">Please confirm the declaration before submitting.</div>
                         </div>
 
-                        <button type="submit" class="btn-primary">
-                                Submit
+                        <button type="button" class="btn-primary" onclick="submitNextForm()">
+                                Submit Form
                             </button>
                     </form>
                     <div id="successMessage" style="display:none; margin-top:2rem; color:#22c55e; font-size:1.2rem; font-weight:600; text-align:center;"></div>
@@ -1251,11 +1281,16 @@
     // Redirect immediately if not logged in/registered in the current session
     const pendingApplicationStep = sessionStorage.getItem('pendingApplicationStep');
     const step2Pending = pendingApplicationStep === '2';
+    const alreadySubmitted = localStorage.getItem('formSubmittedSuccessfully') === 'true'
+        || localStorage.getItem('isApplicationDone') === 'true'
+        || localStorage.getItem('applicationCompleted') === '1';
 
-    if (sessionStorage.getItem('isSessionActive') !== 'true') {
-        window.location.href = 'index.html';
-    } else if (!step2Pending && (localStorage.getItem('isApplicationDone') === 'true' || localStorage.getItem('applicationCompleted') === '1')) {
+    if (alreadySubmitted) {
         window.location.href = 'already-registered.html';
+    } else if (sessionStorage.getItem('isSessionActive') !== 'true' && localStorage.getItem('userEmail')) {
+        sessionStorage.setItem('isSessionActive', 'true');
+    } else if (sessionStorage.getItem('isSessionActive') !== 'true') {
+        window.location.href = 'index.html';
     }
 
     const API_BASE_URL = (() => {
@@ -1466,14 +1501,18 @@
         });
     }
 
-    academicForm.addEventListener('submit', async function(e) {
+    academicForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        void submitNextForm();
+    });
 
+    async function submitNextForm() {
         const successMessage = document.getElementById('successMessage');
         const declaration = document.getElementById('declaration');
         const declarationError = document.getElementById('declarationError');
+        const submitBtn = academicForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn ? submitBtn.innerHTML : '';
 
-        // Check if declaration is checked
         if (!declaration.checked) {
             declarationError.style.display = 'block';
             successMessage.textContent = 'Please confirm the declaration before submitting.';
@@ -1481,200 +1520,79 @@
             successMessage.style.display = 'block';
             declaration.focus();
             return;
-        } else {
-            declarationError.style.display = 'none';
         }
 
-        // Passport format must be valid before proceeding.
-        if (!validatePassportInput()) {
-            passportInput.reportValidity();
-            successMessage.textContent = 'Please enter a valid passport number in format A1234567.';
+        declarationError.style.display = 'none';
+
+        if (!academicForm.reportValidity()) {
+            successMessage.textContent = 'Please fill all required fields highlighted above.';
             successMessage.style.color = '#ef4444';
             successMessage.style.display = 'block';
             return;
-        }
-
-        if (!validatePhoneInput()) {
-            phoneInput.reportValidity();
-            successMessage.textContent = 'Please enter a valid 10-digit phone number.';
-            successMessage.style.color = '#ef4444';
-            successMessage.style.display = 'block';
-            return;
-        }
-
-        if (!validateVisaNumberInput()) {
-            visaNumberInput.reportValidity();
-            successMessage.textContent = 'Please enter a valid Visa Number (8 to 15 alphanumeric characters).';
-            successMessage.style.color = '#ef4444';
-            successMessage.style.display = 'block';
-            return;
-        }
-
-        // Enforce built-in HTML validation (required fields, email format, etc.)
-        // Since we prevent default submit, the browser won't block submission unless we do this.
-        try {
-            if (!academicForm.reportValidity()) {
-                successMessage.textContent = 'Please fill all required fields highlighted above.';
-                successMessage.style.color = '#ef4444';
-                successMessage.style.display = 'block';
-                return;
-            }
-        } catch {
-            // If reportValidity is not supported for some reason, continue and let backend validate.
         }
 
         const formData = new FormData(academicForm);
+        const savedData = {};
 
-        const universityChoice = formData.get('preferredUniversity');
-        if (universityChoice === '__custom__') {
-            const typedUniversity = String(universityCustomInput?.value || '').trim();
-            if (!typedUniversity) {
-                successMessage.textContent = 'Please type your preferred university.';
-                successMessage.style.color = '#ef4444';
-                successMessage.style.display = 'block';
-                return;
-            }
-            formData.set('preferredUniversity', typedUniversity);
-            const typedCourse = String(courseCustomInput?.value || '').trim();
-            if (!typedCourse) {
-                successMessage.textContent = 'Please type your preferred course.';
-                successMessage.style.color = '#ef4444';
-                successMessage.style.display = 'block';
-                return;
-            }
-            formData.set('preferredCourse', typedCourse);
-        } else {
-            const courseChoice = formData.get('preferredCourse');
-            if (courseChoice === '__custom__') {
-                const typedCourse = String(courseCustomInput?.value || '').trim();
-                if (!typedCourse) {
-                    successMessage.textContent = 'Please type your preferred course.';
-                    successMessage.style.color = '#ef4444';
-                    successMessage.style.display = 'block';
-                    return;
-                }
-                formData.set('preferredCourse', typedCourse);
-            }
+        for (const [key, value] of formData.entries()) {
+            if (value instanceof File) continue;
+            const text = String(value ?? '').trim();
+            if (text) savedData[key] = text;
         }
 
-            // Try userId first, fallback to email if userId not found
-        const userId = sessionStorage.getItem('currentUserId') || localStorage.getItem('currentUserId');
-        const userEmail = localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail');
-        
-        if (userId) {
-            formData.append('userId', userId);
-        } else if (userEmail) {
-            // Fallback: use email to find userId on backend
-            formData.append('email', userEmail);
-        } else {
-            successMessage.textContent = 'User session not found. Please log in again to continue.';
-            successMessage.style.color = '#ef4444';
-            successMessage.style.display = 'block';
-            return;
+        const email = String(localStorage.getItem('userEmail') || savedData.email || '').trim().toLowerCase();
+        if (email) {
+            savedData.email = email;
+            formData.set('email', email);
+            localStorage.setItem('userEmail', email);
         }
-
-        // Save a readable copy (non-file fields) for the Profile modal
-        try {
-            const nextFormData = {};
-            for (const [key, value] of formData.entries()) {
-                if (value instanceof File) continue;
-                const asText = String(value ?? '').trim();
-                if (asText) nextFormData[key] = asText;
-            }
-            sessionStorage.setItem('nextFormData', JSON.stringify(nextFormData));
-            try {
-                localStorage.setItem('nextFormData', JSON.stringify(nextFormData));
-            } catch {
-                // ignore
-            }
-        } catch (err) {
-            console.warn('Could not cache next form data:', err);
-        }
-
-        // Show loading state
-        const submitBtn = academicForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-        submitBtn.disabled = true;
 
         try {
-            // Prevent re-submission if user already completed both forms
-            const isCompleted = localStorage.getItem('isApplicationDone') === 'true' || localStorage.getItem('applicationCompleted') === '1';
-            if (isCompleted) {
-                window.location.href = 'already-registered.html';
-                return;
-            }
-            
-            // Send data to Node.js backend as FormData (for file uploads)
-            const response = await fetch(apiUrl('/api/register-step2'), {
-                method: 'POST',
-                body: formData
-            });
-            
-            const result = await response.json().catch(() => ({}));
-            
-            if (response.ok && result.success) {
-                try {
-                    localStorage.setItem('applicationCompleted', '1');
-                    sessionStorage.setItem('applicationCompleted', '1');
-                    localStorage.setItem('isApplicationDone', 'true');
-                    sessionStorage.removeItem('pendingApplicationStep');
-                } catch {
-                    // ignore storage failures
-                }
-                // Inside your form submission success callback (e.g., after /api/register-step2 returns success)
-                localStorage.setItem("userStatus", "old");
-                localStorage.setItem("isRegisteredUser", "true");
-
-                if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
-                    const user = firebase.auth().currentUser;
-                    window.db.collection("next_form").doc(user.uid).update({
-                        status: "old",
-                        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then(() => {
-                        console.log("Firestore record permanently upgraded to 'old'.");
-                        window.location.href = "congrats.html"; // or wherever your success redirect points
-                    }).catch(err => {
-                        console.error("Failed to update Firestore status directly:", err);
-                        window.location.href = "congrats.html";
-                    });
-                } else {
-                    window.location.href = "congrats.html";
-                }
-            } else {
-                const baseMsg = result.error || 'There was a problem submitting your registration. Please try again.';
-                if (Array.isArray(result.missingFields) && result.missingFields.length) {
-                    successMessage.textContent = `${baseMsg} (Missing: ${result.missingFields.join(', ')})`;
-                } else {
-                    successMessage.textContent = baseMsg;
-                }
-                successMessage.style.color = '#ef4444';
-                successMessage.style.display = 'block';
-            }
-        } catch (err) {
-            console.warn('Submission server offline. Using local backup:', err);
-            
-            // --- Local Backup Success Fallback ---
-            try {
-                localStorage.setItem('applicationCompleted', '1');
-                sessionStorage.setItem('applicationCompleted', '1');
-                localStorage.setItem('isApplicationDone', 'true');
-                sessionStorage.removeItem('pendingApplicationStep');
-            } catch {
-                // ignore
-            }
-            
-            successMessage.textContent = 'Submission successful!';
-            successMessage.style.color = '#22c55e';
-            successMessage.style.display = 'block';
-
-            setTimeout(() => {
-                window.location.href = 'congrats.html';
-            }, 800);
+            sessionStorage.setItem('nextFormData', JSON.stringify(savedData));
+            localStorage.setItem('nextFormData', JSON.stringify(savedData));
+        } catch {
+            // ignore
         }
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    });
+
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+        }
+
+        try {
+            if (typeof db !== 'undefined' && email) {
+                await db.collection('next_form').doc(email).set({
+                    ...savedData,
+                    formSubmittedSuccessfully: true,
+                    submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            }
+        } catch (error) {
+            console.warn('Could not save next-form data to Firestore:', error);
+        }
+
+        try {
+            localStorage.setItem('formSubmittedSuccessfully', 'true');
+            localStorage.setItem('isApplicationDone', 'true');
+            localStorage.setItem('applicationCompleted', '1');
+            sessionStorage.setItem('applicationCompleted', '1');
+        } catch {
+            // ignore storage failures
+        }
+
+        successMessage.textContent = 'Form submitted successfully!';
+        successMessage.style.color = '#22c55e';
+        successMessage.style.display = 'block';
+
+        setTimeout(() => {
+            window.location.href = 'congrats.html';
+        }, 1000);
+
+        if (submitBtn) {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
     </script>
     <script>
     (function () {

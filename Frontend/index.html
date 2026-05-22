@@ -22,28 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-
-  <script>
-    // 2. Nuvvu techukunna exact live Web App Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyB-wuGgZ5h0zmxbhBZ_7vSlsrKOXXiVmxc",
-      authDomain: "abroadvisioncarrerz-1cde5.firebaseapp.com",
-      projectId: "abroadvisioncarrerz-1cde5",
-      storageBucket: "abroadvisioncarrerz-1cde5.firebasestorage.app",
-      messagingSenderId: "891545337313",
-      appId: "1:891545337313:web:7cb86e844ec2b5326da6a0",
-      measurementId: "G-BPZP145YRE"
-    };
-
-    // 3. Initialize active database connection
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-
-    // Binding database instance to global window context
-    window.db = firebase.firestore();
-    console.log("Firestore channel successfully connected!");
-  </script>
+  <script src="firebase-config.js?v=20260522-1"></script>
   <style>
     /* First-paint splash safety: keep splash visible immediately on fresh open */
     #splash-screen {
@@ -1113,9 +1092,6 @@
             <span>Or continue with</span>
           </div>
           <div class="reg-social-row">
-            <!-- Official Google Sign-In Button Container -->
-            <div id="googleBtn" style="width: 100%;"></div>
-            <!-- Fallback button (shown if Google button can't render, e.g. wrong origin) -->
             <button type="button" id="googleFallbackBtn" class="social-box" aria-label="Sign in with Google">
               <i class="fa-brands fa-google"></i>
               Sign in with Google
@@ -1179,7 +1155,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="script.js?v=20260521-2" defer></script>
+  <script src="script.js?v=20260522-2" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const testimonialSwiperRoot = document.querySelector('.testimonial-swiper');
