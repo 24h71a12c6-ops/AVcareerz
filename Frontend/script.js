@@ -862,11 +862,8 @@ const routeSignedInUserToCorrectPage = async () => {
     try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
     try { localStorage.setItem('isSessionActive', 'true'); } catch {}
 
-    // Hydrate from server to learn if the user already has saved registration/next-form data.
+    // Hydrate from server so we can detect whether the application is actually complete.
     const hydrated = await hydrateProfileFromServer(email);
-
-    // Treat any saved profile/application data as an existing account.
-    const hasAccountData = hasMeaningfulAccountData(hydrated) || hasStoredProfileData(email);
 
     // Use cached flags first, then confirm with the backend if needed.
     let completed = isApplicationCompleted();
@@ -894,9 +891,9 @@ const routeSignedInUserToCorrectPage = async () => {
 
     // Use replace so back-button doesn't return to the intermediate state that
     // might re-trigger modal/splash logic in some browsers.
-    // Returning users with any saved data should land on the already-registered page.
-    // Brand-new Google sign-ins should continue to the step-2 form.
-    const target = (completed || hasAccountData) ? 'already-registered.html' : 'next-form.html';
+    // Only a fully completed application should land on already-registered.
+    // If the user signed in but has not submitted step 2 yet, always send them to next-form.
+    const target = completed ? 'already-registered.html' : 'next-form.html';
     try {
         window.location.replace(target);
     } catch (e) {
