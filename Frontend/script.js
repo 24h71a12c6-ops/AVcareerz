@@ -2131,6 +2131,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 document.body.appendChild(banner);
 
+                // Also attempt to create/update a minimal user record in Firestore so sign-ins are tracked.
+                try {
+                    const profile = decoded || {};
+                    const emailToWrite = String(profile.email || localStorage.getItem('userEmail') || '').trim().toLowerCase();
+                    if (typeof db !== 'undefined' && emailToWrite) {
+                        try {
+                            await db.collection('users').doc(emailToWrite).set({
+                                email: emailToWrite,
+                                displayName: profile.name || profile.full_name || '',
+                                photoURL: profile.picture || '',
+                                lastSignIn: firebase.firestore.FieldValue.serverTimestamp(),
+                                provider: 'google'
+                            }, { merge: true });
+                        } catch (err) {
+                            console.warn('Failed to write user record to Firestore after GIS sign-in:', err);
+                        }
+                    }
+                } catch (err) {
+                    // ignore Firestore write errors here
+                }
+
                 // Redirect almost immediately so UX is fast but the message briefly appears.
                 setTimeout(() => {
                     try { window.location.replace('next-form.html'); } catch (e) { window.location.href = 'next-form.html'; }

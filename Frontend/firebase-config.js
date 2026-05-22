@@ -59,6 +59,21 @@
         sessionStorage.setItem('isSessionActive', 'true');
       }
 
+      // Attempt to create/update a minimal user record in Firestore so sign-ins are tracked.
+      try {
+        if (typeof db !== 'undefined' && email) {
+          await db.collection('users').doc(email).set({
+            email,
+            displayName: (user && user.displayName) || '',
+            photoURL: (user && user.photoURL) || '',
+            lastSignIn: firebase.firestore.FieldValue.serverTimestamp(),
+            provider: 'google'
+          }, { merge: true });
+        }
+      } catch (err) {
+        console.warn('Failed to write user record to Firestore after popup sign-in:', err);
+      }
+
       window.location.replace('next-form.html');
     } catch (error) {
       console.error('Google sign-in failed:', error);
