@@ -208,13 +208,14 @@
 
         .form-info {
             position: relative;
-            top: -18px; /* nudge upward so the info pill is easier to tap/click */
+            top: -10px; /* keep it visible without feeling clipped */
             z-index: 6;
             background: linear-gradient(90deg, #F0F4FF, #ffffff);
-            padding: 0.95rem 1rem;
+            padding: 0.9rem 1rem;
             border-radius: 8px;
             border-left: 4px solid #4A90E2;
-            margin-bottom: 1.2rem;
+            margin-top: 0.15rem;
+            margin-bottom: 1rem;
             color: #2C5F8D;
             font-size: 0.95rem;
             animation: infoPulse 5s ease-in-out infinite;
@@ -1295,7 +1296,8 @@
     if (alreadySubmitted && !step2Pending) {
         window.location.href = 'already-registered.html';
     } else if (step2Pending) {
-        try { sessionStorage.removeItem('pendingApplicationStep'); } catch {}
+        // Keep the step-2 marker alive until the form is actually submitted.
+        // This allows returning to home and clicking CTAs to still reopen next-form.
     } else if (sessionStorage.getItem('isSessionActive') !== 'true' && localStorage.getItem('userEmail')) {
         sessionStorage.setItem('isSessionActive', 'true');
     } else if (sessionStorage.getItem('isSessionActive') !== 'true') {
@@ -1585,6 +1587,8 @@
             localStorage.setItem('isApplicationDone', 'true');
             localStorage.setItem('applicationCompleted', '1');
             sessionStorage.setItem('applicationCompleted', '1');
+            sessionStorage.removeItem('pendingApplicationStep');
+            localStorage.removeItem('pendingApplicationStep');
         } catch {
             // ignore storage failures
         }

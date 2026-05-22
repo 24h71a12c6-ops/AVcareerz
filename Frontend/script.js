@@ -865,6 +865,9 @@ const routeSignedInUserToCorrectPage = async () => {
     // Hydrate from server so we can detect whether the application is actually complete.
     const hydrated = await hydrateProfileFromServer(email);
 
+    const step2Pending = sessionStorage.getItem('pendingApplicationStep') === '2'
+        || localStorage.getItem('pendingApplicationStep') === '2';
+
     // Use cached flags first, then confirm with the backend if needed.
     let completed = isApplicationCompleted();
     if (hydrated && typeof hydrated.completed === 'boolean') {
@@ -893,7 +896,7 @@ const routeSignedInUserToCorrectPage = async () => {
     // might re-trigger modal/splash logic in some browsers.
     // Only a fully completed application should land on already-registered.
     // If the user signed in but has not submitted step 2 yet, always send them to next-form.
-    const target = completed ? 'already-registered.html' : 'next-form.html';
+    const target = (completed && !step2Pending) ? 'already-registered.html' : 'next-form.html';
     try {
         window.location.replace(target);
     } catch (e) {
@@ -1974,7 +1977,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 || localStorage.getItem('isApplicationDone') === 'true'
                 || localStorage.getItem('applicationCompleted') === '1';
 
-            if (completed) {
+            const step2Pending = sessionStorage.getItem('pendingApplicationStep') === '2'
+                || localStorage.getItem('pendingApplicationStep') === '2';
+
+            if (completed && !step2Pending) {
                 window.location.href = 'already-registered.html';
                 return;
             }
