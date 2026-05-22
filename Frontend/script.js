@@ -2181,49 +2181,52 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Auto-route to next-form only when backend confirms this is a new account
                 // and profile status fetch succeeded (avoid false redirects for old users).
                 const shouldAutoRouteToNextForm = (oauthHasExistingAccount === false) && profile !== null && !hasAccountData;
-                // If Firebase client SDK is available, attempt to provision a
-                // UID-keyed `next_form` document immediately so later checks are
-                // deterministic. This is guarded so it won't break environments
-                // that don't include the Firebase client.
+                // UID-based authoritative routing via Firebase Auth + Firestore.
+                // This fixes old users being misrouted to next-form.
                 try {
-                    if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
-                        // Use onAuthStateChanged to obtain the user's UID if they're
-                        // already signed into Firebase Auth. If no Firebase Auth
-                        // session exists, fall back to normal behavior.
-                        firebase.auth().onAuthStateChanged(async (fbUser) => {
-                            if (!fbUser) return;
-                            try {
-                                const userRef = firebase.firestore().collection('next_form').doc(fbUser.uid);
-                                const snap = await userRef.get();
-                                if (!snap.exists) {
-                                    // Provision a minimal record so CTA checks by UID succeed.
-                                    await userRef.set({
-                                        status: 'new',
-                                        email: emailLc || '',
-                                        name: fullName || '',
-                                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                                    });
+                    if (typeof firebase !== 'undefined' && firebase.auth && response?.credential) {
+                        const googleCred = firebase.auth.GoogleAuthProvider.credential(response.credential);
+                        const authResult = await firebase.auth().signInWithCredential(googleCred);
+                        const fbUser = authResult?.user || firebase.auth().currentUser;
 
-                                    try { localStorage.setItem('userStatus', 'new'); } catch {}
-                                    // If the server also agreed this is a new account,
-                                    // route the user to the next form now.
-                                    if (shouldAutoRouteToNextForm) {
-                                        try { window.location.replace('next-form.html?googleSignIn=1'); } catch { window.location.href = 'next-form.html?googleSignIn=1'; }
-                                    }
-                                } else {
-                                    try { localStorage.setItem('userStatus', snap.data().status || 'old'); } catch {}
+                        if (fbUser?.uid) {
+                            try { localStorage.setItem('currentUserId', fbUser.uid); } catch {}
+                            try { sessionStorage.setItem('currentUserId', fbUser.uid); } catch {}
+
+                            const dbRef = (window.db && typeof window.db.collection === 'function')
+                                ? window.db
+                                : firebase.firestore();
+
+                            const userRef = dbRef.collection('next_form').doc(fbUser.uid);
+                            const snap = await userRef.get();
+
+                            if (snap.exists) {
+                                const status = String(snap.data()?.status || 'old').toLowerCase();
+                                const isOld = status === 'old' || status === 'submitted' || status === 'completed';
+                                try { localStorage.setItem('userStatus', isOld ? 'old' : status || 'old'); } catch {}
+
+                                // Existing/old user: stay on site (no next-form redirect)
+                                if (isOld || oauthHasExistingAccount === true || hasAccountData) {
+                                    return;
                                 }
-                            } catch (err) {
-                                console.warn('Failed to provision/check next_form in Firestore:', err);
+                            } else {
+                                // New UID doc: create explicitly as requested
+                                await userRef.set({
+                                    status: 'new',
+                                    email: emailLc || '',
+                                    name: fullName || '',
+                                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                                }, { merge: true });
+                                try { localStorage.setItem('userStatus', 'new'); } catch {}
                             }
-                        });
+                        }
                     }
                 } catch (err) {
-                    // Non-fatal: continue with existing routing logic
-                    console.warn('Firebase provisioning skipped:', err);
+                    // Non-fatal: fallback to server/email logic below
+                    console.warn('Firebase UID routing failed, using fallback:', err);
                 }
 
-                if (shouldAutoRouteToNextForm) {
+                if (shouldAutoRouteToNextForm || localStorage.getItem('userStatus') === 'new') {
                     const registrationPayload = { fullName, email: emailLc, phone: '' };
                     try {
                         sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
@@ -2233,9 +2236,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                     try {
-                        window.location.replace('next-form.html');
+                        window.location.replace('next-form.html?googleSignIn=1');
                     } catch {
-                        window.location.href = 'next-form.html';
+                        window.location.href = 'next-form.html?googleSignIn=1';
                     }
                     return;
                 }
