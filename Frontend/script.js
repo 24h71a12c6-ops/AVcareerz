@@ -4229,7 +4229,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Prefer existing helpers to determine state; avoid redirecting immediately
                 // if the session was just registered (prevents accidental navigation loops).
                 const justRegistered = sessionStorage.getItem('justRegistered') === '1';
-                const alreadyRegistered = isRegisteredUser() || isApplicationCompleted();
+                const alreadyRegistered = isApplicationCompleted();
 
                 if (alreadyRegistered && !justRegistered) {
                     e.preventDefault();
