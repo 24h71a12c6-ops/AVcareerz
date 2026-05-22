@@ -1856,7 +1856,13 @@ document.addEventListener("DOMContentLoaded", function () {
             // In edit mode, allow opening the registration modal even for registered users.
             if (href === '#registration-section' && isRegisteredUser() && !forceOpenRegistration) {
                 e.preventDefault();
-                // Route the signed-in user to the correct page (already-registered or next-form)
+                // If the user has already been marked old, never send them to next-form.
+                if (localStorage.getItem('userStatus') === 'old' || localStorage.getItem('isRegisteredUser') === 'true') {
+                    window.location.href = 'already-registered.html';
+                    return;
+                }
+
+                // Otherwise use the shared routing helper for fresh/new sessions.
                 try { void routeSignedInUserToCorrectPage(); } catch { window.location.href = 'next-form.html'; }
                 return;
             }
@@ -1875,6 +1881,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 if (isRegisteredUser() && !forceOpenRegistration) {
+                    if (localStorage.getItem('userStatus') === 'old' || localStorage.getItem('isRegisteredUser') === 'true') {
+                        window.location.href = 'already-registered.html';
+                        return;
+                    }
+
                     try { void routeSignedInUserToCorrectPage(); } catch { window.location.href = 'next-form.html'; }
                     return;
                 }
