@@ -1290,8 +1290,12 @@
         || localStorage.getItem('isApplicationDone') === 'true'
         || localStorage.getItem('applicationCompleted') === '1';
 
-    if (alreadySubmitted) {
+    // If the user was just sent here from Google sign-in, allow the form even if
+    // stale completion flags still exist from an earlier visit.
+    if (alreadySubmitted && !step2Pending) {
         window.location.href = 'already-registered.html';
+    } else if (step2Pending) {
+        try { sessionStorage.removeItem('pendingApplicationStep'); } catch {}
     } else if (sessionStorage.getItem('isSessionActive') !== 'true' && localStorage.getItem('userEmail')) {
         sessionStorage.setItem('isSessionActive', 'true');
     } else if (sessionStorage.getItem('isSessionActive') !== 'true') {

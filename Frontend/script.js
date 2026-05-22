@@ -2104,6 +2104,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.setItem('userEmail', email);
                 sessionStorage.setItem('isSessionActive', 'true');
                 localStorage.setItem('isSessionActive', 'true');
+                sessionStorage.setItem('pendingApplicationStep', '2');
+                try { localStorage.removeItem('formSubmittedSuccessfully'); } catch {}
+                try { localStorage.removeItem('isApplicationDone'); } catch {}
+                try { localStorage.removeItem('applicationCompleted'); } catch {}
+                try { sessionStorage.removeItem('applicationCompleted'); } catch {}
             }
 
             // Create a small green banner to notify user before redirecting.

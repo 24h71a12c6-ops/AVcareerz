@@ -57,6 +57,11 @@
         localStorage.setItem('userEmail', email);
         localStorage.setItem('isSessionActive', 'true');
         sessionStorage.setItem('isSessionActive', 'true');
+        sessionStorage.setItem('pendingApplicationStep', '2');
+        try { localStorage.removeItem('formSubmittedSuccessfully'); } catch {}
+        try { localStorage.removeItem('isApplicationDone'); } catch {}
+        try { localStorage.removeItem('applicationCompleted'); } catch {}
+        try { sessionStorage.removeItem('applicationCompleted'); } catch {}
       }
 
       // Attempt to create/update a minimal user record in Firestore so sign-ins are tracked.
