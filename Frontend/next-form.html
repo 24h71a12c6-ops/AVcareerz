@@ -1622,26 +1622,25 @@
                 } catch {
                     // ignore storage failures
                 }
-                // If Firebase client is present, mark the UID-keyed next_form doc as submitted/old
-                try {
-                    if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
-                        const fbUser = firebase.auth().currentUser;
-                        if (fbUser) {
-                            try {
-                                firebase.firestore().collection('next_form').doc(fbUser.uid).update({
-                                    status: 'old',
-                                    submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-                                }).catch(() => {});
-                            } catch (e) {
-                                // ignore Firestore update failures
-                            }
-                        }
-                    }
-                } catch (e) {
-                    // ignore
+                // Inside your form submission success callback (e.g., after /api/register-step2 returns success)
+                localStorage.setItem("userStatus", "old");
+                localStorage.setItem("isRegisteredUser", "true");
+
+                if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
+                    const user = firebase.auth().currentUser;
+                    window.db.collection("next_form").doc(user.uid).update({
+                        status: "old",
+                        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        console.log("Firestore record permanently upgraded to 'old'.");
+                        window.location.href = "congrats.html"; // or wherever your success redirect points
+                    }).catch(err => {
+                        console.error("Failed to update Firestore status directly:", err);
+                        window.location.href = "congrats.html";
+                    });
+                } else {
+                    window.location.href = "congrats.html";
                 }
-                // Go to the canonical completed page (application-completed removed)
-                window.location.href = 'congrats.html';
             } else {
                 const baseMsg = result.error || 'There was a problem submitting your registration. Please try again.';
                 if (Array.isArray(result.missingFields) && result.missingFields.length) {

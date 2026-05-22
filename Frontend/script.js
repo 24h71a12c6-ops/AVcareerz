@@ -2096,172 +2096,68 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    async function handleCredentialResponse(response) {
-        console.log("Encoded JWT ID token: " + response.credential);
-        showNotification('Successfully signed in with Google!', 'success');
+    function handleCredentialResponse(response) {
+        // 1. Decode your Google JWT token like you normally do
+        const responsePayload = decodeJwtResponse(response.credential);
+        console.log("Google Sign-In successful for:", responsePayload.email);
 
-        // Decode basic profile info from the JWT and mark user as registered
-        try {
-            const parts = String(response.credential || '').split('.');
-            const payload = parts.length >= 2 ? parts[1] : '';
-            const json = payload ? JSON.parse(decodeURIComponent(escape(atob(payload.replace(/-/g, '+').replace(/_/g, '/'))))) : null;
-            const email = String(json?.email || '').trim();
-            const emailLc = email.toLowerCase();
-            const fullName = json?.name || '';
+        // Save email to localStorage for standard server fallback sync
+        localStorage.setItem("userEmail", responsePayload.email);
 
-            if (emailLc) {
-                localStorage.setItem('userEmail', emailLc);
-                // User is signed in again; don't keep showing the login card on reopen.
-                try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
-                try { localStorage.setItem('lastUserEmail', emailLc); } catch { }
-                try { localStorage.setItem('hasSignedUp', '1'); } catch { }
+        // 2. CRITICAL FIX: Authenticate into Firebase using the Google ID Token
+        if (typeof firebase !== 'undefined') {
+            const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
 
-                let oauthHasExistingAccount = null;
+            firebase.auth().signInWithCredential(credential).then((result) => {
+                const user = result.user;
+                console.log("Firebase Auth synchronized successfully! UID:", user.uid);
 
-                try {
-                    if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
-                } catch {
-                    // ignore
-                }
+                // 3. Now check Firestore using the authenticated UID
+                const userRef = window.db.collection("next_form").doc(user.uid);
 
-                // Notify backend about this OAuth sign-in so admins receive an email/WhatsApp alert.
-                // Await the request so navigation cannot abort it before the payload reaches the server.
-                try {
-                    const oauthRes = await fetch(apiUrl('/api/oauth-signin'), {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: emailLc, fullName, provider: 'google' })
-                    });
+                userRef.get().then((doc) => {
+                    if (doc.exists && doc.data().status === "old") {
+                        console.log("Old user found in database. Keeping on home page.");
+                        localStorage.setItem("userStatus", "old");
+                        localStorage.setItem("isRegisteredUser", "true");
+                        // Stay on home page. Profile data can hydrate safely.
+                    } else {
+                        console.log("New user context. Routing to next-form.");
+                        localStorage.setItem("userStatus", "new");
 
-                    const oauthData = await oauthRes.json().catch(() => ({}));
-                    if (oauthRes.ok && oauthData && oauthData.success) {
-                        oauthHasExistingAccount = !!oauthData.hasExistingAccount;
+                        // Provision a new document for them if it doesn't exist
+                        userRef.set({
+                            status: "new",
+                            email: user.email,
+                            name: user.displayName || "User",
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        }).then(() => {
+                            window.location.href = "next-form.html?googleSignIn=1";
+                        });
                     }
-                } catch (e) { /* ignore */ }
+                }).catch(error => {
+                    console.error("Firestore database lookup error:", error);
+                    window.location.href = "next-form.html"; // Safe fallback
+                });
 
-                const profile = await hydrateProfileFromServer(emailLc);
-                const hasAccountData = (oauthHasExistingAccount === true) || hasMeaningfulAccountData(profile) || hasStoredProfileData(emailLc);
-
-                // Close the registration modal before redirecting
-                try {
-                    document.body.classList.remove('reg-modal-open');
-                    const overlay = document.getElementById('regModalOverlay');
-                    if (overlay) overlay.hidden = true;
-                    if (window.location.hash === '#registration-section') {
-                        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-                    }
-                } catch {
-                    // ignore
-                }
-
-                // Set a flag to prevent modals from opening on the next page
-                try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch { }
-                try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch { }
-                try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch { }
-                try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch { }
-
-                // Clear any scheduled registration popup so it doesn't re-open
-                try { sessionStorage.removeItem('av:shouldShowRegistration'); } catch {}
-                try { sessionStorage.removeItem('av:showRegistrationAt'); } catch {}
-                try { sessionStorage.removeItem('forceOpenRegistration'); } catch {}
-
-                // Clear any scheduled registration popup so it doesn't re-open.
-                try { sessionStorage.removeItem('av:shouldShowRegistration'); } catch {}
-                try { sessionStorage.removeItem('av:showRegistrationAt'); } catch {}
-                try { sessionStorage.removeItem('forceOpenRegistration'); } catch {}
-
-                // Keep the session active so the site doesn't bounce back to the home splash flow.
-                try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
-                try { localStorage.setItem('isSessionActive', 'true'); } catch {}
-
-                // Clear the temporary "just registered" flag so returning Google users
-                // can still be routed correctly by the CTA buttons.
-                try { sessionStorage.removeItem('justRegistered'); } catch { }
-
-                // Auto-route to next-form only when backend confirms this is a new account
-                // and profile status fetch succeeded (avoid false redirects for old users).
-                const shouldAutoRouteToNextForm = (oauthHasExistingAccount === false) && profile !== null && !hasAccountData;
-                // UID-based authoritative routing via Firebase Auth + Firestore.
-                // This fixes old users being misrouted to next-form.
-                try {
-                    if (typeof firebase !== 'undefined' && firebase.auth && response?.credential) {
-                        const googleCred = firebase.auth.GoogleAuthProvider.credential(response.credential);
-                        const authResult = await firebase.auth().signInWithCredential(googleCred);
-                        const fbUser = authResult?.user || firebase.auth().currentUser;
-
-                        if (fbUser?.uid) {
-                            try { localStorage.setItem('currentUserId', fbUser.uid); } catch {}
-                            try { sessionStorage.setItem('currentUserId', fbUser.uid); } catch {}
-
-                            const dbRef = (window.db && typeof window.db.collection === 'function')
-                                ? window.db
-                                : firebase.firestore();
-
-                            const userRef = dbRef.collection('next_form').doc(fbUser.uid);
-                            const snap = await userRef.get();
-
-                            if (snap.exists) {
-                                const status = String(snap.data()?.status || 'old').toLowerCase();
-                                const isOld = status === 'old' || status === 'submitted' || status === 'completed';
-                                try { localStorage.setItem('userStatus', isOld ? 'old' : status || 'old'); } catch {}
-
-                                // Existing/old user: stay on site (no next-form redirect)
-                                if (isOld || oauthHasExistingAccount === true || hasAccountData) {
-                                    return;
-                                }
-                            } else {
-                                // New UID doc: create explicitly as requested
-                                await userRef.set({
-                                    status: 'new',
-                                    email: emailLc || '',
-                                    name: fullName || '',
-                                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                                }, { merge: true });
-                                try { localStorage.setItem('userStatus', 'new'); } catch {}
-                            }
-                        }
-                    }
-                } catch (err) {
-                    // Non-fatal: fallback to server/email logic below
-                    console.warn('Firebase UID routing failed, using fallback:', err);
-                }
-
-                if (shouldAutoRouteToNextForm || localStorage.getItem('userStatus') === 'new') {
-                    const registrationPayload = { fullName, email: emailLc, phone: '' };
-                    try {
-                        sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
-                        localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
-                    } catch {
-                        // ignore storage failures
-                    }
-
-                    try {
-                        window.location.replace('next-form.html?googleSignIn=1');
-                    } catch {
-                        window.location.href = 'next-form.html?googleSignIn=1';
-                    }
-                    return;
-                }
-
-                // Returning Google users stay on the website normally.
-                // Their CTA clicks are handled by the shared routing helpers.
-                return;
-            }
-        } catch {
-            // ignore decoding issues
+            }).catch((error) => {
+                console.error("Failed to link Google credential to Firebase Auth:", error);
+                window.location.href = "next-form.html";
+            });
+        } else {
+            // Fallback if SDK fails to load entirely
+            window.location.href = "next-form.html";
         }
+    }
 
-        // Close the registration modal if open and keep user on the website
-        try {
-            document.body.classList.remove('reg-modal-open');
-            const overlay = document.getElementById('regModalOverlay');
-            if (overlay) overlay.hidden = true;
-            if (window.location.hash === '#registration-section') {
-                window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-            }
-        } catch {
-            // ignore
-        }
+    // Helper to safely parse the JWT payload from Google Identity Services
+    function decodeJwtResponse(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('0' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
     }
 
     // 8. REGISTRATION POPUP AFTER 7 SECONDS (with blurred background)
