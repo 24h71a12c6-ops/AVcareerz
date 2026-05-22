@@ -2095,6 +2095,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function handleCredentialResponse(response) {
+        // Show a brief success message and redirect immediately to the next form.
         try {
             const decoded = typeof decodeJwtResponse === 'function' ? decodeJwtResponse(response?.credential) : {};
             const email = String(decoded?.email || '').trim().toLowerCase();
@@ -2105,10 +2106,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.setItem('isSessionActive', 'true');
             }
 
-            window.location.replace('next-form.html');
+            // Create a small green banner to notify user before redirecting.
+            try {
+                const existing = document.getElementById('av-success-redirect');
+                if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+                const banner = document.createElement('div');
+                banner.id = 'av-success-redirect';
+                banner.setAttribute('role', 'status');
+                banner.style.position = 'fixed';
+                banner.style.left = '50%';
+                banner.style.top = '18px';
+                banner.style.transform = 'translateX(-50%)';
+                banner.style.zIndex = '99999';
+                banner.style.background = '#1e8f3e';
+                banner.style.color = '#fff';
+                banner.style.padding = '10px 18px';
+                banner.style.borderRadius = '22px';
+                banner.style.boxShadow = '0 6px 18px rgba(30,143,62,0.18)';
+                banner.style.fontWeight = '600';
+                banner.style.fontFamily = 'sans-serif';
+                banner.style.fontSize = '14px';
+                banner.textContent = 'Redirecting to the application form... Fill it and start your global journey';
+
+                document.body.appendChild(banner);
+
+                // Redirect almost immediately so UX is fast but the message briefly appears.
+                setTimeout(() => {
+                    try { window.location.replace('next-form.html'); } catch (e) { window.location.href = 'next-form.html'; }
+                }, 300);
+            } catch (e) {
+                // Fallback immediate redirect if banner injection fails
+                try { window.location.replace('next-form.html'); } catch (err) { window.location.href = 'next-form.html'; }
+            }
         } catch (err) {
             console.error('Google sign-in callback failed:', err);
-            window.location.href = 'next-form.html';
+            try { window.location.href = 'next-form.html'; } catch (e) { /* ignore */ }
         }
     }
 

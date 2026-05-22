@@ -207,6 +207,9 @@
         }
 
         .form-info {
+            position: relative;
+            top: -8px; /* nudge upward so the info pill is easier to tap/click */
+            z-index: 6;
             background: linear-gradient(90deg, #F0F4FF, #ffffff);
             padding: 1rem;
             border-radius: 8px;
@@ -216,6 +219,8 @@
             font-size: 0.95rem;
             animation: infoPulse 5s ease-in-out infinite;
             box-shadow: 0 8px 18px rgba(74, 144, 226, 0.08);
+            cursor: default;
+            pointer-events: auto;
         }
 
         .form-grid {
