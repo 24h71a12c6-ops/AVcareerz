@@ -1964,37 +1964,79 @@ document.addEventListener("DOMContentLoaded", function () {
         const cta = target.closest('.get-assistance-btn, .register-cta-button, .cta-button, .register-btn, .prep-text, .register-scroll, .promo-cta, .btn-primary-massive');
         if (!cta) return;
 
-        // Returning/registered users should go straight to their correct page
-        // instead of reopening the registration modal.
+        // Always prevent default for these specific CTA buttons and delegate to
+        // the unified handler which attempts a live Firestore check when possible.
+        e.preventDefault();
+        void handleCTAClick();
+    });
+
+    // Centralized CTA handler: prefer live Firestore verification when the
+    // Firebase client is available. Falls back to existing server-backed
+    // routing helpers when Firebase isn't present.
+    async function handleCTAClick() {
         try {
+            // If Firebase client SDK is available, prefer a UID-based check
+            if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+                const fbUser = firebase.auth().currentUser;
+                if (!fbUser) {
+                    // Not signed in: open sign-in modal if available
+                    if (typeof openRegModal === 'function') {
+                        openRegModal();
+                        return;
+                    }
+
+                    // Fallback to scrolling to registration section
+                    const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
+                    if (isHomePage) {
+                        scrollToSection('registration-section');
+                        return;
+                    }
+                    window.location.href = 'index.html#registration-section';
+                    return;
+                }
+
+                try {
+                    const userRef = firebase.firestore().collection('next_form').doc(fbUser.uid);
+                    const doc = await userRef.get();
+                    if (doc.exists && (doc.data().status === 'old' || doc.data().status === 'completed' || doc.data().status === 'submitted')) {
+                        window.location.href = 'already-registered.html';
+                        return;
+                    }
+
+                    // No canonical next_form record for this UID: send user to form
+                    window.location.href = 'next-form.html';
+                    return;
+                } catch (err) {
+                    console.error('handleCTAClick Firestore check failed:', err);
+                    // Fall through to server-backed routing
+                }
+            }
+
+            // Fallback: server-backed routing which uses email-based checks
             if (typeof isRegisteredUser === 'function' && isRegisteredUser()) {
-                e.preventDefault();
-                void routeSignedInUserToCorrectPage();
+                await routeSignedInUserToCorrectPage();
                 return;
             }
-        } catch {
-            // fall through to the modal behavior if the helper is unavailable
+
+            // Not signed-in: open registration modal or navigate to it
+            if (typeof openRegModal === 'function') {
+                openRegModal();
+                return;
+            }
+
+            const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
+            if (isHomePage) {
+                scrollToSection('registration-section');
+                return;
+            }
+
+            window.location.href = 'index.html#registration-section';
+        } catch (err) {
+            console.error('handleCTAClick unexpected error:', err);
+            // Safety fallback: take the user to the next-form to continue flow
+            window.location.href = 'next-form.html';
         }
-
-        // Always prevent default for these specific CTA buttons
-        e.preventDefault();
-
-        // Show the registration modal for all CTA clicks (same design, same popup)
-        if (typeof openRegModal === 'function') {
-            openRegModal();
-            return;
-        }
-
-        // Fallback: scroll to registration section or navigate to it
-        const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
-        
-        if (isHomePage) {
-            scrollToSection('registration-section');
-            return;
-        }
-
-        window.location.href = 'index.html#registration-section';
-    });
+    }
 
 
     // 6. PHONE INPUT VALIDATION
@@ -2177,6 +2219,47 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Auto-route to next-form only when backend confirms this is a new account
                 // and profile status fetch succeeded (avoid false redirects for old users).
                 const shouldAutoRouteToNextForm = (oauthHasExistingAccount === false) && profile !== null && !hasAccountData;
+                // If Firebase client SDK is available, attempt to provision a
+                // UID-keyed `next_form` document immediately so later checks are
+                // deterministic. This is guarded so it won't break environments
+                // that don't include the Firebase client.
+                try {
+                    if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+                        // Use onAuthStateChanged to obtain the user's UID if they're
+                        // already signed into Firebase Auth. If no Firebase Auth
+                        // session exists, fall back to normal behavior.
+                        firebase.auth().onAuthStateChanged(async (fbUser) => {
+                            if (!fbUser) return;
+                            try {
+                                const userRef = firebase.firestore().collection('next_form').doc(fbUser.uid);
+                                const snap = await userRef.get();
+                                if (!snap.exists) {
+                                    // Provision a minimal record so CTA checks by UID succeed.
+                                    await userRef.set({
+                                        status: 'new',
+                                        email: emailLc || '',
+                                        name: fullName || '',
+                                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                                    });
+
+                                    try { localStorage.setItem('userStatus', 'new'); } catch {}
+                                    // If the server also agreed this is a new account,
+                                    // route the user to the next form now.
+                                    if (shouldAutoRouteToNextForm) {
+                                        try { window.location.replace('next-form.html?googleSignIn=1'); } catch { window.location.href = 'next-form.html?googleSignIn=1'; }
+                                    }
+                                } else {
+                                    try { localStorage.setItem('userStatus', snap.data().status || 'old'); } catch {}
+                                }
+                            } catch (err) {
+                                console.warn('Failed to provision/check next_form in Firestore:', err);
+                            }
+                        });
+                    }
+                } catch (err) {
+                    // Non-fatal: continue with existing routing logic
+                    console.warn('Firebase provisioning skipped:', err);
+                }
 
                 if (shouldAutoRouteToNextForm) {
                     const registrationPayload = { fullName, email: emailLc, phone: '' };

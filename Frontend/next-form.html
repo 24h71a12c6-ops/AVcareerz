@@ -1622,6 +1622,24 @@
                 } catch {
                     // ignore storage failures
                 }
+                // If Firebase client is present, mark the UID-keyed next_form doc as submitted/old
+                try {
+                    if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+                        const fbUser = firebase.auth().currentUser;
+                        if (fbUser) {
+                            try {
+                                firebase.firestore().collection('next_form').doc(fbUser.uid).update({
+                                    status: 'old',
+                                    submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                }).catch(() => {});
+                            } catch (e) {
+                                // ignore Firestore update failures
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // ignore
+                }
                 // Go to the canonical completed page (application-completed removed)
                 window.location.href = 'congrats.html';
             } else {
