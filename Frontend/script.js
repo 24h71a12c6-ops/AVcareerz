@@ -718,6 +718,9 @@ const isRegisteredUser = () => {
 const isApplicationCompleted = () => {
     // Check if user is registered first
     if (!isRegisteredUser()) return false;
+    // If step 2 is still pending, treat the application as incomplete even if
+    // older completion flags are still hanging around from a previous session.
+    if (isStep2Pending()) return false;
     // Check if application is done
     if (localStorage.getItem('isApplicationDone') === 'true') return true;
     if (localStorage.getItem('applicationCompleted') === '1') return true;
@@ -739,6 +742,15 @@ const fetchApplicationCompletedForEmail = async (email) => {
     }
 
     return null;
+};
+
+const isStep2Pending = () => {
+    try {
+        return sessionStorage.getItem('pendingApplicationStep') === '2'
+            || localStorage.getItem('pendingApplicationStep') === '2';
+    } catch {
+        return false;
+    }
 };
 
 const sanitizeProfileRecord = (input) => {
@@ -862,11 +874,17 @@ const routeSignedInUserToCorrectPage = async () => {
     try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
     try { localStorage.setItem('isSessionActive', 'true'); } catch {}
 
+    if (isStep2Pending()) {
+        try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
+        try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
+        try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+        try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
+        try { window.location.replace('next-form.html'); } catch (e) { window.location.href = 'next-form.html'; }
+        return true;
+    }
+
     // Hydrate from server so we can detect whether the application is actually complete.
     const hydrated = await hydrateProfileFromServer(email);
-
-    const step2Pending = sessionStorage.getItem('pendingApplicationStep') === '2'
-        || localStorage.getItem('pendingApplicationStep') === '2';
 
     // Use cached flags first, then confirm with the backend if needed.
     let completed = isApplicationCompleted();
@@ -896,7 +914,7 @@ const routeSignedInUserToCorrectPage = async () => {
     // might re-trigger modal/splash logic in some browsers.
     // Only a fully completed application should land on already-registered.
     // If the user signed in but has not submitted step 2 yet, always send them to next-form.
-    const target = (completed && !step2Pending) ? 'already-registered.html' : 'next-form.html';
+    const target = completed ? 'already-registered.html' : 'next-form.html';
     try {
         window.location.replace(target);
     } catch (e) {
@@ -1854,6 +1872,12 @@ document.addEventListener("DOMContentLoaded", function () {
             // After signup, the "Register Here" CTA should open the next form.
             // Keep pre-signup behavior (open modal) for new users on any page.
             // In edit mode, allow opening the registration modal even for registered users.
+            if (isStep2Pending()) {
+                e.preventDefault();
+                window.location.href = 'next-form.html';
+                return;
+            }
+
             if (href === '#registration-section' && isRegisteredUser() && !forceOpenRegistration) {
                 e.preventDefault();
                 // Route the signed-in user to the correct page (already-registered or next-form)
@@ -1973,14 +1997,17 @@ document.addEventListener("DOMContentLoaded", function () {
     // Centralized CTA handler: keep routing simple and driven by local state.
     async function handleCTAClick() {
         try {
-            const completed = localStorage.getItem('formSubmittedSuccessfully') === 'true'
-                || localStorage.getItem('isApplicationDone') === 'true'
-                || localStorage.getItem('applicationCompleted') === '1';
-
             const step2Pending = sessionStorage.getItem('pendingApplicationStep') === '2'
                 || localStorage.getItem('pendingApplicationStep') === '2';
 
-            if (completed && !step2Pending) {
+            if (step2Pending) {
+                window.location.href = 'next-form.html';
+                return;
+            }
+
+            const completed = isApplicationCompleted();
+
+            if (completed) {
                 window.location.href = 'already-registered.html';
                 return;
             }
@@ -2239,6 +2266,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         openRegModal = async () => {
             const forceOpen = sessionStorage.getItem('forceOpenRegistration') === '1';
+            if (isStep2Pending()) {
+                window.location.href = 'next-form.html';
+                return;
+            }
             // For registered users, go straight to the correct page for this email.
             if (isRegisteredUser() && !forceOpen) {
                 await routeSignedInUserToCorrectPage();
@@ -2388,7 +2419,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            if (isRegisteredUser()) {
+            if (isStep2Pending()) {
+                window.location.href = 'next-form.html';
+            } else if (isRegisteredUser()) {
                 // Logged in users: route to the correct destination (completed users stay on home).
                 void routeSignedInUserToCorrectPage();
             } else {
@@ -2442,6 +2475,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 href === 'index.html#registration-section' || 
                 href.endsWith('#registration-section') || 
                 hasRegClass) {
+
+                if (isStep2Pending()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try { e.stopImmediatePropagation(); } catch { /* ignore */ }
+                    window.location.href = 'next-form.html';
+                    return;
+                }
                 
                 // If the application is already completed, redirect to already-registered.html
                 if (isApplicationCompleted()) {
@@ -2511,34 +2552,64 @@ document.addEventListener("DOMContentLoaded", function () {
 const countryDetails = {
     usa: {
         title: 'United States',
-        summary: 'Innovation hub with diverse programs and strong post-study opportunities.',
+        summary: 'Innovation hub with 20 top universities and 70+ course pathways across STEM, business, health, and the arts.',
         reasons: [
             'World-leading research universities and labs',
             'Optional Practical Training (OPT) for work experience',
             'Vast scholarship options and assistantships'
         ],
         universities: [
-            { name: 'Harvard University', location: 'Cambridge, MA', tag: 'Ivy' },
-            { name: 'Stanford University', location: 'Stanford, CA', tag: 'Top Tech' },
-            { name: 'MIT', location: 'Cambridge, MA', tag: 'Research' },
-            { name: 'UC Berkeley', location: 'Berkeley, CA', tag: 'Public Ivy' },
-            { name: 'Carnegie Mellon University', location: 'Pittsburgh, PA', tag: 'CS' }
+            { name: 'Massachusetts Institute of Technology (MIT)', location: 'Cambridge, Massachusetts', tag: 'Research' },
+            { name: 'Stanford University', location: 'Stanford, California', tag: 'Top Tech' },
+            { name: 'Harvard University', location: 'Cambridge, Massachusetts', tag: 'Ivy' },
+            { name: 'California Institute of Technology (Caltech)', location: 'Pasadena, California', tag: 'Science' },
+            { name: 'University of California, Berkeley', location: 'Berkeley, California', tag: 'Public Ivy' },
+            { name: 'Princeton University', location: 'Princeton, New Jersey', tag: 'Ivy' },
+            { name: 'Columbia University', location: 'New York City, New York', tag: 'Global' },
+            { name: 'University of Chicago', location: 'Chicago, Illinois', tag: 'Research' },
+            { name: 'Yale University', location: 'New Haven, Connecticut', tag: 'Ivy' },
+            { name: 'University of California, Los Angeles (UCLA)', location: 'Los Angeles, California', tag: 'Public Ivy' },
+            { name: 'University of Pennsylvania', location: 'Philadelphia, Pennsylvania', tag: 'Ivy' },
+            { name: 'Cornell University', location: 'Ithaca, New York', tag: 'Ivy' },
+            { name: 'Duke University', location: 'Durham, North Carolina', tag: 'Research' },
+            { name: 'Northwestern University', location: 'Evanston, Illinois', tag: 'Top' },
+            { name: 'Johns Hopkins University', location: 'Baltimore, Maryland', tag: 'Health' },
+            { name: 'University of Michigan, Ann Arbor', location: 'Ann Arbor, Michigan', tag: 'Public' },
+            { name: 'University of California, San Diego (UCSD)', location: 'San Diego, California', tag: 'STEM' },
+            { name: 'University of California, San Francisco (UCSF)', location: 'San Francisco, California', tag: 'Health' },
+            { name: 'University of Texas at Austin', location: 'Austin, Texas', tag: 'Flagship' },
+            { name: 'Carnegie Mellon University', location: 'Pittsburgh, Pennsylvania', tag: 'CS' }
         ]
     },
     uk: {
         title: 'United Kingdom',
-        summary: 'Historic institutions with 1-year master’s options and rich culture.',
+        summary: 'Historic institutions with 1-year master’s options, 20 top universities, and 70+ course pathways.',
         reasons: [
             'Shorter course durations save time and cost',
             'Post-Study Work (Graduate Route) visa',
             'Excellent humanities, business, and design programs'
         ],
         universities: [
-            { name: 'University of Oxford', location: 'Oxford', tag: 'Historic' },
-            { name: 'University of Cambridge', location: 'Cambridge', tag: 'Historic' },
-            { name: 'Imperial College London', location: 'London', tag: 'STEM' },
-            { name: 'London School of Economics', location: 'London', tag: 'Economics' },
-            { name: 'University College London', location: 'London', tag: 'Global' }
+            { name: 'Teesside University', location: 'Middlesbrough, England', tag: 'Tech' },
+            { name: 'University of Hertfordshire', location: 'Hatfield, England', tag: 'STEM' },
+            { name: 'University of Bedfordshire', location: 'Luton, England', tag: 'Applied' },
+            { name: 'University of Central Lancashire', location: 'Preston, England', tag: 'Practical' },
+            { name: 'University of Chester', location: 'Chester, England', tag: 'Business' },
+            { name: 'University of East London', location: 'London, England', tag: 'Urban' },
+            { name: 'University of Greenwich', location: 'London, England', tag: 'Global' },
+            { name: 'University of Hull', location: 'Hull, England', tag: 'Career' },
+            { name: 'Coventry University', location: 'Coventry, England', tag: 'Industry' },
+            { name: 'Middlesex University', location: 'London, England', tag: 'Modern' },
+            { name: 'De Montfort University', location: 'Leicester, England', tag: 'Creative' },
+            { name: 'Aston University', location: 'Birmingham, England', tag: 'Business' },
+            { name: 'University of Leicester', location: 'Leicester, England', tag: 'Research' },
+            { name: 'University of London', location: 'London, England', tag: 'Network' },
+            { name: 'University of Wales Trinity Saint David', location: 'Wales / London / Birmingham', tag: 'Flexible' },
+            { name: 'Wrexham University', location: 'Wrexham, Wales', tag: 'Supportive' },
+            { name: 'Northumbria University', location: 'Newcastle upon Tyne, England', tag: 'Career' },
+            { name: 'Nottingham Trent University', location: 'Nottingham, England', tag: 'Applied' },
+            { name: 'Sheffield Hallam University', location: 'Sheffield, England', tag: 'Practical' },
+            { name: 'University of Westminster', location: 'London, England', tag: 'Central' }
         ]
     },
     canada: {
@@ -4236,6 +4307,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // if the session was just registered (prevents accidental navigation loops).
                 const justRegistered = sessionStorage.getItem('justRegistered') === '1';
                 const alreadyRegistered = isApplicationCompleted();
+
+                if (isStep2Pending()) {
+                    e.preventDefault();
+                    window.location.href = 'next-form.html';
+                    return;
+                }
 
                 if (alreadyRegistered && !justRegistered) {
                     e.preventDefault();

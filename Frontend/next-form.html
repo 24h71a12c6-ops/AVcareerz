@@ -2008,7 +2008,6 @@
 
         const extraUniversityNames = {
             'USA': ['Cornell University', 'California Institute of Technology', 'University of California, Los Angeles', 'Georgia Institute of Technology', 'University of California, San Diego'],
-            'UK': ['University of Southampton', 'University of Birmingham', 'University of Leeds', 'University of Sheffield', 'University of Exeter'],
             'Canada': ['Queen\'s University', 'Dalhousie University', 'Concordia University', 'University of Victoria', 'University of Saskatchewan'],
             'Australia': ['University of Newcastle', 'Deakin University', 'Griffith University', 'La Trobe University', 'Swinburne University of Technology'],
             'Germany': ['Technical University of Berlin', 'Ludwig Maximilian University of Munich', 'Free University of Berlin', 'University of Freiburg', 'University of Tübingen'],
@@ -2087,6 +2086,53 @@
 
             return courses.slice(0, 100);
         }
+
+        const ukCourseCatalog = buildCourseCatalog('UK');
+        const ukUniversityNames = [
+            'Teesside University',
+            'University of Hertfordshire',
+            'University of Bedfordshire',
+            'University of Central Lancashire',
+            'University of Chester',
+            'University of East London',
+            'University of Greenwich',
+            'University of Hull',
+            'Coventry University',
+            'Middlesex University',
+            'De Montfort University',
+            'Aston University',
+            'University of Leicester',
+            'University of London',
+            'University of Wales Trinity Saint David',
+            'Wrexham University',
+            'Northumbria University',
+            'Nottingham Trent University',
+            'Sheffield Hallam University',
+            'University of Westminster'
+        ];
+
+        const usaUniversityNames = [
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'Harvard University',
+            'California Institute of Technology (Caltech)',
+            'University of California, Berkeley',
+            'Princeton University',
+            'Columbia University',
+            'University of Chicago',
+            'Yale University',
+            'University of California, Los Angeles (UCLA)',
+            'University of Pennsylvania',
+            'Cornell University',
+            'Duke University',
+            'Northwestern University',
+            'Johns Hopkins University',
+            'University of Michigan, Ann Arbor',
+            'University of California, San Diego (UCSD)',
+            'University of California, San Francisco (UCSF)',
+            'University of Texas at Austin',
+            'Carnegie Mellon University'
+        ];
 
         function toggleCustomInput(inputEl, show) {
             if (!inputEl) return;
@@ -2191,9 +2237,19 @@
             refreshFixedDropdown(universitySelect, universityToggle, universityMenu);
             refreshFixedDropdown(courseSelect, courseToggle, courseMenu);
 
-            if (selectedCountry && universityData[selectedCountry]) {
+            if (selectedCountry) {
+                const universitiesForCountry = selectedCountry === 'UK'
+                    ? ukUniversityNames.map(name => ({ name }))
+                    : selectedCountry === 'USA'
+                    ? usaUniversityNames.map(name => ({ name }))
+                    : universityData[selectedCountry];
+
+                if (!universitiesForCountry) {
+                    return;
+                }
+
                 // Populate universities
-                universityData[selectedCountry].forEach(uni => {
+                universitiesForCountry.forEach(uni => {
                     const option = document.createElement('option');
                     option.value = uni.name;
                     option.textContent = uni.name;
