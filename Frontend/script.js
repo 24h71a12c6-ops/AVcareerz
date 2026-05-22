@@ -1967,74 +1967,36 @@ document.addEventListener("DOMContentLoaded", function () {
         // Always prevent default for these specific CTA buttons and delegate to
         // the unified handler which attempts a live Firestore check when possible.
         e.preventDefault();
-        void handleCTAClick();
+        void handleCTAClick(e);
     });
 
     // Centralized CTA handler: prefer live Firestore verification when the
     // Firebase client is available. Falls back to existing server-backed
     // routing helpers when Firebase isn't present.
-    async function handleCTAClick() {
-        try {
-            // If Firebase client SDK is available, prefer a UID-based check
-            if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
-                const fbUser = firebase.auth().currentUser;
-                if (!fbUser) {
-                    // Not signed in: open sign-in modal if available
-                    if (typeof openRegModal === 'function') {
-                        openRegModal();
-                        return;
-                    }
+    async function handleCTAClick(event) {
+        if (event && event.preventDefault) event.preventDefault();
 
-                    // Fallback to scrolling to registration section
-                    const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
-                    if (isHomePage) {
-                        scrollToSection('registration-section');
-                        return;
-                    }
-                    window.location.href = 'index.html#registration-section';
+        // If Firebase is authenticated, check real-time document data
+        if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
+            const user = firebase.auth().currentUser;
+            try {
+                const doc = await window.db.collection("next_form").doc(user.uid).get();
+
+                if (doc.exists && doc.data().status === "old") {
+                    console.log("Verified old user record found. Routing to already-registered.");
+                    window.location.href = "already-registered.html";
                     return;
                 }
-
-                try {
-                    const userRef = firebase.firestore().collection('next_form').doc(fbUser.uid);
-                    const doc = await userRef.get();
-                    if (doc.exists && (doc.data().status === 'old' || doc.data().status === 'completed' || doc.data().status === 'submitted')) {
-                        window.location.href = 'already-registered.html';
-                        return;
-                    }
-
-                    // No canonical next_form record for this UID: send user to form
-                    window.location.href = 'next-form.html';
-                    return;
-                } catch (err) {
-                    console.error('handleCTAClick Firestore check failed:', err);
-                    // Fall through to server-backed routing
-                }
+            } catch (err) {
+                console.error("Firestore transaction failed, running fallback strategy:", err);
             }
+        }
 
-            // Fallback: server-backed routing which uses email-based checks
-            if (typeof isRegisteredUser === 'function' && isRegisteredUser()) {
-                await routeSignedInUserToCorrectPage();
-                return;
-            }
-
-            // Not signed-in: open registration modal or navigate to it
-            if (typeof openRegModal === 'function') {
-                openRegModal();
-                return;
-            }
-
-            const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
-            if (isHomePage) {
-                scrollToSection('registration-section');
-                return;
-            }
-
-            window.location.href = 'index.html#registration-section';
-        } catch (err) {
-            console.error('handleCTAClick unexpected error:', err);
-            // Safety fallback: take the user to the next-form to continue flow
-            window.location.href = 'next-form.html';
+        // Backup fallback: if userStatus local cache says old, route them correctly
+        if (localStorage.getItem('userStatus') === 'old') {
+            window.location.href = "already-registered.html";
+        } else {
+            window.location.href = "next-form.html";
         }
     }
 
