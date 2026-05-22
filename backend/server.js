@@ -864,7 +864,7 @@ app.get('/api/check-application-status', async (req, res) => {
 
     return res.json({
       success: true,
-      completed: registrationStatus === 'fully_registered' || !nextFormSnap.empty,
+      completed: registrationStatus === 'fully_registered',
       registrationData,
       nextFormData,
     });
