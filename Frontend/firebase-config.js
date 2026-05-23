@@ -52,11 +52,9 @@
       const result = await auth.signInWithPopup(provider);
       const user = result && result.user ? result.user : auth.currentUser;
       const email = String(user && user.email ? user.email : '').trim().toLowerCase();
-        const uid = String(user && user.uid ? user.uid : '').trim();
 
       if (email) {
         localStorage.setItem('userEmail', email);
-          if (uid) localStorage.setItem('currentUserUid', uid);
         localStorage.setItem('isSessionActive', 'true');
         sessionStorage.setItem('isSessionActive', 'true');
         // Do not set pendingApplicationStep here or redirect to next-form immediately.
