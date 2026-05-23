@@ -757,6 +757,9 @@
                 margin-top: 2px;
             }
 
+            /* Hide the header Back button on small screens; the close X inside the card remains available */
+            .nav-profile .next-form-back-link { display: none; }
+
             .custom-checkbox label {
                 font-size: 0.82rem;
                 line-height: 1.3;
@@ -879,14 +882,6 @@
                 <a href="index.html" class="logo">
                     <img src="images/logonew.png" alt="Abroad Vision Careerz Logo" class="navbar-logo-img" style="width: clamp(120px, 18vw, 200px); height: 40px; object-fit: cover; object-position: center;">
                 </a>
-                <div class="next-form-nav-actions">
-                    <a href="index.html" class="next-form-back-link" aria-label="Go back to home"><i class="fas fa-arrow-left"></i> Back</a>
-                    <div class="nav-toggle" id="navToggle">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="index.html#about">About Us</a></li>
@@ -909,6 +904,18 @@
                     <li><a href="index.html#testimonials">Testimonials</a></li>
                     <li><a href="index.html#registration-section" class="nav-link register-scroll">Register Here</a></li>
                 </ul>
+                <div class="nav-right">
+                    <!-- On next-form desktop view we replace the profile icon with a Back button -->
+                    <div class="nav-profile" data-profile-menu="true">
+                        <a href="index.html" class="next-form-back-link profile-trigger" aria-label="Go back to home"><i class="fas fa-arrow-left"></i> Back</a>
+                    </div>
+
+                    <div class="nav-toggle" id="navToggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
