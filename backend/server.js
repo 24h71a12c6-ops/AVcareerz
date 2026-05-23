@@ -868,76 +868,111 @@ app.post('/api/google-signin', async (req, res) => {
   }
 });
 
+const buildUserStatusResponse = async (emailRaw) => {
+  const safeEmail = String(emailRaw || '').trim();
+  const emailLc = safeEmail.toLowerCase();
+
+  if (!safeEmail) {
+    return { success: false, loggedIn: false };
+  }
+
+  const [userSnap, registrationSnap] = await Promise.all([
+    db.collection('users').doc(emailLc).get(),
+    db.collection('registrations').where('email_lc', '==', emailLc).limit(1).get()
+  ]);
+
+  let nextFormSnap = await db.collection('next_form')
+    .where('email', '==', emailLc)
+    .limit(1)
+    .get();
+
+  if (nextFormSnap.empty && safeEmail !== emailLc) {
+    nextFormSnap = await db.collection('next_form')
+      .where('email', '==', safeEmail)
+      .limit(1)
+      .get();
+  }
+
+  let fallbackRegistrationSnap = registrationSnap;
+  if (fallbackRegistrationSnap.empty) {
+    fallbackRegistrationSnap = await db.collection('registrations')
+      .where('email', '==', safeEmail)
+      .limit(1)
+      .get();
+  }
+
+  if (fallbackRegistrationSnap.empty && safeEmail !== emailLc) {
+    fallbackRegistrationSnap = await db.collection('registrations')
+      .where('email', '==', emailLc)
+      .limit(1)
+      .get();
+  }
+
+  const userDoc = userSnap.exists ? userSnap.data() : null;
+  const registrationDoc = !fallbackRegistrationSnap.empty ? fallbackRegistrationSnap.docs[0].data() : null;
+  const nextFormDoc = !nextFormSnap.empty ? nextFormSnap.docs[0].data() : null;
+  const registrationStatus = String(registrationDoc?.registration_status || '').toLowerCase();
+
+  const registrationData = registrationDoc ? {
+    fullName: registrationDoc.full_name || registrationDoc.fullName || '',
+    email: registrationDoc.email || safeEmail || emailLc,
+    phone: registrationDoc.phone || '',
+  } : {};
+
+  const nextFormData = nextFormDoc ? Object.fromEntries(
+    Object.entries(nextFormDoc).filter(([key, value]) => {
+      if (!key) return false;
+      const lower = String(key).toLowerCase();
+      if (['uploaded_files', 'created_at', 'updated_at', 'email_lc', 'user_id', 'password'].includes(lower)) return false;
+      if (value === null || value === undefined) return false;
+      if (typeof value === 'object') return false;
+      return String(value).trim().length > 0;
+    })
+  ) : {};
+
+  const registerCompleted = userDoc?.registerCompleted === true || !!registrationDoc || !!nextFormDoc;
+  const applicationCompleted = userDoc?.applicationCompleted === true || registrationStatus === 'fully_registered' || !nextFormSnap.empty;
+
+  return {
+    success: true,
+    loggedIn: true,
+    registerCompleted,
+    applicationCompleted,
+    completed: applicationCompleted,
+    registrationData,
+    nextFormData,
+  };
+};
+
 // Check Application Completion Status API
 app.get('/api/check-application-status', async (req, res) => {
   try {
     const emailRaw = String(req.query?.email || '').trim();
-    const emailLc = emailRaw.toLowerCase();
     if (!emailRaw) {
       return res.status(400).json({ success: false, error: 'Email parameter is required' });
     }
-
-    const registrationSnap = await db.collection('registrations')
-      .where('email_lc', '==', emailLc)
-      .limit(1)
-      .get();
-
-    let fallbackRegistrationSnap = registrationSnap;
-    if (fallbackRegistrationSnap.empty) {
-      fallbackRegistrationSnap = await db.collection('registrations')
-        .where('email', '==', emailRaw)
-        .limit(1)
-        .get();
-    }
-    if (fallbackRegistrationSnap.empty && emailRaw !== emailLc) {
-      fallbackRegistrationSnap = await db.collection('registrations')
-        .where('email', '==', emailLc)
-        .limit(1)
-        .get();
-    }
-
-    let nextFormSnap = await db.collection('next_form')
-      .where('email', '==', emailLc)
-      .limit(1)
-      .get();
-
-    if (nextFormSnap.empty && emailRaw !== emailLc) {
-      nextFormSnap = await db.collection('next_form')
-        .where('email', '==', emailRaw)
-        .limit(1)
-        .get();
-    }
-
-    const registrationDoc = !fallbackRegistrationSnap.empty ? fallbackRegistrationSnap.docs[0].data() : null;
-    const nextFormDoc = !nextFormSnap.empty ? nextFormSnap.docs[0].data() : null;
-    const registrationStatus = String(registrationDoc?.registration_status || '').toLowerCase();
-
-    const registrationData = registrationDoc ? {
-      fullName: registrationDoc.full_name || registrationDoc.fullName || '',
-      email: registrationDoc.email || emailRaw || emailLc,
-      phone: registrationDoc.phone || '',
-    } : {};
-
-    const nextFormData = nextFormDoc ? Object.fromEntries(
-      Object.entries(nextFormDoc).filter(([key, value]) => {
-        if (!key) return false;
-        const lower = String(key).toLowerCase();
-        if (['uploaded_files', 'created_at', 'updated_at', 'email_lc', 'user_id', 'password'].includes(lower)) return false;
-        if (value === null || value === undefined) return false;
-        if (typeof value === 'object') return false;
-        return String(value).trim().length > 0;
-      })
-    ) : {};
-
-    return res.json({
-      success: true,
-      completed: registrationStatus === 'fully_registered',
-      registrationData,
-      nextFormData,
-    });
+    const status = await buildUserStatusResponse(emailRaw);
+    return res.json(status);
   } catch (error) {
     console.error('Check application status error:', error);
     return res.status(500).json({ success: false, error: 'Failed to verify application status' });
+  }
+});
+
+// Check User Status API
+app.get('/api/check-user-status', async (req, res) => {
+  try {
+    const email = String(req.query?.email || '').trim();
+
+    if (!email) {
+      return res.json({ success: false, loggedIn: false });
+    }
+
+    const status = await buildUserStatusResponse(email);
+    return res.json(status);
+  } catch (error) {
+    console.error('Status API Error:', error);
+    return res.json({ success: false, loggedIn: false });
   }
 });
 

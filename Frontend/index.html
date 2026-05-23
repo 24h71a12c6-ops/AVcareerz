@@ -1383,6 +1383,23 @@
             { root: null, threshold: 0.05 }
           );
           io.observe(section);
+        // Delegate registration CTA clicks to handleCTA when available
+        document.addEventListener('click', function(e){
+          const a = e.target.closest && e.target.closest('a[href="#registration-section"]');
+          if (!a) return;
+          // Prevent default anchor behavior and route via handleCTA
+          e.preventDefault();
+          try {
+            if (typeof window.handleCTA === 'function') {
+              window.handleCTA();
+              return;
+            }
+          } catch (err) {
+            // ignore
+          }
+          // fallback
+          window.location.href = 'index.html#registration-section';
+        });
         } else {
           startLoop();
         }

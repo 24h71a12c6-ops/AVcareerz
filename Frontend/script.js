@@ -969,6 +969,53 @@ const routeSignedInUserToCorrectPage = async () => {
 // Expose for other scripts (firebase-config.js may call via window.routeSignedInUserToCorrectPage)
 try { window.routeSignedInUserToCorrectPage = routeSignedInUserToCorrectPage; } catch (e) { /* ignore */ }
 
+// New: Generic CTA handler used by multiple call-to-action buttons
+async function handleCTA() {
+    const email = String(localStorage.getItem('userEmail') || '').trim();
+
+    // Not logged in -> open login/registration flow
+    if (!email) {
+        // Prefer existing auth modal if available
+        try {
+            if (typeof showRegistrationSection === 'function') {
+                showRegistrationSection({ preferLogin: true });
+                return;
+            }
+        } catch {}
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/check-user-status?email=${encodeURIComponent(email)}`);
+        const data = await res.json().catch(() => null);
+
+        if (!data || !data.success || !data.loggedIn) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        if (data.registerCompleted && data.applicationCompleted) {
+            window.location.href = 'already-registered.html';
+            return;
+        }
+
+        if (data.registerCompleted) {
+            window.location.href = 'next-form.html';
+            return;
+        }
+
+        // default: open registration
+        try { showRegistrationSection({ preferLogin: false }); return; } catch {}
+        window.location.href = 'index.html#registration-section';
+    } catch (err) {
+        console.error('CTA Error:', err);
+        window.location.href = 'login.html';
+    }
+}
+
+try { window.handleCTA = handleCTA; } catch {}
+
 // Auto-sync application completion status from the database on page load
 (async () => {
     try {
@@ -3812,6 +3859,19 @@ if (registrationForm) {
                 // 4. Direct next step UX: Auto-redirect to application form (Step 2)
                 // as requested — mark the user as registered and take them to step 2.
                 if (!editMode) {
+                    // Mark lightweight users doc so backend/frontend status API can pick it up
+                    try {
+                        if (typeof db !== 'undefined' && email) {
+                            await db.collection('users').doc(String(email).trim().toLowerCase()).set({
+                                email: String(email).trim().toLowerCase(),
+                                registerCompleted: true,
+                                applicationCompleted: false,
+                                updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                            }, { merge: true });
+                        }
+                    } catch (userMarkErr) {
+                        console.warn('Failed to mark users doc registerCompleted:', userMarkErr);
+                    }
                     try { localStorage.setItem('isRegistered', 'true'); } catch {};
                     try { sessionStorage.setItem('justRegistered', '1'); } catch {}
                     try { sessionStorage.setItem('pendingApplicationStep', '2'); } catch {}
