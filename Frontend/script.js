@@ -2073,72 +2073,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!cta) return;
 
         // Always prevent default for these specific CTA buttons and delegate to
-        // the unified handler which attempts a live Firestore check when possible.
+        // the unified handler which checks the backend status.
         e.preventDefault();
-        void handleCTAClick();
+        void handleCTA();
     });
 
-    // Centralized CTA handler: keep routing simple and driven by local state.
-    async function handleCTAClick() {
-        try {
-            if (!isActiveSession()) {
-                if (typeof openRegModal === 'function') {
-                    openRegModal();
-                    return;
-                }
-
-                if (typeof showRegistrationSection === 'function') {
-                    showRegistrationSection({ preferLogin: false });
-                    return;
-                }
-
-                window.location.href = 'index.html#registration-section';
-                return;
-            }
-
-            const step2Pending = sessionStorage.getItem('pendingApplicationStep') === '2'
-                || localStorage.getItem('pendingApplicationStep') === '2';
-
-            if (step2Pending) {
-                window.location.href = 'next-form.html';
-                return;
-            }
-
-            const completed = isApplicationCompleted();
-
-            if (completed) {
-                window.location.href = 'already-registered.html';
-                return;
-            }
-
-            const email = String(localStorage.getItem('userEmail') || '').trim();
-            if (email) {
-                window.location.href = 'next-form.html';
-                return;
-            }
-
-            if (typeof signInWithGoogle === 'function') {
-                await signInWithGoogle();
-                return;
-            }
-
-            if (typeof openRegModal === 'function') {
-                openRegModal();
-                return;
-            }
-
-            const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
-            if (isHomePage) {
-                scrollToSection('registration-section');
-                return;
-            }
-
-            window.location.href = 'index.html#registration-section';
-        } catch (err) {
-            console.error('handleCTAClick unexpected error:', err);
-            window.location.href = 'next-form.html';
-        }
-    }
+    // Legacy CTA path removed.
 
 
     // 6. PHONE INPUT VALIDATION
