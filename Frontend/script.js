@@ -917,9 +917,12 @@ const routeSignedInUserToCorrectPage = async () => {
     // - incomplete user -> next-form
     const target = completed ? 'already-registered.html' : 'next-form.html';
     try {
+        // TEMP DEBUG: print final redirect target for testing (remove after verification)
+        try { console.log('FINAL_REDIRECT:', target); } catch (err) { /* ignore */ }
         window.location.replace(target);
     } catch (e) {
         // Fallback
+        try { console.log('FINAL_REDIRECT (fallback):', target); } catch (err) { /* ignore */ }
         window.location.href = target;
     }
     return true;
