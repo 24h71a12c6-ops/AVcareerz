@@ -207,25 +207,27 @@
         }
 
         .next-form-back-link {
-            padding: 10px 16px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            border-radius: 999px;
+            justify-content: center;
+            padding: 0 14px;
+            height: 44px;
+            min-width: 72px;
+            border-radius: 8px; /* square-ish box */
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 700;
             line-height: 1;
             color: #ffffff;
             background: #22c55e;
-            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.22);
-            transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.18);
+            transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
         }
 
         .next-form-back-link:hover {
             transform: translateY(-1px);
             background: #16a34a;
-            box-shadow: 0 12px 24px rgba(34, 197, 94, 0.28);
+            box-shadow: 0 12px 24px rgba(34, 197, 94, 0.24);
         }
 
         .next-form-nav-actions {
@@ -907,7 +909,7 @@
                 <div class="nav-right">
                     <!-- On next-form desktop view we replace the profile icon with a Back button -->
                     <div class="nav-profile" data-profile-menu="true">
-                        <a href="index.html" class="next-form-back-link profile-trigger" aria-label="Go back to home"><i class="fas fa-arrow-left"></i> Back</a>
+                        <a href="index.html" class="next-form-back-link profile-trigger" aria-label="Go back to home">Back</a>
                     </div>
 
                     <div class="nav-toggle" id="navToggle">
