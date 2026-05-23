@@ -57,11 +57,23 @@
         localStorage.setItem('userEmail', email);
         localStorage.setItem('isSessionActive', 'true');
         sessionStorage.setItem('isSessionActive', 'true');
-        sessionStorage.setItem('pendingApplicationStep', '2');
+        // Do not set pendingApplicationStep here or redirect to next-form immediately.
+        // Let the app's routing helper (server-aware) decide the correct destination.
         try { localStorage.removeItem('formSubmittedSuccessfully'); } catch {}
         try { localStorage.removeItem('isApplicationDone'); } catch {}
         try { localStorage.removeItem('applicationCompleted'); } catch {}
         try { sessionStorage.removeItem('applicationCompleted'); } catch {}
+        // If we have cached registration/next-form data locally, the user likely
+        // completed those steps earlier in this browser/tab; clear any lingering
+        // pendingApplicationStep so routing helper can decide correctly.
+        try {
+          const hasReg = !!(localStorage.getItem('registrationData') || sessionStorage.getItem('registrationData'));
+          const hasNext = !!(localStorage.getItem('nextFormData') || sessionStorage.getItem('nextFormData'));
+          if (hasReg || hasNext) {
+            try { sessionStorage.removeItem('pendingApplicationStep'); } catch {}
+            try { localStorage.removeItem('pendingApplicationStep'); } catch {}
+          }
+        } catch {}
       }
 
       // Attempt to create/update a minimal user record in Firestore so sign-ins are tracked.
@@ -79,7 +91,42 @@
         console.warn('Failed to write user record to Firestore after popup sign-in:', err);
       }
 
-      window.location.replace('next-form.html');
+      // Prefer calling the app routing helper so it can consult the backend and
+      // redirect the user to the correct page (already-registered or next-form).
+      try {
+        const waitForRouteHelper = async (timeoutMs = 2000, intervalMs = 100) => {
+          const start = Date.now();
+          while (Date.now() - start < timeoutMs) {
+            if (typeof window.routeSignedInUserToCorrectPage === 'function') return window.routeSignedInUserToCorrectPage;
+            await new Promise(r => setTimeout(r, intervalMs));
+          }
+          return null;
+        };
+
+        const helper = await waitForRouteHelper(2000, 100);
+        if (helper) {
+          await helper();
+        } else {
+          // As a fallback, perform a quick backend check and redirect to already-registered if completed
+          try {
+            const res = await fetch(`/api/check-application-status?email=${encodeURIComponent(email)}`);
+            const json = await res.json().catch(() => null);
+            if (res.ok && json && json.success && json.completed) {
+              try { localStorage.setItem('applicationCompleted', '1'); } catch {}
+              try { localStorage.setItem('isApplicationDone', 'true'); } catch {}
+              try { sessionStorage.setItem('applicationCompleted', '1'); } catch {}
+              try { sessionStorage.removeItem('pendingApplicationStep'); } catch {}
+              try { localStorage.removeItem('pendingApplicationStep'); } catch {}
+              try { window.location.replace('already-registered.html'); return; } catch (e) { window.location.href = 'already-registered.html'; return; }
+            }
+          } catch (err) {
+            // ignore
+          }
+          window.location.replace('index.html');
+        }
+      } catch (err) {
+        try { window.location.replace('index.html'); } catch (e) { /* ignore */ }
+      }
     } catch (error) {
       console.error('Google sign-in failed:', error);
       alert('Google sign-in failed. Please try again.');
