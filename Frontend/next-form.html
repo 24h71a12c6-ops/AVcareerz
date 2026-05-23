@@ -1579,22 +1579,21 @@
 
         try {
             if (typeof db !== 'undefined' && email) {
-                        await db.collection('next_form').doc(email).set({
-                            ...savedData,
-                            formSubmittedSuccessfully: true,
-                            submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        }, { merge: true });
+                await db.collection('next_form').doc(email).set({
+                    ...savedData,
+                    formSubmittedSuccessfully: true,
+                    submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
 
-                        // Also mark the lightweight users doc so status API can detect
-                        try {
-                            await db.collection('users').doc(email).set({
-                                email: email,
-                                applicationCompleted: true,
-                                updated_at: firebase.firestore.FieldValue.serverTimestamp()
-                            }, { merge: true });
-                        } catch (userMarkErr) {
-                            console.warn('Failed to mark users doc applicationCompleted:', userMarkErr);
-                        }
+                // IMPORTANT: keep the users doc in sync with the two-step flow
+                await db.collection('users').doc(email).set({
+                    registerCompleted: true,
+                    applicationCompleted: true,
+                    email: email,
+                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                console.log('✅ Both forms completed flags updated successfully');
             }
         } catch (error) {
             console.warn('Could not save next-form data to Firestore:', error);
