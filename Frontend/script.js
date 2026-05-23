@@ -874,15 +874,6 @@ const routeSignedInUserToCorrectPage = async () => {
     try { sessionStorage.setItem('isSessionActive', 'true'); } catch {}
     try { localStorage.setItem('isSessionActive', 'true'); } catch {}
 
-    if (isStep2Pending()) {
-        try { sessionStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
-        try { localStorage.setItem('skipSplashAfterSignIn', '1'); } catch {}
-        try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
-        try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
-        try { window.location.replace('next-form.html'); } catch (e) { window.location.href = 'next-form.html'; }
-        return true;
-    }
-
     // Hydrate from server so we can detect whether the application is actually complete.
     const hydrated = await hydrateProfileFromServer(email);
 
@@ -910,10 +901,20 @@ const routeSignedInUserToCorrectPage = async () => {
     try { sessionStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
     try { localStorage.setItem('skipModalOnNextPageLoad', '1'); } catch {}
 
+    // Keep pending flag in sync with the strict server-first decision.
+    if (completed) {
+        try { sessionStorage.removeItem('pendingApplicationStep'); } catch {}
+        try { localStorage.removeItem('pendingApplicationStep'); } catch {}
+    } else {
+        try { sessionStorage.setItem('pendingApplicationStep', '2'); } catch {}
+        try { localStorage.setItem('pendingApplicationStep', '2'); } catch {}
+    }
+
     // Use replace so back-button doesn't return to the intermediate state that
     // might re-trigger modal/splash logic in some browsers.
-    // Only a fully completed application should land on already-registered.
-    // If the user signed in but has not submitted step 2 yet, always send them to next-form.
+    // Strict routing rule:
+    // - completed user -> already-registered
+    // - incomplete user -> next-form
     const target = completed ? 'already-registered.html' : 'next-form.html';
     try {
         window.location.replace(target);
@@ -923,6 +924,9 @@ const routeSignedInUserToCorrectPage = async () => {
     }
     return true;
 };
+
+// Expose for other scripts (firebase-config.js may call via window.routeSignedInUserToCorrectPage)
+try { window.routeSignedInUserToCorrectPage = routeSignedInUserToCorrectPage; } catch (e) { /* ignore */ }
 
 // Auto-sync application completion status from the database on page load
 (async () => {
@@ -1869,15 +1873,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // `forceOpenRegistration` cannot reopen the modal for a just-signed-in user.
             const forceOpenRegistration = sessionStorage.getItem('forceOpenRegistration') === '1' && !(sessionStorage.getItem('skipModalOnNextPageLoad') === '1' || localStorage.getItem('skipModalOnNextPageLoad') === '1');
 
-            // After signup, the "Register Here" CTA should open the next form.
-            // Keep pre-signup behavior (open modal) for new users on any page.
-            // In edit mode, allow opening the registration modal even for registered users.
-            if (isStep2Pending()) {
-                e.preventDefault();
-                window.location.href = 'next-form.html';
-                return;
-            }
-
             if (href === '#registration-section' && isRegisteredUser() && !forceOpenRegistration) {
                 e.preventDefault();
                 // Route the signed-in user to the correct page (already-registered or next-form)
@@ -2479,24 +2474,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 href === 'index.html#registration-section' || 
                 href.endsWith('#registration-section') || 
                 hasRegClass) {
-
-                if (isStep2Pending()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    try { e.stopImmediatePropagation(); } catch { /* ignore */ }
-                    window.location.href = 'next-form.html';
-                    return;
-                }
-                
-                // If the application is already completed, redirect to already-registered.html
-                if (isApplicationCompleted()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    try { e.stopImmediatePropagation(); } catch { /* ignore */ }
-                    window.location.href = 'already-registered.html';
-                    return; 
-                }
-
                 if (isRegisteredUser()) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -4307,18 +4284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
 
             registerBtn.addEventListener('click', (e) => {
-                // Prefer existing helpers to determine state; avoid redirecting immediately
-                // if the session was just registered (prevents accidental navigation loops).
-                const justRegistered = sessionStorage.getItem('justRegistered') === '1';
-                const alreadyRegistered = isApplicationCompleted();
-
-                if (isStep2Pending()) {
-                    e.preventDefault();
-                    window.location.href = 'next-form.html';
-                    return;
-                }
-
-                if (alreadyRegistered && !justRegistered) {
+                if (isRegisteredUser()) {
                     e.preventDefault();
                     void routeSignedInUserToCorrectPage();
                 }
