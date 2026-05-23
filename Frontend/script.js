@@ -952,12 +952,8 @@ const routeSignedInUserToCorrectPage = async () => {
     // - incomplete user -> next-form
     const target = completed ? 'already-registered.html' : 'next-form.html';
     try {
-        // TEMP DEBUG: print final redirect target for testing (remove after verification)
-        try { console.log('FINAL_REDIRECT:', target); } catch (err) { /* ignore */ }
         window.location.replace(target);
     } catch (e) {
-        // Fallback
-        try { console.log('FINAL_REDIRECT (fallback):', target); } catch (err) { /* ignore */ }
         window.location.href = target;
     }
     return true;
@@ -1113,8 +1109,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // IMPORTANT: don't clear sessionStorage entirely — it breaks splash/session state and can feel "stuck".
     // For a *fresh* experience on each new browser/tab session, clear persisted auth/profile
     // keys from localStorage ONLY once per session (so navigation within the same tab still works).
-    try {
-        const isFreshTabLoad = !sessionStorage.getItem('freshProfileResetDone');
+        try {
+            const isFreshTabLoad = !sessionStorage.getItem('freshProfileResetDone');
         if (isFreshTabLoad) sessionStorage.setItem('freshProfileResetDone', '1');
 
         const isNewSession = isFreshTabLoad;
@@ -1128,6 +1124,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try { localStorage.removeItem('lastUserEmail'); } catch {}
             try { localStorage.removeItem('hasSignedUp'); } catch {}
             try { localStorage.removeItem('isRegistered'); } catch {}
+            try { localStorage.removeItem('currentUserUid'); } catch {}
             try { localStorage.removeItem('applicationCompleted'); } catch {}
             try { localStorage.removeItem('isApplicationDone'); } catch {}
             try { localStorage.removeItem('isSessionActive'); } catch {}
@@ -1139,6 +1136,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try { sessionStorage.removeItem('lastUserEmail'); } catch {}
             try { sessionStorage.removeItem('hasSignedUp'); } catch {}
             try { sessionStorage.removeItem('isRegistered'); } catch {}
+            try { sessionStorage.removeItem('currentUserUid'); } catch {}
             try { sessionStorage.removeItem('applicationCompleted'); } catch {}
             try { sessionStorage.removeItem('isApplicationDone'); } catch {}
             try { sessionStorage.removeItem('isSessionActive'); } catch {}
@@ -1702,9 +1700,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem('registrationData');
                 localStorage.removeItem('nextFormData');
                 localStorage.removeItem('currentUserId');
+                localStorage.removeItem('currentUserUid');
                 sessionStorage.removeItem('registrationData');
                 sessionStorage.removeItem('nextFormData');
                 sessionStorage.removeItem('currentUserId');
+                sessionStorage.removeItem('currentUserUid');
                 sessionStorage.removeItem('isSessionActive');
                 safeNotify('Logged out successfully.', 'success');
             } catch {
@@ -2015,6 +2015,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 5. REGISTER CTA BUTTONS (Unified behavior across the site)
     // Intercept only when one of the specific registration/consultation CTAs is clicked.
     document.addEventListener('click', (e) => {
+        if (e.defaultPrevented) return;
         const target = e.target;
         if (!(target instanceof Element)) return;
 
@@ -2024,55 +2025,36 @@ document.addEventListener("DOMContentLoaded", function () {
         // Always prevent default for these specific CTA buttons and delegate to
         // the unified handler which attempts a live Firestore check when possible.
         e.preventDefault();
-        void handleCTAClick();
+        void window.handleCTAClick();
     });
 
-    // Centralized CTA handler: keep routing simple and driven by local state.
-    async function handleCTAClick() {
+    // ==================== FINAL CTA HANDLER (Add at the bottom) ====================
+    window.handleCTAClick = async function() {
         try {
-            const step2Pending = sessionStorage.getItem('pendingApplicationStep') === '2'
-                || localStorage.getItem('pendingApplicationStep') === '2';
+            const uid = localStorage.getItem("currentUserUid");
 
-            if (step2Pending) {
-                window.location.href = 'next-form.html';
+            if (!uid) {
+                alert("Please sign in with Google first!");
                 return;
             }
 
-            const completed = isApplicationCompleted();
+            try {
+                const doc = await db.collection("next_form").doc(uid).get();
 
-            if (completed) {
-                window.location.href = 'already-registered.html';
-                return;
+                if (doc.exists) {
+                    window.location.href = "already-registered.html";
+                } else {
+                    window.location.href = "next-form.html";
+                }
+            } catch (error) {
+                console.error(error);
+                window.location.href = "already-registered.html";
             }
-
-            const email = String(localStorage.getItem('userEmail') || '').trim();
-            if (email) {
-                window.location.href = 'next-form.html';
-                return;
-            }
-
-            if (typeof signInWithGoogle === 'function') {
-                await signInWithGoogle();
-                return;
-            }
-
-            if (typeof openRegModal === 'function') {
-                openRegModal();
-                return;
-            }
-
-            const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index.html';
-            if (isHomePage) {
-                scrollToSection('registration-section');
-                return;
-            }
-
-            window.location.href = 'index.html#registration-section';
         } catch (err) {
             console.error('handleCTAClick unexpected error:', err);
-            window.location.href = 'next-form.html';
+            window.location.href = 'already-registered.html';
         }
-    }
+    };
 
 
     // 6. PHONE INPUT VALIDATION
@@ -2498,6 +2480,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Intercept clicks on all registration links/buttons to open the modal on the current page
         document.addEventListener('click', (e) => {
+            if (e.defaultPrevented) return;
             const btn = e.target.closest('a, button');
             if (!btn) return;
 
