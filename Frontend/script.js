@@ -707,9 +707,16 @@ const apiUrl = (path) => {
 
 // global auth helpers (available everywhere in script)
 const isRegisteredUser = () => {
-    // Check primary registration indicators first (don't require session to be active)
+    // Treat the user as registered only when the current session is active.
+    // This avoids stale localStorage from blocking the popup after logout.
+    try {
+        const sessionActive = sessionStorage.getItem('isSessionActive') === 'true' || localStorage.getItem('isSessionActive') === 'true';
+        if (!sessionActive) return false;
+    } catch {
+        return false;
+    }
+
     if (!!localStorage.getItem('userEmail') || localStorage.getItem('hasSignedUp') === '1') return true;
-    // Also check legacy flags
     try {
         if (localStorage.getItem('isRegistered') === 'true') return true;
     } catch {}
@@ -756,6 +763,9 @@ const isStep2Pending = () => {
 
 const hasStoredApplicationProgress = () => {
     try {
+        const sessionActive = sessionStorage.getItem('isSessionActive') === 'true' || localStorage.getItem('isSessionActive') === 'true';
+        if (!sessionActive) return false;
+
         return !!(
             localStorage.getItem('userEmail') ||
             localStorage.getItem('hasSignedUp') === '1' ||
@@ -2458,7 +2468,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else if (isHomePagePath()) {
             // Auto-open timer only for logged-out users
-            if (!hasStoredApplicationProgress() && !isRegisteredUser() && !isApplicationCompleted()) {
+            if (!isRegisteredUser() && !isApplicationCompleted()) {
                 regModalTimer = setTimeout(openRegModal, OPEN_DELAY_MS);
             } else {
                 // Logged in: ensure section is hidden
