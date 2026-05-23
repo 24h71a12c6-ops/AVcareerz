@@ -962,17 +962,42 @@ app.get('/api/check-application-status', async (req, res) => {
 // Check User Status API
 app.get('/api/check-user-status', async (req, res) => {
   try {
-    const email = String(req.query?.email || '').trim();
-
+    const email = req.query.email;
     if (!email) {
       return res.json({ success: false, loggedIn: false });
     }
 
-    const status = await buildUserStatusResponse(email);
-    return res.json(status);
+    const emailLc = email.toLowerCase();
+
+    // 1. Register Check (users collection)
+    const userRef = db.collection('users').doc(email);
+    const userDoc = await userRef.get();
+    const registerCompleted = userDoc.exists;
+
+    // 2. Application / Next Form Check
+    const nextFormSnapshot = await db.collection('next_form')
+      .where('email', '==', email)
+      .get();
+
+    const nextFormSnapshotLc = await db.collection('next_form')
+      .where('email_lc', '==', emailLc)
+      .get();
+
+    const applicationCompleted = !nextFormSnapshot.empty || !nextFormSnapshotLc.empty;
+
+    console.log(`Status Check - ${email} | Register: ${registerCompleted} | Application: ${applicationCompleted}`);
+
+    res.json({
+      success: true,
+      loggedIn: true,
+      registerCompleted,
+      applicationCompleted,
+      bothFormsCompleted: registerCompleted && applicationCompleted
+    });
+
   } catch (error) {
-    console.error('Status API Error:', error);
-    return res.json({ success: false, loggedIn: false });
+    console.error("Status API Error:", error);
+    res.json({ success: false, loggedIn: false });
   }
 });
 
