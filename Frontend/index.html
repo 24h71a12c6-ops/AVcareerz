@@ -85,13 +85,28 @@
         }, HIDE_MS);
 
         // Schedule registration popup event after POPUP_MS only for users who
-        // are not already signed in. Check localStorage for simple client-side
-        // indicators (userEmail / hasSignedUp / isRegistered). If the client
-        // appears signed-in, do not schedule the popup so returning users are
-        // not asked to register again.
+        // are not already signed in and who have no existing application progress.
+        // This prevents the popup from reappearing for users who already filled
+        // the forms (even if localStorage userEmail was cleared on logout).
         try {
-          const currentlySignedIn = !!(localStorage.getItem('userEmail') || localStorage.getItem('hasSignedUp') === '1' || localStorage.getItem('isRegistered') === '1');
-          if (!currentlySignedIn) {
+          const hasProgress = !!(
+            localStorage.getItem('userEmail') ||
+            localStorage.getItem('hasSignedUp') === '1' ||
+            localStorage.getItem('isRegistered') === '1' ||
+            localStorage.getItem('applicationCompleted') === '1' ||
+            localStorage.getItem('isApplicationDone') === 'true' ||
+            localStorage.getItem('pendingApplicationStep') === '2' ||
+            localStorage.getItem('registrationData') ||
+            localStorage.getItem('nextFormData') ||
+            sessionStorage.getItem('userEmail') ||
+            sessionStorage.getItem('hasSignedUp') === '1' ||
+            sessionStorage.getItem('isRegistered') === '1' ||
+            sessionStorage.getItem('applicationCompleted') === '1' ||
+            sessionStorage.getItem('pendingApplicationStep') === '2' ||
+            sessionStorage.getItem('registrationData') ||
+            sessionStorage.getItem('nextFormData')
+          );
+          if (!hasProgress) {
             const at = Date.now() + POPUP_MS;
             sessionStorage.setItem('av:shouldShowRegistration', '1');
             sessionStorage.setItem('av:showRegistrationAt', String(at));

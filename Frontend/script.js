@@ -137,8 +137,9 @@ try {
             // ignore
         }
 
-        // Only for logged-out users without completed application
+        // Only auto-open for users with no saved progress at all.
         try {
+            if (typeof hasStoredApplicationProgress === 'function' && hasStoredApplicationProgress()) return;
             if (typeof isRegisteredUser === 'function' && isRegisteredUser()) return;
             if (typeof isApplicationCompleted === 'function' && isApplicationCompleted()) return;
         } catch {}
@@ -748,6 +749,30 @@ const isStep2Pending = () => {
     try {
         return sessionStorage.getItem('pendingApplicationStep') === '2'
             || localStorage.getItem('pendingApplicationStep') === '2';
+    } catch {
+        return false;
+    }
+};
+
+const hasStoredApplicationProgress = () => {
+    try {
+        return !!(
+            localStorage.getItem('userEmail') ||
+            localStorage.getItem('hasSignedUp') === '1' ||
+            localStorage.getItem('isRegistered') === '1' ||
+            localStorage.getItem('applicationCompleted') === '1' ||
+            localStorage.getItem('isApplicationDone') === 'true' ||
+            localStorage.getItem('pendingApplicationStep') === '2' ||
+            localStorage.getItem('registrationData') ||
+            localStorage.getItem('nextFormData') ||
+            sessionStorage.getItem('userEmail') ||
+            sessionStorage.getItem('hasSignedUp') === '1' ||
+            sessionStorage.getItem('isRegistered') === '1' ||
+            sessionStorage.getItem('applicationCompleted') === '1' ||
+            sessionStorage.getItem('pendingApplicationStep') === '2' ||
+            sessionStorage.getItem('registrationData') ||
+            sessionStorage.getItem('nextFormData')
+        );
     } catch {
         return false;
     }
@@ -2433,7 +2458,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else if (isHomePagePath()) {
             // Auto-open timer only for logged-out users
-            if (!isRegisteredUser() && !isApplicationCompleted()) {
+            if (!hasStoredApplicationProgress() && !isRegisteredUser() && !isApplicationCompleted()) {
                 regModalTimer = setTimeout(openRegModal, OPEN_DELAY_MS);
             } else {
                 // Logged in: ensure section is hidden
