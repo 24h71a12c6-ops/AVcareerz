@@ -478,6 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const map = section.querySelector('#loc-map') || section.querySelector('#branch-map');
     const directions = section.querySelector('#direction-link');
     const callLink = section.querySelector('#call-link');
+    const whatsappLink = section.querySelector('#whatsapp-link');
     const statusEl = section.querySelector('#branch-status');
     const pulse = section.querySelector('.modern-pulse');
     const buttons = Array.from(section.querySelectorAll('.loc-pill[data-branch], .av-branch-btn[data-branch]'));
@@ -512,8 +513,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const toMapSrc = (address) => `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
     const toDirectionsHref = (address) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
+    const toWhatsAppHref = (phone) => {
+        const digits = String(phone || '').replace(/[^\d+]/g, '');
+        const clean = digits || '917036777567';
+        return `https://api.whatsapp.com/send?phone=${clean}&text=Hi%20AVcareerz`;
+    };
+
     const toTelHref = (phone) => {
-        const digits = (phone || '').replace(/[^\d+]/g, '');
+        const digits = String(phone || '').replace(/[^\d+]/g, '');
         return digits ? `tel:${digits}` : 'tel:+917036777567';
     };
 
@@ -588,6 +595,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (callLink) {
             callLink.href = toTelHref(branch.phone);
+        }
+
+        if (whatsappLink) {
+            whatsappLink.href = toWhatsAppHref(branch.phone);
         }
 
         // Live status badge
