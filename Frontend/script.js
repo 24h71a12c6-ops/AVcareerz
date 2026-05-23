@@ -291,12 +291,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const mo = new MutationObserver((entries) => {
-            for (const e of entries) {
-                if (e.addedNodes && e.addedNodes.length) {
-                    for (const n of e.addedNodes) {
-                        if (n && n.id === 'splash-screen') {
-                            // remove it synchronously
+        const mo = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.addedNodes && mutation.addedNodes.length) {
+                    for (const node of mutation.addedNodes) {
+                        if (node && node.id === 'splash-screen') {
                             ensureSplashRemoved();
                         }
                     }
@@ -328,6 +327,74 @@ if (glowDot) {
         glowDot.style.transform = `translate(${posX}px, ${posY}px) translate(-50%, -50%)`;
     });
 }
+
+// Normalize brand text on shared pages so the site consistently shows AVcareerz.
+(function initAVCareerzBranding() {
+    const OLD_BRAND = 'Abroad Vision Careerz';
+    const NEW_BRAND = 'AVcareerz';
+    const OLD_WHATSAPP_TEXT = 'Hi%20Abroad%20Vision%20Careerz';
+    const NEW_WHATSAPP_TEXT = 'Hi%20AVcareerz';
+
+    const replaceBrand = (value) => String(value || '').split(OLD_BRAND).join(NEW_BRAND);
+
+    const applyBranding = () => {
+        try {
+            if (typeof document.title === 'string' && document.title.includes(OLD_BRAND)) {
+                document.title = replaceBrand(document.title);
+            }
+        } catch { /* ignore */ }
+
+        try {
+            const root = document.body || document.documentElement;
+            if (root) {
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+                    acceptNode(node) {
+                        const parent = node.parentElement;
+                        if (!parent) return NodeFilter.FILTER_REJECT;
+                        const tag = parent.tagName;
+                        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT' || tag === 'TEMPLATE') {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        return String(node.nodeValue || '').includes(OLD_BRAND)
+                            ? NodeFilter.FILTER_ACCEPT
+                            : NodeFilter.FILTER_SKIP;
+                    }
+                });
+
+                const textNodes = [];
+                while (walker.nextNode()) textNodes.push(walker.currentNode);
+                for (const node of textNodes) node.nodeValue = replaceBrand(node.nodeValue);
+            }
+        } catch { /* ignore */ }
+
+        try {
+            document.querySelectorAll('[alt],[title],[aria-label],[placeholder]').forEach((el) => {
+                for (const attr of ['alt', 'title', 'aria-label', 'placeholder']) {
+                    const value = el.getAttribute(attr);
+                    if (value && value.includes(OLD_BRAND)) {
+                        el.setAttribute(attr, replaceBrand(value));
+                    }
+                }
+            });
+
+            document.querySelectorAll('a[href]').forEach((el) => {
+                const href = el.getAttribute('href') || '';
+                if (!href.includes('api.whatsapp.com/send') && !href.includes('wa.me')) return;
+                const updated = href
+                    .split(OLD_WHATSAPP_TEXT).join(NEW_WHATSAPP_TEXT)
+                    .split('Hi%20Abroad%20Vision%20Careerz').join('Hi%20AVcareerz')
+                    .split('Hi Abroad Vision Careerz').join('Hi AVcareerz');
+                if (updated !== href) el.setAttribute('href', updated);
+            });
+        } catch { /* ignore */ }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyBranding, { once: true });
+    } else {
+        applyBranding();
+    }
+})();
 
 // Section Focus Mode: blur other sections until the user scrolls/opens them.
 // Enabled only on index.html to avoid surprising effects on destination/service pages.
@@ -4232,7 +4299,7 @@ if (destinationForm) {
         console.log('Destination Form submitted:', formData);
 
         // Success message
-        showNotification('Registration completed successfully! Welcome to Abroad Vision Careerz.', 'success');
+        showNotification('Registration completed successfully! Welcome to AVcareerz.', 'success');
 
         // Reset form
         destinationForm.reset();
