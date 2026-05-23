@@ -1578,25 +1578,36 @@
         }
 
         try {
-            if (typeof db !== 'undefined' && email) {
-                await db.collection('next_form').doc(email).set({
-                    ...savedData,
-                    formSubmittedSuccessfully: true,
-                    submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
+            const backendFormData = new FormData(academicForm);
+            backendFormData.set('email', email);
 
-                // IMPORTANT: keep the users doc in sync with the two-step flow
-                await db.collection('users').doc(email).set({
-                    registerCompleted: true,
-                    applicationCompleted: true,
-                    email: email,
-                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-
-                console.log('✅ Both forms completed flags updated successfully');
+            const currentUserId = String(localStorage.getItem('currentUserId') || sessionStorage.getItem('currentUserId') || '').trim();
+            if (currentUserId) {
+                backendFormData.set('userId', currentUserId);
             }
+
+            const response = await fetch(apiUrl('/api/register-step2'), {
+                method: 'POST',
+                body: backendFormData
+            });
+
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || 'Step 2 submit failed');
+            }
+
+            console.log('✅ Both forms completed flags updated successfully');
         } catch (error) {
-            console.warn('Could not save next-form data to Firestore:', error);
+            console.warn('Could not save next-form data through backend:', error);
+            successMessage.textContent = 'Submit failed. Please try again.';
+            successMessage.style.color = '#ef4444';
+            successMessage.style.display = 'block';
+
+            if (submitBtn) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+            return;
         }
 
         try {
