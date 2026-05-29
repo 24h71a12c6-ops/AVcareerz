@@ -3,7 +3,7 @@
 // on slower connections. We show the splash quickly and remove it on DOM ready.
 (() => {
     try {
-        const canonicalHost = 'abroad-vision-carrerz-heg3.onrender.com';
+        const canonicalHost = 'avcareerz.com';
         const host = String(window.location.hostname || '').toLowerCase();
 
         // If someone opens the separate Render frontend service, forward them to the
@@ -330,9 +330,9 @@ if (glowDot) {
 
 // Normalize brand text on shared pages so the site consistently shows AVcareerz.
 (function initAVCareerzBranding() {
-    const OLD_BRAND = 'Abroad Vision Careerz';
+    const OLD_BRAND = 'AVcareerz';
     const NEW_BRAND = 'AVcareerz';
-    const OLD_WHATSAPP_TEXT = 'Hi%20Abroad%20Vision%20Careerz';
+    const OLD_WHATSAPP_TEXT = 'Hi%20AVcareerz';
     const NEW_WHATSAPP_TEXT = 'Hi%20AVcareerz';
 
     const replaceBrand = (value) => String(value || '').split(OLD_BRAND).join(NEW_BRAND);
@@ -382,8 +382,8 @@ if (glowDot) {
                 if (!href.includes('api.whatsapp.com/send') && !href.includes('wa.me')) return;
                 const updated = href
                     .split(OLD_WHATSAPP_TEXT).join(NEW_WHATSAPP_TEXT)
-                    .split('Hi%20Abroad%20Vision%20Careerz').join('Hi%20AVcareerz')
-                    .split('Hi Abroad Vision Careerz').join('Hi AVcareerz');
+                    .split('Hi%20AVcareerz').join('Hi%20AVcareerz')
+                    .split('Hi AVcareerz').join('Hi AVcareerz');
                 if (updated !== href) el.setAttribute('href', updated);
             });
         } catch { /* ignore */ }
@@ -654,7 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- API Configuration (Global Scope) ---
 // Define the backend service URL for connection
 
-const BACKEND_SERVICE_URL = 'https://abroad-vision-carrerz-heg3.onrender.com';
+const BACKEND_SERVICE_URL = 'https://avcareerz.com';
 const API_BASE_URL = (() => {
     try {
         const override = String(window.__BACKEND_BASE_URL || '').trim();

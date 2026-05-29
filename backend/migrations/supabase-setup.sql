@@ -1,8 +1,5 @@
--- Supabase Migration Script for Abroad Vision Carrerz
--- Copy and paste this SQL into your Supabase SQL Editor
-
--- registrations table
-CREATE TABLE IF NOT EXISTS registrations (
+-- Supabase Migration Script for AVcareerz
+-- Supabase Migration Script for AVcareerz
   id BIGSERIAL PRIMARY KEY,
   full_name VARCHAR NOT NULL,
   email VARCHAR NOT NULL UNIQUE,

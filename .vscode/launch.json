@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against backend Render URL",
-            "url": "https://abroad-vision-carrerz-heg3.onrender.com",
+            "url": "https://avcareerz.com",
             "webRoot": "${workspaceFolder}"
         }
     ]

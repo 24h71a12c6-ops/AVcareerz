@@ -84,10 +84,10 @@ const sendLoginCodeEmail = async (userEmail, code) => {
 // Lead / registration inquiry email for admin inbox
 const sendLeadNotificationEmail = async ({ name, email, phone, message, subject } = {}) => {
   // Prefer explicit LEAD_RECEIVER_EMAIL or ADMIN_EMAIL; fallback to the known admin inbox.
-  const primaryReceiver = String(process.env.LEAD_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'abroadvisioncarrerz@gmail.com').trim();
+  const primaryReceiver = String(process.env.LEAD_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim();
   const receivers = [primaryReceiver];
-  if (!receivers.includes('abroadvisioncarrerz@gmail.com')) {
-    receivers.push('abroadvisioncarrerz@gmail.com');
+  if (!receivers.includes('info@avcareerz.com')) {
+    receivers.push('info@avcareerz.com');
   }
   
   const safeName = escapeHtml(name || 'New Lead');
@@ -181,11 +181,11 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
       <body>
         <div class="container">
           <div class="header">
-            <img src="${escapeHtml(logoUrl)}" alt="Abroad Vision Careerz" />
-          </div>
+                  <img src="${escapeHtml(logoUrl)}" alt="AVcareerz" />
+                </div>
           <div class="content">
             <h2>Hello ${safeName || 'Student'},</h2>
-            <p>Thank you for registering with <strong>Abroad Vision Careerz</strong>. We're excited to have you on board.</p>
+            <p>Thank you for registering with <strong>AVcareerz</strong>. We're excited to have you on board.</p>
             ${introLine}
             ${destinationBlock}
             ${courseBlock}
@@ -196,8 +196,8 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
               <li>Schedule your free consultation.</li>
               <li>Receive personalized guidance for your study abroad journey.</li>
             </ol>
-            <a href="https://yourdomain.example.com" class="button">Visit Our Website</a>
-            <p>Best regards,<br><strong>Abroad Vision Careerz Team</strong></p>
+            <!-- CTA removed per request: no direct website button in emails -->
+            <p>Best regards,<br><strong>AVcareerz Team</strong></p>
           </div>
           <div class="footer">
             <p>Guiding Futures Beyond Borders</p>
@@ -210,7 +210,7 @@ const sendConfirmationEmail = async (userEmail, userName, customMessage, extra =
 
     await sendEmail({
       to: userEmail,
-      subject: 'Abroad Vision Careerz - Registration Successful',
+      subject: 'AVcareerz - Registration Successful',
       html
     });
     return true;
@@ -254,18 +254,17 @@ const sendGoogleSignInSuccessEmail = async (userEmail, userName, extra = {}) => 
       </head>
       <body>
         <div class="container">
-          <div class="header">
-            <img src="${escapeHtml(logoUrl)}" alt="Abroad Vision Careerz" />
-          </div>
+            <div class="header">
+            <img src="${escapeHtml(logoUrl)}" alt="AVcareerz" />
+              <!-- CTA removed per request: no direct website button in emails -->
           <div class="content">
             <h2>Welcome ${safeName},</h2>
-            <p>You have successfully signed in with <strong>${safeProvider}</strong> at <strong>Abroad Vision Careerz</strong>.</p>
+            <p>You have successfully signed in with <strong>${safeProvider}</strong> at <strong>AVcareerz</strong>.</p>
             <p><strong>Email:</strong> ${safeEmail}</p>
             ${safeSignedInAt ? `<p><strong>Signed in at:</strong> ${safeSignedInAt}</p>` : ''}
             <p>${safeNextStep}</p>
             <p>Once you complete the form, our team will review your application and guide you through the next steps.</p>
-            <a href="https://yourdomain.example.com" class="button">Continue Your Journey</a>
-            <p>Best regards,<br><strong>Abroad Vision Careerz Team</strong></p>
+            <p>Best regards,<br><strong>AVcareerz Team</strong></p>
           </div>
           <div class="footer">
             <p>Guiding Futures Beyond Borders</p>
@@ -278,7 +277,7 @@ const sendGoogleSignInSuccessEmail = async (userEmail, userName, extra = {}) => 
 
     await sendEmail({
       to: userEmail,
-      subject: 'Google Sign-In Successful - Abroad Vision Careerz',
+      subject: 'Google Sign-In Successful - AVcareerz',
       html
     });
     return true;
@@ -356,7 +355,7 @@ const sendAdminEmail = async (user, customSubject = null) => {
             </p>
           </div>
           <div class="footer">
-            Guiding Futures Beyond Borders &bull; Abroad Vision Careerz System
+            Guiding Futures Beyond Borders &bull; AVcareerz System
           </div>
         </div>
       </body>
@@ -364,10 +363,10 @@ const sendAdminEmail = async (user, customSubject = null) => {
     `;
 
     const adminList = getAdminEmailList();
-    if (!adminList.includes('abroadvisioncarrerz@gmail.com')) {
-      adminList.push('abroadvisioncarrerz@gmail.com');
+    if (!adminList.includes('info@avcareerz.com')) {
+      adminList.push('info@avcareerz.com');
     }
-    const adminTo = adminList.length > 0 ? adminList : 'abroadvisioncarrerz@gmail.com';
+    const adminTo = adminList.length > 0 ? adminList : 'info@avcareerz.com';
 
     const sendResult = await sendEmail({
       to: adminTo,
@@ -395,7 +394,7 @@ const sendPasswordResetCodeEmail = async (userEmail, code, expiresMinutes = 5) =
   try {
     await sendEmail({
       to: userEmail,
-      subject: 'Abroad Vision Careerz - Password Reset Code',
+      subject: 'AVcareerz - Password Reset Code',
       html
     });
     return true;
@@ -415,14 +414,14 @@ const sendPasswordChangedEmail = async (userEmail, userName) => {
     <p>Your account password was successfully changed.</p>
     <p style="margin-top: 12px; color: #555;">If you did not make this change, contact support immediately.</p>
     <hr>
-    <p>Regards,<br><strong>Abroad Vision Careerz Team</strong></p>
+    <p>Regards,<br><strong>AVcareerz Team</strong></p>
     <p style="color: #666; font-size: 12px;">Guiding Futures Beyond Borders</p>
   `;
 
   try {
     await sendEmail({
       to: userEmail,
-      subject: 'Abroad Vision Careerz - Password Changed',
+      subject: 'AVcareerz - Password Changed',
       html
     });
     return true;

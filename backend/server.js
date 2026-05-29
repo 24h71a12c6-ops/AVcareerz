@@ -59,7 +59,7 @@ const sendInstantAlert = async (type, payload = {}) => {
     const { sendEmail } = require('./services/emailService');
 
     const data = (payload && typeof payload === 'object') ? payload : {};
-    const adminTo = String(process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'abroadvisioncarrerz@gmail.com').trim() || 'abroadvisioncarrerz@gmail.com';
+    const adminTo = String(process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'info@avcareerz.com').trim() || 'info@avcareerz.com';
 
     let emoji = '🔔';
     let statusText = 'Notification';
@@ -147,7 +147,7 @@ const sendInstantAlert = async (type, payload = {}) => {
             </div>
           </div>
           <div class="footer">
-            Abroad Vision Careerz Alert System &bull; Guiding Futures Beyond Borders
+            AVcareerz Alert System &bull; Guiding Futures Beyond Borders
           </div>
         </div>
       </body>

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Simple test script to trigger admin notification emails so you can verify
-// the admin inbox (including abroadvisioncarrerz@gmail.com) receives them.
+// the admin inbox (including info@avcareerz.com) receives them.
 require('dotenv').config();
 const { sendAdminEmail, sendLeadNotificationEmail } = require('./services/emailService');
 
@@ -25,7 +25,7 @@ async function run() {
     await sendAdminEmail(dummyUser, 'TEST: Full Admin Submission');
     console.log('Admin email attempted (check backend logs and admin inbox).');
 
-    console.log('Done. If emails were accepted by Brevo, check the admin inbox (including abroadvisioncarrerz@gmail.com) and the Brevo dashboard for delivery/bounce details.');
+    console.log('Done. If emails were accepted by Brevo, check the admin inbox (including info@avcareerz.com) and the Brevo dashboard for delivery/bounce details.');
   } catch (err) {
     console.error('Test email error:', err && err.response ? err.response.data || err.response : err);
     process.exitCode = 2;

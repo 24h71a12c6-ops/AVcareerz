@@ -1,7 +1,7 @@
 {
   "name": "abroad-vision-backend",
   "version": "1.0.0",
-  "description": "Backend for Abroad Vision Carrerz",
+  "description": "Backend for AVcareerz",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,7 +12,7 @@
     "education",
     "abroad"
   ],
-  "author": "Abroad Vision Carrerz",
+  "author": "AVcareerz",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.14.0",
