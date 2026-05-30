@@ -1,4 +1,4 @@
-﻿// Splash Screen functionality
+// Splash Screen functionality
 // NOTE: Using `load` waits for ALL images to download, which can make the site feel "stuck"
 // on slower connections. We show the splash quickly and remove it on DOM ready.
 (() => {
@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return digits ? `tel:${digits}` : 'tel:+917036777567';
     };
 
-    // Live status (MonΓÇôSat, 10:00ΓÇô18:00 IST). Uses Asia/Kolkata even if user is abroad.
+    // Live status (Mon–Sat, 10:00–18:00 IST). Uses Asia/Kolkata even if user is abroad.
     const getIndiaNow = () => {
         try {
             const parts = new Intl.DateTimeFormat('en-IN', {
@@ -549,15 +549,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const computeOpenStatus = () => {
         const { weekday, hour, minute } = getIndiaNow();
         const isSunday = /^sun/i.test(String(weekday));
-        if (isSunday) return { open: false, text: 'Γùï Closed ΓÇó Opens Mon 10:00 AM' };
+        if (isSunday) return { open: false, text: '○ Closed • Opens Mon 10:00 AM' };
 
         const mins = hour * 60 + minute;
         const openMins = 10 * 60;
         const closeMins = 18 * 60;
 
-        if (mins >= openMins && mins < closeMins) return { open: true, text: 'ΓùÅ Open Now' };
-        if (mins < openMins) return { open: false, text: 'Γùï Closed ΓÇó Opens 10:00 AM' };
-        return { open: false, text: 'Γùï Closed ΓÇó Opens Tomorrow 10:00 AM' };
+        if (mins >= openMins && mins < closeMins) return { open: true, text: '● Open Now' };
+        if (mins < openMins) return { open: false, text: '○ Closed • Opens 10:00 AM' };
+        return { open: false, text: '○ Closed • Opens Tomorrow 10:00 AM' };
     };
 
     const renderStatus = () => {
@@ -1238,7 +1238,7 @@ const syncRegistrationSectionForAuthState = () => {
 // --- Main Application Logic ---
 document.addEventListener("DOMContentLoaded", function () {
     // Storage cleanup
-    // IMPORTANT: don't clear sessionStorage entirely ΓÇö it breaks splash/session state and can feel "stuck".
+    // IMPORTANT: don't clear sessionStorage entirely — it breaks splash/session state and can feel "stuck".
     // For a *fresh* experience on each new browser/tab session, clear persisted auth/profile
     // keys from localStorage ONLY once per session (so navigation within the same tab still works).
     try {
@@ -1755,7 +1755,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const email = String(registrationData?.email || localStorage.getItem('userEmail') || '').trim();
             const phone = String(registrationData?.phone || '').trim();
 
-            // Include a couple of common ΓÇ£next formΓÇ¥ fields if present.
+            // Include a couple of common “next form” fields if present.
             const preferredNextKeys = [
                 'preferredCountry',
                 'desiredCourse',
@@ -2168,47 +2168,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 7. GOOGLE SIGN-IN INITIALIZATION
-    let googleScriptRequested = false;
+    const googleBtnContainer = document.getElementById('googleBtn');
+    const googleFallbackBtn = document.getElementById('googleFallbackBtn');
 
-    const requestGoogleIdentityScript = () => {
-        if (googleScriptRequested) return;
-        googleScriptRequested = true;
-
-        if (document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
-            return;
-        }
-
-        try {
-            const script = document.createElement('script');
-            script.src = 'https://accounts.google.com/gsi/client';
-            script.async = true;
-            script.defer = true;
-            script.setAttribute('data-avcareerz-google-gsi', '1');
-            document.head.appendChild(script);
-        } catch (err) {
-            console.warn('Unable to load Google Identity script:', err);
-        }
+    const setFallbackVisible = (visible) => {
+        if (!googleFallbackBtn) return;
+        googleFallbackBtn.style.display = visible ? 'flex' : 'none';
     };
 
-    const bootstrapGoogleSignIn = () => {
-        const googleBtnContainer = document.getElementById('googleBtn');
-        const googleFallbackBtn = document.getElementById('googleFallbackBtn');
-
-        if (!googleBtnContainer) return;
-
-        const setFallbackVisible = (visible) => {
-            if (!googleFallbackBtn) return;
-            googleFallbackBtn.style.display = visible ? 'flex' : 'none';
-        };
-
+    if (googleBtnContainer) {
         setFallbackVisible(true);
-
         let googleInitAttempts = 0;
         const MAX_GOOGLE_INIT_ATTEMPTS = 20;
 
         const initGoogle = () => {
             if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
-                requestGoogleIdentityScript();
                 googleInitAttempts += 1;
                 if (googleInitAttempts < MAX_GOOGLE_INIT_ATTEMPTS) {
                     setTimeout(initGoogle, 150);
@@ -2251,25 +2225,21 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         initGoogle();
+    }
 
-        if (googleFallbackBtn && !googleFallbackBtn.dataset.avcareerzBound) {
-            googleFallbackBtn.dataset.avcareerzBound = '1';
-            googleFallbackBtn.addEventListener('click', (e) => {
-                e.preventDefault();
+    if (googleFallbackBtn) {
+        googleFallbackBtn.addEventListener('click', (e) => {
+            e.preventDefault();
 
-                if (typeof google !== 'undefined' && google.accounts && google.accounts.id && typeof google.accounts.id.prompt === 'function') {
-                    try {
-                        google.accounts.id.prompt();
-                    } catch (err) {
-                        console.error('Google One Tap prompt failed:', err);
-                    }
+            if (typeof google !== 'undefined' && google.accounts && google.accounts.id && typeof google.accounts.id.prompt === 'function') {
+                try {
+                    google.accounts.id.prompt();
+                } catch (err) {
+                    console.error('Google One Tap prompt failed:', err);
                 }
-            });
-        }
-    };
-
-    document.addEventListener('av:registration-modal-ready', bootstrapGoogleSignIn);
-    bootstrapGoogleSignIn();
+            }
+        });
+    }
 
     async function handleCredentialResponse(response) {
         // Show a brief success message and redirect immediately to the next form.
@@ -2385,14 +2355,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch {
             // ignore fetch / parsing issues; pages with their own modal still work
-        }
-
-        if (modalInjected) {
-            try {
-                document.dispatchEvent(new Event('av:registration-modal-ready'));
-            } catch {
-                // ignore
-            }
         }
 
         const regSection = document.getElementById('registration-section');
@@ -2658,7 +2620,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })();
 
-    // CLEAR SESSION BUTTON ΓÇö allow users to reset stored data without DevTools
+    // CLEAR SESSION BUTTON — allow users to reset stored data without DevTools
     const clearSessionBtn = document.getElementById('clearSessionBtn');
     if (clearSessionBtn) {
         clearSessionBtn.addEventListener('click', (e) => {
@@ -2674,7 +2636,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 localStorage.clear();
                 sessionStorage.clear();
-                console.log('Γ£à Session cleared successfully');
+                console.log('✅ Session cleared successfully');
             } catch (err) {
                 console.error('Error clearing session:', err);
             }
@@ -2724,7 +2686,7 @@ const countryDetails = {
     },
     uk: {
         title: 'United Kingdom',
-        summary: 'Historic institutions with 1-year masterΓÇÖs options, 20 top universities, and 70+ course pathways.',
+        summary: 'Historic institutions with 1-year master’s options, 20 top universities, and 70+ course pathways.',
         reasons: [
             'Shorter course durations save time and cost',
             'Post-Study Work (Graduate Route) visa',
@@ -2821,14 +2783,14 @@ const countryDetails = {
         title: 'France',
         summary: 'World-class business, fashion, and arts education with rich culture.',
         reasons: [
-            'Grandes ├ëcoles and elite business schools',
+            'Grandes Écoles and elite business schools',
             'Affordable public university tuition',
             'Vibrant culture, art, and cuisine'
         ],
         universities: [
             { name: 'HEC Paris', location: 'Paris', tag: 'Business' },
             { name: 'Sorbonne University', location: 'Paris', tag: 'Historic' },
-            { name: '├ëcole Polytechnique', location: 'Palaiseau', tag: 'Engineering' },
+            { name: 'École Polytechnique', location: 'Palaiseau', tag: 'Engineering' },
             { name: 'INSEAD', location: 'Fontainebleau', tag: 'MBA' },
             { name: 'Sciences Po', location: 'Paris', tag: 'Politics' }
         ]
@@ -3913,7 +3875,7 @@ if (registrationForm) {
                 syncRegistrationSectionForAuthState();
 
                 // 4. Direct next step UX: Auto-redirect to application form (Step 2)
-                // as requested ΓÇö mark the user as registered and take them to step 2.
+                // as requested — mark the user as registered and take them to step 2.
                 if (!editMode) {
                     // Mark lightweight users doc so backend/frontend status API can pick it up
                     try {
@@ -4022,7 +3984,7 @@ if (registrationForm) {
     }
 }
 
-// Login form submission ΓÇö moved inside DOMContentLoaded for correct scope
+// Login form submission — moved inside DOMContentLoaded for correct scope
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
