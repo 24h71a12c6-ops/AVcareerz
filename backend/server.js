@@ -776,6 +776,18 @@ app.post('/api/login', async (req, res) => {
       source: 'Login Success'
     });
 
+    // User confirmation mail for successful login (do not block login if email fails)
+    try {
+      const { sendConfirmationEmail } = require('./services/emailService');
+      await sendConfirmationEmail(
+        rows[0].email,
+        rows[0].full_name || 'User',
+        'You have successfully logged in to AVcareerz. Our team will support you with the next steps if needed.'
+      );
+    } catch (loginMailError) {
+      console.error('Login confirmation email error:', loginMailError?.message || loginMailError);
+    }
+
     // Check if the user has completed step 2 application
     const nextFormSnap = await db.collection('next_form')
       .where('email_lc', '==', emailLc)

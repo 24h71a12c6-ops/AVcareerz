@@ -10,6 +10,11 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script>
+        // Local testing backend override — points frontend API calls to local server
+        // Remove or change this line when testing against production.
+        window.__BACKEND_BASE_URL = 'http://localhost:10000';
+    </script>
     <script src="firebase-config.js?v=20260522-1"></script>
     <style>
         html, body { min-height: 100vh; margin: 0; }
