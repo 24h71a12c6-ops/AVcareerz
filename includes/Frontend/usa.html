@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study in USA - AVcareerz</title>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+    <link rel="preload" as="image" href="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771073160/my_website_images/usa2.jpg">
+    <link rel="stylesheet" href="styles.css?v=20260517-5">
+    <link rel="stylesheet" href="responsive.css?v=20260320-1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #fff;
+            background-image:
+                linear-gradient(rgba(13, 75, 117, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(13, 75, 117, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0;
+        }
+
+        .program-tag {
+            transition: all 0.3s ease;
+        }
+
+        .program-tag:hover,
+        .program-tag:active,
+        .program-tag:focus {
+            background: #f0f4f8;
+            color: var(--text-color);
+            border-color: var(--orange);
+            box-shadow: none;
+            transform: translateY(-1px);
+            cursor: pointer;
+        }
+
+        .why-usa {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: #f9f9f9;
+        }
+
+        .why-usa p {
+            color: #555;
+            margin-bottom: 50px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            width: 240px;
+            transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(255, 165, 0, 0.5);
+            border: 2px solid orange;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            color: #0D4B75;
+            margin-bottom: 15px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            color: orange;
+            transform: scale(1.1);
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .card p {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .why-usa .cards-container {
+            background-color: rgb(212, 237, 253);
+            padding: 70px 20px;
+            border-radius: 20px;
+        }
+
+        :root {
+            --dark-blue: #20324a;
+            --orange: #E43E16;
+            --light-gray: #f8f9fa;
+            --text-color: #20324a;
+        }
+
+        .country-hero {
+            position: relative;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-back-btn {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .hero-back-btn:hover {
+            background: #E43E16;
+            color: var(--text-color);
+            border-color: #E43E16;
+            transform: translateX(-5px);
+        }
+
+        .hero-back-btn i {
+            font-size: 0.8rem;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+        }
+
+        .country-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771073160/my_website_images/usa2.jpg') center center / cover no-repeat;
+            z-index: 1;
+        }
+
+        .country-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 2;
+        }
+
+        .country-hero h1 {
+            position: relative;
+            z-index: 3;
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--dark-blue);
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--orange);
+        }
+
+        .section-note {
+            max-width: 900px;
+            margin: -18px auto 25px;
+            text-align: center;
+            color: #4c5f72;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .country-info {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 20px;
+            margin-bottom: 5rem;
+            padding: 0 10px;
+        }
+
+        .university-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 6px solid var(--dark-blue);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .universities-section {
+            padding-left: 130px;
+        }
+
+        .intake-meta {
+            color: var(--orange);
+            font-weight: 800;
+            margin: 6px 0 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .course-group {
+            margin-top: 18px;
+        }
+
+        .course-group h4 {
+            color: var(--dark-blue);
+            margin: 0 0 10px;
+            font-size: 0.95rem;
+        }
+
+        .requirements-list {
+            margin: 14px 0 0;
+            padding-left: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .fee-box {
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: #f8fbff;
+            border: 1px solid #dce4ec;
+            border-radius: 12px;
+            color: #20324a;
+        }
+
+        .program-tag {
+            background: #f0f4f8;
+            color: var(--text-color);
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid #dce4ec;
+            display: block;
+            width: 100%;
+            min-height: 28px;
+            box-sizing: border-box;
+            line-height: 1.15;
+        }
+
+        .course-toggle {
+            display: block;
+            width: 100%;
+            margin-top: 18px;
+        }
+
+        .course-toggle summary {
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            max-width: 100%;
+            padding: 8px 14px;
+            background: var(--dark-blue);
+            color: #fff;
+            border: 1px solid var(--dark-blue);
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-inline: auto;
+        }
+
+        .course-toggle summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .course-toggle summary:hover {
+            background: var(--dark-blue);
+            color: #fff;
+            border-color: var(--dark-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(32, 48, 64, 0.12);
+        }
+
+        .course-toggle[open] summary {
+            background: var(--dark-blue);
+            color: #fff;
+            border-color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .programs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+            margin-top: 0;
+        }
+
+        @media (max-width: 992px) {
+            .country-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="top-left">
+            <span class="contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                Info@avcareerz.com
+            </span>
+        </div>
+        <div class="top-right">
+            <span class="contact-item">
+                <i class="fa-solid fa-phone"></i>
+                +91 70367 77567
+            </span>
+            <div class="social-links">
+                <a href="https://www.facebook.com/share/1EzwLW3uG2/" target="_blank" title="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/avcareerz/" target="_blank" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://x.com/avcareerz" target="_blank" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Header & Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <img src="images/logonew.png" alt="AVcareerz Logo" class="navbar-logo-img" style="width: clamp(120px, 18vw, 200px); height: 40px; object-fit: cover; object-position: center;">
+                </a>
+
+                <div class="nav-toggle" id="navToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="index.html#about">About Us</a></li>
+                    <li><a href="index.html#coaching">Coachings</a></li>
+                    <li class="nav-dropdown">
+                        <a href="index.html#study">Destinations</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="usa.html">Study in USA</a></li>
+                            <li><a href="uk.html">Study in UK</a></li>
+                            <li><a href="canada.html">Study in Canada</a></li>
+                            <li><a href="australia.html">Study in Australia</a></li>
+                            <li><a href="germany.html">Study in Germany</a></li>
+                            <li><a href="newzealand.html">Study in New Zealand</a></li>
+                            <li><a href="italy.html">Study in Italy</a></li>
+                            <li><a href="singapore.html">Study in Singapore</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="visa-services.html">Visa-Services</a></li>
+                    <li><a href="index.html#locations">Contact Us</a></li>
+                    <li><a href="index.html#testimonials">Testimonials</a></li>
+                    <li><a href="index.html#registration-section" class="nav-link register-scroll">Register Here</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Country Hero -->
+    <section class="country-hero">
+        <div class="hero-content">
+            <h1>
+                <span>Study</span>
+                <span>in</span>
+                <span>United</span>
+                <span>States</span>
+            </h1>
+        </div>
+    </section>
+
+    <!-- Country Details -->
+    <section class="why-usa">
+        <h2 class="section-title">Why Study in USA</h2>
+        <p class="section-note">Each university below highlights its strengths, and every one of them opens the door to 70+ courses across STEM, business, health sciences, arts, and more.</p>
+        <p>Discover the advantages of studying in the USA for your career and personal growth.</p>
+        <div class="cards-container">
+            <div class="card">
+                
+                <h3>High-Quality Education</h3>
+                <p>Top universities, advanced curriculum, and research opportunities.</p>
+            </div>
+            <div class="card">
+                
+                <h3>Flexible Courses</h3>
+                <p>Combine majors and minors to match your career goals.</p>
+            </div>
+            <div class="card">
+                
+                <h3>Research Opportunities</h3>
+                <p>Access to modern labs and innovative projects.</p>
+            </div>
+            <div class="card">
+                
+                <h3>Career Opportunities</h3>
+                <p>Internships, OPT, and connections with global companies.</p>
+            </div>
+            <div class="card">
+                
+                <h3>Cultural Diversity</h3>
+                <p>Learn in a multicultural environment and grow personally.</p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Top Universities -->
+    <div class="universities-section">
+        <h2 class="section-title">Top 20 Universities in USA</h2>
+        <div class="universities-left-gap" id="usaUniversitiesList"></div>
+    </div>
+    <br>
+
+    <div class="register-section">
+        <h2>Ready to Study in USA?</h2>
+        <p>Start your journey today with AVcareerz</p>
+        <a href="index.html#registration-section" class="register-cta-button">
+            <i class="fas fa-arrow-right"></i> Register Now
+        </a>
+    </div>
+    <br>
+
+       <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>AVcareerz</h3>
+                    <p>Guiding Futures Beyond Borders.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="index.html#study">Study Destinations</a></li>
+                        <li><a href="visa-services.html">Visa Services</a></li>
+                        <li><a href="index.html#coaching">Coaching</a></li>
+                        <li><a href="index.html#locations">Contact Us</a></li>
+                        <li><a href="index.html#registration-section">Register Here</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section footer-social">
+                    <h4>Connect With Us</h4>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/share/1EzwLW3uG2/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://api.whatsapp.com/send?phone=917036777567&text=Hi%20AVcareerz" target="_blank" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/avcareerz/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://x.com/avcareerz" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AVcareerz. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const courseCatalog = [
+                'Computer Science',
+                'Data Science',
+                'Artificial Intelligence',
+                'Machine Learning',
+                'Software Engineering',
+                'Cybersecurity',
+                'Information Systems',
+                'Cloud Computing',
+                'DevOps',
+                'Computer Networks',
+                'Biomedical Engineering',
+                'Electrical Engineering',
+                'Mechanical Engineering',
+                'Civil Engineering',
+                'Aerospace Engineering',
+                'Materials Science',
+                'Chemical Engineering',
+                'Environmental Engineering',
+                'Robotics',
+                'Mechatronics',
+                'Biotechnology',
+                'Bioinformatics',
+                'Molecular Biology',
+                'Genetics',
+                'Neuroscience',
+                'Public Health',
+                'Nursing',
+                'Medicine',
+                'Pharmacy',
+                'Dentistry',
+                'Business Administration',
+                'MBA',
+                'Finance',
+                'Accounting',
+                'Marketing',
+                'Economics',
+                'Management',
+                'Entrepreneurship',
+                'Supply Chain Management',
+                'International Business',
+                'Human Resource Management',
+                'Operations Research',
+                'Statistics',
+                'Mathematics',
+                'Physics',
+                'Chemistry',
+                'Biochemistry',
+                'Applied Mathematics',
+                'Computational Biology',
+                'Architecture',
+                'Urban Planning',
+                'Psychology',
+                'Sociology',
+                'Political Science',
+                'International Relations',
+                'Law',
+                'Journalism',
+                'Media Studies',
+                'Communication',
+                'Education',
+                'Anthropology',
+                'History',
+                'Philosophy',
+                'Fine Arts',
+                'Design',
+                'Film Studies',
+                'Music',
+                'Theatre Arts',
+                'Environmental Science',
+                'Sustainability',
+                'Renewable Energy',
+                'Geology',
+                'Geography',
+                'Astronomy',
+                'Actuarial Science',
+                'Forensic Science',
+                'Social Work',
+                'Library Science',
+                'Hospitality Management',
+                'Sports Management',
+                'Public Policy',
+                'Theoretical Physics',
+                'Applied Physics',
+                'Data Analytics',
+                'Quantum Computing',
+                'Human-Computer Interaction',
+                'Embedded Systems',
+                'VLSI Design',
+                'Power Systems Engineering',
+                'Structural Engineering',
+                'Geotechnical Engineering',
+                'Petroleum Engineering',
+                'Industrial Engineering',
+                'Financial Engineering',
+                'Global Logistics',
+                'Project Management',
+                'Digital Marketing',
+                'Corporate Finance',
+                'Healthcare Administration',
+                'Information Technology',
+                'Mobile Application Development',
+                'Game Design and Development',
+                'Systems Engineering',
+                'Network Security',
+                'Epidemiology',
+                'Clinical Psychology',
+                'Cognitive Science',
+                'Astrophysics',
+                'Urban Design',
+                'Sustainable Architecture',
+                'Digital Media',
+                'Creative Writing',
+                'Public Relations',
+                'Financial Technology (FinTech)'
+            ];
+
+            const universities = [
+                { name: 'Massachusetts Institute of Technology (MIT)', location: 'Cambridge, Massachusetts', description: 'World-leading institution in technology, engineering, and sciences. Known for innovation and groundbreaking research.' },
+                { name: 'Stanford University', location: 'Stanford, California', description: 'Elite private university located in Silicon Valley. Strong emphasis on entrepreneurship and technology innovation.' },
+                { name: 'Harvard University', location: 'Cambridge, Massachusetts', description: 'America’s oldest institution of higher learning. Renowned for academic excellence across all disciplines.' },
+                { name: 'California Institute of Technology (Caltech)', location: 'Pasadena, California', description: 'Leading institution specializing in science and engineering research and education.' },
+                { name: 'University of California, Berkeley', location: 'Berkeley, California', description: 'Highly respected public research university with strong STEM, business, and social science programs.' },
+                { name: 'Princeton University', location: 'Princeton, New Jersey', description: 'Ivy League university known for academic rigor, research excellence, and strong humanities and sciences.' },
+                { name: 'Columbia University', location: 'New York City, New York', description: 'Ivy League institution in the heart of New York City, offering global perspective and opportunities.' },
+                { name: 'University of Chicago', location: 'Chicago, Illinois', description: 'Renowned research university known for its rigorous academic programs and intellectual rigor.' },
+                { name: 'Yale University', location: 'New Haven, Connecticut', description: 'Prestigious Ivy League university with a strong tradition in law, arts, sciences, and public service.' },
+                { name: 'University of California, Los Angeles (UCLA)', location: 'Los Angeles, California', description: 'Top-ranked public university with outstanding programs in health sciences, business, engineering, and arts.' },
+                { name: 'University of Pennsylvania', location: 'Philadelphia, Pennsylvania', description: 'Ivy League university with world-class programs in business, medicine, law, and social sciences.' },
+                { name: 'Cornell University', location: 'Ithaca, New York', description: 'Ivy League university known for its strong engineering, agriculture, business, and hotel management programs.' },
+                { name: 'Duke University', location: 'Durham, North Carolina', description: 'Prestigious private research university with excellent programs in medicine, business, law, and engineering.' },
+                { name: 'Northwestern University', location: 'Evanston, Illinois', description: 'Top private university recognized for journalism, business, engineering, and communication studies.' },
+                { name: 'Johns Hopkins University', location: 'Baltimore, Maryland', description: 'Globally respected for medicine, public health, research, and life sciences.' },
+                { name: 'University of Michigan, Ann Arbor', location: 'Ann Arbor, Michigan', description: 'Major public research university with excellence in engineering, business, medicine, and social sciences.' },
+                { name: 'University of California, San Diego (UCSD)', location: 'San Diego, California', description: 'Research-intensive university known for science, engineering, health sciences, and data-driven programs.' },
+                { name: 'University of California, San Francisco (UCSF)', location: 'San Francisco, California', description: 'Leading health sciences campus focused on medicine, pharmacy, nursing, and biomedical research.' },
+                { name: 'University of Texas at Austin', location: 'Austin, Texas', description: 'Flagship public university with strong programs in engineering, business, computer science, and law.' },
+                { name: 'Carnegie Mellon University', location: 'Pittsburgh, Pennsylvania', description: 'Premier university for computer science, AI, robotics, design, and engineering.' }
+            ];
+
+            const list = document.getElementById('usaUniversitiesList');
+            if (!list) return;
+
+            const courseMarkup = courseCatalog.map(course => `<span class="program-tag">${course}</span>`).join('');
+
+            list.innerHTML = universities.map((uni) => `
+                <div class="university-card">
+                    <h3>${uni.name}</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> ${uni.location}</p>
+                    <p>${uni.description}</p>
+                    <p class="intake-meta">70+ Courses Available</p>
+                    <details class="course-toggle">
+                        <summary>Check Courses Here</summary>
+                        <div class="course-group">
+                            <h4>Popular Programs</h4>
+                            <div class="programs">${courseMarkup}</div>
+                        </div>
+                    </details>
+                </div>
+            `).join('');
+        });
+    </script>
+    <script src="script.js?v=20260522-3" defer></script>
+</body>
+
+</html>
