@@ -90,41 +90,34 @@ function firebase_http_request(string $method, string $url, ?string $body = null
         $requestHeaders[] = 'Content-Type: application/json';
     }
 
-    $context = stream_context_create([
-        'http' => [
-            'method' => strtoupper($method),
-            'header' => implode("\r\n", array_merge($requestHeaders, $headers)),
-            'content' => $body ?? '',
-            'ignore_errors' => true,
-            'timeout' => 60,
-        ],
-        'ssl' => [
-            'verify_peer' => true,
-            'verify_peer_name' => true,
-        ],
+    $curlHeaders = array_merge($requestHeaders, $headers);
+    $ch = curl_init($url);
+    if ($ch === false) {
+        throw new RuntimeException('Firebase request failed: unable to initialize cURL.');
+    }
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_MAXREDIRS => 5,
+        CURLOPT_CUSTOMREQUEST => strtoupper($method),
+        CURLOPT_HTTPHEADER => $curlHeaders,
+        CURLOPT_POSTFIELDS => $body ?? '',
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
     ]);
 
-    $lastError = null;
-    set_error_handler(static function (int $severity, string $message) use (&$lastError): bool {
-        $lastError = $message;
-        return true;
-    });
-    $response = file_get_contents($url, false, $context);
-    restore_error_handler();
-    $responseHeaders = $http_response_header ?? [];
-    $status = 0;
-    foreach ($responseHeaders as $headerLine) {
-        if (preg_match('/^HTTP\/\d(?:\.\d)?\s+(\d{3})/', $headerLine, $matches)) {
-            $status = (int) $matches[1];
-            break;
-        }
-    }
-
+    $response = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     if ($response === false) {
-        $detail = $lastError ?? ($status > 0 ? 'HTTP ' . $status : 'unknown error');
-        throw new RuntimeException('Firebase request failed: ' . $detail);
+        $error = curl_error($ch);
+        curl_close($ch);
+        throw new RuntimeException('Firebase request failed: ' . $error);
     }
 
+    curl_close($ch);
     $decoded = json_decode($response, true);
     if ($status >= 400) {
         $message = is_array($decoded) ? json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : $response;
@@ -140,6 +133,9 @@ function firebase_access_token(): string
     if ($externalToken !== '') {
         return $externalToken;
     }
+
+    set_time_limit(60);
+    ini_set('default_socket_timeout', '60');
 
     static $token = null;
     static $expiresAt = 0;
