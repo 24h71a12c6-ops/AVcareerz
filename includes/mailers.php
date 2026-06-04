@@ -232,7 +232,16 @@ function send_confirmation_email(string $userEmail, string $userName, string $cu
 </html>
 HTML;
 
-    return send_brevo_mail($userEmail, 'AVcareerz - Registration Successful', $html);
+  // Lightweight local logging of outgoing user confirmation attempts for local testing.
+  // This avoids exposing mail provider responses while giving a record that an attempt occurred.
+  try {
+    $logLine = '[' . date('c') . '] to: ' . trim((string) $userEmail) . ' subject: AVcareerz - Registration Successful' . "\n";
+    @file_put_contents(__DIR__ . '/user_email_log.txt', $logLine, FILE_APPEND | LOCK_EX);
+  } catch (Throwable $e) {
+    // ignore logging failures
+  }
+
+  return send_brevo_mail($userEmail, 'AVcareerz - Registration Successful', $html);
 }
 
 function send_google_sign_in_success_email(string $userEmail, string $userName, array $extra = []): bool

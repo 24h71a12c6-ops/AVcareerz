@@ -64,7 +64,9 @@ function firebase_service_account(): array
         throw new RuntimeException('Firebase service account file not found: ' . $path);
     }
 
-    $json = json_decode((string) file_get_contents($path), true);
+    $contents = (string) file_get_contents($path);
+    $contents = preg_replace('/^\xEF\xBB\xBF/', '', $contents);
+    $json = json_decode($contents, true);
     if (!is_array($json) || empty($json['client_email']) || empty($json['private_key'])) {
         throw new RuntimeException('Firebase service account JSON is invalid.');
     }
