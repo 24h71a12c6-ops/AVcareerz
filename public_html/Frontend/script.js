@@ -2195,15 +2195,32 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function initGoogleSignIn() {
-        const googleBtnContainer = document.getElementById('googleBtn');
-        const googleFallbackBtn = document.getElementById('googleFallbackBtn');
+        let containerSearchAttempts = 0;
+        const MAX_CONTAINER_SEARCH = 40; // Wait up to 4 seconds for container (40 * 100ms)
 
-        const setFallbackVisible = (visible) => {
-            if (!googleFallbackBtn) return;
-            googleFallbackBtn.style.display = visible ? 'flex' : 'none';
-        };
+        const tryInitialize = () => {
+            const googleBtnContainer = document.getElementById('googleBtn');
+            const googleFallbackBtn = document.getElementById('googleFallbackBtn');
 
-        if (googleBtnContainer) {
+            const setFallbackVisible = (visible) => {
+                if (!googleFallbackBtn) return;
+                googleFallbackBtn.style.display = visible ? 'flex' : 'none';
+            };
+
+            if (!googleBtnContainer) {
+                // Container not found yet, retry if we haven't exceeded attempts
+                containerSearchAttempts += 1;
+                if (containerSearchAttempts < MAX_CONTAINER_SEARCH) {
+                    setTimeout(tryInitialize, 100);
+                    return;
+                }
+                // Container never appeared, log and stop retrying
+                console.warn('Google Sign-In button container not found after retries');
+                setFallbackVisible(true);
+                return;
+            }
+
+            // Container found, now initialize Google Sign-In
             // Hide the fallback initially — only show it after GSI truly fails.
             setFallbackVisible(false);
 
@@ -2255,8 +2272,12 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             initGoogle();
-        }
+        };
 
+        tryInitialize();
+
+        // Set up fallback button listener if it exists
+        const googleFallbackBtn = document.getElementById('googleFallbackBtn');
         if (googleFallbackBtn) {
             googleFallbackBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -2404,8 +2425,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const regOverlay = document.getElementById('regModalOverlay');
         const regCloseBtn = document.getElementById('regModalClose');
 
+        // Ensure injected modal elements are direct children of <body>
+        try {
+            if (regSection && regSection.parentElement !== document.body) document.body.appendChild(regSection);
+            if (regOverlay && regOverlay.parentElement !== document.body) document.body.appendChild(regOverlay);
+        } catch (e) {
+            // ignore DOM append errors in constrained environments
+        }
+
         if (typeof bindAuthForms === 'function') bindAuthForms();
-        if (typeof initGoogleSignIn === 'function') initGoogleSignIn();
+        
+        // Initialize Google Sign-In after a brief delay to ensure DOM is ready
+        // This ensures it works on all pages (index, country pages, visa-services, etc.)
+        setTimeout(() => {
+            if (typeof initGoogleSignIn === 'function') initGoogleSignIn();
+        }, 100);
 
         if (regSection && regOverlay) {
         // Allow forcing the registration modal via URL for testing/debugging.
@@ -2567,6 +2601,7 @@ document.addEventListener("DOMContentLoaded", function () {
         closeRegModal = () => {
             if (!isModalOpen()) return;
             document.body.classList.remove('reg-modal-open');
+            document.body.style.removeProperty('overflow');
             regOverlay.hidden = true;
             if (modalInjected) {
                 regSection.hidden = true;

@@ -46,23 +46,33 @@
     if (!cleanCollectionName) {
       throw new Error('Missing Firestore collection name');
     }
-
     const cleanDocId = String(docId || '').trim();
-    if (!cleanDocId) {
-      throw new Error('Missing Firestore document id');
-    }
+
+    const FieldValue = (firebase && firebase.firestore && firebase.firestore.FieldValue) ? firebase.firestore.FieldValue : null;
+    const serverTimestamp = FieldValue ? FieldValue.serverTimestamp() : new Date();
 
     const record = {
       ...(payload && typeof payload === 'object' ? payload : {}),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      updatedAt: serverTimestamp
     };
 
     if (!record.createdAt) {
-      record.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      record.createdAt = serverTimestamp;
     }
 
-    await db.collection(cleanCollectionName).doc(cleanDocId).set(record, { merge: true });
-    return { collection: cleanCollectionName, docId: cleanDocId };
+    try {
+      if (!cleanDocId) {
+        // No doc id provided — use Firestore auto-id and return it.
+        const ref = await db.collection(cleanCollectionName).add(record);
+        return { collection: cleanCollectionName, docId: ref.id };
+      }
+
+      await db.collection(cleanCollectionName).doc(cleanDocId).set(record, { merge: true });
+      return { collection: cleanCollectionName, docId: cleanDocId };
+    } catch (err) {
+      console.error('saveFormSubmission failed for', cleanCollectionName, cleanDocId || '(auto-id)', err);
+      throw err;
+    }
   };
 
   window.decodeJwtResponse = function decodeJwtResponse(token) {

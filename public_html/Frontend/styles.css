@@ -2837,6 +2837,11 @@ body.reg-modal-open .reg-main-container {
     justify-content: center;
 }
 
+/* Prevent body scroll when modal is open */
+body.reg-modal-open {
+    overflow: hidden;
+}
+
 /* Ensure registration modal is hidden by default on non-home pages
    and only displayed when body has the modal-open class. This prevents
    the inline registration card from appearing below the footer if JS
@@ -2890,10 +2895,6 @@ body.reg-modal-open .register-section:not(#registration-section) {
     transition: filter 360ms ease;
 }
 
-body.reg-modal-open footer {
-    display: none !important;
-}
-
 body.reg-modal-open .register-section:not(#registration-section) {
     display: none !important;
 }
@@ -2908,6 +2909,44 @@ body.reg-modal-open #registration-section.page-section.is-blurred {
     filter: none !important;
     opacity: 1 !important;
     pointer-events: auto !important;
+}
+
+/* Ensure modal is out of document flow and doesn't push footer */
+.reg-modal-overlay {
+    /* already defined above, reinforce fixed positioning to avoid any layout shifts */
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 20000;
+    pointer-events: auto;
+}
+
+#registration-section,
+#registration-section .reg-modal,
+#registration-section .reg-flex-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20001;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+}
+
+/* Lock page scrolling while modal is open to prevent layout shift */
+body.reg-modal-open {
+    overflow: hidden;
+}
+
+/* Keep footer layout intact and disable interactions while modal open */
+body.reg-modal-open footer {
+    pointer-events: none;
+    filter: none !important;
 }
 
 body.reg-modal-open .reg-flex-card {
