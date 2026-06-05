@@ -1,0 +1,96 @@
+4050: 
+4051:         try {
+4052:             const response = await fetch(apiUrl('/api/login'), {
+4053:                 method: 'POST',
+4054:                 headers: { 'Content-Type': 'application/json' },
+4055:                 body: JSON.stringify({ email, password })
+4056:             });
+4057: 
+4058:             const data = await response.json();
+4059: 
+4060:             if (response.ok && data.success) {
+4061:                 showNotification('Login successful!', 'success');
+4062:                 
+4063:                 // Activate browser session
+4064:                 sessionStorage.setItem('isSessionActive', 'true');
+4065: 
+4066:                 if (data.userId) {
+4067:                     sessionStorage.setItem('currentUserId', data.userId);
+4068:                     localStorage.setItem('currentUserId', data.userId);
+4069:                 }
+4070:                 localStorage.setItem('userEmail', email);
+4071:                 localStorage.setItem('isRegistered', 'true');
+4072:                 
+4073:                 // Sync step 2 application completion status returned by the server on login
+4074:                 if (data.isApplicationCompleted) {
+4075:                     localStorage.setItem('applicationCompleted', '1');
+4076:                     localStorage.setItem('isApplicationDone', 'true');
+4077:                     sessionStorage.setItem('applicationCompleted', '1');
+4078:                 } else {
+4079:                     localStorage.removeItem('applicationCompleted');
+4080:                     localStorage.removeItem('isApplicationDone');
+4081:                     sessionStorage.removeItem('applicationCompleted');
+4082:                 }
+4083: 
+4084:                 // Force close registration/login modal
+4085:                 const closeBtn = document.getElementById('regModalClose');
+4086:                 if (document.body.classList.contains('reg-modal-open') && closeBtn) {
+4087:                     closeBtn.click();
+4088:                 } else if (typeof closeRegModal === 'function') {
+4089:                     closeRegModal();
+4090:                 }
+4091: 
+4092:                 // hide the registration panel now that user is authenticated
+4093:                 hideRegistrationSection();
+4094:                 syncRegistrationSectionForAuthState();
+4095:                 
+4096:                 // remove any #registration-section hash so it doesn't reopen
+4097:                 if (window.location.hash === '#registration-section') {
+4098:                     window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+4099:                 }
+4100: 
+4101:                 // User is signed in again; don't keep showing the login card on reopen.
+4102:                 try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
+4103:                 try { localStorage.setItem('lastUserEmail', email); } catch { }
+4104:                 try { localStorage.setItem('hasSignedUp', '1'); } catch { }
+4105: 
+4106:                 try {
+4107:                     const fullName = data?.data?.fullName || '';
+4108:                     const phone = data?.data?.phone || '';
+4109:                     const registrationPayload = { fullName, email, phone };
+4110:                     sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+4111:                     localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+4112:                 } catch {
+4113:                     // ignore
+4114:                 }
+4115: 
+4116:                 try {
+4117:                     if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
+4118:                 } catch {
+4119:                     // ignore
+4120:                 }
+4121: 
+4122:                 await hydrateProfileFromServer(email);
+4123:                 
+4124:                 // Extra enforcement: hide the section
+4125:                 setTimeout(() => {
+4126:                     hideRegistrationSection();
+4127:                     syncRegistrationSectionForAuthState();
+4128:                 }, 100);
+4129:             } else {
+4130:                 showNotification(data.error || 'Login failed. Please try again.', 'error');
+4131:             }
+4132:         } catch (error) {
+4133:             console.warn('Login server offline. Using local fallback:', error);
+4134:             
+4135:             // --- Local Backup Login Success Fallback ---
+4136:             showNotification('Login successful!', 'success');
+4137:             
+4138:             // Activate browser session
+4139:             sessionStorage.setItem('isSessionActive', 'true');
+4140:             localStorage.setItem('userEmail', email);
+4141:             localStorage.setItem('isRegistered', 'true');
+4142:             localStorage.setItem('hasSignedUp', '1');
+4143:             
+4144:             // Check if they completed Step 2 in a past session locally
+4145:             const wasAppCompleted = localStorage.getItem('isApplicationDone') === 'true' || localStorage.getItem('applicationCompleted') === '1';

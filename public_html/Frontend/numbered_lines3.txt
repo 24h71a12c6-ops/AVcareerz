@@ -1,0 +1,137 @@
+4145:             const wasAppCompleted = localStorage.getItem('isApplicationDone') === 'true' || localStorage.getItem('applicationCompleted') === '1';
+4146:             if (wasAppCompleted) {
+4147:                 localStorage.setItem('applicationCompleted', '1');
+4148:                 localStorage.setItem('isApplicationDone', 'true');
+4149:                 sessionStorage.setItem('applicationCompleted', '1');
+4150:             } else {
+4151:                 localStorage.removeItem('applicationCompleted');
+4152:                 localStorage.removeItem('isApplicationDone');
+4153:                 sessionStorage.removeItem('applicationCompleted');
+4154:             }
+4155:             
+4156:             // Sync registration data
+4157:             try {
+4158:                 const regData = JSON.parse(localStorage.getItem('registrationData') || '{}');
+4159:                 const fullName = regData.fullName || 'Demo User';
+4160:                 const phone = regData.phone || '9999999999';
+4161:                 const registrationPayload = { fullName, email, phone };
+4162:                 sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+4163:                 localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+4164:             } catch {}
+4165: 
+4166:             // Force close registration/login modal
+4167:             const closeBtn = document.getElementById('regModalClose');
+4168:             if (document.body.classList.contains('reg-modal-open') && closeBtn) {
+4169:                 closeBtn.click();
+4170:             } else if (typeof closeRegModal === 'function') {
+4171:                 closeRegModal();
+4172:             }
+4173: 
+4174:             hideRegistrationSection();
+4175:             syncRegistrationSectionForAuthState();
+4176:             
+4177:             if (window.location.hash === '#registration-section') {
+4178:                 window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+4179:             }
+4180:             
+4181:             try { localStorage.removeItem('showLoginAfterLogout'); } catch { }
+4182:             try { localStorage.setItem('lastUserEmail', email); } catch { }
+4183: 
+4184:             try {
+4185:                 if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
+4186:             } catch {}
+4187: 
+4188:                 await hydrateProfileFromServer(email);
+4189:             
+4190:             setTimeout(() => {
+4191:                 hideRegistrationSection();
+4192:                 syncRegistrationSectionForAuthState();
+4193:             }, 100);
+4194:         } finally {
+4195:             if (submitButton) {
+4196:                 submitButton.textContent = originalButtonText;
+4197:                 submitButton.disabled = false;
+4198:             }
+4199:         }
+4200:     });
+4201: };
+4202: bindAuthForms();
+4203: 
+4204: // Notification function
+4205: function showNotification(message, type = 'info') {
+4206:     const notification = document.createElement('div');
+4207:     notification.className = `notification notification-${type}`;
+4208:     notification.textContent = message;
+4209:     notification.style.cssText = `
+4210:         position: fixed;
+4211:         top: 20px;
+4212:         right: 20px;
+4213:         padding: 15px 20px;
+4214:         background-color: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
+4215:         color: white;
+4216:         border-radius: 8px;
+4217:         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+4218:         z-index: 40000;
+4219:         animation: slideInRight 0.3s ease-out;
+4220:         font-weight: 500;
+4221:         max-width: min(420px, calc(100vw - 40px));
+4222:         line-height: 1.35;
+4223:     `;
+4224: 
+4225:     document.body.appendChild(notification);
+4226: 
+4227:     const autoDismissMs = type === 'error' ? 6500 : 3000;
+4228:     setTimeout(() => {
+4229:         notification.style.animation = 'slideOutRight 0.3s ease-out';
+4230:         setTimeout(() => {
+4231:             notification.remove();
+4232:         }, 300);
+4233:     }, autoDismissMs);
+4234: }
+4235: 
+4236: // Add animation on scroll for elements
+4237: const observerOptions = {
+4238:     threshold: 0.05,
+4239:     rootMargin: '0px 0px 150px 0px' // Trigger 150px before entering viewport
+4240: };
+4241: 
+4242: const observer = new IntersectionObserver((entries) => {
+4243:     entries.forEach(entry => {
+4244:         if (entry.isIntersecting) {
+4245:             entry.target.style.opacity = '1';
+4246:             entry.target.style.transform = 'translateY(0)';
+4247:             observer.unobserve(entry.target); // Stop observing once visible
+4248:         }
+4249:     });
+4250: }, observerOptions);
+4251: 
+4252: // Observe destination cards
+4253: document.querySelectorAll('.destination-card, .feature').forEach((card) => {
+4254:     card.style.opacity = '0';
+4255:     card.style.transform = 'translateY(30px)';
+4256:     card.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+4257:     observer.observe(card);
+4258: });
+4259: 
+4260: 
+4261: // Add hover effect to form inputs
+4262: const formInputs = document.querySelectorAll('.form-group input, .form-group select');
+4263: formInputs.forEach(input => {
+4264:     input.addEventListener('focus', () => {
+4265:         input.parentElement.style.transform = 'scale(1.02)';
+4266:         input.parentElement.style.transition = 'transform 0.3s ease';
+4267:     });
+4268: 
+4269:     input.addEventListener('blur', () => {
+4270:         input.parentElement.style.transform = 'scale(1)';
+4271:     });
+4272: });
+4273: 
+4274: // --- (End of scroll highlighting handled in main listener) ---
+4275: 
+4276: 
+4277: // Destination Form Validation
+4278: const destinationForm = document.getElementById('destinationForm');
+4279: 
+4280: if (destinationForm) {
+4281:     destinationForm.addEventListener('submit', (e) => {

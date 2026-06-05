@@ -1,0 +1,1455 @@
+/*
+	responsive.css (desktop-only)
+
+	Goal: Make the site behave well across ALL desktop widths (1024px → 4K)
+	WITHOUT disturbing existing mobile/tablet styling or changing the look on large screens.
+
+	This file is intended to be included AFTER styles.css.
+*/
+
+/* Desktop safety: avoid accidental horizontal overflow from legacy 100vw sections */
+@media (min-width: 1024px) {
+
+	html,
+	body {
+		max-width: 100%;
+		overflow-x: clip;
+	}
+
+	img,
+	video {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* Prevent long content blocks from forcing overflow on desktops */
+	.container,
+	.hero-content,
+	.destinations-wrapper,
+	.destinations-layout,
+	.services-premium-section .container,
+	.visa-types-grid,
+	.services-big-grid {
+		min-width: 0;
+	}
+}
+
+/* ------------------------------
+	 Containers + section spacing
+	 ------------------------------ */
+@media (min-width: 1024px) {
+	.container {
+		width: 100%;
+		max-width: 1200px;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 32px;
+		padding-right: 32px;
+		box-sizing: border-box;
+	}
+}
+
+@media (min-width: 1440px) {
+	.container {
+		max-width: 1280px;
+		padding-left: 40px;
+		padding-right: 40px;
+	}
+}
+
+@media (min-width: 1680px) {
+	.container {
+		max-width: 1360px;
+		padding-left: 48px;
+		padding-right: 48px;
+	}
+}
+
+/* ------------------------------
+	 Navbar (desktop widths)
+	 Fix: logo/menu/profile overlap
+	 ------------------------------ */
+@media (min-width: 1024px) {
+	.navbar .container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: clamp(12px, 1.5vw, 24px);
+		/* Override large padding from styles.css (90px) that causes nav items to wrap */
+		padding-left: clamp(16px, 2vw, 40px);
+		padding-right: clamp(16px, 2vw, 40px);
+		flex-wrap: nowrap;
+		min-width: 0;
+	}
+
+	.logo {
+		flex: 0 1 auto;
+		min-width: 0;
+		/* Shift logo slightly towards the Home button */
+		margin-left: clamp(1rem, 3vw, 4rem);
+		gap: 10px;
+	}
+
+	.logo-text {
+		min-width: 0;
+	}
+
+	.navbar-logo-img {
+		height: clamp(44px, 3.4vw, 60px);
+		width: auto;
+		transform: translateY(5px);
+	}
+
+	.logo-name {
+		font-size: clamp(1.2rem, 1.6vw, 1.8rem);
+	}
+
+	.logo-tagline {
+		font-size: clamp(0.78rem, 0.8vw, 0.95rem);
+		white-space: nowrap;
+	}
+
+	.nav-menu {
+		flex: 1 1 auto;
+		min-width: 0;
+		justify-content: center;
+		flex-wrap: nowrap;
+		gap: clamp(36px, 2.5vw, 48px);
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	/* Keep every nav item on the same line */
+	.nav-menu li a {
+		white-space: nowrap;
+		padding: 9px 12px;
+		font-size: clamp(0.9rem, 0.92vw, 1.02rem);
+		font-weight: 600;
+		border-radius: 10px;
+	}
+
+	.nav-right {
+		gap: clamp(8px, 1vw, 16px);
+		margin-right: clamp(1.5rem, 3.5vw, 4.5rem);
+	}
+
+	.nav-profile .profile-trigger {
+		width: 42px;
+		height: 42px;
+	}
+}
+
+@media (min-width: 769px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 720px);
+		max-width: 720px;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		#about.about-final-revised .feature-copy {
+			min-width: max-content;
+			overflow: visible;
+			text-overflow: clip;
+		}
+
+		height: 95px !important;
+		display: inline-block;
+		width: auto;
+		text-align: center;
+	}
+
+	body.nav-desktop-collapsed .navbar .container {
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	body.nav-desktop-collapsed .logo {
+		gap: 8px;
+	}
+
+	body.nav-desktop-collapsed .navbar-logo-img {
+		height: 38px;
+	}
+
+	body.nav-desktop-collapsed .logo-name {
+		font-size: 1.22rem;
+	}
+
+	body.nav-desktop-collapsed .logo-tagline {
+		display: none;
+	}
+
+	body.nav-desktop-collapsed .nav-menu {
+		display: none !important;
+	}
+
+	body.nav-desktop-collapsed .nav-toggle {
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
+	}
+
+	body.nav-desktop-collapsed .nav-right {
+		gap: 8px;
+	}
+
+	body.nav-desktop-collapsed .nav-profile .profile-trigger {
+		width: 38px;
+		height: 38px;
+	}
+
+	body.nav-desktop-collapsed .nav-toggle span {
+		background: #002145 !important;
+	}
+
+	body.nav-desktop-collapsed #navMenu {
+		display: none !important;
+		position: fixed !important;
+		top: 76px !important;
+		right: 16px !important;
+		left: auto !important;
+		width: min(86vw, 340px) !important;
+		max-height: calc(100vh - 92px) !important;
+		overflow-y: auto;
+		/* Make the dropdown completely opaque pure white and remove glass/blur effects */
+		background: #ffffff !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+		/* Remove outline/shadow marks so the panel appears pure white */
+		border: none !important;
+		box-shadow: none !important;
+		border-radius: 14px !important;
+		padding: 8px 0 !important;
+		margin: 0 !important;
+		z-index: 999999 !important;
+	}
+
+	body.nav-desktop-collapsed #navMenu.active {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 0 !important;
+	}
+
+	body.nav-desktop-collapsed #navMenu>li {
+		width: 100%;
+	}
+
+	body.nav-desktop-collapsed #navMenu>li+li {
+		border-top: 1px solid rgba(15, 23, 42, 0.06);
+	}
+
+	body.nav-desktop-collapsed #navMenu>li>a {
+		display: block;
+		width: 100%;
+		padding: 12px 16px;
+		text-align: left;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	body.nav-desktop-collapsed #navMenu .nav-dropdown>a::after {
+		content: none !important;
+		display: none !important;
+	}
+
+	body.nav-desktop-collapsed #navMenu .dropdown-menu {
+		display: none !important;
+		position: static !important;
+		min-width: 0;
+		max-height: none;
+		overflow: visible;
+		border: 0;
+		box-shadow: none;
+		padding: 6px 0 10px 0;
+		margin: 0;
+		background: transparent !important;
+		width: 100%;
+	}
+
+	body.nav-desktop-collapsed #navMenu .nav-dropdown.is-open>.dropdown-menu {
+		display: flex !important;
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	body.nav-desktop-collapsed #navMenu .dropdown-menu li {
+		width: 100%;
+		margin-bottom: 0;
+	}
+
+	body.nav-desktop-collapsed #navMenu .dropdown-menu li a {
+		display: block;
+		width: 100%;
+		padding: 0.85rem 1.5rem;
+		font-weight: 600;
+	}
+}
+
+@media (min-width: 1024px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 760px);
+		max-width: 760px;
+	}
+}
+
+/* Smaller desktops (1024–1280): tighten spacing so nothing gets cut */
+@media (min-width: 1024px) and (max-width: 1280px) {
+	.navbar .container {
+		padding-left: 14px;
+		padding-right: 14px;
+		gap: 10px;
+	}
+
+	.logo {
+		gap: 8px;
+	}
+
+	.navbar-logo-img {
+		height: 38px;
+	}
+
+	.logo-name {
+		font-size: 1.25rem;
+	}
+
+	.logo-tagline {
+		display: none;
+	}
+
+	.nav-menu {
+		gap: 0.8rem;
+	}
+
+	.nav-menu li a {
+		padding: 7px 9px;
+		font-size: 0.88rem;
+	}
+
+	.nav-right {
+		gap: 8px;
+	}
+
+	.nav-profile .profile-trigger {
+		width: 38px;
+		height: 38px;
+	}
+}
+
+/* Mid-size desktops (1281–1500): avoid wrapping (e.g. "Register Here" dropping to next line) */
+@media (min-width: 1281px) and (max-width: 1500px) {
+	.nav-menu {
+		gap: 0.9rem;
+	}
+
+	.nav-menu li a {
+		padding: 8px 11px;
+		font-size: 0.98rem;
+	}
+}
+
+/* Large desktops (>=1600): allow a bit more breathing room */
+@media (min-width: 1600px) {
+	.nav-menu {
+		gap: 1rem;
+	}
+
+	.nav-menu li a {
+		padding: 9px 13px;
+	}
+}
+
+/* ------------------------------
+	 Hero (mobile optimization)
+	 ------------------------------ */
+@media (max-width: 768px) {
+	.hero {
+		height: 60vh !important;
+		min-height: 400px;
+		margin-top: 70px;
+	}
+
+	.hero-slide img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+}
+
+/* Tablet optimization */
+@media (min-width: 769px) and (max-width: 1023px) {
+	.hero {
+		height: 70vh;
+		min-height: 500px;
+	}
+}
+
+/* ------------------------------
+	 Hero (desktop readability)
+	 ------------------------------ */
+@media (min-width: 1024px) {
+	.hero {
+		min-height: 620px;
+	}
+
+	.hero-content {
+		max-width: 1240px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+/* ------------------------------
+	 Common grids (desktop sizing)
+	 Keeps cards from becoming too wide on big screens.
+	 ------------------------------ */
+@media (min-width: 769px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 680px);
+		max-width: 680px;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		grid-template-columns: 22px clamp(230px, 24vw, 300px) minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 1023px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 620px);
+		max-width: 620px;
+		align-items: center;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		gap: 4px;
+		white-space: normal;
+		font-size: 0.96rem;
+		line-height: 1.45;
+	}
+
+	#about.about-final-revised .feature-label,
+	#about.about-final-revised .feature-copy {
+		display: block;
+		white-space: normal;
+	}
+
+	#about.about-final-revised .feature-label {
+		text-align: center;
+	}
+
+	#about.about-final-revised .feature-colon {
+		display: inline;
+		width: auto;
+	}
+
+	#about.about-final-revised .feature-copy {
+		padding-top: 0;
+		max-width: 100%;
+	}
+}
+
+@media (min-width: 1024px) {
+
+	.destinations-grid,
+	.cards-container,
+	.features-grid,
+	.why-choose-grid,
+	.visa-types-grid {
+		grid-auto-rows: auto;
+	}
+
+	/* Shared desktop card spacing so content breathes on laptops and wide monitors */
+	.section-title,
+	.hero-title,
+	.hero-description,
+	.description-box,
+	.page-heading,
+	.footer-content {
+		max-width: 100%;
+	}
+
+	/* About bullets: keep the same left edge and centered colon alignment on all desktops */
+}
+
+@media (min-width: 1280px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 720px);
+		max-width: 720px;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		grid-template-columns: 22px clamp(260px, 22vw, 340px) minmax(0, 1fr);
+	}
+}
+
+@media (min-width: 1600px) {
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 760px);
+		max-width: 760px;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		grid-template-columns: 22px clamp(280px, 20vw, 360px) minmax(0, 1fr);
+	}
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+	.services-big-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 18px;
+	}
+
+	.visa-types-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 28px 28px;
+		justify-items: center;
+	}
+
+	.destinations-layout {
+		grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+		gap: 1.8rem;
+	}
+
+	.services-premium-section .container {
+		width: min(90%, 1180px);
+	}
+
+	.description-box {
+		max-width: 100%;
+		margin-left: 0;
+	}
+}
+
+@media (min-width: 1280px) and (max-width: 1599px) {
+	.services-big-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 20px;
+	}
+
+	.visa-types-grid {
+		grid-template-columns: repeat(3, minmax(0, 300px));
+		gap: 36px 32px;
+	}
+
+	.destinations-layout {
+		grid-template-columns: minmax(620px, 1.05fr) minmax(380px, 0.95fr);
+		gap: 2rem;
+	}
+
+	.description-box {
+		max-width: 100%;
+		margin-left: 0;
+	}
+}
+
+@media (min-width: 1600px) {
+	.services-big-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 24px;
+	}
+
+	.visa-types-grid {
+		grid-template-columns: repeat(3, minmax(300px, 320px));
+		gap: 40px;
+	}
+
+	.destinations-layout {
+		grid-template-columns: minmax(700px, 1.08fr) minmax(420px, 0.92fr);
+		gap: 2.5rem;
+	}
+
+	.description-box {
+		margin-left: 0;
+	}
+}
+
+/* ------------------------------
+	Navbar (mobile/tablet safety)
+	Fix: some mobile-only blocks in styles.css force row-reverse,
+	which moves the profile + hamburger to the left.
+	------------------------------ */
+@media (max-width: 900px) {
+
+	/* Not Bootstrap: our hamburger is #navToggle with 3 spans.
+	   Force it visible + remove any accidental arrow pseudo-elements. */
+	#navToggle,
+	#navToggle:focus,
+	#navToggle:active {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	#navToggle::before,
+	#navToggle::after {
+		display: none !important;
+		content: none !important;
+	}
+
+	#navToggle span {
+		display: block !important;
+		background-color: #002145 !important;
+	}
+
+	/* Keep desktop-only layout helpers from creating awkward widths if a page is opened slightly below desktop */
+	.services-big-grid,
+	.visa-types-grid,
+	.destinations-layout {
+		grid-template-columns: 1fr !important;
+	}
+}
+
+@media (max-width: 768px) {
+
+	/* Hard guarantee: hamburger is visible on mobile */
+	header .navbar .container .nav-right #navToggle.nav-toggle {
+		display: flex !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+
+	.navbar .container {
+		flex-direction: row !important;
+		justify-content: space-between !important;
+		align-items: center !important;
+		gap: 12px !important;
+		padding-left: 14px !important;
+		padding-right: 14px !important;
+	}
+
+	.logo {
+		margin: 0 !important;
+		max-width: none !important;
+		min-width: 0;
+		flex: 1 1 0;
+		max-width: calc(100vw - 140px);
+		overflow: hidden;
+	}
+
+	.logo-text {
+		min-width: 0;
+		text-align: left;
+		max-width: 100%;
+		overflow: hidden;
+	}
+
+	.logo-name {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 100%;
+	}
+
+	.nav-right {
+		display: flex !important;
+		align-items: center !important;
+		gap: 10px !important;
+		margin-left: auto !important;
+		margin-right: 0 !important;
+		flex: 0 0 auto;
+	}
+
+	.nav-toggle {
+		display: flex !important;
+		flex: 0 0 auto;
+	}
+
+	/* Make the hamburger button easy to tap and always clickable */
+	#navToggle {
+		display: flex !important;
+		flex-direction: column;
+		gap: 6px;
+		align-items: center;
+		justify-content: center;
+		/* Use an odd height so the 3 bars land on whole pixels (avoids 1 line looking thinner) */
+		width: 45px;
+		height: 45px;
+		margin-left: 6px;
+		color: #003D7A !important;
+		/* User request: show ONLY the 3 lines (no box around the icon) */
+		background: transparent !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+		border: 0 !important;
+		border-radius: 0 !important;
+		box-shadow: none !important;
+		outline: none !important;
+		position: relative;
+		z-index: 1000000;
+		pointer-events: auto;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+
+	/* Remove the light-blue tap flash on mobile for all interactive elements */
+	a,
+	button,
+	input,
+	select,
+	textarea,
+	label,
+	summary,
+	[role="button"],
+	[onclick],
+	.nav-link,
+	.nav-menu a,
+	.social-links a,
+	.social-link,
+	.top-bar a,
+	.top-bar span.contact-item,
+	.cta-button,
+	.register-cta-button,
+	.prep-text,
+	.register-btn,
+	.register-scroll,
+	.promo-cta,
+	.btn-primary,
+	.btn-primary-massive {
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+
+	/* Keyboard accessibility (no visible box on tap/click; only on keyboard focus) */
+	#navToggle:focus-visible {
+		border-radius: 10px;
+		box-shadow: 0 0 0 3px rgba(0, 33, 69, 0.18) !important;
+	}
+
+	#navToggle span {
+		pointer-events: none;
+		/* Default 3-line hamburger (clean + compact) */
+		display: block;
+		width: 26px;
+		height: 3px;
+		margin: 0;
+		border-radius: 999px;
+		background: #002145 !important;
+		box-shadow: none !important;
+		transform: translateZ(0);
+		transition: transform 0.25s ease, opacity 0.2s ease, background-color 0.2s ease;
+		transform-origin: center;
+	}
+
+	/* User request: when the dropdown is open, do NOT change the hamburger into an X */
+	#navToggle[aria-expanded="true"] span {
+		transform: none !important;
+		opacity: 1 !important;
+	}
+
+	/* Keep it blue even while pressing */
+	#navToggle:active span {
+		background: #002145 !important;
+		box-shadow: none !important;
+	}
+
+	/* If you ever switch to a font-awesome <i class="hamburger-icon">, this will style it too */
+	.hamburger-icon {
+		color: #002145 !important;
+		font-size: 30px;
+		display: block;
+	}
+
+	/* When the mobile menu is open, keep the lines a bit stronger */
+	#navMenu.active~.nav-right #navToggle span {
+		background: #002145 !important;
+		box-shadow: none !important;
+	}
+
+	/* Mobile dropdown menu (hamburger): compact glass dropdown (not full screen) */
+	#navMenu {
+		display: none !important;
+		position: fixed !important;
+		left: auto !important;
+		right: 12px !important;
+		top: 78px !important;
+		width: min(86vw, 300px) !important;
+		/* Auto-size to content, but never exceed the available viewport height */
+		max-height: calc(100vh - 96px) !important;
+		overflow-y: auto;
+		overflow-x: hidden;
+		-webkit-overflow-scrolling: touch;
+		z-index: 999999 !important;
+		/* Mobile: force pure white background and remove glass/shadow artifacts */
+		background: #ffffff !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+		border: none !important;
+		box-shadow: none !important;
+		padding: 8px 0 !important;
+		margin: 0 !important;
+		border-radius: 14px !important;
+	}
+
+	#navMenu.active {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 0 !important;
+	}
+
+	#navMenu>li {
+		width: 100%;
+	}
+
+	#navMenu>li>a {
+		display: block;
+		padding: 12px 16px;
+		width: 100%;
+		text-align: left;
+		font-size: 1.06rem;
+		font-weight: 600;
+	}
+
+	#navMenu>li+li {
+		border-top: 1px solid rgba(15, 23, 42, 0.06);
+	}
+
+	/* Mobile: submenu should open only when the user taps Destinations/Study */
+	#navMenu .nav-dropdown>a {
+		position: relative;
+		padding-right: 14px;
+	}
+
+	/* User request: remove the dropdown arrow/chevron indicator */
+	#navMenu .nav-dropdown>a::after,
+	#navMenu .nav-dropdown.is-open>a::after {
+		content: none !important;
+		display: none !important;
+	}
+
+	#navMenu .nav-dropdown .dropdown-menu {
+		display: none !important;
+		position: static !important;
+		box-shadow: none !important;
+		border: 0 !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+		padding: 6px 0 10px 0 !important;
+		margin: 0 !important;
+		max-height: none;
+		background: transparent !important;
+	}
+
+	#navMenu .nav-dropdown.is-open>.dropdown-menu {
+		display: flex !important;
+		flex-direction: column;
+		gap: 0;
+	}
+
+	#navMenu .nav-dropdown .dropdown-menu a {
+		padding-left: 26px;
+		font-weight: 600;
+	}
+}
+
+/* Extra small screens: keep hamburger visible even when space is tight */
+@media (max-width: 420px) {
+	.logo-name {
+		font-size: clamp(1.05rem, 4.6vw, 1.35rem) !important;
+	}
+
+	.nav-right #navToggle {
+		order: 1;
+	}
+
+	.nav-right .nav-profile {
+		order: 2;
+	}
+}
+
+/* Tablet / touch widths (769–900px): allow click-to-open dropdown (no hover needed)
+   Your JS toggles `.nav-dropdown.is-open` at <=900px, but without this rule the
+   submenu stays `display: none` because desktop CSS only opens on :hover. */
+@media (min-width: 769px) and (max-width: 900px) {
+	#navMenu .nav-dropdown.is-open>.dropdown-menu {
+		display: flex;
+	}
+}
+
+/* Navbar brand/title sizing: keep it readable without forcing a centered look */
+@media (max-width: 520px) {
+	.navbar-logo-img {
+		height: 40px;
+	}
+
+	.logo-name {
+		font-size: clamp(1.35rem, 5.2vw, 1.85rem) !important;
+		letter-spacing: 0.3px;
+	}
+}
+
+@media (max-width: 768px) {
+
+	/* Override legacy mobile blocks that shrink the brand title via !important */
+	.logo-name {
+		font-size: clamp(1.35rem, 5vw, 1.9rem) !important;
+	}
+}
+
+/* ------------------------------
+	Explore Study Destinations
+	Fix: fixed grid column widths + extra left margins cause overflow on
+	smaller desktops and make the promo card/CTA look misaligned.
+	------------------------------ */
+
+/* Desktops up to 1439px: keep 2 columns but make them flexible
+   (base CSS assumes ~1240px total width, but the desktop container is 1200px here). */
+@media (min-width: 1024px) and (max-width: 1439px) {
+	.destinations-layout {
+		max-width: 100%;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+	}
+
+	.description-box {
+		max-width: none;
+		margin-left: 0;
+		justify-self: stretch;
+	}
+}
+
+/* Tablets + mobile: stack layout cleanly */
+@media (max-width: 1023px) {
+	.destinations-layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.description-box {
+		max-width: none;
+		margin-left: 0;
+		justify-self: stretch;
+	}
+}
+
+/* Promo button: prevent horizontal overflow and keep it centered */
+.promo-content {
+	min-width: 0;
+}
+
+.promo-cta {
+	max-width: 100%;
+	box-sizing: border-box;
+	white-space: normal;
+	line-height: 1.25;
+}
+
+@media (max-width: 1023px) {
+	.promo-cta {
+		width: 100%;
+	}
+}
+
+/* Destinations cards carousel: make it scroll across full screen width (desktop) */
+@media (min-width: 1024px) {
+	.destinations .destinations-layout .destinations-grid {
+		/* ensure it sits under both columns */
+		grid-column: 1 / -1;
+		justify-self: stretch;
+
+		/* full-bleed: break out of the 1240px layout and span the viewport */
+		width: 100vw;
+		max-width: 100vw;
+		margin-left: calc(50% - 50vw);
+		margin-right: calc(50% - 50vw);
+
+		/* comfortable gutters on all screen sizes */
+		padding-left: clamp(14px, 3vw, 56px);
+		padding-right: clamp(14px, 3vw, 56px);
+		box-sizing: border-box;
+	}
+}
+
+/* Countries orbit (Destinations right-side): scale smoothly on small screens */
+.destinations .countries-grid {
+	width: min(520px, 92vw);
+	aspect-ratio: 1;
+	height: auto;
+	/* Single source of truth for ALL orbiting flag icon sizes */
+	/* Desktop: keep them close to the size in your screenshot */
+	--orbit-flag-size: clamp(56px, 4vw, 72px);
+}
+
+.destinations .countries-grid::before {
+	width: 80%;
+	height: 80%;
+}
+
+.destinations .countries-grid::after {
+	width: 58%;
+	height: 58%;
+}
+
+.destinations .country-center {
+	width: clamp(96px, 22vw, 130px);
+	height: clamp(96px, 22vw, 130px);
+}
+
+.destinations .country-center .center-logo {
+	width: 78%;
+	height: 78%;
+}
+
+.destinations .country-item {
+	/* IMPORTANT: the element that follows the orbit path must be a SQUARE,
+	   otherwise different label lengths/heights change the anchor center
+	   and the radius looks uneven. */
+	width: var(--orbit-flag-size);
+	height: var(--orbit-flag-size);
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.destinations .country-item .country-flag {
+	width: var(--orbit-flag-size);
+	height: var(--orbit-flag-size);
+	/* Important: base styles add border + padding.
+	   With border-box the OUTER circle stays exactly --orbit-flag-size,
+	   which keeps the orbit radius perfectly consistent. */
+	box-sizing: border-box;
+}
+
+.destinations .country-item span {
+	font-size: 11px;
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+/* ------------------------------
+	Destinations orbit animation (clockwise)
+	------------------------------ */
+
+/* Keep the orbit layout even on small screens (override styles.css fallback) */
+.destinations .countries-grid {
+	display: block !important;
+	position: relative;
+	overflow: visible;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.destinations .destinations-side {
+	justify-content: center;
+}
+
+.destinations .countries-grid>.country-item {
+	position: absolute !important;
+	left: 50% !important;
+	top: 50% !important;
+	transform: translate(-50%, -50%);
+	/* Motion Path (fallback): place the bubbles BETWEEN the two rings.
+	   Outer ring radius: 40% (80% diameter)
+	   Inner ring radius: 29% (58% diameter)
+	   Mid radius: (40% + 29%) / 2 = 34.5% */
+	offset-path: circle(calc((40% + 29%) / 2) at 50% 50%);
+	/* Ensure the orbit is computed from the grid's center */
+	offset-position: 50% 50%;
+	offset-rotate: 0deg;
+	offset-anchor: 50% 50%;
+	animation: destinations-orbit 18s linear infinite;
+}
+
+/* If the JS orbit is active, disable motion-path so there is no fight over transforms */
+.destinations .countries-grid.js-orbit>.country-item {
+	offset-path: none;
+	offset-distance: 0%;
+	animation: none;
+}
+
+@media (max-width: 520px) {
+	.destinations .countries-grid {
+		--orbit-flag-size: clamp(44px, 12vw, 60px);
+	}
+
+	.destinations .country-item {
+		width: var(--orbit-flag-size);
+		height: var(--orbit-flag-size);
+	}
+
+	.destinations .country-item .country-flag {
+		width: var(--orbit-flag-size);
+		height: var(--orbit-flag-size);
+	}
+
+	.destinations .country-item span {
+		font-size: 10px;
+	}
+}
+
+/* Stagger start positions for 8 flags */
+.destinations .countries-grid>.country-item:nth-child(1) {
+	--i: 0;
+}
+
+.destinations .countries-grid>.country-item:nth-child(2) {
+	--i: 1;
+}
+
+.destinations .countries-grid>.country-item:nth-child(3) {
+	--i: 2;
+}
+
+.destinations .countries-grid>.country-item:nth-child(4) {
+	--i: 3;
+}
+
+.destinations .countries-grid>.country-item:nth-child(5) {
+	--i: 4;
+}
+
+.destinations .countries-grid>.country-item:nth-child(6) {
+	--i: 5;
+}
+
+.destinations .countries-grid>.country-item:nth-child(7) {
+	--i: 6;
+}
+
+.destinations .countries-grid>.country-item:nth-child(8) {
+	--i: 7;
+}
+
+.destinations .countries-grid>.country-item {
+	animation-delay: calc(-2.25s * var(--i));
+}
+
+@keyframes destinations-orbit {
+	to {
+		offset-distance: 100%;
+	}
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	.destinations .countries-grid>.country-item {
+		animation: none;
+		offset-distance: 0%;
+	}
+}
+
+/* ---------------------------------
+	Targeted mobile tweaks (only 2 asks)
+	1) Navbar brand vertical centering
+	2) About Us points aligned columns
+   --------------------------------- */
+@media (max-width: 768px) {
+	header .navbar .logo {
+		align-items: center !important;
+	}
+
+	header .navbar .logo-text {
+		display: flex !important;
+		flex-direction: column;
+		justify-content: center;
+		line-height: 1.05 !important;
+	}
+
+	header .navbar .logo-name {
+		margin: 0 !important;
+		line-height: 1.08 !important;
+	}
+
+	#about.about-final-revised .feature-list-premium {
+		width: min(100%, 520px);
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	#about.about-final-revised .feature-list-premium li {
+		display: flex !important;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		text-align: center;
+		white-space: normal;
+	}
+
+	#about.about-final-revised .feature-list-premium li i {
+		margin-top: 0;
+		justify-self: auto;
+	}
+
+	#about.about-final-revised .feature-label,
+	#about.about-final-revised .feature-copy {
+		display: block;
+		text-align: center;
+		white-space: normal;
+	}
+
+	#about.about-final-revised .feature-label {
+		justify-content: center;
+	}
+
+	#about.about-final-revised .feature-label strong {
+		display: inline;
+		line-height: 1.35;
+	}
+
+	/* Mobile performance: keep scrolling buttery by reducing heavy visual effects */
+	.hero-glass,
+	.navbar .container,
+	body.nav-desktop-collapsed #navMenu,
+	.profile-dropdown,
+	.registration-card,
+	.reg-main-container {
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+	}
+
+	.flag-wrap img,
+	.destinations .countries-grid>.country-item,
+	.about-final-revised .about-grid::before,
+	.about-final-revised .about-grid::after,
+	.about-final-revised .feature-list-premium::before,
+	.about-final-revised .feature-list-premium::after {
+		animation: none !important;
+	}
+
+	.flag-wrap img {
+		transition: opacity 0.18s ease, transform 0.18s ease !important;
+	}
+
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.18s !important;
+	}
+}
+
+/* ==========================================================================
+   University Cards Mobile Responsiveness & Overflow Prevention Override
+   Target Viewport: Small Screens / Typical Mobile Devices
+   ========================================================================== */
+@media (max-width: 768px) {
+
+	/* 1. Eliminate heavy desktop left padding and ensure full width */
+	.universities-section {
+		padding: 30px 16px !important;
+		margin: 0 !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+	}
+
+	/* 2. Remove gap margin on list container and use 100% width */
+	.universities-left-gap {
+		margin: 0 !important;
+		padding: 0 !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+	}
+
+	/* 3. Re-style card to fit mobile screens perfectly without clipping */
+	.university-card {
+		padding: 20px 16px !important;
+		margin: 0 0 18px 0 !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		min-width: 0 !important;
+		border-radius: 12px !important;
+		border-left-width: 4px !important;
+		box-sizing: border-box !important;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+	}
+
+	/* 4. Fine-tune card internal element sizes (headings, tags, lists) */
+	.university-card h3 {
+		font-size: 1.2rem !important;
+		line-height: 1.35 !important;
+		font-weight: 700 !important;
+		margin-bottom: 6px !important;
+	}
+
+	.university-card .location {
+		font-size: 0.82rem !important;
+		margin-bottom: 8px !important;
+		display: inline-flex !important;
+		align-items: center !important;
+		gap: 5px !important;
+	}
+
+	.university-card p {
+		font-size: 0.85rem !important;
+		line-height: 1.45 !important;
+		margin-bottom: 10px !important;
+	}
+
+	.university-card .intake-meta {
+		font-size: 0.8rem !important;
+		font-weight: 700 !important;
+		margin: 4px 0 10px 0 !important;
+	}
+
+	/* 5. details courses dropdown elements scaling */
+	.university-card .course-toggle {
+		margin-top: 12px !important;
+		width: 100% !important;
+	}
+
+	.university-card .course-toggle summary {
+		font-size: 0.82rem !important;
+		padding: 8px 16px !important;
+		border-radius: 20px !important;
+		width: fit-content !important;
+	}
+
+	.university-card .course-group {
+		margin-top: 15px !important;
+	}
+
+	.university-card .course-group h4 {
+		font-size: 0.88rem !important;
+		font-weight: 700 !important;
+		margin-bottom: 8px !important;
+	}
+
+	.university-card .requirements-list {
+		padding-left: 16px !important;
+		margin-top: 10px !important;
+	}
+
+	.university-card .requirements-list li {
+		font-size: 0.82rem !important;
+		line-height: 1.45 !important;
+		margin-bottom: 5px !important;
+	}
+
+	.university-card .fee-box {
+		margin-top: 12px !important;
+		padding: 12px 14px !important;
+		border-radius: 10px !important;
+	}
+
+	.university-card .fee-box strong {
+		font-size: 0.85rem !important;
+	}
+
+	.university-card .fee-box p {
+		font-size: 0.82rem !important;
+		margin-bottom: 4px !important;
+	}
+
+	.university-card .fee-box p:last-child {
+		margin-bottom: 0 !important;
+	}
+
+	/* 6. Programs tags styling for compact grid */
+	.university-card .programs {
+		display: grid !important;
+		grid-template-columns: 1fr !important;
+		/* clean stacked single column on mobile */
+		gap: 6px !important;
+		width: 100% !important;
+	}
+
+	.university-card .course-item {
+		display: flex !important;
+		align-items: center !important;
+		gap: 6px !important;
+		width: 100% !important;
+	}
+
+	.university-card .program-tag {
+		font-size: 0.72rem !important;
+		padding: 6px 10px !important;
+		min-height: auto !important;
+		line-height: 1.3 !important;
+		border-radius: 6px !important;
+		box-sizing: border-box !important;
+		width: 100% !important;
+	}
+
+	.university-card .course-register-btn {
+		padding: 5px 9px !important;
+		font-size: 0.7rem !important;
+		height: auto !important;
+	}
+
+	/* 7. section title styling */
+	.universities-section .section-title {
+		font-size: 1.65rem !important;
+		margin-bottom: 24px !important;
+		padding-bottom: 10px !important;
+		text-align: center !important;
+	}
+
+	.universities-section .section-title::after {
+		width: 60px !important;
+		height: 3px !important;
+	}
+}
+
+/* ==========================================================================
+   Global University Cards Compact Layout & Typography Optimization (Desktop)
+   ========================================================================== */
+.university-card {
+	padding: 16px 20px !important;
+	margin-bottom: 15px !important;
+	border-radius: 8px !important;
+	border-left-width: 5px !important;
+	max-width: 800px !important;
+	/* Elegant, readable width on desktop viewports */
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+	box-sizing: border-box !important;
+}
+
+.university-card h3 {
+	font-size: 1.3rem !important;
+	/* Standout, prominent university name */
+	line-height: 1.3 !important;
+	font-weight: 700 !important;
+	margin-bottom: 5px !important;
+}
+
+.university-card .location {
+	font-size: 0.8rem !important;
+	/* Reduced size */
+	margin-bottom: 8px !important;
+}
+
+.university-card p {
+	font-size: 0.82rem !important;
+	/* Reduced size */
+	line-height: 1.4 !important;
+	margin-bottom: 10px !important;
+}
+
+.university-card .intake-meta {
+	font-size: 0.8rem !important;
+	/* Reduced size */
+	margin-bottom: 10px !important;
+}
+
+.university-card .course-toggle summary {
+	font-size: 0.8rem !important;
+	/* Reduced size */
+	padding: 7px 15px !important;
+}
+
+.university-card .program-tag {
+	font-size: 0.68rem !important;
+	/* Reduced size globally */
+}
+
+.university-card .requirements-list li {
+	font-size: 0.78rem !important;
+	/* Reduced size */
+}
+
+.university-card .fee-box p {
+	font-size: 0.78rem !important;
+	/* Reduced size */
+}
+
+/* ==========================================================================
+   Central Override: Force University Section Elements to use Brand Navy Blue
+   ========================================================================== */
+:root {
+	--dark-blue: #0D4B75 !important;
+}

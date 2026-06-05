@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVcareerz - Study Abroad Consultancy</title>
+  <meta name="google-site-verification" content="-iII9aVRkKXPtctQ614tadpq4dj89V7l5YlAk5vH6OE" />
+  <meta name="description" content="AVcareerz – Expert study abroad consultancy providing personalized counseling, visa assistance and university placements to help students study in top global universities.">
+  <link rel="canonical" href="https://avcareerz.com/">
+
+  <!-- Performance: warm up connections for faster first load (free) -->
+  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+
+  <link rel="stylesheet" href="styles.css?v=20260517-5">
+  <link rel="stylesheet" href="responsive.css?v=20260517-1">
+  <link rel="stylesheet" href="testimonial-stats.css">
+  <link rel="stylesheet" href="benefits-section.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script>
+    // Local file:// testing needs an explicit backend origin so relative API
+    // requests do not resolve to C:/api/... in the browser.
+    if (window.location.protocol === 'file:' || ['localhost', '127.0.0.1', '::1'].includes(String(window.location.hostname || '').toLowerCase())) {
+      window.__BACKEND_BASE_URL = 'http://127.0.0.1:8000';
+    }
+  </script>
+  <script src="firebase-config.js?v=20260522-1"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "AVcareerz",
+    "url": "https://avcareerz.com",
+    "logo": "https://avcareerz.com/images/logonew.png",
+    "sameAs": [
+      "https://www.facebook.com/share/1EzwLW3uG2/",
+      "https://www.instagram.com/avcareerz/",
+      "https://x.com/avcareerz"
+    ]
+  }
+  </script>
+  <style>
+    /* First-paint splash safety: keep splash visible immediately on fresh open */
+    #splash-screen {
+      display: flex;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    html.splash-loading body > :not(#splash-screen):not(.cursor-dot-glow) {
+      visibility: hidden;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="cursor-dot-glow" aria-hidden="true"></div>
+  <!-- Cinematic Splash Screen -->
+  <div id="splash-screen" class="cinematic">
+    <div class="splash-container">
+      <img src="images/logonew.png" alt="AVcareerz" class="splash-logo">
+    </div>
+  </div>
+
+  <script>
+    // Mark the page as loading until the splash finishes its cinematic reveal.
+    document.documentElement.classList.add('splash-loading');
+  </script>
+
+  <script>
+    // Inline safety timer: ensure splash is removed after ~3s so it cannot get stuck.
+    (function() {
+      try {
+        const HIDE_MS = 3000; // show cinematic for 3s
+        const HIDE_FADE_MS = 220;
+        const POPUP_MS = 7000; // show registration popup after 7s
+
+        // Clear any leftover popup schedule from a previous visit in the same tab.
+        try {
+          sessionStorage.removeItem('forceOpenRegistration');
+          sessionStorage.removeItem('av:shouldShowRegistration');
+          sessionStorage.removeItem('av:showRegistrationAt');
+        } catch (e) { /* ignore */ }
+
+        setTimeout(() => {
+          try {
+            const s = document.getElementById('splash-screen');
+            if (s) {
+              s.classList.add('fade-away');
+              setTimeout(() => {
+                try { if (s && s.parentNode) s.parentNode.removeChild(s); } catch {}
+                try { document.body.classList.remove('splash-active'); } catch {}
+                try { document.documentElement.classList.remove('splash-loading'); } catch {}
+              }, HIDE_FADE_MS);
+            } else {
+              try { document.body.classList.remove('splash-active'); } catch {}
+              try { document.documentElement.classList.remove('splash-loading'); } catch {}
+            }
+          } catch (e) { /* ignore */ }
+        }, HIDE_MS);
+
+        // Schedule registration popup event after POPUP_MS for logged-out users.
+        // We only suppress it when the current session is actively signed in.
+        try {
+          const isActiveSession = sessionStorage.getItem('isSessionActive') === 'true' || localStorage.getItem('isSessionActive') === 'true';
+          if (!isActiveSession) {
+            const at = Date.now() + POPUP_MS;
+            sessionStorage.setItem('av:shouldShowRegistration', '1');
+            sessionStorage.setItem('av:showRegistrationAt', String(at));
+
+            setTimeout(() => {
+              try {
+                sessionStorage.setItem('forceOpenRegistration', '1');
+                const ev = new Event('av:show-registration');
+                document.dispatchEvent(ev);
+              } catch (e) { /* ignore */ }
+              try {
+                sessionStorage.setItem('forceOpenRegistration', '1');
+                if (typeof window.__openRegModal === 'function') {
+                  window.__openRegModal();
+                } else if (typeof window.showRegistrationSection === 'function') {
+                  window.showRegistrationSection({ preferLogin: false });
+                }
+              } catch (e) { /* ignore */ }
+              // Keep the schedule flags for recovery; script.js clears them after
+              // it actually opens the popup.
+            }, POPUP_MS);
+          }
+        } catch (e) { /* ignore */ }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+
+  <div class="top-bar">
+    <!-- LEFT -->
+    <div class="top-left">
+      <span class="contact-item">
+        <i class="fa-solid fa-envelope"></i>
+        Info@avcareerz.com
+      </span>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="top-right">
+      <span class="contact-item">
+        <i class="fa-solid fa-phone"></i>
+        +91 70367 77567
+      </span>
+
+      <div class="social-links">
+        <a href="https://www.facebook.com/share/1EzwLW3uG2/" target="_blank" title="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+
+        <a href="https://www.instagram.com/avcareerz/" target="_blank" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+
+        <a href="https://x.com/avcareerz" target="_blank" title="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Header & Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <img src="images/logonew.png" alt="AVcareerz Logo" class="navbar-logo-img"
+            style="width: clamp(120px, 18vw, 200px); height: 40px; object-fit: cover; object-position: center;">
+        </a>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#coaching">Coachings</a></li>
+          <li class="nav-dropdown">
+            <a href="#study">Destinations</a>
+            <ul class="dropdown-menu">
+              <li><a href="usa.html">Study in USA</a></li>
+              <li><a href="uk.html">Study in UK</a></li>
+              <li><a href="canada.html">Study in Canada</a></li>
+              <li><a href="australia.html">Study in Australia</a></li>
+              <li><a href="germany.html">Study in Germany</a></li>
+              <li><a href="newzealand.html">Study in New Zealand</a></li>
+              <li><a href="italy.html">Study in Italy</a></li>
+              <li><a href="singapore.html">Study in Singapore</a></li>
+            </ul>
+          </li>
+          <li><a href="visa-services.html">Visa-Services</a></li>
+          <li><a href="#locations">Contact Us</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#registration-section" class="nav-link register-scroll">Register Here</a></li>
+        </ul>
+        <div class="nav-right">
+          <div class="nav-profile" data-profile-menu="true">
+            <button type="button" class="profile-trigger" aria-haspopup="menu" aria-expanded="false" title="Account" aria-label="Account">
+              <span class="profile-avatar" data-avatar>
+                <span class="avatar-initial" data-avatar-initial hidden>U</span>
+                <i class="fa-solid fa-user avatar-icon" data-avatar-icon aria-hidden="true"></i>
+              </span>
+            </button>
+            <div class="profile-dropdown" role="menu">
+              <button type="button" class="profile-item" data-action="auth" role="menuitem" hidden>Sign up / Log in</button>
+              <button type="button" class="profile-item" data-action="profile" role="menuitem">Profile</button>
+              <button type="button" class="profile-item" data-action="logout" role="menuitem">Logout</button>
+            </div>
+          </div>
+
+          <div class="nav-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+
+    <div class="hero-slider">
+      <div class="hero-slide active">
+        <img
+          src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071959/my_website_images/two.jpg"
+          alt="Banner 2" decoding="async" fetchpriority="high">
+      </div>
+      <div class="hero-slide">
+        <img
+          src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071963/my_website_images/3rd.jpg"
+          alt="Banner 3" decoding="async" fetchpriority="low" loading="lazy">
+      </div>
+      <div class="hero-slide">
+        <img
+          src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071967/my_website_images/4th.jpg"
+          alt="Banner 4" decoding="async" fetchpriority="low" loading="lazy">
+      </div>
+      <div class="hero-slide">
+        <img
+          src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071972/my_website_images/5th.jpg"
+          alt="Banner 5" decoding="async" fetchpriority="low" loading="lazy">
+      </div>
+      <div class="hero-slide">
+        <img
+          src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071990/my_website_images/6th.jpg"
+          alt="Banner 6" decoding="async" fetchpriority="low" loading="lazy">
+      </div>
+      <div class="hero-slide">
+        <img
+          src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_1600/v1771071999/my_website_images/7th.jpg"
+          alt="Banner 7" decoding="async" fetchpriority="low" loading="lazy">
+      </div>
+    </div>
+
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <div class="hero-glass">
+          <div class="hero-content-inner">
+            <h2 class="hero-line">
+              Dream big,<br>
+              Study globally,<br>
+              Shape your future.
+            </h2>
+            <p class="hero-description">
+              At AVcareerz, we guide ambitious students toward world-class education.
+              With personalized counseling and end-to-end support, we turn international education dreams into reality.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- About Us Section -->
+  <section class="about-final-revised" id="about">
+    <span class="about-eyebrow">GLOBAL EDUCATION CATALYST</span>
+    <h2 class="main-title-massive">Empowering Your <span>Global Future</span></h2>
+
+    <div class="about-wrapper">
+      <div class="collage-container">
+        <div class="img-frame frame-1"><img
+            src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1773251881/my_website_images/about.JPEG"
+            class="rotate-img" alt="Student counseling session" loading="lazy"></div>
+        <div class="img-frame frame-2"><img
+            src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1773251881/my_website_images/about1.JPEG"
+            class="rotate-img" alt="Expert guidance team" loading="lazy"></div>
+        <div class="img-frame frame-3"><img
+            src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1773251881/my_website_images/about2.JPEG"
+            class="rotate-img" alt="Successful students" loading="lazy"></div>
+        <div class="img-frame frame-4"><img
+            src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1773251881/my_website_images/about3.jpg"
+            class="rotate-img" alt="Campus guidance discussion" decoding="async" loading="lazy"></div>
+        <div class="img-frame frame-5"><img
+            src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto,c_limit,w_900/v1773251898/my_website_images/about4.jpg"
+            class="rotate-img" alt="Student achievement moment" decoding="async" loading="lazy"></div>
+
+        <div class="exp-badge-bottom">
+          <strong class="exp-badge-number">10+</strong>
+          <span class="exp-badge-label">Years of Excellence</span>
+        </div>
+      </div>
+
+      <div class="about-content">
+        <div class="info-header">
+          <div class="header-icon-wrap"><i class="fas fa-globe-asia"></i></div>
+          <div>
+            <h3>India's Elite Study Abroad Partner</h3>
+            <p>Strategizing Success Across Borders</p>
+          </div>
+        </div>
+
+        <p class="description-premium">
+          AVcareerz is India's premier global education consultancy. Our international network ensures every
+          student gains access to world-class professional insights and top-tier university admissions.
+        </p>
+
+        <ul class="feature-list-premium">
+          <li>
+            <i class="fas fa-check"></i>
+            <span class="feature-label"><strong>Strategic University Mapping :</strong></span>
+            <span class="feature-copy">We thoroughly analyze your academic profile, budget, and career goals to select the perfect-fit universities tailored exclusively for you.</span>
+          </li>
+          <li>
+            <i class="fas fa-check"></i>
+            <span class="feature-label"><strong>Comprehensive Process Support :</strong></span>
+            <span class="feature-copy">From filling out initial applications to handling complex documentation, we provide end-to-end guidance every step of the way.</span>
+          </li>
+          <li>
+            <i class="fas fa-check"></i>
+            <span class="feature-label"><strong>Expert Visa-service Assistance :</strong></span>
+            <span class="feature-copy">We ensure precise visa filing and conduct rigorous mock interview drills to maximize your confidence and approval chances.</span>
+          </li>
+        </ul>
+
+        <div class="about-highlights-massive stats-horizontal-grid">
+          <div class="highlight-card">
+            <strong class="counter" data-target="10000">0</strong>
+            <span>Careers Shaped</span>
+          </div>
+          <div class="highlight-card">
+            <strong class="counter" data-target="250">0</strong>
+            <span>Global Partners</span>
+          </div>
+          <div class="highlight-card">
+            <strong class="counter" data-target="99">0</strong>
+            <span>Visa Success %</span>
+          </div>
+        </div>
+
+        <a href="#registration-section" class="btn-primary-massive">Consult an Expert</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coaching Section -->
+  <section class="coaching-section" id="coaching">
+    <div class="container">
+      <h2 class="section-title">Get the Best Trainings You Deserve</h2>
+      <div class="trainings-viewport">
+        <div class="trainings-track">
+          <article class="coaching-card">
+            <div class="coaching-image">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771072030/my_website_images/i.jpg"
+                alt="IELTS Coaching" decoding="async" loading="lazy">
+            </div>
+            <div class="coaching-body">
+              <h3>IELTS Coaching</h3>
+              <p>International English Language Testing System (IELTS) is designed to assess a student’s English
+                proficiency for study, work, and migration abroad. It focuses on Listening, Reading, Writing, and
+                Speaking
+                skills. A good IELTS score increases chances of global education and career opportunities.</p>
+              <a href="#registration-section" class="prep-text register-scroll register-cta-button">2 WEEKS
+                PREPARATION</a>
+            </div>
+          </article>
+          <article class="coaching-card">
+            <div class="coaching-image">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771072035/my_website_images/twe.jpg"
+                alt="TOEFL Coaching" decoding="async" loading="lazy">
+            </div>
+            <div class="coaching-body">
+              <h3>TOEFL Coaching</h3>
+              <p>Test of English as a Foreign Language (TOEFL) measures academic English skills required for higher
+                education abroad. It evaluates how well students understand and use English in a university environment.
+                TOEFL is widely accepted by international universities and institutions. High TOEFL scores help students
+                secure admissions and scholarships.</p>
+              <a href="#registration-section" class="prep-text register-scroll register-cta-button">2 WEEKS
+                PREPARATION</a>
+            </div>
+          </article>
+          <article class="coaching-card">
+            <div class="coaching-image">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072037/my_website_images/t.JPEG"
+                alt="OET Coaching" decoding="async" loading="lazy">
+            </div>
+            <div class="coaching-body">
+              <h3>OET Coaching</h3>
+              <p>Occupational English Test (OET) is specially designed for healthcare professionals. It focuses on
+                medical
+                workplace communication in English. OET is required for doctors, nurses, and healthcare workers in many
+                countries. A good OET score helps professionals work and settle abroad confidently.</p>
+              <a href="#registration-section" class="prep-text register-scroll register-cta-button">2 WEEKS
+                PREPARATION</a>
+            </div>
+          </article>
+
+          <!-- Duplicated set for seamless CSS-only looping -->
+          <article class="coaching-card">
+            <div class="coaching-image">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072035/my_website_images/i.JPEG"
+                alt="IELTS Coaching" decoding="async" loading="lazy">
+            </div>
+            <div class="coaching-body">
+              <h3>IELTS Coaching</h3>
+              <p>International English Language Testing System (IELTS) is designed to assess a student’s English
+                proficiency for study, work, and migration abroad. It focuses on Listening, Reading, Writing, and
+                Speaking
+                skills. A good IELTS score increases chances of global education and career opportunities.</p>
+              <a href="#registration-section" class="prep-text register-scroll register-cta-button">2 WEEKS
+                PREPARATION</a>
+            </div>
+          </article>
+          <article class="coaching-card">
+            <div class="coaching-image">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072036/my_website_images/twe.JPEG"
+                alt="TOEFL Coaching" decoding="async" loading="lazy">
+            </div>
+            <div class="coaching-body">
+              <h3>TOEFL Coaching</h3>
+              <p>Test of English as a Foreign Language (TOEFL) measures academic English skills required for higher
+                education abroad. It evaluates how well students understand and use English in a university environment.
+                TOEFL is widely accepted by international universities and institutions. High TOEFL scores help students
+                secure admissions and scholarships.</p>
+              <a href="#registration-section" class="prep-text register-scroll register-cta-button">2 WEEKS
+                PREPARATION</a>
+            </div>
+          </article>
+          <article class="coaching-card">
+            <div class="coaching-image">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/f_auto,q_auto/v1771072037/my_website_images/t.JPEG"
+                alt="OET Coaching" decoding="async" loading="lazy">
+            </div>
+            <div class="coaching-body">
+              <h3>OET Coaching</h3>
+              <p>Occupational English Test (OET) is specially designed for healthcare professionals. It focuses on
+                medical
+                workplace communication in English. OET is required for doctors, nurses, and healthcare workers in many
+                countries. A good OET score helps professionals work and settle abroad confidently.</p>
+              <a href="#registration-section" class="prep-text register-scroll register-cta-button">2 WEEKS
+                PREPARATION</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <!-- Explore Study Destinations (Carousel) -->
+
+  <section class="destinations" id="study">
+    <div class="container">
+      <h2 class="section-title">Explore Study Destinations</h2>
+
+
+
+      <div class="destinations-layout">
+        <div class="description-box">
+          <div class="promo-card">
+            <div class="promo-accent"></div>
+            <div class="promo-content">
+              <h3>Guiding Futures Beyond Borders</h3>
+              <p class="promo-sub">We help you find the right university and course abroad, with end-to-end support
+                on admissions, visas, and pre-departure guidance. Our experienced advisors match your goals to top
+                destinations.</p>
+
+              <ul class="promo-features">
+                <li><i class="fas fa-check-circle"></i> Expert Career Counseling</li>
+                <li><i class="fas fa-check-circle"></i> Seamless Visa Assistance</li>
+                <li><i class="fas fa-check-circle"></i> University Selection in 8+ Countries</li>
+                <li><i class="fas fa-check-circle"></i> Pre-Departure Support</li>
+              </ul>
+
+              <a href="#registration-section" class="promo-cta">Start Your Global Journey Today</a>
+            </div>
+          </div>
+        </div>
+        <!-- Countries circular orbit (right-side) -->
+        <aside class="destinations-side">
+          <div class="countries-grid">
+            <div class="country-item">
+              <div class="country-flag">
+                <img
+                  src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072011/my_website_images/usaflag.JPEG"
+                  alt="USA Flag" decoding="async" loading="lazy">
+              </div>
+              <span>USA</span>
+            </div>
+
+            <div class="country-item">
+              <div class="country-flag flag-canada">
+                <img
+                  src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072019/my_website_images/canadaflag.jpeg"
+                  alt="Canada Flag" decoding="async" loading="lazy">
+              </div>
+              <span>Canada</span>
+            </div>
+
+            <div class="country-item">
+              <div class="country-flag flag-uk">
+                <img
+                  src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072009/my_website_images/ukflag.JPEG"
+                  alt="UK Flag" decoding="async" loading="lazy">
+              </div>
+              <span>UK</span>
+            </div>
+
+            <div class="country-item">
+              <div class="country-flag flag-australia">
+                <img
+                  src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072011/my_website_images/ausflag.JPeG"
+                  alt="Australia Flag" decoding="async" loading="lazy">
+              </div>
+              <span>Australia</span>
+            </div>
+
+            <div class="country-item">
+              <div class="country-flag flag-germany">
+                <img
+                  src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072027/my_website_images/germanyflag.JPEG"
+                  alt="Germany Flag" decoding="async" loading="lazy">
+              </div>
+              <span>Germany</span>
+            </div>
+
+            <div class="country-item">
+              <div class="country-flag flag-newzealand">
+                <img
+                  src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072028/my_website_images/newzealandflag.JPEG"
+                  alt="New Zealand Flag" decoding="async" loading="lazy">
+              </div>
+              <span>NZ</span>
+            </div>
+
+            <div class="country-item">
+              <div class="country-flag flag-italy">
+                <img
+                  src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072029/my_website_images/italyflag.JPEG"
+                  alt="Italy Flag" decoding="async" loading="lazy">
+              </div>
+              <span>Italy</span>
+            </div>
+
+            <div class="country-item">
+              <div class="country-flag flag-singapore">
+                <img
+                  src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1779021926/my_website_images/singapore.jpg"
+                  alt="Singapore Flag" decoding="async" loading="lazy">
+              </div>
+              <span>Singapore</span>
+            </div>
+
+            <div class="country-center">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072031/my_website_images/image.png"
+                alt="Globe" class="globe-image center-logo" decoding="async" loading="lazy">
+            </div>
+
+          </div>
+        </aside>
+        <!-- Destination Cards Grid -->
+        <div class="destinations-grid">
+
+          <a class="destination-card" href="usa.html">
+            <div class="flag-wrap">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072033/my_website_images/usa1.JPEG"
+                decoding="async" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>United States</h3>
+              <p class="card-para">Ivy League excellence and world-leading career opportunities in tech.</p>
+              <span class="view-details-btn">View Details →</span>
+            </div>
+          </a>
+
+          <a class="destination-card" href="uk.html">
+            <div class="flag-wrap">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072036/my_website_images/uk1.JPEG"
+                decoding="async" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>United Kingdom</h3>
+              <p class="card-para">World-class academic heritage and globally recognized degree programs.</p>
+              <span class="view-details-btn">View Details →</span>
+            </div>
+          </a>
+
+          <a class="destination-card" href="canada.html">
+            <div class="flag-wrap">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072015/my_website_images/can1.jpg"
+                decoding="async" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>Canada</h3>
+              <p class="card-para">Quality education with flexible work permits in a safe environment.</p>
+              <span class="view-details-btn">View Details →</span>
+            </div>
+          </a>
+
+          <a class="destination-card" href="australia.html">
+            <div class="flag-wrap">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072003/my_website_images/aus1.jpg"
+                decoding="async" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>Australia</h3>
+              <p class="card-para">Innovative learning and top-ranked universities in a vibrant lifestyle.</p>
+              <span class="view-details-btn">View Details →</span>
+            </div>
+          </a>
+
+          <a class="destination-card" href="germany.html">
+            <div class="flag-wrap">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072023/my_website_images/ger1.jpg"
+                decoding="async" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>Germany</h3>
+              <p class="card-para">A global hub for engineering and innovation with affordable tuition.</p>
+              <span class="view-details-btn">View Details →</span>
+            </div>
+          </a>
+
+          <a class="destination-card" href="newzealand.html">
+            <div class="flag-wrap">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072028/my_website_images/new1.JPEG"
+                decoding="async" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>New Zealand</h3>
+              <p class="card-para">Practical learning and research in one of the safest countries globally.</p>
+              <span class="view-details-btn">View Details →</span>
+            </div>
+          </a>
+
+          <a class="destination-card" href="italy.html">
+            <div class="flag-wrap">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072029/my_website_images/italy1.JPEG"
+                decoding="async" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>Italy</h3>
+              <p class="card-para">Rich cultural history with excellence in arts, design, and fashion.</p>
+              <span class="view-details-btn">View Details →</span>
+            </div>
+          </a>
+
+          <a class="destination-card" href="singapore.html">
+            <div class="flag-wrap">
+              <img
+                src="https://res.cloudinary.com/dtorpeosf/image/upload/q_auto,f_auto/v1771072032/my_website_images/turkey1.JPEG"
+                decoding="async" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>Singapore</h3>
+              <p class="card-para">World-class education hub with global career opportunities in Asia's vibrant
+                city-state.</p>
+              <span class="view-details-btn">View Details →</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="services-premium-section" id="whychooseus">
+    <div class="background-overlay"></div>
+    <div class="container">
+      <div class="testi-header">
+        <h2 class="title-main">Why <span class="orange">Choose Us?</span></h2>
+        <p class="desc-main">AVcareerz is one of the best study abroad consultants. We provide exclusive
+          expertise and support in:</p>
+      </div>
+
+      <div class="services-big-grid">
+        <div class="big-card">
+          <i class="fas fa-bullseye"></i>
+          <span>End-to-end Process Assistance</span>
+        </div>
+        <div class="big-card">
+          <i class="fas fa-certificate"></i>
+          <span>IELTS / OET / TOEFL Coaching</span>
+        </div>
+        <div class="big-card">
+          <i class="fas fa-paper-plane"></i>
+          <span>Highest Visa Success Ratio</span>
+        </div>
+        <div class="big-card">
+          <i class="fas fa-hand-holding-usd"></i>
+          <span>Educational Loan Assistance</span>
+        </div>
+        <div class="big-card">
+          <i class="fas fa-passport"></i>
+          <span>Visa Guidance &amp; Prep</span>
+        </div>
+        <div class="big-card">
+          <i class="fas fa-dollar-sign"></i>
+          <span>Forex / Money Transfers</span>
+        </div>
+        <div class="big-card">
+          <i class="fas fa-plane"></i>
+          <span>Air Ticketing Services</span>
+        </div>
+        <div class="big-card">
+          <i class="fas fa-hotel"></i>
+          <span>Overseas Accommodation</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location / Map (Modern Square: big square map + clean glass card) -->
+  <section class="av-location-section modern-square-location" id="locations" aria-labelledby="av-location-title"
+    style="--location-bg-url: none;">
+    <div class="container">
+      <div class="av-location-header">
+        <span class="badge-orange">OUR PRESENCE</span>
+        <h2 class="title-main" id="av-location-title">Visit Our Branches</h2>
+        <p class="subtitle">Select a branch to view the address and contact options, or open it instantly in Google
+          Maps.</p>
+        <div class="divider-orange" aria-hidden="true"></div>
+      </div>
+
+      <div class="location-grid">
+        <div class="details-side">
+          <div class="glass-card">
+            <div class="branch-selector mt-3" role="tablist" aria-label="Select a branch">
+              <button type="button" class="loc-pill active" data-branch="vuy" role="tab" aria-selected="true"
+                onclick="switchLoc('vuy')">Vuyyuru</button>
+              <button type="button" class="loc-pill" data-branch="vjy" role="tab" aria-selected="false"
+                onclick="switchLoc('vjy')">Vijayawada</button>
+
+              <button type="button" class="loc-pill" data-branch="hyd" role="tab" aria-selected="false"
+                onclick="switchLoc('hyd')">Hyderabad</button>
+            </div>
+
+            <div class="address-details info-list mt-4">
+              <div id="branch-info" class="fade-in">
+                <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="addr-text">30/102 ground floor,
+                    DBR complex, Vuyyuru, 521165 AP</span></p>
+              </div>
+              <p><i class="fas fa-phone-alt" aria-hidden="true"></i> <span id="branch-phone">+91 70367 77567</span></p>
+              <p><i class="fas fa-envelope" aria-hidden="true"></i> Info@avcareerz.com</p>
+
+              <div class="status-indicator" aria-live="polite">
+                <span class="pulse-green modern-pulse" aria-hidden="true"></span>
+                <span id="branch-status">Checking hours…</span>
+              </div>
+            </div>
+
+            <div class="action-btns-row">
+              <a id="call-link" href="tel:+917036777567" class="btn-navy">
+                <i class="fas fa-phone-alt" aria-hidden="true"></i> Call Now
+              </a>
+
+              <a id="whatsapp-link" href="https://api.whatsapp.com/send?phone=917036777567&text=Hi%20AVcareerz" target="_blank"
+                rel="noopener" class="btn-whatsapp">
+                <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
+              </a>
+            </div>
+
+            <p class="av-hours"><i class="fas fa-clock" aria-hidden="true"></i> Mon - Sat: 10 AM - 6 PM</p>
+          </div>
+        </div>
+
+        <div class="map-side">
+          <div class="square-map-wrapper" aria-label="Branch map">
+            <iframe id="loc-map" title="AVcareerz Branch Location"
+              src="https://www.google.com/maps?q=30/102%20ground%20floor,%20DBR%20complex,%20Vuyyuru%20521165&output=embed"
+              allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonial-showcase-section" id="testimonials" aria-labelledby="testimonial-showcase-title">
+    <div class="testimonial-showcase-container">
+      <div class="testimonial-showcase-heading">
+        <h2 id="testimonial-showcase-title">Testimonials</h2>
+        <p>Real stories from students who trusted us with their global future.</p>
+      </div>
+
+      <div class="swiper testimonial-swiper">
+        <div class="swiper-wrapper">
+          <article class="swiper-slide testimonial-showcase-card size-l">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">The counseling team at AVcareerz made my entire admission
+              journey feel simple and completely stress-free. Every document, every deadline, and every university
+              requirement was clearly explained with great patience. I never felt lost or overwhelmed even once during
+              the whole process. Truly an exceptional team!</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testimonial-showcase-user">&mdash; Rakesh M.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-s">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">Very supportive and caring staff. They helped me shortlist the right
+              universities based on my profile and guided me through every stage of the visa process with incredible
+              patience. What impressed me most was how they always followed up to make sure everything was on track and
+              nothing was missed.</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testimonial-showcase-user">&mdash; Sneha K.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-m">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">I was completely confused about documentation and SOP writing when I
+              first came in. The team at AVcareerz organized every single thing systematically and gave me the
+              confidence I needed before my visa interview. Their mock interview sessions were especially helpful and
+              really prepared me well.</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <div class="testimonial-showcase-user">&mdash; Vikram P.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-s">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">Their communication was excellent throughout the entire process. I
+              always knew exactly what the next step was and never felt stuck or confused at any point. The team
+              proactively sent reminders, tracked my deadlines, and made sure I submitted everything well before time.
+              Outstanding service from start to finish.</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testimonial-showcase-user">&mdash; Anusha T.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-l">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">From the very first coaching session to the final visa filing, the
+              entire process felt professional, organized, and genuinely student-focused. The team understood my goals
+              and tailored every recommendation to suit my needs and budget. I got my admit from my first-choice
+              university thanks to their incredible guidance!</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testimonial-showcase-user">&mdash; Rahul G.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-m">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">They helped me choose the perfect study destination based on my budget
+              and long-term career goals. The counselors took the time to understand what I really wanted and never
+              pushed me toward a particular option. The entire team is super helpful, honest, and genuinely invested in
+              each student's success.</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testimonial-showcase-user">&mdash; Divya S.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-s">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">My application process became incredibly smooth because the team
+              checked every last detail carefully before submission. They spotted errors in my forms that I would have
+              completely missed. Their thoroughness saved me from potential rejections. I am so grateful for how
+              diligently they handled my entire application.</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testimonial-showcase-user">&mdash; Kiran R.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-l">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">I really appreciated how approachable and friendly the counselors were
+              throughout the journey. They answered every single doubt I had without ever making me feel like I was
+              asking too many questions. The warmth and dedication of the team made an otherwise stressful process feel
+              much more manageable.</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <div class="testimonial-showcase-user">&mdash; Meghana V.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-m">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">Coming to AVcareerz was one of the best decisions I ever
+              made. Their step-by-step guidance helped me move forward with complete clarity and real confidence. Within
+              a few months I had multiple admits in hand. The team's expertise and dedication truly sets them apart from
+              any other consultancy I approached.</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testimonial-showcase-user">&mdash; Pranav N.</div>
+          </article>
+
+          <article class="swiper-slide testimonial-showcase-card size-s">
+            <span class="testi-quote" aria-hidden="true">&ldquo;</span>
+            <div class="testi-label">Testimonial</div>
+            <p class="testimonial-showcase-text">The team stayed with me every single step of the way, right from the
+              initial counseling session all the way through to my final visa approval. It genuinely felt like having a
+              dedicated personal study-abroad mentor by my side. They celebrated every milestone with me and kept my
+              spirits up when things got tough.</p>
+            <div class="testimonial-showcase-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testimonial-showcase-user">&mdash; Lavanya P.</div>
+          </article>
+        </div>
+        <div class="swiper-button-next testimonial-next"></div>
+        <div class="swiper-pagination testimonial-showcase-pagination"></div>
+      </div>
+    </div>
+  </section>
+
+  <!--registration-->
+  <section class="reg-main-container" id="registration-section">
+    <div class="reg-flex-card" style="position: relative;">
+      <button type="button" class="reg-modal-close" id="regModalClose" aria-label="Close registration">
+        &times;
+      </button>
+
+      <div class="reg-left-side" style="background: none; position: relative; min-height: 550px;">
+        <img
+          src="images/student-assisted.png"
+          alt="Student assisted" decoding="async"
+          style="width: 100%; height: 100%; object-fit: cover; object-position: center center; position: absolute; top: 0; left: 0; z-index: 1; image-rendering: auto;"
+          loading="lazy">
+        <div
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(100, 181, 246, 0.18); z-index: 2;">
+        </div>
+        <div class="reg-text-overlay"
+          style="position: absolute; bottom: 0; left: 0; width: 100%; z-index: 3; padding: 40px; background: linear-gradient(0deg, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.0) 100%);">
+          <h2 class="white-text" style="color: #fff; font-size: 2.5rem; margin: 0; font-weight: 800;">Guiding Futures
+          </h2>
+          <h2 class="orange-text" style="color: #E43E16; font-size: 2.5rem; margin: 0; font-weight: 800;">Beyond Borders
+          </h2>
+          <p style="color: #e0e0e0; margin-top: 10px; font-size: 1.1rem;">Join our community of global scholars today.
+          </p>
+        </div>
+      </div>
+
+      <div class="reg-right-side">
+
+        <div id="signupPanel" class="auth-panel">
+          <h1 class="reg-header" style="text-align: left; width: 100%;">Register Here</h1>
+          <p class="reg-sub-header" style="text-align: center; width: 100%;">Start your global journey today</p>
+          <form id="registrationForm" class="reg-form-logic" autocomplete="off">
+            <div class="reg-input-group">
+              <i class="fas fa-user"></i>
+              <input type="text" id="fullName" name="fullName" placeholder="Enter your Name" required
+                autocomplete="off">
+            </div>
+
+
+            <div class="reg-input-group">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="email" name="email" placeholder="Enter your Email" required
+                autocomplete="new-password">
+            </div>
+
+            <div class="reg-input-group">
+              <i class="fas fa-phone"></i>
+              <input type="tel" id="phone" name="phone" placeholder="+91 Enter your Phone" maxlength="10" required
+                autocomplete="off">
+            </div>
+
+            <div class="reg-input-group">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="password" name="password" placeholder="Create Password" required
+                autocomplete="new-password" style="padding-right: 45px;">
+              <i class="fas fa-eye toggle-password" id="toggleRegPassword"
+                style="position: absolute; left: auto; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #0D4B75; z-index: 10;"></i>
+            </div>
+            <div class="password-requirements" style="margin-bottom: 1em;">
+              <p class="requirement-title" style="font-weight:600; margin-bottom:0.5em;">Password must contain:</p>
+              <div class="requirement" id="req-uppercase"><i class="fas fa-circle"></i> Uppercase letter (A-Z)</div>
+              <div class="requirement" id="req-lowercase"><i class="fas fa-circle"></i> Lowercase letter (a-z)</div>
+              <div class="requirement" id="req-number"><i class="fas fa-circle"></i> Number (0-9)</div>
+              <div class="requirement" id="req-special"><i class="fas fa-circle"></i> Special character (!@#$%^&*)</div>
+              <div class="requirement" id="req-length"><i class="fas fa-circle"></i> At least 8 characters</div>
+            </div>
+
+            <button type="submit" class="reg-btn-orange">Sign up</button>
+          </form>
+        </div>
+
+        <div id="loginPanel" class="auth-panel" hidden>
+          <h1 class="reg-header">Log in</h1>
+          <p class="reg-sub-header">Welcome back</p>
+
+          <form id="loginForm" class="reg-form-logic" autocomplete="off">
+            <div class="reg-input-group">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="loginEmail" name="loginEmail" placeholder="Enter your Gmail or username" required
+                autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+            </div>
+
+            <div class="reg-input-group">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="loginPassword" name="loginPassword" placeholder="Enter your Password" required
+                autocomplete="new-password" style="padding-right: 45px;">
+              <i class="fas fa-eye toggle-password" id="toggleLoginPassword"
+                style="position: absolute; left: auto; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #0D4B75; z-index: 10;"></i>
+            </div>
+
+            <button type="submit" class="reg-btn-orange">Log in</button>
+          </form>
+
+          <button type="button" class="forgot-password-link" id="forgotPasswordLink">Forgot password?</button>
+        </div>
+
+        <div id="forgotPanel" class="auth-panel" hidden>
+          <h1 class="reg-header">Forgot Password</h1>
+          <p class="reg-sub-header">Reset your password</p>
+
+          <form id="forgotPasswordForm" class="reg-form-logic">
+            <div id="forgotStep1">
+              <div class="reg-input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="forgotEmail" name="forgotEmail" placeholder="Enter your Email" required
+                  autocomplete="off">
+              </div>
+
+              <button type="button" class="reg-btn-orange" id="forgotSendCodeBtn">Send Code</button>
+
+              <div id="forgotTimer"
+                style="text-align: center; margin-top: 8px; font-size: 0.9rem; color: #555; display: none;"></div>
+
+              <div id="forgotCodeBlock" style="display:none;">
+                <div class="reg-input-group" style="margin-top: 12px;">
+                  <i class="fas fa-key"></i>
+                  <input type="password" id="forgotCode" name="forgotCode" placeholder="Enter 6-digit code"
+                    inputmode="numeric" autocomplete="one-time-code" required style="padding-right: 45px;">
+                  <i class="fas fa-eye toggle-password" id="toggleForgotCode"
+                    style="position: absolute; left: auto; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #0D4B75; z-index: 10;"></i>
+                </div>
+
+                <button type="button" class="reg-btn-orange" id="forgotVerifyCodeBtn"
+                  style="margin-top: 12px;">Submit</button>
+              </div>
+            </div>
+
+            <div id="forgotPasswordFields" hidden>
+              <!-- Password Rules -->
+              <div id="passwordRules"
+                style="font-size: 0.85rem; color: #666; margin-bottom: 12px; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 8px;">
+                <p style="margin: 0 0 5px 0; font-weight: 600;">Password must contain:</p>
+                <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+                  <li id="ruleLength" class="password-rule">At least 8 characters</li>
+                  <li id="ruleUpper" class="password-rule">One uppercase letter</li>
+                  <li id="ruleLower" class="password-rule">One lowercase letter</li>
+                  <li id="ruleNumber" class="password-rule">One number</li>
+                  <li id="ruleSpecial" class="password-rule">One special character (!@#$%^&*)</li>
+                </ul>
+              </div>
+
+              <div class="reg-input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="forgotNewPassword" name="forgotNewPassword" placeholder="New Password"
+                  required disabled autocomplete="new-password" style="padding-right: 45px;">
+                <i class="fas fa-eye toggle-password" id="toggleForgotNewPassword"
+                  style="position: absolute; left: auto; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666; z-index: 10;"></i>
+              </div>
+
+              <div class="reg-input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="forgotConfirmPassword" name="forgotConfirmPassword"
+                  placeholder="Confirm New Password" required disabled autocomplete="new-password"
+                  style="padding-right: 45px;">
+                <i class="fas fa-eye toggle-password" id="toggleForgotConfirmPassword"
+                  style="position: absolute; left: auto; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666; z-index: 10;"></i>
+              </div>
+
+              <button type="submit" class="reg-btn-orange" id="forgotResetBtn" disabled>Reset Password</button>
+            </div>
+
+          </form>
+
+          <button type="button" class="forgot-back-link" id="forgotBackToLogin">Back to Log in</button>
+        </div>
+
+        <div id="authSocialBlock">
+          <div class="reg-social-divider">
+            <span>Or continue with</span>
+          </div>
+          <div class="reg-social-row">
+            <div id="googleBtn" style="width: 100%;"></div>
+            <button type="button" id="googleFallbackBtn" class="social-box" aria-label="Sign in with Google">
+              <i class="fa-brands fa-google"></i>
+              Sign in with Google
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-footer">
+          <span id="authFooterText">Already have an account?</span>
+          <button type="button" class="auth-footer-btn" id="authFooterAction">Log in</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>AVcareerz</h3>
+          <p>Guiding Futures Beyond Borders.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About Us</a></li>
+            <li><a href="index.html#study">Study Destinations</a></li>
+            <li><a href="visa-services.html">Visa Services</a></li>
+            <li><a href="index.html#coaching">Coaching</a></li>
+            <li><a href="index.html#locations">Contact Us</a></li>
+            <li><a href="#registration-section">Register Here</a></li>
+          </ul>
+        </div>
+        <div class="footer-section footer-social">
+          <h4>Connect With Us</h4>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/share/1EzwLW3uG2/" target="_blank" rel="noopener noreferrer"
+              aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://api.whatsapp.com/send?phone=917036777567&text=Hi%20AVcareerz"
+              target="_blank" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.instagram.com/avcareerz/" target="_blank" rel="noopener noreferrer"
+              aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/avcareerz" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i
+                class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 AVcareerz. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Registration popup overlay (used to blur background when registration opens as a modal) -->
+  <div id="regModalOverlay" class="reg-modal-overlay" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="script.js?v=20260522-4" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const testimonialSwiperRoot = document.querySelector('.testimonial-swiper');
+      if (testimonialSwiperRoot && typeof Swiper !== 'undefined') {
+        new Swiper('.testimonial-swiper', {
+          effect: 'coverflow',
+          grabCursor: true,
+          centeredSlides: true,
+          loop: true,
+          speed: 900,
+          autoplay: {
+            delay: 2600,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true
+          },
+          slidesPerView: 'auto',
+          spaceBetween: 24,
+          coverflowEffect: {
+            rotate: 10,
+            stretch: 0,
+            depth: 140,
+            modifier: 1.2,
+            scale: 0.95,
+            slideShadows: false
+          },
+          navigation: {
+            nextEl: '.testimonial-next'
+          },
+          pagination: {
+            el: '.testimonial-showcase-pagination',
+            clickable: true
+          },
+          breakpoints: {
+            0: {
+              spaceBetween: 14
+            },
+            768: {
+              spaceBetween: 24
+            },
+            1200: {
+              spaceBetween: 30
+            }
+          }
+        });
+      }
+
+      // Initialize all counters to 0 on page load
+      const counters = document.querySelectorAll('#about.about-final-revised .counter');
+      counters.forEach(counter => {
+        counter.innerText = '0';
+      });
+
+      function startMassiveCounters() {
+        const counters = document.querySelectorAll('#about.about-final-revised .counter');
+
+        counters.forEach(counter => {
+          const target = +counter.getAttribute('data-target');
+          const duration = 2000;
+
+          // Reset counter to 0 before starting
+          counter.innerText = '0';
+
+          const startTime = performance.now();
+
+          function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const easeOut = 1 - Math.pow(1 - progress, 4);
+            const currentCount = Math.floor(easeOut * target);
+
+            if (target === 99) {
+              counter.innerText = currentCount + '%';
+            } else {
+              counter.innerText = currentCount.toLocaleString() + '+';
+            }
+
+            if (progress < 1) {
+              requestAnimationFrame(update);
+            } else {
+              counter.innerText = (target === 99) ? '99%' : target.toLocaleString() + '+';
+            }
+          }
+
+          requestAnimationFrame(update);
+        });
+      }
+
+      const aboutSection = document.querySelector('#about.about-final-revised');
+      if (aboutSection) {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            startMassiveCounters();
+          }
+        }, { threshold: 0.1 });
+
+        observer.observe(aboutSection);
+      }
+    });
+  </script>
+  <!-- Countries circular orbit script (destinations right-side) -->
+  <script>
+    (function () {
+      // Performance: delay DOM measurements/animation setup until browser is idle/after first paint.
+      const startOrbit = () => {
+        const container = document.querySelector('.destinations-side .countries-grid');
+        if (!container) return;
+        const section = document.querySelector('.destinations');
+        const items = Array.from(container.querySelectorAll('.country-item'));
+        const count = items.length;
+
+        // Mark JS-orbit as active (prevents CSS motion-path orbit from fighting transforms)
+        container.classList.add('js-orbit');
+        container.style.overflow = 'visible';
+
+        // Force every orbiting item to be a fixed square anchored on the FLAG bubble,
+        // so translate(-50%, -50%) is always the same and the radius stays equal.
+        function getBubbleSize(el) {
+          const flag = el.querySelector('.country-flag');
+          if (!flag) return 76;
+          const rect = flag.getBoundingClientRect();
+          return Math.max(40, Math.round(rect.width || 76));
+        }
+
+        const bubbleSize = items.reduce((max, el) => Math.max(max, getBubbleSize(el)), 76);
+
+        items.forEach((el) => {
+          el.style.width = `${bubbleSize}px`;
+          el.style.height = `${bubbleSize}px`;
+          el.style.display = 'flex';
+          el.style.alignItems = 'center';
+          el.style.justifyContent = 'center';
+          el.style.position = 'absolute';
+          el.style.left = '50%';
+          el.style.top = '50%';
+
+          const flag = el.querySelector('.country-flag');
+          if (flag) {
+            flag.style.width = `${bubbleSize}px`;
+            flag.style.height = `${bubbleSize}px`;
+            flag.style.boxSizing = 'border-box';
+          }
+
+          const label = el.querySelector('span');
+          if (label) {
+            label.style.position = 'absolute';
+            label.style.top = 'calc(100% + 8px)';
+            label.style.left = '50%';
+            label.style.transform = 'translateX(-50%)';
+            label.style.whiteSpace = 'nowrap';
+          }
+        });
+
+        // Orbit should be BETWEEN the two rings:
+        // Outer ring radius: 40% (80% diameter)
+        // Inner ring radius: 29% (58% diameter)
+        // Mid radius: 34.5%
+        let radius = 0;
+        const baseAngles = items.map((_, i) => (-90 + (360 / count) * i) * (Math.PI / 180));
+
+        let start = null;
+        let rafId = null;
+        const rotationPeriod = 20000; // ms per full rotation (20s)
+
+        function recalc() {
+          const size = Math.min(container.offsetWidth, container.offsetHeight);
+          const outerRingRadius = size * 0.4;
+          const innerRingRadius = size * 0.29;
+          const midRingRadius = (outerRingRadius + innerRingRadius) / 2;
+
+          // If the bubble is too large to fit fully between rings, we still keep the CENTER
+          // on the midline; otherwise clamp to stay comfortably inside the band.
+          const pad = 6;
+          const minR = innerRingRadius + (bubbleSize / 2) + pad;
+          const maxR = outerRingRadius - (bubbleSize / 2) - pad;
+          if (minR <= maxR) {
+            radius = Math.min(maxR, Math.max(minR, midRingRadius));
+          } else {
+            radius = midRingRadius;
+          }
+        }
+
+        function render(now) {
+          if (!start) start = now;
+          const elapsed = now - start;
+          const rotation = (elapsed % rotationPeriod) / rotationPeriod * 2 * Math.PI;
+
+          items.forEach((el, i) => {
+            const angle = baseAngles[i] + rotation;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            // translate(-50%, -50%) is safe because we forced a fixed square size above
+            el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+            const flag = el.querySelector('.country-flag');
+            if (flag) flag.style.transform = `rotate(${(-rotation * 180 / Math.PI)}deg)`;
+          });
+
+          // no decorative planes
+
+          rafId = requestAnimationFrame(render);
+        }
+
+        function startLoop() {
+          if (rafId != null) return;
+          start = null;
+          rafId = requestAnimationFrame(render);
+        }
+
+        function stopLoop() {
+          if (rafId == null) return;
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+
+        window.addEventListener('resize', recalc);
+        recalc();
+
+        if ('IntersectionObserver' in window && section) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              const entry = entries && entries[0];
+              if (!entry) return;
+              if (document.hidden) return stopLoop();
+              if (entry.isIntersecting) startLoop();
+              else stopLoop();
+            },
+            { root: null, threshold: 0.05 }
+          );
+          io.observe(section);
+        // Delegate registration CTA clicks to handleCTA when available
+        document.addEventListener('click', function(e){
+          const a = e.target.closest && e.target.closest('a[href="#registration-section"]');
+          if (!a) return;
+          // Prevent default anchor behavior and route via handleCTA
+          e.preventDefault();
+          try {
+            if (typeof window.handleCTA === 'function') {
+              window.handleCTA();
+              return;
+            }
+          } catch (err) {
+            // ignore
+          }
+          // fallback
+          window.location.href = 'index.html#registration-section';
+        });
+        } else {
+          startLoop();
+        }
+
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) stopLoop();
+          else startLoop();
+        });
+      };
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(startOrbit, { timeout: 1500 });
+      } else {
+        setTimeout(startOrbit, 0);
+      }
+    })();
+  </script>
+</body>
+
+</html>

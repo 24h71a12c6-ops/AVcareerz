@@ -1,0 +1,431 @@
+3620:             /[!@#$%^&*]/.test(newPassword)
+3621:         );
+3622:         if (!strong) {
+3623:             return showNotification('Password must meet all rules shown above.', 'error');
+3624:         }
+3625: 
+3626:         const resetBtn = document.getElementById('forgotResetBtn');
+3627:         const originalText = resetBtn?.textContent || 'Reset Password';
+3628:         if (resetBtn) {
+3629:             resetBtn.textContent = 'Updating...';
+3630:             resetBtn.disabled = true;
+3631:         }
+3632: 
+3633:         try {
+3634:             const resp = await fetch(apiUrl('/api/reset-password'), {
+3635:                 method: 'POST',
+3636:                 headers: { 'Content-Type': 'application/json' },
+3637:                 body: JSON.stringify({ email, code, newPassword })
+3638:             });
+3639:             const payload = await resp.json().catch(() => ({}));
+3640:             if (!resp.ok || !payload?.success) {
+3641:                 throw new Error(payload?.error || 'Unable to reset password');
+3642:             }
+3643: 
+3644:             showNotification('Password updated successfully. Please log in.', 'success');
+3645:             setAuthMode('login');
+3646:             try {
+3647:                 const loginEmail = document.getElementById('loginEmail');
+3648:                 if (loginEmail) loginEmail.value = email;
+3649:                 const loginPass = document.getElementById('loginPassword');
+3650:                 if (loginPass) loginPass.value = '';
+3651:             } catch {
+3652:                 // ignore
+3653:             }
+3654:         } catch (err) {
+3655:             console.error('Reset password error:', err);
+3656:             showNotification(err?.message || 'Unable to reset password. Please try again.', 'error');
+3657:         } finally {
+3658:             if (resetBtn) {
+3659:                 resetBtn.textContent = originalText;
+3660:                 resetBtn.disabled = false;
+3661:             }
+3662:         }
+3663:     });
+3664: }
+3665: 
+3666: const bindAuthForms = () => {
+3667:     registrationForm = document.getElementById('registrationForm') || registrationForm;
+3668:     loginForm = document.getElementById('loginForm') || loginForm;
+3669:     if (!registrationForm && !loginForm) return;
+3670:     if (authFormListenersBound) return;
+3671:     authFormListenersBound = true;
+3672: 
+3673:     if (registrationForm) {
+3674:     const passwordInput = document.getElementById('password');
+3675:     const passwordRequirements = document.querySelector('.password-requirements');
+3676: 
+3677:     // Password requirement patterns
+3678:     const passwordPatterns = {
+3679:         uppercase: /[A-Z]/,
+3680:         lowercase: /[a-z]/,
+3681:         number: /[0-9]/,
+3682:         special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
+3683:         length: /.{8,}/
+3684:     };
+3685: 
+3686:     // Show password requirements on focus
+3687:     if (passwordInput) {
+3688:         passwordInput.addEventListener('focus', () => {
+3689:             if (passwordRequirements) {
+3690:                 passwordRequirements.classList.add('show');
+3691:             }
+3692:         });
+3693: 
+3694:         // Update requirements on input
+3695:         passwordInput.addEventListener('input', updatePasswordRequirements);
+3696:     }
+3697: 
+3698:     function updatePasswordRequirements() {
+3699:         const password = passwordInput.value;
+3700: 
+3701:         // Check uppercase
+3702:         const reqUppercase = document.getElementById('req-uppercase');
+3703:         if (passwordPatterns.uppercase.test(password)) {
+3704:             reqUppercase.classList.add('met');
+3705:         } else {
+3706:             reqUppercase.classList.remove('met');
+3707:         }
+3708: 
+3709:         // Check lowercase
+3710:         const reqLowercase = document.getElementById('req-lowercase');
+3711:         if (passwordPatterns.lowercase.test(password)) {
+3712:             reqLowercase.classList.add('met');
+3713:         } else {
+3714:             reqLowercase.classList.remove('met');
+3715:         }
+3716: 
+3717:         // Check number
+3718:         const reqNumber = document.getElementById('req-number');
+3719:         if (passwordPatterns.number.test(password)) {
+3720:             reqNumber.classList.add('met');
+3721:         } else {
+3722:             reqNumber.classList.remove('met');
+3723:         }
+3724: 
+3725:         // Check special character
+3726:         const reqSpecial = document.getElementById('req-special');
+3727:         if (passwordPatterns.special.test(password)) {
+3728:             reqSpecial.classList.add('met');
+3729:         } else {
+3730:             reqSpecial.classList.remove('met');
+3731:         }
+3732: 
+3733:         // Check length
+3734:         const reqLength = document.getElementById('req-length');
+3735:         if (passwordPatterns.length.test(password)) {
+3736:             reqLength.classList.add('met');
+3737:         } else {
+3738:             reqLength.classList.remove('met');
+3739:         }
+3740:     }
+3741: 
+3742:     function isPasswordStrong(password) {
+3743:         return passwordPatterns.uppercase.test(password) &&
+3744:             passwordPatterns.lowercase.test(password) &&
+3745:             passwordPatterns.number.test(password) &&
+3746:             passwordPatterns.special.test(password) &&
+3747:             passwordPatterns.length.test(password);
+3748:     }
+3749: 
+3750:     const continueToApplicationForm = () => {
+3751:         sessionStorage.setItem('pendingApplicationStep', '2');
+3752:         sessionStorage.setItem('isSessionActive', 'true');
+3753:         try { localStorage.setItem('isSessionActive', 'true'); } catch {}
+3754:         window.location.href = 'next-form.html';
+3755:     };
+3756: 
+3757:     const showPostSignupPromptAndRedirect = () => {
+3758:         // Keep the helper for any other callers, but go directly to step 2.
+3759:         continueToApplicationForm();
+3760:     };
+3761: 
+3762:     registrationForm.addEventListener('submit', async (e) => {
+3763:         e.preventDefault();
+3764: 
+3765:         // Get form values
+3766:         const fullName = document.getElementById('fullName').value.trim();
+3767:         const email = document.getElementById('email').value.trim();
+3768:         const phone = document.getElementById('phone').value.trim();
+3769:         const password = document.getElementById('password')?.value.trim();
+3770:         const visaType = document.getElementById('visaType')?.value || 'student';
+3771:         const city = document.getElementById('city')?.value.trim() || 'Not specified';
+3772:         const country = document.getElementById('country')?.value || 'Not specified';
+3773: 
+3774:         // Validate form fields
+3775:         if (!fullName || !email || !phone) {
+3776:             showNotification('Please fill in all required fields', 'error');
+3777:             return;
+3778:         }
+3779: 
+3780:         // Validate email
+3781:         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+3782:         if (!emailPattern.test(email)) {
+3783:             showNotification('Please enter a valid email address', 'error');
+3784:             return;
+3785:         }
+3786: 
+3787:         // Validate phone number - exactly 10 digits
+3788:         const phonePattern = /^[0-9]{10}$/;
+3789:         if (!phonePattern.test(phone)) {
+3790:             showNotification('Please enter a valid 10-digit phone number', 'error');
+3791:             return;
+3792:         }
+3793: 
+3794:         // Validate password strength if password field exists
+3795:         if (password && !isPasswordStrong(password)) {
+3796:             showNotification('Password does not meet all requirements. Please check the criteria.', 'error');
+3797:             return;
+3798:         }
+3799: 
+3800:         // Show loading state
+3801:         const submitButton = registrationForm.querySelector('button[type="submit"]');
+3802:         const originalButtonText = submitButton.textContent;
+3803:         submitButton.textContent = 'Submitting...';
+3804:         submitButton.disabled = true;
+3805: 
+3806:         try {
+3807:             const editMode = sessionStorage.getItem('editRegistration') === '1';
+3808:             const currentUserId = sessionStorage.getItem('currentUserId') || localStorage.getItem('currentUserId') || '';
+3809:             const normalizedEmail = String(email).trim().toLowerCase();
+3810: 
+3811:             if (!normalizedEmail) {
+3812:                 throw new Error('Missing email address');
+3813:             }
+3814:             const registrationData = {
+3815:                 fullName,
+3816:                 email: normalizedEmail,
+3817:                 phone,
+3818:                 password,
+3819:                 visaType,
+3820:                 city,
+3821:                 country,
+3822:                 source: window.location.pathname,
+3823:                 userId: currentUserId
+3824:             };
+3825: 
+3826:             const endpoint = editMode ? apiUrl('/api/update-registration') : apiUrl('/api/register');
+3827:             const response = await fetch(endpoint, {
+3828:                 method: editMode ? 'PUT' : 'POST',
+3829:                 headers: { 'Content-Type': 'application/json' },
+3830:                 body: JSON.stringify(registrationData)
+3831:             });
+3832: 
+3833:             const payload = await response.json().catch(() => ({}));
+3834:             if (response.status === 409 && payload?.alreadyRegistered) {
+3835:                 showNotification(payload?.error || 'You have already signed in. Please log in instead.', 'info');
+3836: 
+3837:                 if (typeof setAuthMode === 'function') {
+3838:                     setAuthMode('login');
+3839:                 }
+3840: 
+3841:                 const loginEmail = document.getElementById('loginEmail');
+3842:                 if (loginEmail) {
+3843:                     loginEmail.value = normalizedEmail;
+3844:                     loginEmail.focus();
+3845:                 }
+3846: 
+3847:                 submitButton.textContent = originalButtonText;
+3848:                 submitButton.disabled = false;
+3849:                 return;
+3850:             }
+3851: 
+3852:             if (!response.ok || !payload?.success) {
+3853:                 throw new Error(payload?.error || 'Registration failed.');
+3854:             }
+3855: 
+3856:             const submissionId = String(payload?.userId || currentUserId || normalizedEmail).trim();
+3857: 
+3858:             // Success message
+3859:             showNotification(editMode ? 'Details updated successfully!' : 'Registration successful!', 'success');
+3860: 
+3861:             // Activate browser session
+3862:             sessionStorage.setItem('isSessionActive', 'true');
+3863: 
+3864:             sessionStorage.setItem('currentUserId', submissionId);
+3865:             localStorage.setItem('currentUserId', submissionId);
+3866: 
+3867:             // Store email in localStorage for additional-info form
+3868:             localStorage.setItem('userEmail', normalizedEmail);
+3869:             try { localStorage.setItem('lastUserEmail', normalizedEmail); } catch { }
+3870:             try { localStorage.setItem('hasSignedUp', '1'); } catch { }
+3871: 
+3872:             // Mark this session as "just registered" so we don't auto-redirect on #registration-section
+3873:             // (User should be able to explore the website normally after signup.)
+3874:             sessionStorage.setItem('justRegistered', '1');
+3875: 
+3876:             // Store data for profile (session + local so it persists after refresh)
+3877:             const registrationPayload = { fullName, email: normalizedEmail, phone };
+3878:             sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+3879:             localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+3880: 
+3881:             try {
+3882:                 if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
+3883:             } catch {
+3884:                 // ignore
+3885:             }
+3886: 
+3887:             if (editMode) {
+3888:                 sessionStorage.removeItem('editRegistration');
+3889:             }
+3890: 
+3891:             // If registration UI is shown as a modal, close it so the site displays normally.
+3892:             try {
+3893:                 document.body.classList.remove('reg-modal-open');
+3894:                 const overlay = document.getElementById('regModalOverlay');
+3895:                 if (overlay) overlay.hidden = true;
+3896: 
+3897:                 // Remove hash if it was #registration-section so the page looks normal.
+3898:                 if (window.location.hash === '#registration-section') {
+3899:                     window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+3900:                 }
+3901:             } catch {
+3902:                 // ignore
+3903:             }
+3904: 
+3905:             // Log form data
+3906:             console.log('Registration successful:', { editMode, submissionId, email: normalizedEmail });
+3907: 
+3908:             // Reset form
+3909:             registrationForm.reset();
+3910:             if (passwordRequirements) {
+3911:                 passwordRequirements.classList.remove('show');
+3912:             }
+3913: 
+3914:             // Restore submit button text in case we were in edit mode
+3915:             try {
+3916:                 const submitBtn = registrationForm.querySelector('button[type="submit"]');
+3917:                 if (submitBtn) submitBtn.textContent = 'Submit';
+3918:                 const emailEl = document.getElementById('email');
+3919:                 if (emailEl) emailEl.readOnly = false;
+3920:             } catch {
+3921:                 // ignore
+3922:             }
+3923: 
+3924:             // --- Auto-Login & Redirect Logic ---
+3925:             // 1. Store user session immediately so they are "Logged In"
+3926:             localStorage.setItem('userEmail', normalizedEmail); 
+3927:             localStorage.setItem('hasSignedUp', '1');
+3928:             // Clear any previous completion state so first-time step-2 entry won't
+3929:             // get treated like a fully completed application.
+3930:             try {
+3931:                 localStorage.removeItem('isApplicationDone');
+3932:                 localStorage.removeItem('applicationCompleted');
+3933:                 sessionStorage.removeItem('applicationCompleted');
+3934:             } catch {
+3935:                 // ignore
+3936:             }
+3937:             
+3938:             // Store registration data for the next form
+3939:             const regData = { fullName, email: normalizedEmail, phone };
+3940:             sessionStorage.setItem('registrationData', JSON.stringify(regData));
+3941:             localStorage.setItem('registrationData', JSON.stringify(regData));
+3942: 
+3943:             // 2. Hide the registration UI immediately
+3944:             hideRegistrationSection();
+3945: 
+3946:             // If it was a modal, close the overlay too
+3947:             if (typeof closeRegModal === 'function') {
+3948:                 closeRegModal();
+3949:             } else {
+3950:                 const signupPanel = document.getElementById('signupPanel');
+3951:                 if (signupPanel) signupPanel.style.display = 'none';
+3952:                 document.body.classList.remove('reg-modal-open');
+3953:             }
+3954: 
+3955:             // 3. Update UI (Profile Badge)
+3956:             try {
+3957:                 if (typeof window.__updateProfileBadge === 'function') window.__updateProfileBadge();
+3958:             } catch {}
+3959: 
+3960:             // Keep section state aligned with current login state.
+3961:             syncRegistrationSectionForAuthState();
+3962: 
+3963:             // 4. Direct next step UX: Auto-redirect to application form (Step 2)
+3964:             // as requested — mark the user as registered and take them to step 2.
+3965:             if (!editMode) {
+3966:                 try { localStorage.setItem('isRegistered', 'true'); } catch {}
+3967:                 try { sessionStorage.setItem('justRegistered', '1'); } catch {}
+3968:                 try { sessionStorage.setItem('pendingApplicationStep', '2'); } catch {}
+3969:                 // Keep older compatibility keys
+3970:                 try { localStorage.setItem('hasSignedUp', '1'); } catch {}
+3971:                 showNotification('Registration successful! Opening Step 2...', 'success');
+3972:                 
+3973:                 // Redirect to next-form.html after signup
+3974:                 setTimeout(() => {
+3975:                     continueToApplicationForm();
+3976:                 }, 800);
+3977:                 return;
+3978:             }
+3979: 
+3980:             // Force hide registration section after signup
+3981:             setTimeout(() => {
+3982:                 hideRegistrationSection();
+3983:                 syncRegistrationSectionForAuthState();
+3984:             }, 100);
+3985:         } catch (error) {
+3986:             console.warn('Registration save failed:', error);
+3987: 
+3988:             const errorMsg = String(error?.message || 'Registration failed.').trim();
+3989: 
+3990:             // Smart handling for duplicate accounts if the doc already exists.
+3991:             if (errorMsg.includes('already registered') || errorMsg.includes('already signed in') || errorMsg.includes('exists')) {
+3992:                 showNotification('You have already signed in. Switching to Login...', 'info');
+3993: 
+3994:                 if (typeof setAuthMode === 'function') {
+3995:                     setAuthMode('login');
+3996:                 }
+3997: 
+3998:                 const loginEmail = document.getElementById('loginEmail');
+3999:                 if (loginEmail) loginEmail.value = email;
+4000: 
+4001:                 const loginPass = document.getElementById('loginPassword');
+4002:                 if (loginPass) loginPass.focus();
+4003:             } else {
+4004:                 showNotification(errorMsg, 'error');
+4005:             }
+4006:             
+4007:             submitButton.textContent = originalButtonText;
+4008:             submitButton.disabled = false;
+4009:         }
+4010:     });
+4011: 
+4012:     // Social login buttons
+4013:     const googleBtn = document.querySelector('.google-btn');
+4014:     const facebookBtn = document.querySelector('.facebook-btn');
+4015: 
+4016:     if (googleBtn) {
+4017:         googleBtn.addEventListener('click', (e) => {
+4018:             e.preventDefault();
+4019:             showNotification('Google login will be available soon', 'info');
+4020:         });
+4021:     }
+4022: 
+4023:     if (facebookBtn) {
+4024:         facebookBtn.addEventListener('click', (e) => {
+4025:             e.preventDefault();
+4026:             showNotification('Facebook login will be available soon', 'info');
+4027:         });
+4028:     }
+4029: }
+4030: 
+4031: // Login form submission — moved inside DOMContentLoaded for correct scope
+4032:     if (loginForm) {
+4033:         loginForm.addEventListener('submit', async (e) => {
+4034:         e.preventDefault();
+4035: 
+4036:         const email = document.getElementById('loginEmail')?.value.trim();
+4037:         const password = document.getElementById('loginPassword')?.value.trim();
+4038: 
+4039:         if (!email || !password) {
+4040:             showNotification('Please enter email and password', 'error');
+4041:             return;
+4042:         }
+4043: 
+4044:         const submitButton = loginForm.querySelector('button[type="submit"]');
+4045:         const originalButtonText = submitButton ? submitButton.textContent : 'Log in';
+4046:         if (submitButton) {
+4047:             submitButton.textContent = 'Logging in...';
+4048:             submitButton.disabled = true;
+4049:         }
+4050: 
