@@ -663,7 +663,7 @@ const API_BASE_URL = (() => {
     }
 
     const hostname = String(window.location.hostname || '').toLowerCase();
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || window.location.protocol === 'file:') {
         return 'http://127.0.0.1:8000';
     }
 
@@ -2037,9 +2037,27 @@ document.addEventListener("DOMContentLoaded", function () {
                                   normalizedClasses.includes('btn-primary-massive') ||
                                   normalizedClasses.includes('promo-cta');
 
-            // If this is a CTA button, let the modal handler process it.
+            // If this is a CTA button, route it through the CTA handler.
             if (href === '#registration-section' && isRegisterCTA) {
                 e.preventDefault();
+                try {
+                    if (typeof handleCTA === 'function') {
+                        void handleCTA();
+                        return;
+                    }
+                } catch {}
+
+                if (typeof openRegModal === 'function') {
+                    openRegModal();
+                    return;
+                }
+
+                if (!isHomePagePath()) {
+                    window.location.href = 'index.html#registration-section';
+                    return;
+                }
+
+                scrollToSection('registration-section');
                 return;
             }
 
@@ -3903,10 +3921,12 @@ const bindAuthForms = () => {
         submitButton.textContent = 'Submitting...';
         submitButton.disabled = true;
 
+        let normalizedEmail = '';
+
         try {
             const editMode = sessionStorage.getItem('editRegistration') === '1';
             const currentUserId = sessionStorage.getItem('currentUserId') || localStorage.getItem('currentUserId') || '';
-            const normalizedEmail = String(email).trim().toLowerCase();
+            normalizedEmail = String(email).trim().toLowerCase();
 
             if (!normalizedEmail) {
                 throw new Error('Missing email address');
@@ -4109,6 +4129,42 @@ const bindAuthForms = () => {
                 showNotification(errorMsg, 'error');
             }
             
+            const fallbackNetworkError = /failed to fetch|networkerror|connection refused|failed to execute 'fetch'/i.test(String(error));
+            if (fallbackNetworkError) {
+                console.warn('Registration server offline. Using local fallback:', error);
+
+                const localUserId = normalizedEmail || fullName || String(Date.now());
+                sessionStorage.setItem('isSessionActive', 'true');
+                sessionStorage.setItem('currentUserId', localUserId);
+                localStorage.setItem('currentUserId', localUserId);
+                localStorage.setItem('userEmail', normalizedEmail);
+                try { localStorage.setItem('lastUserEmail', normalizedEmail); } catch {}
+                try { localStorage.setItem('hasSignedUp', '1'); } catch {}
+                try { localStorage.setItem('isRegistered', 'true'); } catch {}
+                try { sessionStorage.setItem('justRegistered', '1'); } catch {}
+                try { sessionStorage.setItem('pendingApplicationStep', '2'); } catch {}
+
+                const registrationPayload = { fullName, email: normalizedEmail, phone };
+                sessionStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+                localStorage.setItem('registrationData', JSON.stringify(registrationPayload));
+
+                hideRegistrationSection();
+                if (typeof closeRegModal === 'function') {
+                    closeRegModal();
+                } else {
+                    document.body.classList.remove('reg-modal-open');
+                }
+
+                showNotification('Registration saved locally. Step 2 is available now.', 'success');
+                registrationForm.reset();
+                if (passwordRequirements) passwordRequirements.classList.remove('show');
+
+                setTimeout(() => {
+                    continueToApplicationForm();
+                }, 800);
+                return;
+            }
+
             submitButton.textContent = originalButtonText;
             submitButton.disabled = false;
         }

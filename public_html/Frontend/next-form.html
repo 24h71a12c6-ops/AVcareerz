@@ -148,14 +148,24 @@
             box-shadow: 0 18px 34px rgba(2, 24, 45, 0.18);
             border: 1px solid rgba(255, 255, 255, 0.08);
             position: relative;
-            transform: translateY(0);
-            animation: wrapperEntrance 0.85s cubic-bezier(0.16, 1, 0.3, 1), wrapperFloat 7s ease-in-out infinite 0.9s;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: visible;
+            transform: none !important;
+            animation: none !important;
+            transition: none !important;
         }
 
-        .next-form-wrapper:hover {
+        .next-form-wrapper:hover:not(:focus-within) {
             transform: translateY(-6px);
             box-shadow: 0 24px 46px rgba(2, 24, 45, 0.18);
+        }
+
+        .next-form-wrapper:focus-within {
+            transform: none !important;
+            animation: none !important;
+        }
+
+        .next-form-wrapper *:focus {
+            animation: none !important;
         }
 
         /* vertical accent stripe (make it white to contrast) */
@@ -391,6 +401,8 @@
 
         .form-group select {
             min-height: 52px;
+            width: 100%;
+            max-width: 100%;
             cursor: pointer;
             appearance: none;
             -webkit-appearance: none;
@@ -400,6 +412,13 @@
             background-position: right 1rem center;
             background-size: 14px 14px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            transition: none !important;
+        }
+
+        .form-group select:focus {
+            transform: none !important;
+            outline: none !important;
+            transition: none !important;
         }
 
         .form-group select.filled,
@@ -415,13 +434,20 @@
         }
 
         .form-group input:focus,
-        .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
             background: #ffffff;
             border-color: #4A90E2;
             box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
             transform: translateY(-2px);
+        }
+
+        .form-group select:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: #4A90E2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+            transform: none;
         }
 
         .form-group input::placeholder,
@@ -458,10 +484,13 @@
         .fixed-dropdown-shell {
             position: relative;
             width: 100%;
+            overflow: visible;
+            z-index: 2;
         }
 
         .fixed-dropdown-toggle {
             width: 100%;
+            max-width: 100%;
             height: 52px;
             padding: 0.75rem 3rem 0.75rem 0.9rem;
             background: #0D4B75;
@@ -510,6 +539,9 @@
             top: calc(100% + 6px);
             left: 0;
             width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
             max-height: 280px;
             overflow-y: auto;
             overflow-x: hidden;
@@ -517,7 +549,7 @@
             border: 1px solid rgba(13, 75, 117, 0.15);
             border-radius: 10px;
             box-shadow: 0 14px 30px rgba(2, 24, 45, 0.18);
-            z-index: 50;
+            z-index: 999;
             padding: 0.35rem 0;
         }
 
@@ -531,11 +563,13 @@
             text-align: left;
             font: inherit;
             cursor: pointer;
-            white-space: nowrap;
+            white-space: normal;
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: 1.25;
             box-sizing: border-box;
+            word-wrap: break-word;
+            word-break: break-word;
         }
 
         .fixed-dropdown-option:hover,
@@ -564,6 +598,8 @@
         #preferredCourse option {
             max-width: 100%;
             white-space: normal;
+            word-break: break-word;
+            overflow-wrap: anywhere;
             padding: 8px;
         }
         #preferredUniversity:disabled, #preferredCourse:disabled {

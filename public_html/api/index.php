@@ -55,6 +55,41 @@ function respond_text(string $text, int $statusCode = 200): void
     exit;
 }
 
+function tail_file_lines(string $path, int $maxLines = 50): array
+{
+    if (!is_file($path) || !is_readable($path)) {
+        return [];
+    }
+
+    $lines = @file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines === false) {
+        return [];
+    }
+
+    $count = count($lines);
+    if ($count <= $maxLines) {
+        return $lines;
+    }
+
+    return array_slice($lines, -$maxLines);
+}
+
+function handle_email_logs(array $data): void
+{
+    $includesDir = __DIR__ . '/../../includes';
+    $adminLog = $includesDir . '/admin_email_log.txt';
+    $userLog = $includesDir . '/user_email_log.txt';
+
+    $adminLines = tail_file_lines($adminLog, 100);
+    $userLines = tail_file_lines($userLog, 100);
+
+    respond_json([
+        'success' => true,
+        'admin_log' => array_values($adminLines),
+        'user_log' => array_values($userLines),
+    ]);
+}
+
 function request_payload(): array
 {
     static $payload = null;
@@ -854,6 +889,10 @@ function route_request(string $method, string $path, array $data): void
 
     if ($method === 'POST' && $path === '/partial-lead') {
         handle_partial_lead($data);
+    }
+
+    if ($method === 'GET' && $path === '/email-logs') {
+        handle_email_logs($data);
     }
 
     if ($method === 'POST' && $path === '/forgot-password') {
