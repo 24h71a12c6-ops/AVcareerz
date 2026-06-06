@@ -1,7 +1,0 @@
-{
-    "require": {
-        "google/cloud-firestore": "^1.31",
-        "google/cloud-storage": "^1.30",
-        "firebase/php-jwt": "^6.0"
-    }
-}

@@ -1,0 +1,108 @@
+[2026-06-03T14:27:12+00:00] DRY_RUN to: abroadvisioncarrerz@gmail.com,info@avcareerz.com subject: New Registration: Test User
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family:Arial,sans-serif;background:#f7fafc;margin:0;padding:20px;">
+  <div style="max-width:650px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.05);border:1px solid #e2e8f0;">
+    <div style="background:#0D4B75;color:#ffffff;padding:24px;text-align:center;">
+      <h1 style="margin:0;font-size:22px;font-weight:700;">New Student Submission</h1>
+    </div>
+    <div style="padding:32px 24px;">
+      <p style="margin-top:0;margin-bottom:20px;color:#4a5568;font-size:16px;line-height:1.5;">A new student has submitted their detailed information. Below are the details of the submission:</p>
+      <div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;text-align:left;">
+          <tbody>
+            <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">FullName</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">Test User</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">Email</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">test+reg@example.com</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">Phone</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">9876543210</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">Source</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">Website</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:24px;margin-bottom:0;font-size:14px;color:#718096;text-align:center;">Please follow up with this student as soon as possible.</p>
+    </div>
+  </div>
+</body>
+</html>
+
+[2026-06-03T14:27:12+00:00] DRY_RUN to: test+reg@example.com subject: AVcareerz - Registration Successful
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;background:#f4f4f7;margin:0;padding:0;">
+  <div style="max-width:600px;margin:0 auto;background:#ffffff;padding:20px;">
+    <div style="text-align:center;padding-bottom:20px;"><img src="https://avcareerz.com/images/logonew.png" alt="AVcareerz" style="max-width:150px;" /></div>
+    <div style="color:#333333;line-height:1.6;">
+      <h2>Hello Test User,</h2>
+      <p>Thank you for registering with <strong>AVcareerz</strong>.</p>
+      <p>Your registration has been successfully completed!</p>
+      
+      
+      <p>Our team will review your details and get back to you shortly with next steps.</p>
+      <p>Best regards,<br><strong>AVcareerz Team</strong></p>
+    </div>
+  </div>
+</body>
+</html>
+
+[2026-06-03T14:27:34+00:00] DRY_RUN to: abroadvisioncarrerz@gmail.com,info@avcareerz.com subject: New Registration: Step2 Test
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family:Arial,sans-serif;background:#f7fafc;margin:0;padding:20px;">
+  <div style="max-width:650px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.05);border:1px solid #e2e8f0;">
+    <div style="background:#0D4B75;color:#ffffff;padding:24px;text-align:center;">
+      <h1 style="margin:0;font-size:22px;font-weight:700;">New Student Submission</h1>
+    </div>
+    <div style="padding:32px 24px;">
+      <p style="margin-top:0;margin-bottom:20px;color:#4a5568;font-size:16px;line-height:1.5;">A new student has submitted their detailed information. Below are the details of the submission:</p>
+      <div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;text-align:left;">
+          <tbody>
+            <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">FullName</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">Step2 Test</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">Email</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">test+reg@example.com</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">Phone</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">9876543210</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">PreferredCountry</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">Canada</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">PreferredCourse</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">MBA</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px 16px;font-weight:600;color:#4a5568;width:40%;vertical-align:top;">Source</td><td style="padding:12px 16px;color:#1a202c;vertical-align:top;">next-form</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:24px;margin-bottom:0;font-size:14px;color:#718096;text-align:center;">Please follow up with this student as soon as possible.</p>
+    </div>
+  </div>
+</body>
+</html>
+
+[2026-06-03T14:27:34+00:00] DRY_RUN to: test+reg@example.com subject: AVcareerz - Registration Successful
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;background:#f4f4f7;margin:0;padding:0;">
+  <div style="max-width:600px;margin:0 auto;background:#ffffff;padding:20px;">
+    <div style="text-align:center;padding-bottom:20px;"><img src="https://avcareerz.com/images/logonew.png" alt="AVcareerz" style="max-width:150px;" /></div>
+    <div style="color:#333333;line-height:1.6;">
+      <h2>Hello Step2 Test,</h2>
+      <p>Thank you for registering with <strong>AVcareerz</strong>.</p>
+      <p>Your details have been submitted successfully. Our team will review your application and contact you shortly.</p>
+      <p><strong>Dream destination:</strong> Canada</p>
+      <p><strong>Desired course:</strong> MBA</p>
+      <p>Our team will review your details and get back to you shortly with next steps.</p>
+      <p>Best regards,<br><strong>AVcareerz Team</strong></p>
+    </div>
+  </div>
+</body>
+</html>
+
+[2026-06-03T14:36:55+00:00] DRY_RUN to: test+mailer@example.com subject: AVcareerz - Registration Successful
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;background:#f4f4f7;margin:0;padding:0;">
+  <div style="max-width:600px;margin:0 auto;background:#ffffff;padding:20px;">
+    <div style="text-align:center;padding-bottom:20px;"><img src="https://avcareerz.com/images/logonew.png" alt="AVcareerz" style="max-width:150px;" /></div>
+    <div style="color:#333333;line-height:1.6;">
+      <h2>Hello Test User,</h2>
+      <p>Thank you for registering with <strong>AVcareerz</strong>.</p>
+      <p>This is a dry-run test email from the local system.</p>
+      <p><strong>Dream destination:</strong> Canada</p>
+      <p><strong>Desired course:</strong> MBA</p>
+      <p>Our team will review your details and get back to you shortly with next steps.</p>
+      <p>Best regards,<br><strong>AVcareerz Team</strong></p>
+    </div>
+  </div>
+</body>
+</html>
+

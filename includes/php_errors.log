@@ -1,0 +1,6 @@
+[05-Jun-2026 05:13:20 UTC] Login admin email failed: Brevo send error (401): {"message":"We have detected you are using an unrecognised IP address 2409:40f0:3196:62dd:4599:eb96:c545:d883. If you performed this action make sure to add the new IP address in this link: https://app.brevo.com/security/authorised_ips","code":"unauthorized"}
+
+[05-Jun-2026 05:13:21 UTC] Login confirmation email failed: Brevo send error (401): {"message":"We have detected you are using an unrecognised IP address 2409:40f0:3196:62dd:4599:eb96:c545:d883. If you performed this action make sure to add the new IP address in this link: https://app.brevo.com/security/authorised_ips","code":"unauthorized"}
+
+[05-Jun-2026 05:13:24 UTC] Partial lead alert failed: Brevo send error (401): {"message":"We have detected you are using an unrecognised IP address 2409:40f0:3196:62dd:4599:eb96:c545:d883. If you performed this action make sure to add the new IP address in this link: https://app.brevo.com/security/authorised_ips","code":"unauthorized"}
+
